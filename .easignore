@@ -1,0 +1,9 @@
+node_modules/
+.git/
+.expo/
+.audio_cache/
+.env
+.env.*
+tests/
+scripts/
+public/audio-cache-export.html

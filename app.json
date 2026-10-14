@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "پەپوولە (Papoole)",
+    "slug": "papoole",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.papoole.kids"
+    },
+    "android": {
+      "package": "com.papoole.kids",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "ڕێگە بدە دەنگت تۆمار بکرێت بۆ مەشقی خوێندنەوە.",
+          "recordAudioAndroid": true,
+          "enableBackgroundPlayback": false
+        }
+      ]
+    ]
+  }
+}

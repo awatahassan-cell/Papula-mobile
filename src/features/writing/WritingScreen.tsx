@@ -1,0 +1,252 @@
+import { assessWriting, advanceWriting, writingMastered, suggestedWritingMode } from '../../services/foundationalLearning';
+import { WritingMode } from '../../services/types';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, PanResponder, Modal, useWindowDimensions } from 'react-native';
+import Svg, { Path, Line, Circle } from 'react-native-svg';
+import { Play, Eraser, Undo2, Volume2 } from 'lucide-react-native';
+import { BigButton } from '../../components/BigButton';
+import { StarRating } from '../../components/StarRating';
+import { mockLetters } from '../../data/mockLetters';
+import { getKurdishStrokeGuide } from '../../data/kurdishLetterGuides';
+import { soundService } from '../../services/soundService';
+import { TracingScoreResult } from '../../services/tracingScorer';
+import { resamplePolyline } from '../../services/pathSimilarity';
+import { StrokePoint } from '../../services/types';
+import { useAppStore } from '../../store/useAppStore';
+
+const PENS = ['#0369a1', '#7c3aed', '#047857'];
+const pathFor = (points: StrokePoint[]) => points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+const Stroke: React.FC<{ points: StrokePoint[]; color: string; width: number }> = ({ points, color, width }) => {
+  if (!points.length) return null;
+  if (points.length === 1) return <Circle cx={points[0].x} cy={points[0].y} r={width / 2} fill={color} />;
+  return <Path d={pathFor(points)} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" />;
+};
+
+export const WritingScreen: React.FC = () => {
+  const { selectedLetter, setSelectedLetter, setRoute, saveWritingScore, currentProfile } = useAppStore();
+  const [letter, setLetter] = useState(selectedLetter || mockLetters[0]);
+  const [mode,setMode]=useState<WritingMode>(()=>suggestedWritingMode(currentProfile.writingProgress?.[(selectedLetter||mockLetters[0]).id]));
+  const [confirmedMastery,setConfirmedMastery]=useState(false);
+  const attemptStarted=useRef(Date.now());
+  const usedHelp=useRef(false);
+  const [strokes, setStrokes] = useState<StrokePoint[][]>([]);
+  const [active, setActive] = useState<StrokePoint[]>([]);
+  const [pen, setPen] = useState(PENS[0]);
+  const [drawing, setDrawing] = useState(false);
+  const [result, setResult] = useState<TracingScoreResult | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [demo, setDemo] = useState<number | null>(null);
+  const { width } = useWindowDimensions();
+  const side = Math.max(160, Math.min(width - 40, 460));
+  const sideRef = useRef(side);
+  sideRef.current = side;
+  const strokeRef = useRef<StrokePoint[][]>([]);
+  const activeRef = useRef<StrokePoint[]>([]);
+  const lockedRef = useRef(false);
+  lockedRef.current = busy || result !== null || demo !== null;
+  const checkingRef = useRef(false);
+  const demoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const scrollRef = useRef<ScrollView>(null);
+  const guide = getKurdishStrokeGuide(letter.id) || getKurdishStrokeGuide(letter.glyph) || letter.strokeGuide;
+  const index = mockLetters.findIndex(item => item.id === letter.id);
+  const hasNext = index < mockLetters.length - 1;
+
+  const stopDemo = () => {
+    if (demoTimer.current) clearInterval(demoTimer.current);
+    demoTimer.current = null;
+    setDemo(null);
+  };
+  const clear = () => {
+    strokeRef.current = [];
+    activeRef.current = [];
+    setStrokes([]);
+    setActive([]);
+    setError('');
+  };
+  useEffect(() => {
+    clear(); stopDemo(); setResult(null); setDrawing(false);setMode(suggestedWritingMode(currentProfile.writingProgress?.[letter.id]));usedHelp.current=false;attemptStarted.current=Date.now();
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
+    return () => { if (demoTimer.current) clearInterval(demoTimer.current); };
+  }, [letter.id, guide]);
+  useEffect(() => () => { void soundService.stopSpeaking(); }, []);
+
+  const responder = useMemo(() => {
+    const point = (x: number, y: number): StrokePoint => ({
+      x: Math.max(0, Math.min(100, x / sideRef.current * 100)),
+      y: Math.max(0, Math.min(100, y / sideRef.current * 100)),
+    });
+    const finish = () => {
+      if (activeRef.current.length) {
+        strokeRef.current = [...strokeRef.current, activeRef.current];
+        setStrokes(strokeRef.current);
+      }
+      activeRef.current = [];
+      setActive([]); setDrawing(false);
+    };
+    return PanResponder.create({
+      onStartShouldSetPanResponder: () => !lockedRef.current,
+      onMoveShouldSetPanResponder: () => !lockedRef.current,
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: event => {
+        activeRef.current = [point(event.nativeEvent.locationX, event.nativeEvent.locationY)];
+        setActive(activeRef.current); setDrawing(true); setError('');
+      },
+      onPanResponderMove: event => {
+        const next = point(event.nativeEvent.locationX, event.nativeEvent.locationY);
+        const last = activeRef.current[activeRef.current.length - 1];
+        if (!last || Math.hypot(last.x - next.x, last.y - next.y) >= 0.35) {
+          activeRef.current = [...activeRef.current, next];
+          setActive(activeRef.current);
+        }
+      },
+      onPanResponderRelease: finish,
+      onPanResponderTerminate: finish,
+    });
+  }, []);
+
+  const playDemo = () => {
+    if (!guide || demoTimer.current || busy) return;
+    usedHelp.current=true;clear(); setDemo(0);
+    const started = Date.now();
+    const duration = Math.max(2400, guide.suggestedSpeedMs || 2400);
+    demoTimer.current = setInterval(() => {
+      const progress = Math.min(1, (Date.now() - started) / duration);
+      setDemo(progress);
+      if (progress === 1) {
+        if (demoTimer.current) clearInterval(demoTimer.current);
+        demoTimer.current = null;
+        setDemo(null);
+      }
+    }, 40);
+  };
+  const demoStrokes = guide?.strokes.map(stroke => resamplePolyline(stroke, 1)) || [];
+  let remainingDemoPoints = Math.floor((demo || 0) * demoStrokes.reduce((sum, stroke) => sum + stroke.length, 0));
+  const shownDemo = demoStrokes.map(stroke => {
+    const shown = stroke.slice(0, Math.max(0, remainingDemoPoints));
+    remainingDemoPoints -= stroke.length;
+    return shown;
+  });
+
+  const evaluate = async () => {
+    if (!guide || checkingRef.current || demo !== null) return;
+    checkingRef.current = true; setBusy(true); setError('');
+    const captured = [...strokeRef.current, ...(activeRef.current.length ? [activeRef.current] : [])];
+    const evaluated = assessWriting(guide, captured, mode);
+    try {
+      if (captured.length > 0) await saveWritingScore(letter.id, evaluated.score, evaluated.stars, mode, usedHelp.current, Math.round((Date.now()-attemptStarted.current)/1000));
+      const confirmed=writingMastered(advanceWriting(currentProfile.writingProgress?.[letter.id],mode,evaluated.mastered,usedHelp.current));
+      setConfirmedMastery(confirmed);
+      setResult(evaluated);
+      if (evaluated.mastered) {
+        soundService.playCorrect();
+        void soundService.speakWord(confirmed?`ئافەرم! تەواو فێری نووسینی پیتی ${letter.name} بوویت.`:'ئافەرم! ئەم مەشقەت بە باشی تەواو کرد.');
+      } else soundService.playEncouragingTryAgain();
+    } catch {
+      setError('ئەنجامەکە هەڵنەگیرا. جارێکی تر تاقی بکەرەوە.');
+    } finally { checkingRef.current = false; setBusy(false); }
+  };
+  const selectLetter = (nextIndex: number) => {
+    const next = mockLetters[nextIndex];
+    if (!next || busy) return;
+    void soundService.stopSpeaking(); setSelectedLetter(next); setLetter(next);
+  };
+  const changeMode=(next:WritingMode)=>{stopDemo();void soundService.stopSpeaking();setMode(next);setResult(null);clear();usedHelp.current=false;attemptStarted.current=Date.now();};
+  const goHome = () => { void soundService.stopSpeaking(); setResult(null); setRoute('home'); };
+  const nextLesson = () => {
+    if (!hasNext || !result?.mastered) return;
+    void soundService.stopSpeaking();
+    setSelectedLetter(mockLetters[index + 1]);
+    setResult(null); setRoute('letter-detail');
+  };
+
+  return <ScrollView ref={scrollRef} scrollEnabled={!drawing} contentContainerStyle={styles.container}>
+    <View style={styles.header}>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="پیتی پێشوو" disabled={index === 0 || busy}
+        style={[styles.arrow, index === 0 && styles.disabled]} onPress={() => selectLetter(index - 1)}><Text style={styles.arrowText}>→</Text></TouchableOpacity>
+      <View style={styles.letterInfo}><Text style={styles.label}>با پیتی {letter.name} بنووسین</Text>{mode!=='independent' && <Text style={styles.reference}>{letter.glyph}</Text>}</View>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="پیتی دواتر" disabled={!hasNext || busy}
+        style={[styles.arrow, !hasNext && styles.disabled]} onPress={() => selectLetter(index + 1)}><Text style={styles.arrowText}>←</Text></TouchableOpacity>
+    </View>
+    <View style={styles.tools}>{(['trace','copy','independent'] as const).map((value,i)=><TouchableOpacity key={value} accessibilityRole="button" accessibilityState={{selected:mode===value}} disabled={busy || (value==='copy'&&!currentProfile.writingProgress?.[letter.id]?.tracePassed) || (value==='independent'&&!currentProfile.writingProgress?.[letter.id]?.copyPassed)} style={[styles.tool,mode===value&&{backgroundColor:'#bbf7d0'}]} onPress={()=>changeMode(value)}><Text style={styles.toolText}>{['١. لەسەر ڕێنما','٢. بە نموونە','٣. سەربەخۆ'][i]}</Text></TouchableOpacity>)}</View>
+    <Text style={styles.instruction}>{mode==='trace'?guide?.instructionKu:mode==='copy'?'نموونەکە سەیر بکە و لە بۆردە بەتاڵەکە بینووسە.':'بەبێ ڕێنما پیتەکە بنووسە؛ هەموو هێڵ و خاڵەکانی بیر بکەرەوە.'}</Text>
+    <View style={styles.boardFrame}>
+      <View testID="writing-board" accessibilityLabel={`بۆردی نووسینی پیتی ${letter.glyph}`} style={{ width: side, height: side }} {...responder.panHandlers}>
+        <Svg width={side} height={side} viewBox="0 0 100 100" pointerEvents="none">
+          {[22, 45, 70, 88].map(y => <Line key={y} x1={5} y1={y} x2={95} y2={y}
+            stroke={y === 70 ? '#d97706' : '#d9e2ec'} strokeWidth={y === 70 ? 0.65 : 0.3} />)}
+          {mode==='trace' && guide?.outlinePath && <Path d={guide.outlinePath} fill="#b8c4d1" fillRule="evenodd" />}
+          {mode==='trace' && !guide?.outlinePath && guide?.strokes.map((stroke, i) => <Stroke key={`guide-${i}`} points={stroke} color="#b8c4d1" width={6} />)}
+          {strokes.map((stroke, i) => <Stroke key={`draw-${i}`} points={stroke} color={pen} width={3.6} />)}
+          <Stroke points={active} color={pen} width={3.6} />
+          {demo !== null && shownDemo.map((stroke, i) => <Stroke key={`demo-${i}`} points={stroke} color="#0369a1" width={3.6} />)}
+          {mode==='trace' && strokes.length === 0 && demo === null && guide?.strokes[0]?.[0] && <Circle cx={guide.strokes[0][0].x} cy={guide.strokes[0][0].y} r={2} fill="#047857" />}
+        </Svg>
+      </View>
+    </View>
+    <Text style={styles.hint}>{demo !== null ? 'سەیر بکە چۆن دەنووسرێت…' : mode==='trace'?'لە خاڵە سەوزەکە دەست پێ بکە؛ بە پەنجە بەسەر هێڵەکەدا بڕۆ':'لە ناو بۆردەکە بە پەنجە بنووسە'}</Text>
+    <View style={styles.tools}>
+      <TouchableOpacity accessibilityRole="button" style={styles.tool} onPress={() => { if (demo !== null) stopDemo(); else playDemo(); }} disabled={busy || mode!=='trace'}>
+        <Play size={22} color="#0369a1" /><Text style={styles.toolText}>{demo !== null ? 'وەستاندن' : 'پیشاندان'}</Text></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" style={styles.tool} disabled={busy || demo !== null} onPress={() => { strokeRef.current = strokeRef.current.slice(0, -1); setStrokes(strokeRef.current); }}>
+        <Undo2 size={22} color="#475569" /><Text style={styles.toolText}>هێڵی پێشوو</Text></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" style={styles.tool} disabled={busy || demo !== null} onPress={clear}>
+        <Eraser size={22} color="#475569" /><Text style={styles.toolText}>سڕینەوە</Text></TouchableOpacity>
+    </View>
+    <View style={styles.colors}>{PENS.map((color, i) => <TouchableOpacity key={color} accessibilityRole="button" accessibilityLabel={['قەڵەمی شین', 'قەڵەمی مۆر', 'قەڵەمی سەوز'][i]}
+      accessibilityState={{ selected: pen === color }} onPress={() => setPen(color)} style={[styles.color, { backgroundColor: color }, pen === color && styles.selectedColor]} />)}</View>
+    {!!error && <Text accessibilityLiveRegion="polite" style={styles.error}>{error}</Text>}
+    <BigButton onPress={evaluate} disabled={busy || drawing || demo !== null || !guide} variant="success" size="lg" style={styles.fullButton}>
+      {busy ? 'پشکنین دەکەم…' : 'نووسینەکەم چۆنە؟ ✓'}
+    </BigButton>
+    {result && <Modal transparent animationType="fade" visible onRequestClose={() => setResult(null)}>
+      <View style={styles.backdrop}><ScrollView contentContainerStyle={styles.modalScroll}><View style={styles.modalCard}>
+        <Text style={styles.celebration}>{result.mastered ? '🌟' : '🌱'}</Text>
+        <Text style={styles.resultTitle}>{confirmedMastery ? 'تەواو فێر بوویت!' : result.mastered ? 'ئافەرم! ئەم مەشقەت تەواو کرد' : 'با جارێکی تر ڕاهێنان بکەین'}</Text>
+        <Text style={styles.resultText}>{result.mastered ? `ئافەرم! پیتی «${letter.glyph}» بە جوانی نووسیت.` : result.feedbackKu}</Text>
+        <StarRating stars={result.stars} maxStars={3} size="lg" />
+        <Text style={styles.resultText}>نمرە: {result.score}٪</Text>
+        {result.mastered ? <>
+          {mode!=='independent' && <BigButton onPress={()=>changeMode(mode==='trace'?'copy':'independent')} variant="success" size="lg" style={styles.fullButton}>{mode==='trace'?'ئێستا بە نموونە بنووسم':'ئێستا سەربەخۆ بنووسم'}</BigButton>}
+          {mode==='independent' && !confirmedMastery && <Text style={styles.resultText}>سەربەخۆ نووسیت! لە ڕۆژێکی دیکە دووبارەی بکەوە، بۆ دڵنیابوون لە فێربوون.</Text>}
+          {hasNext && <BigButton onPress={nextLesson} variant="success" size="lg" style={styles.fullButton}>{`پیتی دواتر «${mockLetters[index + 1].glyph}» ←`}</BigButton>}
+          {!hasNext && <Text style={styles.resultText}>گەیشتیتە کۆتایی پیتەکان! 🎉</Text>}
+          <BigButton onPress={goHome} variant="outline" size="lg" style={styles.fullButton}>گەڕانەوە بۆ سەرەتا 🏠</BigButton>
+        </> : <>
+          {mode!=='trace' && <BigButton onPress={()=>changeMode('trace')} variant="outline" style={styles.fullButton}>ڕێنما ببینم؛ یارمەتی دەوێت</BigButton>}
+          <BigButton onPress={() => { setResult(null); clear(); usedHelp.current=false;attemptStarted.current=Date.now(); }} size="lg" style={styles.fullButton}>دووبارە بنووسم ✍️</BigButton>
+          <TouchableOpacity accessibilityRole="button" style={styles.listenHelp} onPress={() => void soundService.speakWord(result.feedbackKu)}><Volume2 color="#78350f" size={22} /><Text style={styles.toolText}>ڕێنماییەکە ببیستە</Text></TouchableOpacity>
+        </>}
+      </View></ScrollView></View>
+    </Modal>}
+  </ScrollView>;
+};
+
+const styles = StyleSheet.create({
+  container: { padding: 16, paddingBottom: 32, alignItems: 'center', gap: 12, width: '100%', maxWidth: 520, alignSelf: 'center' },
+  header: { flexDirection: 'row-reverse', alignItems: 'center', width: '100%', gap: 8 },
+  letterInfo: { flex: 1, alignItems: 'center' },
+  label: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, color: '#1e293b', textAlign: 'center' },
+  reference: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 64, lineHeight: 90, color: '#78350f' },
+  arrow: { width: 56, height: 56, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fef3c7' },
+  arrowText: { fontSize: 26, color: '#78350f' },
+  disabled: { opacity: 0.3 },
+  instruction: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 16, textAlign: 'center', color: '#334155' },
+  boardFrame: { backgroundColor: '#fffef7', borderColor: '#cbd5e1', borderWidth: 2, borderRadius: 22, overflow: 'hidden' },
+  hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 14, color: '#475569', textAlign: 'center' },
+  tools: { width: '100%', flexDirection: 'row-reverse', gap: 8 },
+  tool: { flex: 1, minHeight: 68, padding: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eaf2f8', borderRadius: 18, gap: 6 },
+  toolText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: '#334155', textAlign: 'center' },
+  colors: { flexDirection: 'row', gap: 16, marginVertical: 4 },
+  color: { width: 48, height: 48, borderRadius: 24, borderWidth: 3, borderColor: '#fffdfa' },
+  selectedColor: { borderColor: '#0f172a' },
+  error: { color: '#b91c1c', fontSize: 16, textAlign: 'center' },
+  fullButton: { width: '100%' },
+  backdrop: { flex: 1, backgroundColor: 'rgba(15,23,42,0.65)', justifyContent: 'center', padding: 20 },
+  modalScroll: { flexGrow: 1, justifyContent: 'center', alignItems: 'center' },
+  modalCard: { width: '100%', maxWidth: 440, backgroundColor: '#fffef7', borderRadius: 28, padding: 24, alignItems: 'center', gap: 16 },
+  celebration: { fontSize: 56 },
+  resultTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 26, color: '#047857', textAlign: 'center' },
+  resultText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 17, color: '#334155', textAlign: 'center' },
+  listenHelp: { minHeight: 64, flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'center', gap: 12 },
+});
