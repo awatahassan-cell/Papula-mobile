@@ -58,6 +58,8 @@ export const MyWordsScreen: React.FC = () => {
           {currentProfile.savedWords.map((word, idx) => (
             <View key={idx} style={styles.wordCard}>
               <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel={`سڕینەوەی وشەی ${word}`}
                 onPress={() => handleRemoveWord(word)}
                 style={styles.trashBtn}
               >
@@ -67,6 +69,8 @@ export const MyWordsScreen: React.FC = () => {
               <View style={styles.wordContent}>
                 <Text style={styles.wordText}>{word}</Text>
                 <TouchableOpacity
+                  accessibilityRole="button"
+                  accessibilityLabel={`گوێگرتن لە وشەی ${word}`}
                   onPress={() => handlePlayWord(word)}
                   style={styles.speakerBtn}
                 >

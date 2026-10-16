@@ -5,6 +5,7 @@ import { Text } from '../../components/RTLText';
 import { StrokeGuide, StrokePoint } from '../../services/types';
 import { soundService } from '../../services/soundService';
 import { rubricNarration, WritingRubric } from '../../services/writingRubric';
+import { useThemeStyles } from '../../theme/useAppearance';
 
 const pathFor = (points: StrokePoint[]) => points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
 const Ink: React.FC<{ points: StrokePoint[]; color: string; width: number; dash?: string }> = ({ points, color, width, dash }) => {
@@ -16,6 +17,7 @@ const STATUS = { good: { mark: '✓', color: '#047857', bar: '#34d399' }, ok: { 
 
 /** Side-by-side review: the model, the child's writing and what is missing, plus a per-criterion breakdown. */
 export const WritingResultDetails: React.FC<{ guide: StrokeGuide; strokes: StrokePoint[][]; rubric: WritingRubric; aligned?: StrokePoint[][]; stars?: 1 | 2 | 3 }> = ({ guide, strokes, rubric, aligned, stars = 1 }) => {
+  const styles = useThemeStyles(baseStyles);
   const narration = rubricNarration(rubric, stars);
   const canHear = narration.every(text => soundService.canSpeak(text));
   const ids = guide.componentIds || guide.strokes.map((_, i) => i);
@@ -53,7 +55,7 @@ export const WritingResultDetails: React.FC<{ guide: StrokeGuide; strokes: Strok
   </View>;
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   wrap: { width: '100%', gap: 10 },
   previews: { flexDirection: 'row', justifyContent: 'center', gap: 14 },
   previewBox: { alignItems: 'center', gap: 4, backgroundColor: '#ffffff', borderRadius: 16, borderWidth: 1, borderColor: '#e2e8f0', padding: 6 },

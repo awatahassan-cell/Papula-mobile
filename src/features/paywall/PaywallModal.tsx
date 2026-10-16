@@ -64,7 +64,7 @@ export const PaywallModal: React.FC = () => {
     >
       <View {...rtlProps} style={[styles.backdrop, rtlLayout]}>
         <View style={styles.card}>
-          <TouchableOpacity onPress={handleClose} style={styles.closeBtn}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="داخستن" onPress={handleClose} style={styles.closeBtn}>
             <X size={20} color="#64748b" />
           </TouchableOpacity>
 

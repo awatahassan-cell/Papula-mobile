@@ -1,5 +1,6 @@
 import React from 'react';
 import { Stack } from 'expo-router';
+import { AppErrorScreen } from '../components/AppErrorScreen';
 import { rtlProps, rtlLayout } from '../theme/rtl';
 import { View, StyleSheet, StatusBar, ActivityIndicator, I18nManager } from 'react-native';
 import { Text } from '../components/RTLText';
@@ -26,6 +27,9 @@ import { GardenNavigation } from '../components/GardenNavigation';
 import { GardenPageHeader } from '../components/GardenPageHeader';
 import { useAppearance } from '../theme/useAppearance';
 import { useResponsive } from '../theme/responsive';
+
+/** Any screen error lands here instead of a blank screen. */
+export const ErrorBoundary = AppErrorScreen;
 
 try {
   I18nManager.allowRTL(true);
