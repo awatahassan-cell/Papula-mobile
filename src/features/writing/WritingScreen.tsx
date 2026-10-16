@@ -1,12 +1,14 @@
 import { rtlProps, rtlLayout } from '../../theme/rtl';
 import { useThemeStyles } from '../../theme/useAppearance';
-import { assessWriting, advanceWriting, writingMastered, suggestedWritingMode } from '../../services/foundationalLearning';
+import { assessWriting, advanceWriting, normalizeIndependentWriting, writingMastered, suggestedWritingMode } from '../../services/foundationalLearning';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, PanResponder, Modal, useWindowDimensions } from 'react-native';
 import { Text } from '../../components/RTLText';
 import Svg, { Path, Line, Circle } from 'react-native-svg';
-import { Play, Eraser, Undo2, Volume2 } from 'lucide-react-native';
+import { Play, Eraser, Undo2 } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
+import { OPEN_WORD_WRITING, OVERALL_SCORE_LABEL, STAGE_TITLES } from './writingText';
+import { WritingResultDetails } from './WritingResultDetails';
 import { StarRating } from '../../components/StarRating';
 import { mockLetters } from '../../data/mockLetters';
 import { getKurdishStrokeGuide } from '../../data/kurdishLetterGuides';
@@ -38,6 +40,7 @@ export const WritingScreen: React.FC = () => {
   const [pen, setPen] = useState(PENS[0]);
   const [drawing, setDrawing] = useState(false);
   const [result, setResult] = useState<TracingScoreResult | null>(null);
+  const [submitted, setSubmitted] = useState<StrokePoint[][]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [demo, setDemo] = useState<number | null>(null);
@@ -147,6 +150,7 @@ export const WritingScreen: React.FC = () => {
       if (captured.length > 0) await saveWritingScore(letter.id, evaluated.score, evaluated.stars, mode, usedHelp.current, Math.round((Date.now()-attemptStarted.current)/1000));
       const confirmed=writingMastered(advanceWriting(currentProfile.writingProgress?.[letter.id],mode,evaluated.mastered,usedHelp.current));
       setConfirmedMastery(confirmed);
+      setSubmitted(captured);
       setResult(evaluated);
       if (evaluated.mastered) {
         soundService.playCorrect();
@@ -180,6 +184,7 @@ export const WritingScreen: React.FC = () => {
         style={[styles.arrow, !hasNext && styles.disabled]} onPress={() => selectLetter(index + 1)}><Text style={styles.arrowText}>←</Text></TouchableOpacity>
     </View>
     <View style={styles.tools}>{(['trace','copy','independent'] as const).map((value,i)=><TouchableOpacity key={value} accessibilityRole="button" accessibilityState={{selected:mode===value}} disabled={busy || (value==='copy'&&!currentProfile.writingProgress?.[letter.id]?.tracePassed) || (value==='independent'&&!currentProfile.writingProgress?.[letter.id]?.copyPassed)} style={[styles.tool,mode===value&&{backgroundColor:'#bbf7d0'}]} onPress={()=>changeMode(value)}><Text style={styles.toolText}>{['١. لەسەر ڕێنما','٢. بە نموونە','٣. سەربەخۆ'][i]}</Text></TouchableOpacity>)}</View>
+    <Text style={styles.stage}>{STAGE_TITLES[mode]}</Text>
     <Text style={styles.instruction}>{mode==='trace'?guide?.instructionKu:mode==='copy'?'نموونەکە سەیر بکە و لە بۆردە بەتاڵەکە بینووسە.':'بەبێ ڕێنما پیتەکە بنووسە؛ هەموو هێڵ و خاڵەکانی بیر بکەرەوە.'}</Text>
     <View style={styles.boardFrame}>
       <View testID="writing-board" accessibilityLabel={`بۆردی نووسینی پیتی ${letter.glyph}`} style={{ width: side, height: side }} {...responder.panHandlers}>
@@ -210,13 +215,15 @@ export const WritingScreen: React.FC = () => {
     <BigButton onPress={evaluate} disabled={busy || drawing || demo !== null || !guide} variant="success" size="lg" style={styles.fullButton}>
       {busy ? 'پشکنین دەکەم…' : 'نووسینەکەم چۆنە؟ ✓'}
     </BigButton>
+    <BigButton onPress={() => setRoute('word-writing')} variant="outline" style={styles.fullButton}>{OPEN_WORD_WRITING}</BigButton>
     {result && <Modal transparent animationType="fade" visible onRequestClose={() => setResult(null)}>
       <View {...rtlProps} style={[styles.backdrop, rtlLayout]}><ScrollView contentContainerStyle={styles.modalScroll}><View style={styles.modalCard}>
         <Text style={styles.celebration}>{result.mastered ? '🌟' : '🌱'}</Text>
         <Text style={styles.resultTitle}>{confirmedMastery ? 'تەواو فێر بوویت!' : result.mastered ? 'ئافەرم! ئەم مەشقەت تەواو کرد' : 'با جارێکی تر ڕاهێنان بکەین'}</Text>
         <Text style={styles.resultText}>{result.mastered ? `ئافەرم! پیتی «${letter.glyph}» بە جوانی نووسیت.` : result.feedbackKu}</Text>
         <StarRating stars={result.stars} maxStars={3} size="lg" />
-        <Text style={styles.resultText}>نمرە: {result.score}٪</Text>
+        <Text style={styles.resultText}>{OVERALL_SCORE_LABEL}: {result.score}٪</Text>
+        {result.rubric && guide && <WritingResultDetails guide={guide} strokes={submitted} aligned={mode==='trace'?submitted:normalizeIndependentWriting(guide,submitted)} rubric={result.rubric} />}
         {result.mastered ? <>
           {mode!=='independent' && <BigButton onPress={()=>changeMode(mode==='trace'?'copy':'independent')} variant="success" size="lg" style={styles.fullButton}>{mode==='trace'?'ئێستا بە نموونە بنووسم':'ئێستا سەربەخۆ بنووسم'}</BigButton>}
           {mode==='independent' && !confirmedMastery && <Text style={styles.resultText}>سەربەخۆ نووسیت! لە ڕۆژێکی دیکە دووبارەی بکەوە، بۆ دڵنیابوون لە فێربوون.</Text>}
@@ -227,7 +234,6 @@ export const WritingScreen: React.FC = () => {
         </> : <>
           {mode!=='trace' && <BigButton onPress={()=>changeMode('trace')} variant="outline" style={styles.fullButton}>ڕێنما ببینم؛ یارمەتی دەوێت</BigButton>}
           <BigButton onPress={() => { setResult(null); clear(); usedHelp.current=false;attemptStarted.current=Date.now(); }} size="lg" style={styles.fullButton}>دووبارە بنووسم ✍️</BigButton>
-          <TouchableOpacity accessibilityRole="button" style={styles.listenHelp} onPress={() => void soundService.speakWord(result.feedbackKu)}><Volume2 color="#78350f" size={22} /><Text style={styles.toolText}>ڕێنماییەکە ببیستە</Text></TouchableOpacity>
         </>}
       </View></ScrollView></View>
     </Modal>}
@@ -243,6 +249,7 @@ const baseStyles = StyleSheet.create({
   arrow: { width: 56, height: 56, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fef3c7' },
   arrowText: { fontSize: 26, color: '#78350f' },
   disabled: { opacity: 0.3 },
+  stage: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 15, color: '#047857', textAlign: 'center' },
   instruction: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 16, textAlign: 'center', color: '#334155' },
   boardFrame: { backgroundColor: '#fffef7', borderColor: '#cbd5e1', borderWidth: 2, borderRadius: 22, overflow: 'hidden' },
   hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 14, color: '#475569', textAlign: 'center' },

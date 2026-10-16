@@ -17,6 +17,7 @@ export type AppRoute =
   | 'letter-detail'
   | 'match-game'
   | 'writing'
+  | 'word-writing'
   | 'stories'
   | 'story-reader'
   | 'daily-practice'
@@ -64,7 +65,7 @@ export interface AppContextType {
   recordPracticeResult: (letterIds: string[], correct: boolean, wordId?: string, skill?: LearningSkill, helped?: boolean) => void;
   recordSkillResult: (skill: LearningSkill, correct: boolean, helped?: boolean) => void;
   savePlacement: (correct: number, total: number, letterIds: string[]) => void;
-  finishLearningGame: (kind: 'word' | 'sound' | 'similar' | 'syllables') => number;
+  finishLearningGame: (kind: 'word' | 'sound' | 'similar' | 'syllables' | 'writing') => number;
   getLetterBestStars: (letterId: string) => number;
   incrementMissionProgress: (targetType: DailyMission['targetType'], amount?: number) => void;
   claimMissionReward: (missionId: string) => void;
@@ -506,7 +507,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const ratio=total?correct/total:0;
     updateCurrentProfile({...base,placement:{completedAt:new Date().toISOString(),correct,total,recommendedLevel:ratio>=0.8?3:ratio>=0.5?2:1,letterIds:[...letterIds]}});
   };
-  const finishLearningGame = (kind: 'word' | 'sound' | 'similar' | 'syllables') => {
+  const finishLearningGame = (kind: 'word' | 'sound' | 'similar' | 'syllables' | 'writing') => {
     const today=localDay();
     const base=learningActivity(ensureMissionsForToday(profileRef.current));
     const reward=base.gameRewardDates?.[kind]===today?0:2;
