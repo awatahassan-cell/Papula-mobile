@@ -7,6 +7,7 @@ import { FloatingMascot } from '../../components/FloatingMascot';
 import { useAppStore, AppRoute } from '../../store/useAppStore';
 import { dueReviewLetters } from '../../services/learningEngine';
 import { lessonChecklist, lessonPath, nextLessonLetter } from '../../services/lessonPath';
+import { useResponsive } from '../../theme/responsive';
 import { learningLayout } from '../../theme/layout';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import { gardenColors as c } from '../../theme/appearance';
@@ -17,6 +18,7 @@ export const HomeScreen: React.FC = () => {
   const {colors:c}=useAppearance();
   const { currentProfile, setRoute, setSelectedLetter } = useAppStore();
   const { width } = useWindowDimensions();
+  const { wide, pageMax } = useResponsive();
   const layout = learningLayout(width), next = nextLessonLetter(currentProfile);
   const completed = lessonPath(currentProfile).filter(node => node.status === 'completed').length;
   const checklist = next ? lessonChecklist(currentProfile, next.id) : [];
@@ -26,7 +28,7 @@ export const HomeScreen: React.FC = () => {
   const greeting=next ? stepsDone>0 ? `وانەی پیتی «${next.glyph}» چاوەڕێتە؛ با بەردەوام بین!` : completed>0 ? `${completed} وانەت تەواو کردووە؛ با هەنگاوێکی تر بنێین.` : 'ئامادەیت یەکەم پیتت فێر بیت؟' : 'گەشتەکەت تەواو کرد! با یاری و دووبارەکردنەوە بکەین.';
   const dueCount = dueReviewLetters(currentProfile).length;
   const open = (route: AppRoute) => { void soundService.stopSpeaking(); setRoute(route); };
-  return <ScrollView contentContainerStyle={[s.container, { padding: layout.padding }]}>
+  const left=<>
     <View testID="home-greeting" style={s.greetingRow}><View style={s.greetingCopy}><View style={s.heroEyebrow}><Sparkles size={15} color={c.coralDark}/><Text style={s.eyebrow}>دنیای فێربوونی تۆ</Text></View><Text style={[s.greeting, layout.compact && { fontSize: 24 }]}>سڵاو، {currentProfile.name}!</Text><Text style={s.subtitle}>{greeting}</Text></View><FloatingMascot size={layout.mascotSize}/></View>
     <View style={s.progressCard}><View style={s.progressLabels}><View style={s.progressHeading}><View style={[s.progressIcon,{backgroundColor:c.lavender}]}><Star size={17} color={c.mint}/></View><Text style={s.progressTitle}>گەشتەکەی تۆ</Text></View><Text style={s.progressCount}>{completed} وانە لە ٣٤</Text></View><View accessibilityRole="progressbar" accessibilityLabel="وانە تەواوکراوەکان" accessibilityValue={{min:0,max:34,now:completed}} style={s.track}><View testID="home-progress-fill" style={[s.fill,{width:`${completed/34*100}%`,backgroundColor:c.mint}]}/></View><Text style={s.small}>{completed?'هەر وانەیەک، هەنگاوێکی نوێیە.':'با یەکەم هەنگاو پێکەوە بنێین.'}</Text></View>
     <View testID="home-lesson-card" style={[s.lessonCard,{backgroundColor:lessonColor,borderColor:c.edge}]}>
@@ -36,21 +38,30 @@ export const HomeScreen: React.FC = () => {
       {next && <View style={s.checklist}>{checklist.map((item, index) => <View key={item.label} style={[s.checkItem,{backgroundColor:c.paper}]}><View style={[s.checkDot, item.done && { backgroundColor: c.mint }]}>{item.done ? <Check color="#fff" size={12} /> : <Text style={s.checkIndex}>{index + 1}</Text>}</View><Text style={s.checkLabel}>{item.label}</Text></View>)}</View>}
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={next ? `دەستپێکردنی وانەی پیتی ${next.glyph}` : 'دووبارەکردنەوە'} style={s.startButton} onPress={()=>{if(next){setSelectedLetter(next);open('letter-detail');}else open('daily-practice');}}><Text style={s.startText}>{next ? (currentProfile.lessonProgress?.[next.id] ? 'بەردەوام بم' : 'با دەست پێ بکەین') : 'مەشق بکەم'}</Text><ArrowLeft size={22} color="#fff" /></TouchableOpacity>
     </View>
-    <View style={s.sectionHeading}><Text style={s.sectionTitle}>ڕێڕەوی فێربوون</Text><TouchableOpacity accessibilityRole="button" onPress={()=>open('alphabet')} style={s.allButton}><Text style={s.allLabel}>هەموو وانەکان ←</Text></TouchableOpacity></View>
-    <LearningPath preview />
     {dueCount > 0 && <TouchableOpacity accessibilityRole="button" accessibilityLabel={`${dueCount} پیت ئامادەیە بۆ دووبارەکردنەوە`} style={[s.activity, { backgroundColor: c.peach, minHeight: 0, flexDirection: 'row', alignItems: 'center' }]} onPress={() => open('daily-practice')}>
       <Sprout size={29} color={c.ink} /><View style={{ flex: 1 }}><Text style={s.activityTitle}>کاتی دووبارەکردنەوەیە 🌱</Text><Text style={s.small}>{dueCount} پیت چاوەڕێی مەشقن تا لە بیرت نەچن</Text></View>
     </TouchableOpacity>}
+  </>;
+  const pathSection=<>
+    <View style={s.sectionHeading}><Text style={s.sectionTitle}>ڕێڕەوی فێربوون</Text><TouchableOpacity accessibilityRole="button" onPress={()=>open('alphabet')} style={s.allButton}><Text style={s.allLabel}>هەموو وانەکان ←</Text></TouchableOpacity></View>
+    <LearningPath preview />
+  </>;
+  const activitiesSection=<>
     <Text style={s.sectionTitle}>با زیاتر فێر بین</Text>
     <View style={s.activities}>{[
       { route: 'daily-practice' as const, title: 'مەشقی من', subtitle: 'پیتەکانت بیر بکەرەوە', Icon: Sprout, color: c.peach },
       { route: 'stories' as const, title: 'کاتی چیرۆک', subtitle: 'ببینە، ببیستە و بخوێنەوە', Icon: BookOpen, color: c.sky },
       { route: 'match-game' as const, title: 'فێربوون بە یاری', subtitle: 'وشە و دەنگ پێکەوە ببەستە', Icon: Puzzle, color: c.lavender },
-    ].map(({route,title,subtitle,Icon,color})=><TouchableOpacity key={route} accessibilityRole="button" style={[s.activity, { width: layout.columns === 3 ? '31%' : '48%', backgroundColor: color }]} onPress={()=>open(route)}><Icon size={29} color={c.ink} /><Text style={s.activityTitle}>{title}</Text><Text style={s.small}>{subtitle}</Text></TouchableOpacity>)}</View>
+    ].map(({route,title,subtitle,Icon,color})=><TouchableOpacity key={route} accessibilityRole="button" style={[s.activity, { width: wide ? '48%' : layout.columns === 3 ? '31%' : '48%', backgroundColor: color }]} onPress={()=>open(route)}><Icon size={29} color={c.ink} /><Text style={s.activityTitle}>{title}</Text><Text style={s.small}>{subtitle}</Text></TouchableOpacity>)}</View>
+  </>;
+  return <ScrollView contentContainerStyle={[s.container, { padding: layout.padding, maxWidth: pageMax }]}>
+    {wide ? <View style={s.columns}><View style={s.column}>{left}{activitiesSection}</View><View style={s.column}>{pathSection}</View></View>
+      : <>{left}{pathSection}{activitiesSection}</>}
   </ScrollView>;
 };
 const baseStyles = StyleSheet.create({
   container: { width: '100%', maxWidth: 840, alignSelf: 'center', gap: 18, paddingBottom: 28 },
+  columns: { flexDirection: 'row', gap: 20, alignItems: 'flex-start' }, column: { flex: 1, minWidth: 0, gap: 18 },
   greetingRow: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor:c.paper,padding:16,borderRadius:28,borderWidth:1,borderColor:c.edge }, greetingCopy: { flex: 1, minWidth: 0 },
   heroEyebrow:{flexDirection:'row',alignItems:'center',gap:5,marginBottom:5},
   eyebrow: { fontFamily: 'IBMPlexSansArabic_500Medium', fontSize: 13, color: c.mint }, greeting: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 29, color: c.ink },

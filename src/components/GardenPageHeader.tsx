@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { useAppStore, AppRoute } from '../store/useAppStore';
 import { useAppearance } from '../theme/useAppearance';
 import { GardenSection } from './GardenArtwork';
+import { useResponsive } from '../theme/responsive';
 
 const headings: Partial<Record<AppRoute, [string, string]>> = {
   onboarding: ['بەخێربێیت بۆ پەپوولە', 'با یەکتر بناسین'],
@@ -20,11 +21,12 @@ const headings: Partial<Record<AppRoute, [string, string]>> = {
 export function GardenPageHeader() {
   const { route, selectedLetter, selectedStory } = useAppStore();
   const { isGarden } = useAppearance();
+  const { pageMax } = useResponsive();
   if (!isGarden || route === 'home') return null;
   const heading = route === 'letter-detail' ? [`پیتی ${selectedLetter?.glyph ?? ''}`, 'ببینە، بیبیستە و فێر ببە']
     : route === 'story-reader' ? [selectedStory?.titleKu ?? 'کاتی چیرۆکە', 'بە هێواشی پەڕەکە بخوێنەوە'] : headings[route];
   if (!heading) return null;
-  return <View style={styles.frame}><GardenSection title={heading[0]} subtitle={['letter-detail','writing','story-reader'].includes(route)?undefined:heading[1]} /></View>;
+  return <View style={[styles.frame, { maxWidth: pageMax }]}><GardenSection title={heading[0]} subtitle={['letter-detail','writing','story-reader'].includes(route)?undefined:heading[1]} /></View>;
 }
 const styles = StyleSheet.create({
   frame: { width: '100%', maxWidth: 840, alignSelf: 'center', paddingHorizontal: 18, paddingTop: 2, paddingBottom: 4 },

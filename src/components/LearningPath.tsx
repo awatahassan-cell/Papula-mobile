@@ -5,6 +5,7 @@ import { Text } from './RTLText';
 import { useAppStore } from '../store/useAppStore';
 import { lessonPath } from '../services/lessonPath';
 import { learningLayout } from '../theme/layout';
+import { useResponsive } from '../theme/responsive';
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import { gardenColors as c } from '../theme/appearance';
 import { soundService } from '../services/soundService';
@@ -20,13 +21,12 @@ export function LearningPath({ preview = false }: { preview?: boolean }) {
   const active = Math.max(0, nodes.findIndex(node => node.status === 'current'));
   const start = preview ? Math.floor(active / 6) * 6 : 0;
   const visible = preview ? nodes.slice(start, start + 6) : nodes;
-  return <View style={s.path}>{visible.map(node => {
+  const { wide } = useResponsive();
+  const grid = !preview && wide;
+  const tile = (node: typeof visible[number], shift = 0) => {
     const unit = Math.floor(node.index / 6), current = node.status === 'current', done = node.status === 'completed', locked = node.status === 'locked';
     const accent=unit%2===0?c.mint:c.coralDark;
-    const unitColor=[c.sky,c.peach,c.lavender,c.leaf][unit%4];
-    return <View key={node.letter.id}>
-      {node.index % 6 === 0 && <View style={[s.unit,{backgroundColor:unitColor}]}><View style={[s.unitBadge,{backgroundColor:accent}]}><Text style={s.unitNumber}>{unit + 1}</Text></View><View style={{ flex: 1 }}><Text style={s.eyebrow}>بەشی {unit + 1}</Text><Text style={s.unitTitle}>{unitNames[unit]}</Text></View><Star size={22} color={c.mint} /></View>}
-      <View style={s.nodeRow}><View style={{ alignItems: 'center', transform: [{ translateX: offsets[node.index % 6] * layout.pathOffset }] }}>
+    return <View key={node.letter.id} style={{ alignItems: 'center', transform: [{ translateX: shift }] }}>
         {current && <View style={s.startBadge}><Text style={s.startLabel}>ئێستا نۆرەی تۆیە!</Text></View>}
         <TouchableOpacity accessibilityRole="button" accessibilityLabel={`وانەی ${node.index + 1}، پیتی ${node.letter.glyph}، ${done ? 'تەواو کراوە، دووبارەی بکەوە' : locked ? 'قفڵە، وانەی پێشوو تەواو بکە' : 'ئامادەی دەستپێکردنە'}`}
           accessibilityState={{ disabled: locked }} disabled={locked} activeOpacity={0.8}
@@ -35,12 +35,28 @@ export function LearningPath({ preview = false }: { preview?: boolean }) {
           <Text style={[s.glyph, done && { color: '#fff' }, locked && { color: c.muted }]}>{node.letter.glyph}</Text>
           <View style={[s.status, current && { backgroundColor: c.coral }, done && { backgroundColor: accent }]}>{done ? <Check color="#fff" size={15} /> : locked ? <Lock color={c.muted} size={13} /> : <Play color="#fff" size={13} fill="#fff" />}</View>
         </TouchableOpacity><Text style={[s.nodeLabel, current && { color: c.mint }]}>{done ? 'دووبارە بکەوە' : locked ? `وانەی ${node.index + 1}` : 'دەست پێ بکە'}</Text>
-      </View></View>
+    </View>;
+  };
+  const banner = (unit: number) => {
+    const accent=unit%2===0?c.mint:c.coralDark;
+    const unitColor=[c.sky,c.peach,c.lavender,c.leaf][unit%4];
+    return <View style={[s.unit,{backgroundColor:unitColor}]}><View style={[s.unitBadge,{backgroundColor:accent}]}><Text style={s.unitNumber}>{unit + 1}</Text></View><View style={{ flex: 1 }}><Text style={s.eyebrow}>بەشی {unit + 1}</Text><Text style={s.unitTitle}>{unitNames[unit]}</Text></View><Star size={22} color={c.mint} /></View>;
+  };
+  return <View style={[s.path, grid && { maxWidth: 1000 }]}>{visible.map(node => {
+    const unit = Math.floor(node.index / 6);
+    if (grid) {
+      if (node.index % 6 !== 0) return null;
+      return <View key={'unit' + unit}>{banner(unit)}<View style={s.gridRow}>{visible.filter(item => Math.floor(item.index / 6) === unit).map(item => tile(item))}</View></View>;
+    }
+    return <View key={node.letter.id}>
+      {node.index % 6 === 0 && banner(unit)}
+      <View style={s.nodeRow}>{tile(node, offsets[node.index % 6] * layout.pathOffset)}</View>
       {node.index < nodes.length - 1 && (node.index + 1) % 6 !== 0 && <View style={[s.connector,{backgroundColor:c.edge}]} />}
     </View>;
   })}<Text style={s.note}>هەر وانەیەک تەواو بکە، پیتی دواتر دەکرێتەوە. هەر کاتێک دەتوانیت وانە فێربووەکان دووبارە بکەیتەوە.</Text></View>;
 }
 const baseStyles = StyleSheet.create({
+  gridRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', columnGap: 26, rowGap: 22, paddingVertical: 8 },
   path: { width: '100%', maxWidth: 680, alignSelf: 'center', paddingBottom: 20 },
   unit: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 18, backgroundColor: '#e6f3ea', borderRadius: 24, marginVertical: 16 },
   unitBadge: { width: 42, height: 42, borderRadius: 15, backgroundColor: c.mint, alignItems: 'center', justifyContent: 'center' },
