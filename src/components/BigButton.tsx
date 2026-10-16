@@ -1,4 +1,4 @@
-import { useThemeStyles } from '../theme/useAppearance';
+import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
 import { Animated, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { usePressScale } from './Motion';
@@ -32,6 +32,9 @@ export const BigButton: React.FC<BigButtonProps> = ({
   const styles = useThemeStyles(baseStyles);
   const { tablet } = useResponsive();
   const press = usePressScale();
+  const { isNight, extras } = useAppearance();
+  // At night the main buttons glow gold, as in the night design.
+  const gold = isNight && (variant === 'success' || variant === 'primary');
   const handlePress = () => {
     if (disabled) return;
     soundService.playPop();
@@ -87,6 +90,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
         tablet && styles.tabletCentered,
         getVariantStyle(),
         getSizeStyle(),
+        gold && { backgroundColor: extras.cta, shadowColor: extras.cta, shadowOpacity: 0.55, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } },
         disabled && styles.disabled,
         style,
         { transform: [{ scale: press.scale }] },
@@ -94,7 +98,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
     >
       {icon && icon}
       {typeof children === 'string' ? (
-        <Text style={[styles.textBase, getTextStyle(), textStyle]}>{children}</Text>
+        <Text style={[styles.textBase, getTextStyle(), gold && { color: extras.ctaText }, textStyle]}>{children}</Text>
       ) : (
         children
       )}

@@ -1,4 +1,4 @@
-import { useThemeStyles } from '../../theme/useAppearance';
+import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import { mockLetters } from '../../data/mockLetters';
 import { LEARNING_PAGE_PAUSE_MS } from '../../services/storyPlayback';
 import { StorySequence } from '../learning/StorySequence';
@@ -25,6 +25,9 @@ import { useResponsive } from '../../theme/responsive';
 export const StoryReaderScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
   const { selectedStory, setSelectedLetter, setRoute, completeStory, saveWord, triggerConfetti, currentProfile, recordSkillResult } = useAppStore();
+  const { isNight } = useAppearance();
+  // The word being read glows: warm cream by day, gold at night.
+  const highlight = isNight ? { backgroundColor: '#ffd66b', color: '#2a1b00' } : { backgroundColor: '#ffe29a', color: '#4b33b3' };
   const info = useResponsive();
   const { tablet, pageMax } = info;
   const split = info.wide && info.landscape;
@@ -233,6 +236,7 @@ export const StoryReaderScreen: React.FC = () => {
         <ChevronRight size={18} color={styles.backText.color}/><Text style={styles.backText}>وانەی پیتی «{targetLetter.glyph}»</Text>
       </TouchableOpacity>}
       {/* Mode Selector & Header */}
+      <Text style={styles.storyTitle}>{story.titleKu}</Text>
       <View style={styles.headerRow}>
         <View style={styles.modeTabs}>
           <TouchableOpacity
@@ -286,7 +290,7 @@ export const StoryReaderScreen: React.FC = () => {
         <Text testID="story-paragraph" accessibilityLabel={currentPage.textKu} style={[styles.storyParagraph, split && styles.storyParagraphSplit]}>
           {currentPage.textKu.split(/(\s+)/).map((part, index, parts) => /\s/.test(part)
             ? part
-            : <Text key={index} style={activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? {backgroundColor:'#fef08a',color:'#166534'} : undefined} onPress={() => handleWordTap(part)}>{targetLetter ? part.split(new RegExp(`(${targetLetter.glyph === 'ھ' ? '[هھ]' : targetLetter.glyph})`, 'g')).map((piece, pieceIndex)=>
+            : <Text key={index} style={activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? highlight : undefined} onPress={() => handleWordTap(part)}>{targetLetter ? part.split(new RegExp(`(${targetLetter.glyph === 'ھ' ? '[هھ]' : targetLetter.glyph})`, 'g')).map((piece, pieceIndex)=>
               <Text key={pieceIndex} style={piece.replace(/ھ/g,'ه')===targetLetter.glyph.replace(/ھ/g,'ه') ? styles.targetGlyph : undefined}>{piece}</Text>) : part}</Text>)}
         </Text>
       </View>
@@ -309,7 +313,7 @@ export const StoryReaderScreen: React.FC = () => {
         <Text testID="story-paragraph" accessibilityLabel={currentPage.textKu} style={styles.storyParagraph}>
           {currentPage.textKu.split(/(\s+)/).map((part, index, parts) => /\s/.test(part)
             ? part
-            : <Text key={index} style={activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? {backgroundColor:'#fef08a',color:'#166534'} : undefined} onPress={() => handleWordTap(part)}>{targetLetter ? part.split(new RegExp(`(${targetLetter.glyph === 'ھ' ? '[هھ]' : targetLetter.glyph})`, 'g')).map((piece, pieceIndex)=>
+            : <Text key={index} style={activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? highlight : undefined} onPress={() => handleWordTap(part)}>{targetLetter ? part.split(new RegExp(`(${targetLetter.glyph === 'ھ' ? '[هھ]' : targetLetter.glyph})`, 'g')).map((piece, pieceIndex)=>
               <Text key={pieceIndex} style={piece.replace(/ھ/g,'ه')===targetLetter.glyph.replace(/ھ/g,'ه') ? styles.targetGlyph : undefined}>{piece}</Text>) : part}</Text>)}
         </Text>
       </View>
@@ -392,6 +396,7 @@ const baseStyles = StyleSheet.create({
   completionSecondary:{width:'100%',minHeight:54,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:8,padding:12,borderRadius:17,backgroundColor:'#ffffff',borderWidth:1.5,borderColor:'#dce9e1'},
   completionSecondaryText:{flexShrink:1,color:'#176445',fontSize:15,lineHeight:25,textAlign:'center',fontFamily:'IBMPlexSansArabic_600SemiBold'},
   readerScreen:{flex:1},
+  storyTitle:{fontFamily:'IBMPlexSansArabic_700Bold',fontSize:24,color:'#1e293b',textAlign:'center',marginBottom:10},
   readerSplit:{flexDirection:'row',gap:24,alignItems:'stretch',justifyContent:'center'},readerText:{flex:1,minWidth:0,justifyContent:'center'},
   readingCardSplit:{maxWidth:undefined,padding:28},
   storyParagraphSplit:{fontSize:34,lineHeight:62},

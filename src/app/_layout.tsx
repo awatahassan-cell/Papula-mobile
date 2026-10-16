@@ -1,17 +1,13 @@
 import React from 'react';
-import { Stack } from 'expo-router';
+import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { AppErrorScreen } from '../components/AppErrorScreen';
 import { rtlProps, rtlLayout } from '../theme/rtl';
 import { View, StyleSheet, StatusBar, ActivityIndicator, I18nManager } from 'react-native';
 import { Text } from '../components/RTLText';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import {
-  useFonts,
-  IBMPlexSansArabic_400Regular,
-  IBMPlexSansArabic_500Medium,
-  IBMPlexSansArabic_600SemiBold,
-  IBMPlexSansArabic_700Bold,
-} from '@expo-google-fonts/ibm-plex-sans-arabic';
+import { useFonts } from '@expo-google-fonts/ibm-plex-sans-arabic';
+import { Vazirmatn_400Regular, Vazirmatn_500Medium, Vazirmatn_600SemiBold, Vazirmatn_700Bold } from '@expo-google-fonts/vazirmatn';
+import { LinearGradient } from 'expo-linear-gradient';
 import {
   IBMPlexSans_400Regular,
   IBMPlexSans_600SemiBold,
@@ -38,8 +34,11 @@ try {
   console.warn(e);
 }
 
+// The navigator would otherwise paint its own grey page over the gradient.
+const TRANSPARENT_THEME = { ...DefaultTheme, colors: { ...DefaultTheme.colors, background: 'transparent', card: 'transparent' } };
+
 const MainRouter: React.FC = () => {
-  const { isGarden, isNight, colors: appearanceColors } = useAppearance();
+  const { isGarden, isNight, colors: appearanceColors, extras } = useAppearance();
   const {
     route,
     parentSettings,
@@ -79,6 +78,7 @@ const MainRouter: React.FC = () => {
 
   return (
     <SafeAreaView {...rtlProps} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={isGarden ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}>
+      <LinearGradient pointerEvents="none" colors={extras.gradient} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle={isNight ? 'light-content' : 'dark-content'} backgroundColor={isGarden ? appearanceColors.background : '#ffffff'} />
       {route !== 'onboarding' && <TopHeader />}
       {/* Phones: tab bar under the content. Tablets: a rail on the right (first child of an RTL row). */}
@@ -87,7 +87,9 @@ const MainRouter: React.FC = () => {
         <View style={styles.main}>
           <GardenPageHeader />
           <View style={[styles.screenContainer, isGarden && { backgroundColor: 'transparent' }]}>
-            <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: appearanceColors.background } }} />
+            <ThemeProvider value={TRANSPARENT_THEME}>
+              <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
+            </ThemeProvider>
           </View>
           {!tablet && <GardenNavigation />}
         </View>
@@ -107,10 +109,11 @@ const MainRouter: React.FC = () => {
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    IBMPlexSansArabic_400Regular,
-    IBMPlexSansArabic_500Medium,
-    IBMPlexSansArabic_600SemiBold,
-    IBMPlexSansArabic_700Bold,
+    // Vazirmatn (full Kurdish coverage) is registered under the names every style sheet already uses.
+    IBMPlexSansArabic_400Regular: Vazirmatn_400Regular,
+    IBMPlexSansArabic_500Medium: Vazirmatn_500Medium,
+    IBMPlexSansArabic_600SemiBold: Vazirmatn_600SemiBold,
+    IBMPlexSansArabic_700Bold: Vazirmatn_700Bold,
     IBMPlexSans_400Regular,
     IBMPlexSans_600SemiBold,
     IBMPlexSans_700Bold,

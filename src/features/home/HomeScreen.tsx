@@ -1,84 +1,168 @@
 import React from 'react';
-import { View, TouchableOpacity, ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
-import { ArrowLeft, BookOpen, Puzzle, Sprout, Check, Star, Sparkles, Shapes } from 'lucide-react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BookOpen, Flame, PencilLine, Puzzle, Settings, Sprout, Star } from 'lucide-react-native';
 import { Text } from '../../components/RTLText';
-import { LearningPath } from '../../components/LearningPath';
-import { FloatingMascot } from '../../components/FloatingMascot';
+import { Glass } from '../../components/Glass';
+import { ProgressRing } from '../../components/ProgressRing';
+import { JourneyMap, MapNode } from '../../components/JourneyMap';
+import { Breathe, RiseIn } from '../../components/Motion';
 import { useAppStore, AppRoute } from '../../store/useAppStore';
 import { dueReviewLetters } from '../../services/learningEngine';
 import { lessonChecklist, lessonPath, nextLessonLetter } from '../../services/lessonPath';
-import { Breathe, RiseIn } from '../../components/Motion';
 import { useResponsive } from '../../theme/responsive';
-import { learningLayout } from '../../theme/layout';
-import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
-import { gardenColors as c } from '../../theme/appearance';
+import { useAppearance } from '../../theme/useAppearance';
 import { soundService } from '../../services/soundService';
 
+const ACTIVITIES: { route: AppRoute; title: string; hint: string; Icon: typeof BookOpen; tint: 'peach' | 'leaf' | 'lavender' | 'sky' }[] = [
+  { route: 'stories', title: 'چیرۆک', hint: 'ببینە و ببیستە', Icon: BookOpen, tint: 'peach' },
+  { route: 'match-game', title: 'یاری', hint: 'پیت و وشە و بڕگە', Icon: Puzzle, tint: 'leaf' },
+  { route: 'writing', title: 'نووسین', hint: 'پیتەکان بنووسە', Icon: PencilLine, tint: 'lavender' },
+  { route: 'daily-practice', title: 'مەشق', hint: 'بیریان بکەرەوە', Icon: Sprout, tint: 'sky' },
+];
+
 export const HomeScreen: React.FC = () => {
-  const s=useThemeStyles(baseStyles);
-  const {colors:c}=useAppearance();
-  const { currentProfile, setRoute, setSelectedLetter } = useAppStore();
-  const { width } = useWindowDimensions();
-  const { wide, pageMax } = useResponsive();
-  const layout = learningLayout(width), next = nextLessonLetter(currentProfile);
-  const completed = lessonPath(currentProfile).filter(node => node.status === 'completed').length;
+  const { colors: c, extras, isNight } = useAppearance();
+  const { wide, pageMax, tablet } = useResponsive();
+  const { currentProfile, setRoute, setSelectedLetter, openParentGateWithCallback } = useAppStore();
+  const path = lessonPath(currentProfile);
+  const next = nextLessonLetter(currentProfile);
+  const completed = path.filter(node => node.status === 'completed').length;
   const checklist = next ? lessonChecklist(currentProfile, next.id) : [];
-  const stepsDone=checklist.filter(item=>item.done).length;
-  const unit=Math.floor(completed/6);
-  const lessonColor=[c.peach,c.sky,c.lavender][unit%3];
-  const greeting=next ? stepsDone>0 ? `وانەی پیتی «${next.glyph}» چاوەڕێتە؛ با بەردەوام بین!` : completed>0 ? `${completed} وانەت تەواو کردووە؛ با هەنگاوێکی تر بنێین.` : 'ئامادەیت یەکەم پیتت فێر بیت؟' : 'گەشتەکەت تەواو کرد! با یاری و دووبارەکردنەوە بکەین.';
+  const stepsDone = checklist.filter(item => item.done).length;
+  const level = Math.floor(completed / 6) + 1, levelProgress = (completed % 6) / 6;
   const dueCount = dueReviewLetters(currentProfile).length;
+  const missions = currentProfile.dailyMissions || [];
+  const missionsDone = missions.filter(mission => mission.completed).length;
   const open = (route: AppRoute) => { void soundService.stopSpeaking(); setRoute(route); };
-  const left=<RiseIn style={{ gap: 18 }}>
-    <View testID="home-greeting" style={s.greetingRow}><View style={s.greetingCopy}><View style={s.heroEyebrow}><Sparkles size={15} color={c.coralDark}/><Text style={s.eyebrow}>دنیای فێربوونی تۆ</Text></View><Text style={[s.greeting, layout.compact && { fontSize: 24 }]}>سڵاو، {currentProfile.name}!</Text><Text style={s.subtitle}>{greeting}</Text></View><FloatingMascot size={layout.mascotSize}/></View>
-    <View style={s.progressCard}><View style={s.progressLabels}><View style={s.progressHeading}><View style={[s.progressIcon,{backgroundColor:c.lavender}]}><Star size={17} color={c.mint}/></View><Text style={s.progressTitle}>گەشتەکەی تۆ</Text></View><Text style={s.progressCount}>{completed} وانە لە ٣٤</Text></View><View accessibilityRole="progressbar" accessibilityLabel="وانە تەواوکراوەکان" accessibilityValue={{min:0,max:34,now:completed}} style={s.track}><View testID="home-progress-fill" style={[s.fill,{width:`${completed/34*100}%`,backgroundColor:c.mint}]}/></View><Text style={s.small}>{completed?'هەر وانەیەک، هەنگاوێکی نوێیە.':'با یەکەم هەنگاو پێکەوە بنێین.'}</Text></View>
-    <View testID="home-lesson-card" style={[s.lessonCard,{backgroundColor:lessonColor,borderColor:c.edge}]}>
-      <View style={s.lessonHeading}><View style={s.todayBadge}><Shapes size={17} color={c.coralDark} /><Text style={s.badgeText}>{next ? 'هەنگاوی داهاتووت' : 'ئافەرم، ڕێڕەوەکەت تەواو کرد!'}</Text></View><Star size={21} color="#d19a2c" /></View>
-      <View style={s.lessonBody}><View style={[s.letterTile,{backgroundColor:c.paper}]}><Text style={s.largeGlyph}>{next?.glyph || '✓'}</Text></View><View style={s.lessonCopy}><Text style={s.lessonTitle}>{next ? `با پیتی «${next.glyph}» فێر بین` : 'کاتی دووبارەکردنەوەیە'}</Text><Text style={s.subtitle}>گوێ بگرە · بناسە · یاری بکە · بنووسە</Text></View></View>
-      {next&&<View style={s.stepTrack}>{checklist.map((item,index)=><View key={item.label} style={[s.stepTrackPart,{backgroundColor:item.done?c.mint:c.paper,opacity:item.done?1:.75}]}/>)}</View>}
-      {next && <View style={s.checklist}>{checklist.map((item, index) => <View key={item.label} style={[s.checkItem,{backgroundColor:c.paper}]}><View style={[s.checkDot, item.done && { backgroundColor: c.mint }]}>{item.done ? <Check color="#fff" size={12} /> : <Text style={s.checkIndex}>{index + 1}</Text>}</View><Text style={s.checkLabel}>{item.label}</Text></View>)}</View>}
-      <Breathe><TouchableOpacity accessibilityRole="button" accessibilityLabel={next ? `دەستپێکردنی وانەی پیتی ${next.glyph}` : 'دووبارەکردنەوە'} style={s.startButton} onPress={()=>{if(next){setSelectedLetter(next);open('letter-detail');}else open('daily-practice');}}><Text style={s.startText}>{next ? (currentProfile.lessonProgress?.[next.id] ? 'بەردەوام بم' : 'با دەست پێ بکەین') : 'مەشق بکەم'}</Text><ArrowLeft size={22} color="#fff" /></TouchableOpacity></Breathe>
+  const startLesson = () => { void soundService.stopSpeaking(); if (next) { setSelectedLetter(next); setRoute('letter-detail'); } else setRoute('alphabet'); };
+  const openNode = (node: MapNode) => { void soundService.stopSpeaking(); setSelectedLetter(node.letter); setRoute('letter-detail'); };
+  const activeIndex = Math.max(0, path.findIndex(node => node.status === 'current'));
+  const mapNodes = path.slice(Math.max(0, activeIndex - 1), Math.max(0, activeIndex - 1) + 4);
+  const text = { color: c.ink };
+  const muted = { color: c.muted };
+
+  const chips = <View style={s.chips}>
+    <Glass radius={999} style={s.chip}><Flame size={18} color={c.coral} fill={c.coral} /><Text style={[s.chipText, text]}>{currentProfile.streakDays} ڕۆژ</Text></Glass>
+    <Glass radius={999} style={s.chip}><Star size={18} color="#f2b94b" fill="#f2b94b" /><Text style={[s.chipText, text]}>{currentProfile.stars}</Text></Glass>
+  </View>;
+
+  const profileRow = <View style={s.profileRow}>
+    <LinearGradient colors={isNight ? ['#ff8fd0', '#a78bfa'] : ['#ffc9a8', '#ff9fb8']} style={s.avatar}><Text style={s.avatarText}>{currentProfile.avatar}</Text></LinearGradient>
+    <View style={s.profileCopy}>
+      {isNight
+        ? <><Text numberOfLines={1} style={[s.name, text]}>{currentProfile.name}</Text>
+          <View style={s.nameRow}><Text style={[s.level, { color: extras.glow }]}>ئاستی {level}</Text><View style={[s.xpTrack, s.flex, { backgroundColor: 'rgba(255,255,255,0.18)' }]}><LinearGradient colors={['#5eead4', '#ffd66b']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.xpFill, { width: `${Math.max(6, levelProgress * 100)}%` }]} /></View></View></>
+        : <><Text style={[s.hello, muted]}>ڕۆژبەخێر</Text><Text numberOfLines={1} style={[s.name, text]}>{currentProfile.name}</Text></>}
     </View>
-    {dueCount > 0 && <TouchableOpacity accessibilityRole="button" accessibilityLabel={`${dueCount} پیت ئامادەیە بۆ دووبارەکردنەوە`} style={[s.activity, { backgroundColor: c.peach, minHeight: 0, flexDirection: 'row', alignItems: 'center' }]} onPress={() => open('daily-practice')}>
-      <Sprout size={29} color={c.ink} /><View style={{ flex: 1 }}><Text style={s.activityTitle}>کاتی دووبارەکردنەوەیە 🌱</Text><Text style={s.small}>{dueCount} پیت چاوەڕێی مەشقن تا لە بیرت نەچن</Text></View>
-    </TouchableOpacity>}
-  </RiseIn>;
-  const pathSection=<RiseIn delay={140} style={{ gap: 18 }}>
-    <View style={s.sectionHeading}><Text style={s.sectionTitle}>ڕێڕەوی فێربوون</Text><TouchableOpacity accessibilityRole="button" onPress={()=>open('alphabet')} style={s.allButton}><Text style={s.allLabel}>هەموو وانەکان ←</Text></TouchableOpacity></View>
-    <LearningPath preview />
-  </RiseIn>;
-  const activitiesSection=<RiseIn delay={260} style={{ gap: 18 }}>
-    <Text style={s.sectionTitle}>با زیاتر فێر بین</Text>
-    <View style={s.activities}>{[
-      { route: 'daily-practice' as const, title: 'مەشقی من', subtitle: 'پیتەکانت بیر بکەرەوە', Icon: Sprout, color: c.peach },
-      { route: 'stories' as const, title: 'کاتی چیرۆک', subtitle: 'ببینە، ببیستە و بخوێنەوە', Icon: BookOpen, color: c.sky },
-      { route: 'match-game' as const, title: 'فێربوون بە یاری', subtitle: 'وشە و دەنگ پێکەوە ببەستە', Icon: Puzzle, color: c.lavender },
-    ].map(({route,title,subtitle,Icon,color})=><TouchableOpacity key={route} accessibilityRole="button" style={[s.activity, { width: wide ? '48%' : layout.columns === 3 ? '31%' : '48%', backgroundColor: color }]} onPress={()=>open(route)}><Icon size={29} color={c.ink} /><Text style={s.activityTitle}>{title}</Text><Text style={s.small}>{subtitle}</Text></TouchableOpacity>)}</View>
-  </RiseIn>;
-  return <ScrollView contentContainerStyle={[s.container, { padding: layout.padding, maxWidth: pageMax }]}>
-    {wide ? <View style={s.columns}><View style={s.column}>{left}{activitiesSection}</View><View style={s.column}>{pathSection}</View></View>
-      : <>{left}{pathSection}{activitiesSection}</>}
+    {chips}
+    <TouchableOpacity accessibilityRole="button" accessibilityLabel="ڕێکخستنەکانی دایک و باوک" onPress={() => openParentGateWithCallback(() => setRoute('parent-dashboard'))}>
+      <Glass radius={999} style={s.gear}><Settings size={20} color={c.muted} /></Glass>
+    </TouchableOpacity>
+  </View>;
+
+  // Day: a gradient lesson card with a watermark letter, a progress ring and a white call-to-action.
+  const hero = <View testID="home-lesson-card" style={s.heroShadow}>
+    <LinearGradient colors={extras.hero} start={{ x: 0.1, y: 0 }} end={{ x: 0.9, y: 1 }} style={s.hero}>
+      <Text accessible={false} style={s.watermark}>{next?.glyph || '✓'}</Text>
+      <View style={s.heroPill}><Text style={s.heroPillText}>{next ? `وانەی ${completed + 1} · هەنگاوی داهاتوو` : 'ڕێڕەوەکەت تەواو بوو'}</Text></View>
+      <Text style={s.heroTitle}>{next ? `با پیتی «${next.glyph}» فێر بین` : 'ئافەرم! هەموو وانەکانت کرد'}</Text>
+      {next && <View style={s.ringRow}>
+        <ProgressRing value={stepsDone / 5} track="rgba(255,255,255,0.3)" color="#ffffff" label={`${stepsDone} هەنگاو لە ٥ تەواو بووە`} />
+        <Text style={s.ringText}>{stepsDone} هەنگاو لە ٥ تەواو بووە</Text>
+      </View>}
+      <Breathe style={s.ctaWrap}>
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel={next ? `دەستپێکردنی وانەی پیتی ${next.glyph}` : 'دووبارەکردنەوە'} activeOpacity={0.85} onPress={startLesson} style={[s.cta, { backgroundColor: extras.cta }]}>
+          <Text style={[s.ctaText, { color: extras.ctaText }]}>{next ? (stepsDone > 0 ? 'بەردەوام بین' : 'دەست پێ بکەین') : 'دووبارە بکەوە'}</Text>
+        </TouchableOpacity>
+      </Breathe>
+    </LinearGradient>
+  </View>;
+
+  const goal = <Glass style={s.goal}>
+    <View style={s.goalTop}><Text style={[s.goalTitle, text]}>ئەرکەکانی ئەمڕۆ</Text><Text style={[s.goalCount, muted]}>{missionsDone} لە {missions.length || 3}</Text></View>
+    <View style={[s.goalTrack, { backgroundColor: isNight ? 'rgba(255,255,255,0.16)' : c.lavender }]}>
+      <LinearGradient colors={isNight ? ['#5eead4', '#7cc4ff'] : [c.leaf, c.mint]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.goalFill, { width: `${Math.max(missions.length ? (missionsDone / missions.length) * 100 : 0, 6)}%` }]} />
+    </View>
+  </Glass>;
+
+  const dueCard = dueCount > 0 && <TouchableOpacity accessibilityRole="button" accessibilityLabel={`${dueCount} پیت ئامادەیە بۆ دووبارەکردنەوە`} onPress={() => open('daily-practice')}>
+    <Glass style={s.due}><Sprout size={26} color={c.mint} /><View style={s.flex}><Text style={[s.dueTitle, text]}>کاتی دووبارەکردنەوەیە</Text><Text style={[s.dueHint, muted]}>{dueCount} پیت چاوەڕێی مەشقن تا لە بیرت نەچن</Text></View></Glass>
+  </TouchableOpacity>;
+
+  const tiles = (count: number, columns: number) => <View style={s.tiles}>{ACTIVITIES.slice(0, count).map(({ route, title, hint, Icon, tint }) =>
+    <TouchableOpacity key={route} accessibilityRole="button" accessibilityLabel={title} activeOpacity={0.85} onPress={() => open(route)} style={{ width: `${100 / columns - 2}%`, flexGrow: 1 }}>
+      <Glass style={s.tile}>
+        <View style={[s.tileIcon, { backgroundColor: isNight ? 'rgba(255,255,255,0.12)' : c[tint] }]}><Icon size={24} color={isNight ? extras.glow : c.mint} /></View>
+        <Text style={[s.tileTitle, text]}>{title}</Text><Text style={[s.tileHint, muted]}>{hint}</Text>
+      </Glass>
+    </TouchableOpacity>)}</View>;
+
+  // Night: the lessons as stars along a road, and a bar with the gold start button.
+  const map = <Glass style={[s.mapCard, tablet && s.mapCardTablet]}>
+    <Text style={[s.mapTitle, text]}>نەخشەی گەشت</Text>
+    <JourneyMap nodes={mapNodes} onOpen={openNode} ink={c.ink} gold={extras.glow} mint="#5eead4" dim={c.paper} edge={c.edge} wing1="#ff8fd0" wing2="#a78bfa" />
+  </Glass>;
+  const lessonBar = <Glass testID="home-lesson-card" style={s.lessonBar}>
+    <View style={[s.letterTile, { backgroundColor: extras.glow }]}><Text style={s.letterTileText}>{next?.glyph || '✓'}</Text></View>
+    <View style={s.flex}>
+      <Text style={[s.dueHint, muted]}>{next ? `وانەی ${completed + 1}` : 'تەواو بوو'}</Text>
+      <Text style={[s.barTitle, text]}>{next ? `پیتی «${next.glyph}»` : 'ئافەرم!'}</Text>
+      <View style={s.steps}>{[0, 1, 2, 3, 4].map(i => <View key={i} style={[s.step, { backgroundColor: i < stepsDone ? '#5eead4' : 'rgba(255,255,255,0.2)' }]} />)}</View>
+    </View>
+    <Breathe><TouchableOpacity accessibilityRole="button" accessibilityLabel={next ? `دەستپێکردنی وانەی پیتی ${next.glyph}` : 'دووبارەکردنەوە'} activeOpacity={0.85} onPress={startLesson} style={[s.goldButton, { backgroundColor: extras.cta }]}>
+      <Text style={[s.ctaText, { color: extras.ctaText }]}>{next ? 'دەست پێ بکە' : 'دووبارە'}</Text>
+    </TouchableOpacity></Breathe>
+  </Glass>;
+
+  const pathStrip = <Glass style={s.pathStrip}>
+    <View style={s.goalTop}><Text style={[s.goalTitle, text]}>ڕێڕەوی فێربوون</Text><TouchableOpacity accessibilityRole="button" onPress={() => open('alphabet')}><Text style={[s.link, { color: c.mint }]}>هەموو ←</Text></TouchableOpacity></View>
+    <View style={s.nodes}>{mapNodes.map(node => <TouchableOpacity key={node.letter.id} accessibilityRole="button" disabled={node.status === 'locked'} accessibilityLabel={`وانەی ${node.index + 1}، پیتی ${node.letter.glyph}`} onPress={() => openNode(node)}
+      style={[s.node, node.status === 'current' && { backgroundColor: c.coral, width: 68, height: 68, borderRadius: 34 }, node.status === 'completed' && { backgroundColor: c.leaf }, node.status === 'locked' && { backgroundColor: c.lavender, opacity: 0.7 }]}>
+      <Text style={[s.nodeText, { color: node.status === 'current' ? '#ffffff' : c.ink }]}>{node.status === 'completed' ? '✓' : node.letter.glyph}</Text></TouchableOpacity>)}</View>
+  </Glass>;
+
+  return <ScrollView contentContainerStyle={[s.page, { maxWidth: pageMax }]}>
+    <RiseIn style={s.stack}>{profileRow}</RiseIn>
+    {isNight
+      ? (wide
+        ? <View style={s.columns}><RiseIn delay={120} style={[s.stack, s.mapColumn]}>{map}</RiseIn><RiseIn delay={220} style={[s.stack, s.flex]}>{lessonBar}{dueCard}{tiles(3, 3)}</RiseIn></View>
+        : <><RiseIn delay={120} style={s.stack}>{map}</RiseIn><RiseIn delay={220} style={s.stack}>{lessonBar}{dueCard}{tiles(tablet ? 4 : 2, tablet ? 4 : 2)}</RiseIn></>)
+      : (wide
+        ? <View style={s.columns}><RiseIn delay={120} style={[s.stack, s.flex]}>{hero}{goal}</RiseIn><RiseIn delay={220} style={[s.stack, s.flex]}>{pathStrip}{dueCard}{tiles(4, 2)}</RiseIn></View>
+        : <><RiseIn delay={120} style={s.stack}>{hero}</RiseIn><RiseIn delay={200} style={s.stack}>{goal}{dueCard}{tiles(tablet ? 4 : 2, tablet ? 4 : 2)}</RiseIn></>)}
   </ScrollView>;
 };
-const baseStyles = StyleSheet.create({
-  container: { width: '100%', maxWidth: 840, alignSelf: 'center', gap: 18, paddingBottom: 28 },
-  columns: { flexDirection: 'row', gap: 20, alignItems: 'flex-start' }, column: { flex: 1, minWidth: 0, gap: 18 },
-  greetingRow: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor:c.paper,padding:16,borderRadius:28,borderWidth:1,borderColor:c.edge }, greetingCopy: { flex: 1, minWidth: 0 },
-  heroEyebrow:{flexDirection:'row',alignItems:'center',gap:5,marginBottom:5},
-  eyebrow: { fontFamily: 'IBMPlexSansArabic_500Medium', fontSize: 13, color: c.mint }, greeting: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 29, color: c.ink },
-  subtitle: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 14, lineHeight: 25, color: c.muted },
-  progressCard: { backgroundColor: '#fff', borderRadius: 20, padding: 16, gap: 9, borderWidth: 1, borderColor: c.edge },
-  progressHeading:{flexDirection:'row',alignItems:'center',gap:7},progressIcon:{width:32,height:32,borderRadius:11,alignItems:'center',justifyContent:'center'},
-  progressLabels: { flexDirection: 'row',flexWrap:'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 8 }, progressTitle: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 15, color: c.ink }, progressCount: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 13, color: c.mint },
-  track: { height: 10, backgroundColor: c.edge, borderRadius: 8, overflow: 'hidden' }, fill: { height: '100%', backgroundColor: c.mint, borderRadius: 8 },
-  small: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 12, lineHeight: 22, color: c.muted },
-  lessonCard: { backgroundColor: '#fff', borderRadius: 28, borderWidth: 2, borderColor: '#d7e9dc', borderBottomWidth: 5, padding: 18, gap: 16 },
-  lessonHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, todayBadge: { flexDirection: 'row', alignItems: 'center', gap: 6 }, badgeText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: c.mint },
-  lessonBody: { flexDirection: 'row', alignItems: 'center', gap: 14 }, lessonCopy: { flex: 1, minWidth: 0 }, letterTile: { width: 72, aspectRatio: 1, borderRadius: 23, backgroundColor: '#fff0d2', alignItems: 'center', justifyContent: 'center' },
-  largeGlyph: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 43, color: c.ink, textAlign: 'center' }, lessonTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 22, color: c.ink },
-  stepTrack:{flexDirection:'row',gap:5},stepTrackPart:{flex:1,height:5,borderRadius:3},
-  checklist: { gap: 8, flexDirection: 'row', flexWrap: 'wrap' }, checkItem: { flexDirection: 'row', alignItems: 'center', gap: 6, width: '48%', flexGrow: 1, padding:8,borderRadius:12 }, checkDot: { width: 21, height: 21, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: c.lavender }, checkIndex: { fontSize: 11, color: c.muted }, checkLabel: { flex: 1, fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 12, color: c.muted },
-  startButton: { maxWidth: 460, alignSelf: 'center', width: '100%', minHeight: 58, borderRadius: 19, backgroundColor: c.mint, borderBottomWidth: 4, borderColor: c.mintDark, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, paddingHorizontal: 14 }, startText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 19, color: '#fff' },
-  sectionHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }, sectionTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 22, color: c.ink }, allButton: { minHeight: 44, justifyContent: 'center' }, allLabel: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: c.mint },
-  activities: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 }, activity: { borderRadius: 22, padding: 16, gap: 8, minHeight: 150, flexGrow: 1 }, activityTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 17, color: c.ink },
+
+const s = StyleSheet.create({
+  page: { width: '100%', alignSelf: 'center', padding: 18, paddingBottom: 32, gap: 16 },
+  stack: { gap: 16 }, flex: { flex: 1, minWidth: 0 }, columns: { flexDirection: 'row', gap: 20, alignItems: 'flex-start' }, mapColumn: { flex: 1.5, minWidth: 0 },
+  profileRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  avatar: { width: 54, height: 54, borderRadius: 27, alignItems: 'center', justifyContent: 'center' }, avatarText: { fontSize: 26 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 }, level: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 13 },
+  profileCopy: { flex: 1, minWidth: 0, gap: 4 }, hello: { fontFamily: 'IBMPlexSansArabic_500Medium', fontSize: 14 }, name: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 22 },
+  xpTrack: { height: 8, borderRadius: 5, overflow: 'hidden' }, xpFill: { height: '100%', borderRadius: 5 },
+  gear: { width: 42, height: 42, alignItems: 'center', justifyContent: 'center' },
+  chips: { flexDirection: 'row', gap: 8 }, chip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6 }, chipText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 14 },
+  heroShadow: { borderRadius: 32, shadowColor: '#5b3fe0', shadowOpacity: 0.35, shadowRadius: 22, shadowOffset: { width: 0, height: 14 }, elevation: 8 },
+  hero: { borderRadius: 32, padding: 22, gap: 12, overflow: 'hidden' },
+  watermark: { position: 'absolute', left: -10, top: -34, fontSize: 200, lineHeight: 230, color: 'rgba(255,255,255,0.14)', fontFamily: 'IBMPlexSansArabic_700Bold' },
+  heroPill: { alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.22)', borderRadius: 999, paddingHorizontal: 14, paddingVertical: 3 }, heroPillText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: '#ffffff' },
+  heroTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 28, lineHeight: 42, color: '#ffffff' },
+  ringRow: { flexDirection: 'row', alignItems: 'center', gap: 12 }, ringText: { fontFamily: 'IBMPlexSansArabic_500Medium', fontSize: 14, color: '#ffffff' },
+  ctaWrap: { alignSelf: 'center', width: '100%', maxWidth: 300, marginTop: 4 },
+  cta: { minHeight: 54, borderRadius: 999, alignItems: 'center', justifyContent: 'center', shadowColor: '#1e1478', shadowOpacity: 0.28, shadowRadius: 14, shadowOffset: { width: 0, height: 8 }, elevation: 6 },
+  ctaText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18 },
+  goal: { padding: 16, gap: 10 }, goalTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, goalTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16 }, goalCount: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 14 },
+  goalTrack: { height: 12, borderRadius: 8, overflow: 'hidden' }, goalFill: { height: '100%', borderRadius: 8 },
+  due: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14 }, dueTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16 }, dueHint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 13 },
+  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 }, tile: { padding: 14, gap: 6, alignItems: 'flex-start', minHeight: 112 },
+  tileIcon: { width: 44, height: 44, borderRadius: 15, alignItems: 'center', justifyContent: 'center' }, tileTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 17 }, tileHint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 13 },
+  mapCard: { height: 376, padding: 6 }, mapCardTablet: { height: 520 }, mapTitle: { position: 'absolute', right: 18, top: 12, zIndex: 1, fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16 },
+  lessonBar: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14 },
+  letterTile: { width: 62, height: 62, borderRadius: 20, alignItems: 'center', justifyContent: 'center', shadowColor: '#ffd66b', shadowOpacity: 0.6, shadowRadius: 14, shadowOffset: { width: 0, height: 0 }, elevation: 6 }, letterTileText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 38, color: '#2a1b00' },
+  barTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18 }, steps: { flexDirection: 'row', gap: 5, marginTop: 6 }, step: { flex: 1, height: 7, borderRadius: 4 },
+  goldButton: { minHeight: 52, paddingHorizontal: 20, borderRadius: 22, alignItems: 'center', justifyContent: 'center', shadowColor: '#ffd66b', shadowOpacity: 0.55, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 8 },
+  pathStrip: { padding: 18, gap: 14 }, link: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 14 },
+  nodes: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, node: { width: 54, height: 54, borderRadius: 27, alignItems: 'center', justifyContent: 'center' }, nodeText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 26 },
 });

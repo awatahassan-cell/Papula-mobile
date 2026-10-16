@@ -15,9 +15,10 @@ export const TopHeader: React.FC = () => {
   const [speaking,setSpeaking]=useState(false);
   useEffect(()=>soundService.subscribe(value=>setSpeaking(value)),[]);
   const toggle=()=>{const enabled=!parentSettings.soundFxEnabled;updateParentSettings({soundFxEnabled:enabled});soundService.setSoundFxEnabled(enabled);};
-  return <View style={s.frame}><View style={[s.header,{maxWidth:pageMax}]}>
+  if(route==='home')return null; // the home screen has its own greeting row
+  return <View style={[s.frame,{backgroundColor:'transparent'}]}><View style={[s.header,{maxWidth:pageMax}]}>
     <View style={s.topRow}>
-      {route!=='home' && <TouchableOpacity accessibilityRole="button" accessibilityLabel="گەڕانەوە بۆ سەرەتا" style={s.icon} onPress={()=>{void soundService.stopSpeaking();setRoute('home');}}><ArrowRight color={c.ink} size={22}/></TouchableOpacity>}
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="گەڕانەوە بۆ سەرەتا" style={s.icon} onPress={()=>{void soundService.stopSpeaking();setRoute('home');}}><ArrowRight color={c.ink} size={22}/></TouchableOpacity>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="پەپوولە، سەرەتا" style={[s.brand,tablet&&{flex:0,minWidth:150}]} onPress={()=>{void soundService.stopSpeaking();setRoute('home');}}><Text numberOfLines={1} style={s.brandText}>پەپوولە <Text style={s.leaf}>🌿</Text></Text></TouchableOpacity>
       {tablet && <View style={[s.stats,s.statsInline]}><TouchableOpacity accessibilityRole="button" accessibilityLabel="ستیکەرەکانم" style={s.profile} onPress={()=>setRoute('stickers')}><Text style={s.avatar}>{currentProfile.avatar}</Text><Text numberOfLines={1} style={s.name}>{currentProfile.name}</Text></TouchableOpacity><View style={s.stat}><Flame size={17} color={c.coral}/><Text style={s.statText}>{currentProfile.streakDays} ڕۆژ</Text></View><View style={s.stat}><Star size={17} color="#d39b2e"/><Text style={s.statText}>{currentProfile.stars}</Text></View></View>}
       {tablet && <View style={{flex:1}}/>}

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useAppStore } from '../store/useAppStore';
-import { getAppearanceColors, normalizeAppearanceMode, normalizeAppearanceTheme, resolveAppearanceMode, resolveAppearanceStyles } from './appearance';
+import { getAppearanceColors, getAppearanceExtras, normalizeAppearanceMode, normalizeAppearanceTheme, resolveAppearanceMode, resolveAppearanceStyles } from './appearance';
 
 export function useAppearance() {
   const { parentSettings } = useAppStore();
@@ -8,7 +8,7 @@ export function useAppearance() {
   const appearanceMode = normalizeAppearanceMode(parentSettings?.appearanceMode);
   // «auto» is evaluated whenever a screen renders, which is often enough for a 19:00 / 06:00 switch.
   const mode = resolveAppearanceMode(appearanceMode);
-  return { appearanceTheme, appearanceMode, mode, isNight: mode === 'night', isGarden: true, colors: getAppearanceColors(appearanceTheme, mode) };
+  return { appearanceTheme, appearanceMode, mode, isNight: mode === 'night', isGarden: true, colors: getAppearanceColors(appearanceTheme, mode), extras: getAppearanceExtras(appearanceTheme, mode) };
 }
 
 export function useThemeStyles<T extends Record<string, object>>(original: T): T {
