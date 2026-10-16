@@ -167,7 +167,7 @@ export const stringsSorani: LocaleStrings = {
   appName: 'پەپوولە',
   appTagline: 'فێربوونی شادمانەی زمانی کوردی',
   direction: 'rtl',
-  fontFamily: 'Vazirmatn, Noto Sans Arabic, sans-serif',
+  fontFamily: 'IBMPlexSansArabic_400Regular',
 
   common: {
     back: 'گەڕانەوە',

@@ -1,6 +1,7 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text } from '../../components/RTLText';
 import { Volume2, BookOpen, Trash2 } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
@@ -118,7 +119,7 @@ const baseStyles = StyleSheet.create({
     color: '#92400e',
   },
   titleCol: {
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
   },
   title: {
     fontSize: 22,

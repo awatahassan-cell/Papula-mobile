@@ -31,8 +31,8 @@ export type AppearanceColors = {[K in keyof typeof gardenColors]: string};
 interface Palette { id: AppearanceTheme; label: string; description: string; colors: AppearanceColors; night: AppearanceColors; }
 // `mint` is the main action colour (white labels sit on it); `coral` is the second accent.
 export const appearanceThemes: Palette[] = [
-  { id: 'cloud', label: 'هەوری بنەوشەیی', description: 'مۆر و شینی نەرم',
-    colors: { background: '#f4efff', paper: '#ffffff', ink: '#3a3566', muted: '#6a649a', coral: '#e2784b', coralDark: '#b3502a', mint: '#6b4ee0', mintDark: '#4b33b3', lavender: '#efe9ff', sky: '#e3f3fb', peach: '#ffe9dc', leaf: '#ddf6ee', edge: '#e3def7' },
+  { id: 'cloud', label: 'دوورگەی ڕەنگەکان', description: 'مۆر و شین و زەردی گەش',
+    colors: { background: '#fff9ec', paper: '#ffffff', ink: '#24304a', muted: '#626980', coral: '#ff795d', coralDark: '#b64028', mint: '#7436d8', mintDark: '#5623aa', lavender: '#eee4ff', sky: '#d7f2ff', peach: '#ffe8d4', leaf: '#dbf7df', edge: '#e9e0d1' },
     night: { background: '#161062', paper: '#241c80', ink: '#f4f1ff', muted: '#c9c2f5', coral: '#ffb84d', coralDark: '#ffd66b', mint: '#8a6dff', mintDark: '#5a3fd6', lavender: '#2e2690', sky: '#1d3a86', peach: '#3a2b74', leaf: '#1d4d6b', edge: '#3f3698' } },
   { id: 'lagoon', label: 'دەریا', description: 'شینی ئاو و سەوزی نەرم',
     colors: { background: '#eaf7f8', paper: '#ffffff', ink: '#12404a', muted: '#456f79', coral: '#ef8a5d', coralDark: '#b4552d', mint: '#0a7c93', mintDark: '#075f72', lavender: '#e4eeff', sky: '#ddf3f8', peach: '#ffebdd', leaf: '#ddf6ea', edge: '#cbe6eb' },

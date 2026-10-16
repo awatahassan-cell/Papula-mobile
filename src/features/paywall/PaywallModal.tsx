@@ -1,7 +1,8 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { rtlProps, rtlLayout } from '../../theme/rtl';
 import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
-import { Modal, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, StyleSheet } from 'react-native';
 import { Text } from '../../components/RTLText';
 import { X, Crown } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';

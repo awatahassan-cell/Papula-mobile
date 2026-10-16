@@ -1,8 +1,9 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useResponsive } from '../../theme/responsive';
 import { useThemeStyles } from '../../theme/useAppearance';
 import { StartingAssessment } from '../learning/StartingAssessment';
 import React, { useState } from 'react';
-import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ScrollView} from 'react-native';
 import { Text } from '../../components/RTLText';
 import { DailyMissionsComponent } from '../../components/DailyMissionsComponent';
 import { reviewPlan } from '../../services/learningEngine';

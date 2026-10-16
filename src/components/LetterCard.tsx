@@ -1,6 +1,7 @@
+import { TactileButton as TouchableOpacity } from './TactileButton';
 import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
 import { LetterItem } from '../services/types';
 import { StarRating } from './StarRating';

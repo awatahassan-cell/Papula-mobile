@@ -1,8 +1,9 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { rtlProps, rtlLayout } from '../../theme/rtl';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import { assessWriting, advanceWriting, normalizeIndependentWriting, writingMastered, suggestedWritingMode } from '../../services/foundationalLearning';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, PanResponder, Modal } from 'react-native';
+import { View, StyleSheet, ScrollView, PanResponder, Modal } from 'react-native';
 import { Text } from '../../components/RTLText';
 import Svg, { Path, Line, Circle } from 'react-native-svg';
 import { Play, Eraser, Undo2 } from 'lucide-react-native';

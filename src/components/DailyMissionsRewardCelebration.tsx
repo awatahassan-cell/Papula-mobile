@@ -1,7 +1,8 @@
+import { TactileButton as TouchableOpacity } from './TactileButton';
 import { rtlProps, rtlLayout } from '../theme/rtl';
 import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { Modal, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
 import { useAppStore } from '../store/useAppStore';
 import { soundService } from '../services/soundService';

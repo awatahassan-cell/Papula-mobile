@@ -1,10 +1,11 @@
+import { TactileButton as TouchableOpacity } from './TactileButton';
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { usePressSink } from './Motion';
+import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { Text } from './RTLText';
 import { useResponsive } from '../theme/responsive';
 import { soundService } from '../services/soundService';
+
 
 interface BigButtonProps {
   children: React.ReactNode;
@@ -29,8 +30,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
 }) => {
   const styles = useThemeStyles(baseStyles);
   const { tablet } = useResponsive();
-  const press = usePressSink();
-  const { isNight, extras } = useAppearance();
+  const { isNight, extras, colors } = useAppearance();
   // At night the main buttons glow gold, as in the night design.
   const gold = isNight && (variant === 'success' || variant === 'primary');
   const handlePress = () => {
@@ -79,19 +79,19 @@ export const BigButton: React.FC<BigButtonProps> = ({
       accessibilityRole="button"
       accessibilityState={{ disabled }}
       onPress={handlePress}
-      onPressIn={press.onPressIn}
-      onPressOut={press.onPressOut}
       disabled={disabled}
-      activeOpacity={0.9}
+      activeOpacity={0.8}
       style={[
         styles.buttonBase,
         tablet && styles.tabletCentered,
         getVariantStyle(),
         getSizeStyle(),
+        { borderBottomWidth: 4, borderBottomColor: variant === 'danger' ? '#b91c1c' : colors.mintDark },
+        variant === 'secondary' && { backgroundColor: '#0878c7', borderBottomColor: '#095b95' },
         gold && { backgroundColor: extras.cta, shadowColor: extras.cta, shadowOpacity: 0.55, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } },
+        gold && { borderBottomColor: '#e5a91c' },
         disabled && styles.disabled,
         style,
-        press.sinkStyle,
       ]}
     >
       {icon && icon}
@@ -111,8 +111,7 @@ const baseStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 999,
-    minHeight: 54,
+    borderRadius: 24,
     gap: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -143,22 +142,21 @@ const baseStyles = StyleSheet.create({
   sizeSm: {
     paddingHorizontal: 12,
     paddingVertical: 8,
-    minHeight: 44,
-    borderRadius: 999,
+    borderRadius: 16,
   },
   sizeMd: {
     paddingHorizontal: 18,
     paddingVertical: 12,
-    borderRadius: 999,
+    borderRadius: 20,
   },
   sizeLg: {
     paddingHorizontal: 24,
     paddingVertical: 16,
-    borderRadius: 999,
+    borderRadius: 24,
   },
   textBase: {
-    fontFamily: 'IBMPlexSansArabic_700Bold',
-    fontSize: 18,
+    fontWeight: '900',
+    fontSize: 16,
     textAlign: 'center',
   },
   textLight: {

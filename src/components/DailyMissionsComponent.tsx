@@ -1,6 +1,7 @@
+import { TactileButton as TouchableOpacity } from './TactileButton';
 import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
 import { Trophy, Flame, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react-native';
 import { useAppStore } from '../store/useAppStore';
@@ -123,7 +124,7 @@ const baseStyles = StyleSheet.create({
     marginBottom: 16,
     borderWidth: 1.5,
     borderColor: '#fde68a',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
   },
   bannerRow: {
     flexDirection: 'row',
@@ -174,7 +175,7 @@ const baseStyles = StyleSheet.create({
   },
   headerRow: {
     marginBottom: 12,
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
   },
   title: {
     fontSize: 18,
@@ -220,7 +221,7 @@ const baseStyles = StyleSheet.create({
   },
   infoCol: {
     flex: 1,
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
   },
   missionTitle: {
     fontSize: 14,

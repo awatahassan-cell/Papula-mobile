@@ -50,14 +50,3 @@ export function usePressScale(pressed = 0.95) {
   const to = (target: number) => { if (!reduced) Animated.spring(scale, { toValue: target, friction: 5, tension: 220, useNativeDriver: native }).start(); };
   return { scale, onPressIn: () => to(pressed), onPressOut: () => to(1) };
 }
-
-/** A real-button feel: the button sinks into its bottom "lip" while it is pressed. */
-export function usePressSink(lip = true, depth = 4) {
-  const [pressed, setPressed] = useState(false);
-  return {
-    pressed,
-    onPressIn: () => setPressed(true),
-    onPressOut: () => setPressed(false),
-    sinkStyle: { borderBottomWidth: depth, borderBottomColor: lip ? 'rgba(0,0,0,0.22)' : 'transparent', ...(pressed ? { borderBottomWidth: 1, transform: [{ translateY: depth - 1 }] } : null) } as const,
-  };
-}

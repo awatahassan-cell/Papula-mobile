@@ -75,7 +75,7 @@ export const radii = {
 } as const;
 
 export const typography = {
-  fontFamily: "'IBM Plex Sans Arabic', 'IBM Plex Sans', sans-serif",
+  fontFamily: 'IBMPlexSansArabic_400Regular',
   sizes: {
     xs: 12,
     sm: 14,
