@@ -1,9 +1,10 @@
 import React from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BookOpen, Flame, PencilLine, Puzzle, Settings, Sprout, Star } from 'lucide-react-native';
+import { BookOpen, Flame, PencilLine, Puzzle, Settings, Sparkles, Sprout, Star } from 'lucide-react-native';
 import { Text } from '../../components/RTLText';
 import { Glass } from '../../components/Glass';
+import { gardenMascot } from '../../components/GardenArtwork';
 import { ProgressRing } from '../../components/ProgressRing';
 import { JourneyMap, MapNode } from '../../components/JourneyMap';
 import { Breathe, RiseIn } from '../../components/Motion';
@@ -43,19 +44,17 @@ export const HomeScreen: React.FC = () => {
   const muted = { color: c.muted };
 
   const chips = <View style={s.chips}>
-    <Glass radius={999} style={s.chip}><Flame size={18} color={c.coral} fill={c.coral} /><Text style={[s.chipText, text]}>{currentProfile.streakDays} ڕۆژ</Text></Glass>
-    <Glass radius={999} style={s.chip}><Star size={18} color="#f2b94b" fill="#f2b94b" /><Text style={[s.chipText, text]}>{currentProfile.stars}</Text></Glass>
+    <View accessible accessibilityLabel={`${currentProfile.streakDays} ڕۆژ لە دوای یەک`} style={[s.chip, { backgroundColor: isNight ? 'rgba(255,143,208,0.2)' : '#ffe3d6' }]}><Flame size={20} color={isNight ? '#ff8fd0' : '#f26a3d'} fill={isNight ? '#ff8fd0' : '#f26a3d'} /><Text style={[s.chipText, text]}>{currentProfile.streakDays} ڕۆژ</Text></View>
+    <View accessible accessibilityLabel={`${currentProfile.stars} ئەستێرە`} style={[s.chip, { backgroundColor: isNight ? 'rgba(255,214,107,0.2)' : '#fff0bf' }]}><Star size={20} color="#f2b94b" fill="#f2b94b" /><Text style={[s.chipText, text]}>{currentProfile.stars}</Text></View>
+    {isNight && <View accessible accessibilityLabel={`ئاستی ${level}`} style={[s.chip, { backgroundColor: 'rgba(94,234,212,0.18)' }]}><Text style={[s.chipText, { color: '#5eead4' }]}>ئاستی {level}</Text></View>}
   </View>;
 
   const profileRow = <View style={s.profileRow}>
     <LinearGradient colors={isNight ? ['#ff8fd0', '#a78bfa'] : ['#ffc9a8', '#ff9fb8']} style={s.avatar}><Text style={s.avatarText}>{currentProfile.avatar}</Text></LinearGradient>
     <View style={s.profileCopy}>
-      {isNight
-        ? <><Text numberOfLines={1} style={[s.name, text]}>{currentProfile.name}</Text>
-          <View style={s.nameRow}><Text style={[s.level, { color: extras.glow }]}>ئاستی {level}</Text><View style={[s.xpTrack, s.flex, { backgroundColor: 'rgba(255,255,255,0.18)' }]}><LinearGradient colors={['#5eead4', '#ffd66b']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.xpFill, { width: `${Math.max(6, levelProgress * 100)}%` }]} /></View></View></>
-        : <><Text style={[s.hello, muted]}>ڕۆژبەخێر</Text><Text numberOfLines={1} style={[s.name, text]}>{currentProfile.name}</Text></>}
+      <Text style={[s.hello, muted]}>{isNight ? 'ئێوارەبەخێر' : 'ڕۆژبەخێر'}</Text>
+      <Text numberOfLines={1} style={[s.name, text]}>{currentProfile.name}</Text>
     </View>
-    {chips}
     <TouchableOpacity accessibilityRole="button" accessibilityLabel="ڕێکخستنەکانی دایک و باوک" onPress={() => openParentGateWithCallback(() => setRoute('parent-dashboard'))}>
       <Glass radius={999} style={s.gear}><Settings size={20} color={c.muted} /></Glass>
     </TouchableOpacity>
@@ -65,8 +64,14 @@ export const HomeScreen: React.FC = () => {
   const hero = <View testID="home-lesson-card" style={s.heroShadow}>
     <LinearGradient colors={extras.hero} start={{ x: 0.1, y: 0 }} end={{ x: 0.9, y: 1 }} style={s.hero}>
       <Text accessible={false} style={s.watermark}>{next?.glyph || '✓'}</Text>
-      <View style={s.heroPill}><Text style={s.heroPillText}>{next ? `وانەی ${completed + 1} · هەنگاوی داهاتوو` : 'ڕێڕەوەکەت تەواو بوو'}</Text></View>
-      <Text style={s.heroTitle}>{next ? `با پیتی «${next.glyph}» فێر بین` : 'ئافەرم! هەموو وانەکانت کرد'}</Text>
+      <Sparkles accessible={false} size={22} color="rgba(255,255,255,0.7)" style={s.spark1} /><Star accessible={false} size={14} color="rgba(255,240,170,0.9)" fill="rgba(255,240,170,0.9)" style={s.spark2} />
+      <View style={s.heroTop}>
+        <View style={s.flex}>
+          <View style={s.heroPill}><Text style={s.heroPillText}>{next ? `وانەی ${completed + 1} · هەنگاوی داهاتوو` : 'ڕێڕەوەکەت تەواو بوو'}</Text></View>
+          <Text style={s.heroTitle}>{next ? `با پیتی «${next.glyph}» فێر بین` : 'ئافەرم! هەموو وانەکانت کرد'}</Text>
+        </View>
+        <Image accessible={false} source={gardenMascot} resizeMode="contain" style={s.heroMascot} />
+      </View>
       {next && <View style={s.ringRow}>
         <ProgressRing value={stepsDone / 5} track="rgba(255,255,255,0.3)" color="#ffffff" label={`${stepsDone} هەنگاو لە ٥ تەواو بووە`} />
         <Text style={s.ringText}>{stepsDone} هەنگاو لە ٥ تەواو بووە</Text>
@@ -90,13 +95,22 @@ export const HomeScreen: React.FC = () => {
     <Glass style={s.due}><Sprout size={26} color={c.mint} /><View style={s.flex}><Text style={[s.dueTitle, text]}>کاتی دووبارەکردنەوەیە</Text><Text style={[s.dueHint, muted]}>{dueCount} پیت چاوەڕێی مەشقن تا لە بیرت نەچن</Text></View></Glass>
   </TouchableOpacity>;
 
-  const tiles = (count: number, columns: number) => <View style={s.tiles}>{ACTIVITIES.slice(0, count).map(({ route, title, hint, Icon, tint }) =>
-    <TouchableOpacity key={route} accessibilityRole="button" accessibilityLabel={title} activeOpacity={0.85} onPress={() => open(route)} style={{ width: `${100 / columns - 2}%`, flexGrow: 1 }}>
-      <Glass style={s.tile}>
-        <View style={[s.tileIcon, { backgroundColor: isNight ? 'rgba(255,255,255,0.12)' : c[tint] }]}><Icon size={24} color={isNight ? extras.glow : c.mint} /></View>
+  // Each activity has its own colour so the home screen feels playful, not like a list of white boxes.
+  const TILE_COLORS = {
+    peach: { day: '#ffe0d2', night: '#4d2f73', icon: '#ff8a65' },
+    leaf: { day: '#d3f5e6', night: '#1f4d63', icon: '#2fc08d' },
+    lavender: { day: '#e5dcff', night: '#3a2f8a', icon: '#8b6cff' },
+    sky: { day: '#d2ecff', night: '#1f3f7d', icon: '#38a5f0' },
+  } as const;
+  const tiles = (count: number, columns: number) => <View style={s.tiles}>{ACTIVITIES.slice(0, count).map(({ route, title, hint, Icon, tint }) => {
+    const tone = TILE_COLORS[tint];
+    return <TouchableOpacity key={route} accessibilityRole="button" accessibilityLabel={title} activeOpacity={0.85} onPress={() => open(route)} style={{ width: `${100 / columns - 2}%`, flexGrow: 1 }}>
+      <View style={[s.tile, { backgroundColor: isNight ? tone.night : tone.day, borderColor: isNight ? 'rgba(255,255,255,0.16)' : '#ffffff' }]}>
+        <View style={[s.tileIcon, { backgroundColor: tone.icon }]}><Icon size={26} color="#ffffff" /></View>
         <Text style={[s.tileTitle, text]}>{title}</Text><Text style={[s.tileHint, muted]}>{hint}</Text>
-      </Glass>
-    </TouchableOpacity>)}</View>;
+      </View>
+    </TouchableOpacity>;
+  })}</View>;
 
   // Night: the lessons as stars along a road, and a bar with the gold start button.
   const map = <Glass style={[s.mapCard, tablet && s.mapCardTablet]}>
@@ -123,7 +137,9 @@ export const HomeScreen: React.FC = () => {
   </Glass>;
 
   return <ScrollView contentContainerStyle={[s.page, { maxWidth: pageMax }]}>
-    <RiseIn style={s.stack}>{profileRow}</RiseIn>
+    <RiseIn style={s.stack}>{profileRow}{chips}
+      {isNight && <View accessibilityRole="progressbar" accessibilityLabel={`پێشکەوتنی ئاستی ${level}`} style={[s.xpTrack, { backgroundColor: 'rgba(255,255,255,0.18)' }]}><LinearGradient colors={['#5eead4', '#ffd66b']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.xpFill, { width: `${Math.max(6, levelProgress * 100)}%` }]} /></View>}
+    </RiseIn>
     {isNight
       ? (wide
         ? <View style={s.columns}><RiseIn delay={120} style={[s.stack, s.mapColumn]}>{map}</RiseIn><RiseIn delay={220} style={[s.stack, s.flex]}>{lessonBar}{dueCard}{tiles(3, 3)}</RiseIn></View>
@@ -143,11 +159,13 @@ const s = StyleSheet.create({
   profileCopy: { flex: 1, minWidth: 0, gap: 4 }, hello: { fontFamily: 'IBMPlexSansArabic_500Medium', fontSize: 14 }, name: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 22 },
   xpTrack: { height: 8, borderRadius: 5, overflow: 'hidden' }, xpFill: { height: '100%', borderRadius: 5 },
   gear: { width: 42, height: 42, alignItems: 'center', justifyContent: 'center' },
-  chips: { flexDirection: 'row', gap: 8 }, chip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6 }, chipText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 14 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, chip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 999 }, chipText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 14 },
   heroShadow: { borderRadius: 32, shadowColor: '#5b3fe0', shadowOpacity: 0.35, shadowRadius: 22, shadowOffset: { width: 0, height: 14 }, elevation: 8 },
   hero: { borderRadius: 32, padding: 22, gap: 12, overflow: 'hidden' },
   watermark: { position: 'absolute', left: -10, top: -34, fontSize: 200, lineHeight: 230, color: 'rgba(255,255,255,0.14)', fontFamily: 'IBMPlexSansArabic_700Bold' },
-  heroPill: { alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.22)', borderRadius: 999, paddingHorizontal: 14, paddingVertical: 3 }, heroPillText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: '#ffffff' },
+  heroPill: { alignSelf: 'flex-start', marginBottom: 6, backgroundColor: 'rgba(255,255,255,0.22)', borderRadius: 999, paddingHorizontal: 14, paddingVertical: 3 }, heroPillText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: '#ffffff' },
+  heroTop: { flexDirection: 'row', alignItems: 'center', gap: 8 }, heroMascot: { width: 92, height: 92 },
+  spark1: { position: 'absolute', right: 70, top: 12 }, spark2: { position: 'absolute', left: 120, top: 22 },
   heroTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 28, lineHeight: 42, color: '#ffffff' },
   ringRow: { flexDirection: 'row', alignItems: 'center', gap: 12 }, ringText: { fontFamily: 'IBMPlexSansArabic_500Medium', fontSize: 14, color: '#ffffff' },
   ctaWrap: { alignSelf: 'center', width: '100%', maxWidth: 300, marginTop: 4 },
@@ -156,8 +174,8 @@ const s = StyleSheet.create({
   goal: { padding: 16, gap: 10 }, goalTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, goalTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16 }, goalCount: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 14 },
   goalTrack: { height: 12, borderRadius: 8, overflow: 'hidden' }, goalFill: { height: '100%', borderRadius: 8 },
   due: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14 }, dueTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16 }, dueHint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 13 },
-  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 }, tile: { padding: 14, gap: 6, alignItems: 'flex-start', minHeight: 112 },
-  tileIcon: { width: 44, height: 44, borderRadius: 15, alignItems: 'center', justifyContent: 'center' }, tileTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 17 }, tileHint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 13 },
+  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 }, tile: { padding: 14, gap: 6, alignItems: 'flex-start', minHeight: 124, borderRadius: 28, borderWidth: 2 },
+  tileIcon: { width: 50, height: 50, borderRadius: 18, alignItems: 'center', justifyContent: 'center' }, tileTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 17 }, tileHint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 13 },
   mapCard: { height: 376, padding: 6 }, mapCardTablet: { height: 520 }, mapTitle: { position: 'absolute', right: 18, top: 12, zIndex: 1, fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16 },
   lessonBar: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14 },
   letterTile: { width: 62, height: 62, borderRadius: 20, alignItems: 'center', justifyContent: 'center', shadowColor: '#ffd66b', shadowOpacity: 0.6, shadowRadius: 14, shadowOffset: { width: 0, height: 0 }, elevation: 6 }, letterTileText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 38, color: '#2a1b00' },
