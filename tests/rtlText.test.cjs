@@ -6,7 +6,11 @@ const ts = require('typescript');
 
 const react = { forwardRef: render => render, createElement: (type, props) => ({ type, props }) };
 react.default = react;
-const native = { Text: 'Text', TextInput: 'TextInput', StyleSheet: { create: value => value } };
+const native = { Text: 'Text', TextInput: 'TextInput', StyleSheet: { create: value => {
+  // RN Web removes this property and logs a development error when registered.
+  for (const style of Object.values(value)) assert.ok(!('direction' in style), 'keep layout direction outside StyleSheet.create');
+  return value;
+} } };
 const mod = { exports: {} };
 const source = fs.readFileSync(path.join(__dirname, '../src/components/RTLText.tsx'), 'utf8');
 new Function('exports', 'module', 'require', ts.transpileModule(source, {
