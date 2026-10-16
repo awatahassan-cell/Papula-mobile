@@ -1,9 +1,10 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
-import { GardenActivityArt } from '../../components/GardenArtwork';
+import { Ear, Eye, Layers, Puzzle, Volume2 } from 'lucide-react-native';
+import { CANDY } from '../../theme/candy';
 import { StartingSoundGame } from '../learning/StartingSoundGame';
 import React, { useState } from 'react';
-import { View, ScrollView} from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import { Text } from '../../components/RTLText';
 import { SyllableBuilder } from '../learning/SyllableBuilder';
 import { WordBuilder } from '../learning/WordBuilder';
@@ -21,13 +22,22 @@ export const MatchGameScreen: React.FC = () => {
   if(mode==='sound'||mode==='similar')return <LetterPractice mode={mode} onExit={()=>setMode('menu')} />;
   return <ScrollView contentContainerStyle={[s.container, tablet && { maxWidth: pageMax }]}>
     {!isGarden && <Text style={s.title}>با یاری بکەین! 🎮</Text>}
-    <View style={tablet ? { flexDirection: 'row', flexWrap: 'wrap', gap: 16 } : { gap: 16 }}>{([{mode:'word',title:'وشە دروست بکەم 🧩',hint:'پیتەکان پێکەوە ببەستە'},
-      {mode:'similar',title:'پیتە هاوشێوەکان 👀',hint:'شێوە و خاڵەکان جیا بکەرەوە'},
-      {mode:'syllables',title:'بڕگەکان 🧱',hint:'وشەکە بە بڕگە پێکەوە ببەستە'},
-      {mode:'phonics',title:'دەنگی سەرەتای وشە 👂',hint:'وشەکە ببیستە و دەنگی یەکەم بدۆزەوە'},
-      {mode:'sound',title:'یاریی دەنگ 🔊',hint:'گوێ بگرە و پیتەکە بدۆزەوە'}] as const).map(item=><TouchableOpacity key={item.mode} accessibilityRole="button" style={[s.card, tablet && { width: '48%' }, isGarden && { flexDirection: 'row', alignItems: 'center' }]} onPress={()=>setMode(item.mode)}>
-      {isGarden && <GardenActivityArt activity={item.mode === 'word' || item.mode === 'syllables' || item.mode === 'similar' ? 'alphabet' : 'games'} size={86} />}
-      <View style={isGarden && { flex: 1 }}><Text style={[s.title, isGarden && { fontSize: 20, textAlign: 'right' }]}>{item.title}</Text><Text style={[s.text, isGarden && { textAlign: 'right', fontSize: 14 }]}>{item.hint}</Text></View>
-    </TouchableOpacity>)}</View>
+    <View style={tablet ? { flexDirection: 'row', flexWrap: 'wrap', gap: 16 } : { gap: 14 }}>{([{mode:'word',title:'وشە دروست بکەم 🧩',hint:'پیتەکان پێکەوە ببەستە',Icon:Puzzle},
+      {mode:'similar',title:'پیتە هاوشێوەکان 👀',hint:'شێوە و خاڵەکان جیا بکەرەوە',Icon:Eye},
+      {mode:'syllables',title:'بڕگەکان 🧱',hint:'وشەکە بە بڕگە پێکەوە ببەستە',Icon:Layers},
+      {mode:'phonics',title:'دەنگی سەرەتای وشە 👂',hint:'وشەکە ببیستە و دەنگی یەکەم بدۆزەوە',Icon:Ear},
+      {mode:'sound',title:'یاریی دەنگ 🔊',hint:'گوێ بگرە و پیتەکە بدۆزەوە',Icon:Volume2}] as const).map((item,index)=>{const candy=CANDY[index%CANDY.length];return <TouchableOpacity key={item.mode} accessibilityRole="button" accessibilityLabel={item.title} style={[candyCard.tile, tablet && { width: '48%' }, { backgroundColor: candy.color, borderBottomColor: candy.lip }]} onPress={()=>setMode(item.mode)}>
+      <View style={candyCard.icon}><item.Icon size={30} color="#ffffff" strokeWidth={2.3} /></View>
+      <View style={candyCard.body}><Text style={candyCard.title}>{item.title}</Text><Text style={candyCard.hint}>{item.hint}</Text></View>
+    </TouchableOpacity>;})}</View>
   </ScrollView>;
 };
+
+// Candy tiles shared with the home screen: saturated colour, white text, a darker lip that sinks when pressed.
+const candyCard = StyleSheet.create({
+  tile: { minHeight: 92, borderRadius: 23, borderBottomWidth: 5, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  icon: { width: 54, height: 54, borderRadius: 18, backgroundColor: '#ffffff25', alignItems: 'center', justifyContent: 'center' },
+  body: { flex: 1, minWidth: 0 },
+  title: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#ffffff', textAlign: 'right' },
+  hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 13, color: '#ffffffe6', textAlign: 'right', marginTop: 2 },
+});

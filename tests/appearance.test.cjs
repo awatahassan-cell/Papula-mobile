@@ -48,7 +48,7 @@ function loader(){
    const styled=resolveAppearanceStyles({primary:{backgroundColor:'#23875f'},label:{color:'#ffffff'},text:{color:'#243b3a'},glyph:{fontSize:104,writingDirection:'rtl',color:'#243b3a'},card:{backgroundColor:'#ffffff',borderRadius:20},boardFrame:{backgroundColor:'#fffef7'}},theme.id,mode);
    assert.equal(styled.primary.backgroundColor,colors.mint);assert.equal(styled.label.color,'#ffffff');
    assert.equal(styled.text.color,colors.ink,'text follows the palette ink in '+mode);assert.equal(styled.card.backgroundColor,colors.paper,'cards follow the palette paper in '+mode);
-   assert.equal(styled.card.borderRadius,30,'cards are large and soft');assert.equal(styled.card.borderBottomWidth,4,'cards share the raised lip of buttons');assert.ok(styled.card.borderBottomColor,'cards have a darker lip');
+   assert.equal(styled.card.borderRadius,30,'cards are large and soft');assert.equal(styled.card.borderBottomWidth,1.5,'no chunky card edge');
    assert.equal(styled.boardFrame.backgroundColor,mode==='night'?'#1a1570':'#ffffff','the writing board is paper by day and navy at night');
    assert.equal(styled.glyph.fontSize,104);assert.equal(styled.glyph.writingDirection,'rtl');
   }

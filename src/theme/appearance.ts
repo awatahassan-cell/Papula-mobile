@@ -93,7 +93,7 @@ function nightFallback(key: string, value: string, palette: AppearanceColors): s
 export function resolveAppearanceStyles<T extends Record<string, object>>(styles: T, theme: unknown = 'cloud', mode: ResolvedMode = 'day'): T {
   const palette = getAppearanceColors(theme, mode);
   const night = mode === 'night';
-  const hairline = night ? 'rgba(255,255,255,0.16)' : palette.edge;
+  const hairline = night ? 'rgba(255,255,255,0.16)' : '#ffffff';
   const replacements: Record<string,string> = {};
   for(const key of Object.keys(gardenColors) as (keyof AppearanceColors)[]) replacements[gardenColors[key]] = palette[key];
   Object.assign(replacements,{'#8d6636':palette.coralDark,'#eaf0ed':palette.edge,'#e6f3ea':palette.leaf,'#e3f5ec':palette.leaf,'#f2faf6':palette.background,'#eff8ed':palette.leaf,'#c8ead8':palette.leaf,'#62a384':palette.mint,'#fff9e8':palette.paper,'#fff1d8':palette.peach,'#fff3df':palette.peach,'#f0dfc0':palette.edge,'#efd2a0':palette.edge,'#e4d9ef':palette.edge,'#f5c487':palette.peach,'#fff1df':palette.peach});
@@ -125,7 +125,7 @@ export function resolveAppearanceStyles<T extends Record<string, object>>(styles
     if (name === 'iconButton' && result.width === 36) { result.width = 44; result.height = 44; result.borderRadius = 22; }
 
     // Shape language: large soft cards with a hairline edge and a gentle coloured shadow, no chunky borders.
-    // One family: buttons and cards are both raised tiles with a darker bottom lip.
+    // Buttons are raised candy tiles with a darker bottom lip (they sink when pressed); cards stay soft and flat.
     if (controls.includes(name)) {
       result.borderRadius = 28;
       result.borderBottomWidth = 4;
@@ -134,12 +134,11 @@ export function resolveAppearanceStyles<T extends Record<string, object>>(styles
     }
     if (cards.includes(name)) {
       result.borderRadius = 30;
-      result.borderWidth = 2;
+      result.borderWidth = 1.5;
       result.borderColor = hairline;
-      result.borderBottomWidth = 4;
+      result.borderBottomWidth = 1.5;
       if (name === 'panel' || name === 'karaokeCard') result.backgroundColor = palette.paper;
-      result.borderBottomColor = darken(hairline, 0.12);
-      Object.assign(result, soft(0.1, 12, 5));
+      Object.assign(result, soft(0.13, 18, 8));
     }
     if (name === 'boardFrame') {
       // The writing board: white paper by day, deep navy with glowing ink at night (pens and guides adapt).
@@ -185,9 +184,9 @@ export interface AppearanceExtras {
   glow: string;
 }
 const EXTRAS: Record<AppearanceTheme, { day: Omit<AppearanceExtras, 'cta' | 'ctaText' | 'glass' | 'glassEdge' | 'glow'>; night: Omit<AppearanceExtras, 'cta' | 'ctaText' | 'glass' | 'glassEdge' | 'glow'> }> = {
-  cloud: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#7c5cff', '#4ea8ff'] }, night: { gradient: ['#120f55', '#231c80', '#3b2a96'], hero: ['#5a3fd6', '#7c5cff'] } },
-  lagoon: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#0a7c93', '#3fb6a8'] }, night: { gradient: ['#05202c', '#0a3a4d', '#12506a'], hero: ['#08657a', '#0b8aa6'] } },
-  blossom: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#c23a74', '#f08a5d'] }, night: { gradient: ['#1f0a33', '#35134f', '#53206e'], hero: ['#992b5a', '#c23a74'] } },
+  cloud: { day: { gradient: ['#fff9ec', '#fffaf0', '#fff4df'], hero: ['#8746df', '#168fe5'] }, night: { gradient: ['#120f55', '#231c80', '#3b2a96'], hero: ['#5a3fd6', '#7c5cff'] } },
+  lagoon: { day: { gradient: ['#e3f6f8', '#e4eeff', '#fff1e8'], hero: ['#0a7c93', '#3fb6a8'] }, night: { gradient: ['#05202c', '#0a3a4d', '#12506a'], hero: ['#08657a', '#0b8aa6'] } },
+  blossom: { day: { gradient: ['#ffeff5', '#f6e8ff', '#e6f2fa'], hero: ['#c23a74', '#f08a5d'] }, night: { gradient: ['#1f0a33', '#35134f', '#53206e'], hero: ['#992b5a', '#c23a74'] } },
 };
 export const getAppearanceExtras = (theme: unknown, mode: ResolvedMode = 'day'): AppearanceExtras => {
   const base = EXTRAS[normalizeAppearanceTheme(theme)][mode];

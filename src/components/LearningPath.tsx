@@ -26,15 +26,15 @@ export function LearningPath({ preview = false }: { preview?: boolean }) {
   const grid = !preview && wide;
   const tile = (node: typeof visible[number], shift = 0) => {
     const current = node.status === 'current', done = node.status === 'completed', locked = node.status === 'locked';
-    const accent='#21a86e';
+    const accent='#187940';
     return <View key={node.letter.id} style={{ alignItems: 'center', transform: [{ translateX: shift }] }}>
         {current && <View style={s.startBadge}><Text style={s.startLabel}>ئێستا نۆرەی تۆیە!</Text></View>}
         <TouchableOpacity accessibilityRole="button" accessibilityLabel={`وانەی ${node.index + 1}، پیتی ${node.letter.glyph}، ${done ? 'تەواو کراوە، دووبارەی بکەوە' : locked ? 'قفڵە، وانەی پێشوو تەواو بکە' : 'ئامادەی دەستپێکردنە'}`}
           accessibilityState={{ disabled: locked }} disabled={locked} activeOpacity={0.8}
           onPress={() => { void soundService.stopSpeaking(); soundService.playPop(); setSelectedLetter(node.letter); setRoute('letter-detail'); }}
-          style={[s.node, { width: layout.nodeSize, height: layout.nodeSize, borderRadius: layout.nodeSize / 2 }, done && [s.done,{backgroundColor:accent,borderColor:'#137a4d'}], current && [s.current,{backgroundColor:'#ffd43b',borderColor:'#dfa719'}], locked && [s.locked,{backgroundColor:c.lavender,borderColor:c.edge}]]}>
-          <Text style={[s.glyph, done && { color: '#fff' }, current && { color: '#5a3a0a' }, locked && { color: c.muted }]}>{node.letter.glyph}</Text>
-          <View style={[s.status, current && { backgroundColor: '#7436d8' }, done && { backgroundColor: accent }]}>{done ? <Check color="#fff" size={15} /> : locked ? <Lock color={c.muted} size={13} /> : <Play color="#fff" size={13} fill="#fff" />}</View>
+          style={[s.node, { width: layout.nodeSize, height: layout.nodeSize, borderRadius: layout.nodeSize * 0.34, borderColor: '#ffffff' }, done && [s.done,{backgroundColor:'#187940',borderBottomColor:'#116330'}], current && [s.current,{backgroundColor:'#ffd43b',borderBottomColor:'#dfaa1d',borderColor:'#fff4b5'}], locked && [s.locked,{backgroundColor:'#a66be5',borderBottomColor:'#8f52ca'}]]}>
+          <Text style={[s.glyph, done && { color: '#fff' }, current && { color: '#5a3a0a' }, locked && { color: '#fff' }]}>{node.letter.glyph}</Text>
+          <View style={[s.status, current && { backgroundColor: '#7436d8' }, done && { backgroundColor: accent }, locked && { backgroundColor: '#6332b2' }]}>{done ? <Check color="#fff" size={15} /> : locked ? <Lock color="#fff" size={13} /> : <Play color="#fff" size={13} fill="#fff" />}</View>
         </TouchableOpacity><Text style={[s.nodeLabel, current && { color: c.mint }]}>{done ? 'دووبارە بکەوە' : locked ? `وانەی ${node.index + 1}` : 'دەست پێ بکە'}</Text>
     </View>;
   };
