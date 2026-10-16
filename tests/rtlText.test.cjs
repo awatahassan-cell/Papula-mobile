@@ -48,5 +48,4 @@ test('all screens and shared components use RTL text primitives', () => {
     }
   }
   walk(path.join(__dirname, '../src'));
-  inspect(path.join(__dirname, '../App.tsx'));
 });

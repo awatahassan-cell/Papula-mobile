@@ -1,7 +1,8 @@
 import React from 'react';
-import { rtlProps, rtlLayout } from './src/theme/rtl';
-import { View, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
-import { Text } from './src/components/RTLText';
+import { Stack } from 'expo-router';
+import { rtlProps, rtlLayout } from '../theme/rtl';
+import { View, StyleSheet, StatusBar, ActivityIndicator, I18nManager } from 'react-native';
+import { Text } from '../components/RTLText';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import {
   useFonts,
@@ -15,28 +16,22 @@ import {
   IBMPlexSans_600SemiBold,
   IBMPlexSans_700Bold,
 } from '@expo-google-fonts/ibm-plex-sans';
-import { AppProvider, useAppStore } from './src/store/useAppStore';
-import { TopHeader } from './src/components/TopHeader';
-import { ParentGateModal } from './src/components/ParentGateModal';
-import { DailyMissionsRewardCelebration } from './src/components/DailyMissionsRewardCelebration';
-import { PaywallModal } from './src/features/paywall/PaywallModal';
-import { OnboardingScreen } from './src/features/onboarding/OnboardingScreen';
-import { HomeScreen } from './src/features/home/HomeScreen';
-import { AlphabetGridScreen } from './src/features/alphabet/AlphabetGridScreen';
-import { LetterDetailScreen } from './src/features/alphabet/LetterDetailScreen';
-import { MatchGameScreen } from './src/features/alphabet/MatchGameScreen';
-import { WritingScreen } from './src/features/writing/WritingScreen';
-import { StoriesListScreen } from './src/features/stories/StoriesListScreen';
-import { StoryReaderScreen } from './src/features/stories/StoryReaderScreen';
-import { DailyPracticeScreen } from './src/features/daily/DailyPracticeScreen';
-import { StickersAlbumScreen } from './src/features/stickers/StickersAlbumScreen';
-import { BadgesComponent } from './src/components/BadgesComponent';
-import { MyWordsScreen } from './src/features/words/MyWordsScreen';
-import { ParentDashboardScreen } from './src/features/parent/ParentDashboardScreen';
-import { BigButton } from './src/components/BigButton';
-import { GardenNavigation } from './src/components/GardenNavigation';
-import { GardenPageHeader } from './src/components/GardenPageHeader';
-import { useAppearance } from './src/theme/useAppearance';
+import { AppProvider, useAppStore } from '../store/useAppStore';
+import { TopHeader } from '../components/TopHeader';
+import { ParentGateModal } from '../components/ParentGateModal';
+import { DailyMissionsRewardCelebration } from '../components/DailyMissionsRewardCelebration';
+import { PaywallModal } from '../features/paywall/PaywallModal';
+import { BigButton } from '../components/BigButton';
+import { GardenNavigation } from '../components/GardenNavigation';
+import { GardenPageHeader } from '../components/GardenPageHeader';
+import { useAppearance } from '../theme/useAppearance';
+
+try {
+  I18nManager.allowRTL(true);
+  I18nManager.forceRTL(true);
+} catch (e) {
+  console.warn(e);
+}
 
 const MainRouter: React.FC = () => {
   const { isGarden, colors: appearanceColors } = useAppearance();
@@ -51,9 +46,8 @@ const MainRouter: React.FC = () => {
 
   const isBedtimeActive = parentSettings.bedtimeLockEnabled;
 
-  if (isBedtimeActive && route !== 'parent-dashboard') {
-    return (
-      <View {...rtlProps} style={[styles.bedtimeContainer, rtlLayout]}>
+  const bedtimeOverlay = isBedtimeActive && route !== 'parent-dashboard' ? (
+      <View {...rtlProps} style={[styles.bedtimeContainer, styles.overlay, rtlLayout]}>
         <View style={styles.bedtimeCard}>
           <Text style={styles.moonEmoji}>🌙</Text>
           <Text style={styles.bedtimeTitle}>کاتی خەوتنی منداڵانە</Text>
@@ -75,8 +69,7 @@ const MainRouter: React.FC = () => {
           </BigButton>
         </View>
       </View>
-    );
-  }
+  ) : null;
 
   return (
     <SafeAreaView {...rtlProps} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={isGarden ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}>
@@ -85,23 +78,7 @@ const MainRouter: React.FC = () => {
       <GardenPageHeader />
 
       <View style={[styles.screenContainer, isGarden && { backgroundColor: 'transparent' }]}>
-        {route === 'onboarding' && <OnboardingScreen />}
-        {route === 'home' && <HomeScreen />}
-        {route === 'alphabet' && <AlphabetGridScreen />}
-        {route === 'letter-detail' && <LetterDetailScreen />}
-        {route === 'match-game' && <MatchGameScreen />}
-        {route === 'writing' && <WritingScreen />}
-        {route === 'stories' && <StoriesListScreen />}
-        {route === 'story-reader' && <StoryReaderScreen />}
-        {route === 'daily-practice' && <DailyPracticeScreen />}
-        {route === 'stickers' && <StickersAlbumScreen />}
-        {route === 'badges' && (
-          <View style={{ padding: 16 }}>
-            <BadgesComponent />
-          </View>
-        )}
-        {route === 'my-words' && <MyWordsScreen />}
-        {route === 'parent-dashboard' && <ParentDashboardScreen />}
+        <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
       </View>
 
       {/* Global Modals */}
@@ -112,11 +89,12 @@ const MainRouter: React.FC = () => {
         isOpen={allMissionsCelebrationOpen}
         onClose={() => setAllMissionsCelebrationOpen(false)}
       />
+      {bedtimeOverlay}
     </SafeAreaView>
   );
 };
 
-export default function App() {
+export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     IBMPlexSansArabic_400Regular,
     IBMPlexSansArabic_500Medium,
@@ -145,6 +123,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  overlay: {
+    ...StyleSheet.absoluteFill,
+    zIndex: 100,
+  },
   loading: {
     flex: 1,
     alignItems: 'center',

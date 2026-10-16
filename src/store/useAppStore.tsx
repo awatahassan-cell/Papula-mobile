@@ -1,5 +1,6 @@
 import { advanceWriting, writingMastered, skillAttempt } from '../services/foundationalLearning';
 import { applyLessonStep, isLessonUnlocked, nextLessonLetter, reconcileLessons } from '../services/lessonPath';
+import { usePathname, useRouter } from 'expo-router';
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { LEARNING_WORDS, learningActivity, localDay, updateReview } from '../services/learningEngine';
 import { mockLetters } from '../data/mockLetters';
@@ -82,7 +83,13 @@ export interface AppContextType {
 const AppContext = createContext<AppContextType | null>(null);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [route, setRoute] = useState<AppRoute>('home');
+  const router = useRouter();
+  const pathname = usePathname();
+  const route: AppRoute = pathname === '/' ? 'home' : (pathname.slice(1) as AppRoute);
+  const setRoute = (next: AppRoute) => {
+    if (next === 'paywall') return;
+    router.navigate(next === 'home' ? '/' : (`/${next}` as never));
+  };
   const [selectedLetter, setSelectedLetterState] = useState<LetterItem | null>(null);
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
 
@@ -186,7 +193,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setCurrentProfile(checked);
         setProfiles(allProfiles.map((p) => (p.id === checked.id ? checked : p)));
       } else {
-        setRoute('onboarding');
+        router.replace('/onboarding');
       }
 
       setParentSettings(settings);
