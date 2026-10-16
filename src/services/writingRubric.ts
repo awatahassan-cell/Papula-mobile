@@ -11,6 +11,7 @@ export interface WritingRubric {
   missingComponentIds: number[];
   /** Small marks written away from every dot of the letter. */
   misplacedMarkCount: number;
+  /** Tip sentences in priority order (each is one of RUBRIC_SENTENCES). */
   tipsKu: string[];
   passes: boolean;
 }
@@ -24,6 +25,28 @@ const WEIGHTS: Record<RubricId, number> = { shape: 0.35, parts: 0.25, steadiness
 const MARK_SIZE = 10;        // a mark/dot fits in a 10x10 box of the 100x100 board
 const NEAR = 8;              // a drawn point is "on" a guide point within 8 units (matches the tracing scorer)
 const MARK_NEAR = 12;
+/**
+ * Every sentence the rubric can show or speak. They are emoji-free single sentences so each one can have its
+ * own recorded narration (see src/data/narratedExtras.ts and docs/offline-audio.md).
+ */
+export const RUBRIC_SENTENCES = {
+  praise: 'ئافەرم! شێوە، هێڵ، خاڵ و قەبارەی پیتەکەت باشن.',
+  fine: 'باشە!',
+  retry: 'جارێکی تر هەوڵ بدە.',
+  shape: 'شێوەی پیتەکە لە نموونەکە جیاوازە؛ نموونەکە سەیر بکە و جارێکی تر بنووسە.',
+  missingBody: 'بەشێکی پیتەکە ماوە؛ هەموو هێڵەکان بنووسە.',
+  missingMark: 'خاڵ یان نیشانەیەک ماوە.',
+  misplaced: 'خاڵ یان نیشانەکە لە شوێنی خۆی نییە؛ سەیری شوێنی لە نموونەکەدا بکە.',
+  duplicate: 'خاڵێکی زیادە نووسراوە.',
+  steadiness: 'هێڵەکان کەمێک لەرزۆکن؛ بە هێواشی و بە یەک جووڵە بنووسە.',
+  sizeSmall: 'پیتەکەت زۆر بچووکە؛ گەورەتر بینووسە.',
+  sizeBig: 'پیتەکەت زۆر گەورەیە؛ بچووکتر بینووسە تا لە بۆردەکە بێت.',
+  flowRtl: 'پیتەکە لە ڕاستەوە بۆ چەپ دەنووسرێت؛ لە لای ڕاستەوە دەست پێ بکە.',
+  flowTtb: 'پیتەکە لە سەرەوە بۆ خوارەوە دەنووسرێت؛ لە سەرەوە دەست پێ بکە.',
+  flowOrder: 'سەرەتا بەشە گەورەکەی پیتەکە بنووسە، پاشان خاڵ و نیشانەکان.',
+  tidiness: 'هێڵی زیادە زۆرە؛ تەنها یەکجار بەسەر هەر هێڵێکدا بڕۆ.',
+} as const;
+const T = RUBRIC_SENTENCES;
 const clamp = (value: number, min = 0, max = 100) => Math.max(min, Math.min(max, value));
 const status = (score: number): RubricStatus => score >= 80 ? 'good' : score >= 55 ? 'ok' : 'fix';
 
@@ -125,11 +148,11 @@ export function buildWritingRubric(guide: StrokeGuide, raw: StrokePoint[][], ali
   if (expected && mainUser.length > 1) {
     const dx = mainUser[mainUser.length - 1].x - mainUser[0].x, dy = mainUser[mainUser.length - 1].y - mainUser[0].y;
     const wrong = expected === 'rtl' ? dx > 6 : dy < -6;
-    if (wrong) { flow -= 40; flowTip = expected === 'rtl' ? 'پیتەکە لە ڕاستەوە بۆ چەپ دەنووسرێت؛ لە لای ڕاستەوە دەست پێ بکە.' : 'پیتەکە لە سەرەوە بۆ خوارەوە دەنووسرێت؛ لە سەرەوە دەست پێ بکە.'; }
+    if (wrong) { flow -= 40; flowTip = expected === 'rtl' ? T.flowRtl : T.flowTtb; }
   }
   const hasBody = components.some(c => !c.mark);
   if (hasBody && aligned.length > 1 && isMark(aligned[0]) && aligned.some(s => !isMark(s))) {
-    flow -= 25; flowTip = flowTip || 'سەرەتا بەشە گەورەکەی پیتەکە بنووسە، پاشان خاڵ و نیشانەکان.';
+    flow -= 25; flowTip = flowTip || T.flowOrder;
   }
   flow = clamp(flow);
 
@@ -137,35 +160,38 @@ export function buildWritingRubric(guide: StrokeGuide, raw: StrokePoint[][], ali
   const shape = clamp(tracing.score);
 
   const missingMarks = missing.filter(c => c.mark).length, missingBody = missing.length - missingMarks;
-  const tips: Record<RubricId, string | undefined> = {
-    shape: shape < 80 ? 'شێوەی پیتەکە لە نموونەکە جیاوازە؛ نموونەکە سەیر بکە و جارێکی تر بنووسە.' : undefined,
+  const tips: Record<RubricId, string[]> = {
+    shape: shape < 80 ? [T.shape] : [],
     parts: [
-      missingBody > 0 ? 'بەشێکی پیتەکە ماوە؛ هەموو هێڵەکان بنووسە.' : '',
-      missingMarks > 0 ? `${missingMarks} خاڵ یان نیشانە ماوە.` : '',
-      misplaced.length > 0 ? 'خاڵ یان نیشانەکە لە شوێنی خۆی نییە؛ سەیری شوێنی لە نموونەکەدا بکە.' : '',
-      duplicates > 0 ? 'خاڵێکی زیادە نووسراوە.' : '',
-    ].filter(Boolean).join(' ') || undefined,
-    steadiness: steadiness < 80 ? 'هێڵەکان کەمێک لەرزۆکن؛ بە هێواشی و بە یەک جووڵە بنووسە.' : undefined,
-    size: size < 80 ? (ratio < 1 ? 'پیتەکەت زۆر بچووکە؛ گەورەتر بینووسە.' : 'پیتەکەت زۆر گەورەیە؛ بچووکتر بینووسە تا لە بۆردەکە بێت.') : undefined,
-    flow: flow < 80 ? flowTip : undefined,
-    tidiness: tidiness < 80 ? 'هێڵی زیادە زۆرە؛ تەنها یەکجار بەسەر هەر هێڵێکدا بڕۆ.' : undefined,
+      missingBody > 0 ? T.missingBody : '',
+      missingMarks > 0 ? T.missingMark : '',
+      misplaced.length > 0 ? T.misplaced : '',
+      duplicates > 0 ? T.duplicate : '',
+    ].filter(Boolean),
+    steadiness: steadiness < 80 ? [T.steadiness] : [],
+    size: size < 80 ? [ratio < 1 ? T.sizeSmall : T.sizeBig] : [],
+    flow: flow < 80 && flowTip ? [flowTip] : [],
+    tidiness: tidiness < 80 ? [T.tidiness] : [],
   };
   const scores: Record<RubricId, number> = { shape, parts, steadiness, size, flow, tidiness };
   const order: RubricId[] = ['parts', 'shape', 'size', 'tidiness', 'steadiness', 'flow'];
-  const criteria = (Object.keys(scores) as RubricId[]).map(id => ({ id, labelKu: RUBRIC_LABELS[id], score: Math.round(scores[id]), status: status(scores[id]), tipKu: tips[id] }));
+  const criteria = (Object.keys(scores) as RubricId[]).map(id => ({ id, labelKu: RUBRIC_LABELS[id], score: Math.round(scores[id]), status: status(scores[id]), tipKu: tips[id].join(' ') || undefined }));
   const overall = Math.round(criteria.reduce((sum, c) => sum + c.score * WEIGHTS[c.id], 0));
   const passes = tracing.mastered && missing.length === 0 && misplaced.length === 0 && duplicates === 0 && parts >= 80 && size >= 60 && tidiness >= 55 && overall >= 75;
   return {
     overall, criteria, passes,
     missingComponentIds: missing.map(c => c.id), misplacedMarkCount: misplaced.length,
-    tipsKu: order.map(id => tips[id]).filter((tip): tip is string => !!tip),
+    tipsKu: order.flatMap(id => tips[id]),
   };
 }
 
-/** Short Kurdish summary shown with the result. These sentences have no recorded narration (screen text only). */
+/** The sentences to show (and speak, when recorded) for a result: praise, or the two most important tips. */
+export function rubricNarration(rubric: WritingRubric, stars: 1 | 2 | 3): string[] {
+  if (rubric.passes) return [T.praise];
+  const tips = rubric.tipsKu.slice(0, 2);
+  if (!tips.length) return [T.retry];
+  return stars === 2 ? [T.fine, ...tips] : tips;
+}
 export function rubricFeedback(rubric: WritingRubric, stars: 1 | 2 | 3): string {
-  if (rubric.passes) return 'ئافەرم! شێوە، هێڵ، خاڵ و قەبارەی پیتەکەت باشن ⭐⭐⭐';
-  const [first, second] = rubric.tipsKu;
-  if (!first) return 'جارێکی تر هەوڵ بدە ✍️';
-  return (stars === 2 ? 'باشە! ' : '') + first + (second ? ' ' + second : '');
+  return rubricNarration(rubric, stars).join(' ') + (rubric.passes ? ' ⭐⭐⭐' : '');
 }

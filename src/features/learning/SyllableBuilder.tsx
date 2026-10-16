@@ -59,6 +59,7 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
     </ScrollView>;
   }
   const assembled = assembleSyllables(round, selected);
+  const canHearSyllables = round.syllables.every(text => soundService.canSpeak(text));
   const full = selected.length === round.syllables.length;
   return <ScrollView contentContainerStyle={s.container}>
     <Text style={s.title}>بڕگەکان پێکەوە ببەستە 🧱</Text><Text style={s.text}>{index + 1} / {rounds.length}</Text>
@@ -70,10 +71,11 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
       <View style={s.row}>{round.tiles.map(tile => {
         const used = selected.includes(tile.id);
         return <TouchableOpacity key={tile.id} accessibilityRole="button" accessibilityLabel={`بڕگەی ${tile.text}`} disabled={used || correct}
-          style={[s.tile, (used || correct) && s.disabled]} onPress={() => { setFeedback(''); setSelected(previous => [...previous, tile.id]); }}>
+          style={[s.tile, (used || correct) && s.disabled]} onPress={() => { setFeedback(''); setSelected(previous => [...previous, tile.id]); if (soundService.canSpeak(tile.text)) void soundService.speakWord(tile.text); }}>
           <Text style={s.glyph}>{tile.text}</Text></TouchableOpacity>;
       })}</View>
       {!!feedback && <Text accessibilityLiveRegion="polite" style={s.text}>{feedback}</Text>}
+      {canHearSyllables && <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={() => void soundService.speakPhrases(round.syllables)}><Text style={s.text}>گوێ لە بڕگەکان بگرە 🔊</Text></TouchableOpacity>}
     </View>
     {correct
       ? <TouchableOpacity accessibilityRole="button" style={s.button} onPress={next}><Text style={s.buttonText}>{index + 1 === rounds.length ? 'تەواو بکەم ✓' : 'وشەی دواتر ←'}</Text></TouchableOpacity>

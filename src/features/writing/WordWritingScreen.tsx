@@ -93,7 +93,7 @@ export const WordWritingScreen: React.FC = () => {
       {assessment?.rubric && <>
         <Text style={s.title}>{passedNow ? 'ئافەرم! ✓' : 'با باشترى بکەین 🌱'}</Text>
         <Text style={s.text}>{assessment.feedbackKu}</Text>
-        <WritingResultDetails guide={slot.guide} strokes={strokes} aligned={submitted} rubric={assessment.rubric} />
+        <WritingResultDetails guide={slot.guide} strokes={strokes} aligned={submitted} rubric={assessment.rubric} stars={assessment.stars} />
         {failed
           ? <BigButton onPress={nextOrRetry} size="lg" style={s.full}>دووبارە بنووسم ✍️</BigButton>
           : <BigButton onPress={nextOrRetry} variant="success" size="lg" style={s.full}>پیتی دواتر ←</BigButton>}

@@ -223,7 +223,7 @@ export const WritingScreen: React.FC = () => {
         <Text style={styles.resultText}>{result.mastered ? `ئافەرم! پیتی «${letter.glyph}» بە جوانی نووسیت.` : result.feedbackKu}</Text>
         <StarRating stars={result.stars} maxStars={3} size="lg" />
         <Text style={styles.resultText}>{OVERALL_SCORE_LABEL}: {result.score}٪</Text>
-        {result.rubric && guide && <WritingResultDetails guide={guide} strokes={submitted} aligned={mode==='trace'?submitted:normalizeIndependentWriting(guide,submitted)} rubric={result.rubric} />}
+        {result.rubric && guide && <WritingResultDetails guide={guide} strokes={submitted} aligned={mode==='trace'?submitted:normalizeIndependentWriting(guide,submitted)} rubric={result.rubric} stars={result.stars} />}
         {result.mastered ? <>
           {mode!=='independent' && <BigButton onPress={()=>changeMode(mode==='trace'?'copy':'independent')} variant="success" size="lg" style={styles.fullButton}>{mode==='trace'?'ئێستا بە نموونە بنووسم':'ئێستا سەربەخۆ بنووسم'}</BigButton>}
           {mode==='independent' && !confirmedMastery && <Text style={styles.resultText}>سەربەخۆ نووسیت! لە ڕۆژێکی دیکە دووبارەی بکەوە، بۆ دڵنیابوون لە فێربوون.</Text>}

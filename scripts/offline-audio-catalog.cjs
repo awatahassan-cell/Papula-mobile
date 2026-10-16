@@ -65,6 +65,15 @@ function catalog() {
   for (const text of ['ئێستا با چیرۆکێک ببیستین. لە وشەکاندا پیتەکە بدۆزەوە.', 'با دەنگی خۆت تۆمار بکەیت، پاشان گوێی لێ بگرە.', 'ئافەرم! ئەم مەشقەت بە باشی تەواو کرد.']) addWord(text);
   const welcome = 'سڵاو هاوڕێی شیرینم، بەخێربێیت بۆ پەپوولە.';
   add(welcome, welcome, 'preview');
+  // Optional narration is appended last and flagged, so existing recordings and batches are never reshuffled.
+  const { SYLLABLE_TEXTS, TIP_TEXTS } = data('data/narratedExtras.ts');
+  const required = new Set(entries.keys());
+  const addExtra = (text, category) => {
+    const key = keyFor(text);
+    if (!required.has(key)) { add(text, text, category); entries.get(key).optional = true; } // already narrated: keep that recording
+  };
+  for (const text of SYLLABLE_TEXTS) addExtra(text, 'syllable');
+  for (const text of TIP_TEXTS) addExtra(text, 'tip');
   return [...entries.values()];
 }
 

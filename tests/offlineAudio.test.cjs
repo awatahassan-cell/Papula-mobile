@@ -20,7 +20,8 @@ test('the fresh Papula pack covers every catalog entry, all story words and vali
   const manifest = JSON.parse(fs.readFileSync(path.join(root, 'assets/audio/papula-v2/manifest.json'), 'utf8'));
   assert.ok(manifest.completedAt, 'generation must finish before the app is delivered');
   assert.equal(manifest.voiceId, DEFAULT_VOICE);
-  for (const entry of catalog()) assert.ok(pack[entry.key], `Missing: ${entry.text}`);
+  // Optional narration (syllables, handwriting tips) lights up once the pack has been regenerated.
+  for (const entry of catalog()) if (!entry.optional) assert.ok(pack[entry.key], `Missing: ${entry.text}`);
   const { narrationCatalog } = require('../scripts/story-narration-catalog.cjs');
   for (const story of narrationCatalog().stories) for (const page of story.pages) for (const raw of page.textKu.split(/\s+/u)) {
     if (!/[\p{L}\p{N}]/u.test(raw)) continue;

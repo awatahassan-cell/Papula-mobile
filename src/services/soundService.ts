@@ -173,6 +173,18 @@ class MobileSoundService {
     return this.speakSequence(learningStoryChunks(storyId, pageNumber, text), options, LEARNING_SENTENCE_PAUSE_MS, LEARNING_STORY_RATE);
   }
 
+  /** True when a recording for exactly this text ships in the app (syllables and handwriting tips are optional). */
+  public canSpeak(text: string): boolean {
+    return OFFLINE_AUDIO[audioCacheKey(text, this.selectedVoiceId)] !== undefined;
+  }
+
+  /** Reads recorded sentences one after another. Resolves false (and plays nothing) unless every one is recorded. */
+  public async speakPhrases(texts: string[], options: SpeechOptions = {}): Promise<boolean> {
+    if (!texts.length || !texts.every(text => this.canSpeak(text))) return false;
+    await this.speakSequence(texts.map(text => ({ text, narrationText: text })), options, 350, CHILD_NARRATION_RATE);
+    return true;
+  }
+
   public async speakLetter(name: string, options: SpeechOptions = {}) {
     return this.speakSequence([
       { text: 'پیتی', narrationText: 'پیتی.' },

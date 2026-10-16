@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { Text } from '../../components/RTLText';
 import { StrokeGuide, StrokePoint } from '../../services/types';
-import { WritingRubric } from '../../services/writingRubric';
+import { soundService } from '../../services/soundService';
+import { rubricNarration, WritingRubric } from '../../services/writingRubric';
 
 const pathFor = (points: StrokePoint[]) => points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
 const Ink: React.FC<{ points: StrokePoint[]; color: string; width: number; dash?: string }> = ({ points, color, width, dash }) => {
@@ -14,7 +15,9 @@ const Ink: React.FC<{ points: StrokePoint[]; color: string; width: number; dash?
 const STATUS = { good: { mark: '✓', color: '#047857', bar: '#34d399' }, ok: { mark: '~', color: '#b45309', bar: '#fbbf24' }, fix: { mark: '!', color: '#b91c1c', bar: '#f87171' } } as const;
 
 /** Side-by-side review: the model, the child's writing and what is missing, plus a per-criterion breakdown. */
-export const WritingResultDetails: React.FC<{ guide: StrokeGuide; strokes: StrokePoint[][]; rubric: WritingRubric; aligned?: StrokePoint[][] }> = ({ guide, strokes, rubric, aligned }) => {
+export const WritingResultDetails: React.FC<{ guide: StrokeGuide; strokes: StrokePoint[][]; rubric: WritingRubric; aligned?: StrokePoint[][]; stars?: 1 | 2 | 3 }> = ({ guide, strokes, rubric, aligned, stars = 1 }) => {
+  const narration = rubricNarration(rubric, stars);
+  const canHear = narration.every(text => soundService.canSpeak(text));
   const ids = guide.componentIds || guide.strokes.map((_, i) => i);
   const missing = new Set(rubric.missingComponentIds);
   return <View style={styles.wrap}>
@@ -34,6 +37,7 @@ export const WritingResultDetails: React.FC<{ guide: StrokeGuide; strokes: Strok
         <Text style={styles.caption}>نووسینی تۆ</Text>
       </View>
     </View>
+    {canHear && <TouchableOpacity accessibilityRole="button" accessibilityLabel="ڕێنماییەکە ببیستە" style={styles.listen} onPress={() => void soundService.speakPhrases(narration)}><Text style={styles.listenText}>ڕێنماییەکە ببیستە 🔊</Text></TouchableOpacity>}
     {missing.size > 0 && <Text style={styles.legend}>هێڵی سووری پچڕپچڕ: ئەو بەشانەی نەنووسراون</Text>}
     {rubric.criteria.map(c => {
       const look = STATUS[c.status];
@@ -54,6 +58,8 @@ const styles = StyleSheet.create({
   previews: { flexDirection: 'row', justifyContent: 'center', gap: 14 },
   previewBox: { alignItems: 'center', gap: 4, backgroundColor: '#ffffff', borderRadius: 16, borderWidth: 1, borderColor: '#e2e8f0', padding: 6 },
   caption: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 12, color: '#475569' },
+  listen: { alignSelf: 'center', minHeight: 48, paddingHorizontal: 18, borderRadius: 16, backgroundColor: '#fef3c7', alignItems: 'center', justifyContent: 'center' },
+  listenText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 14, color: '#78350f' },
   legend: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 12, color: '#b91c1c', textAlign: 'center' },
   row: { flexDirection: 'row', gap: 8, alignItems: 'flex-start' },
   mark: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, width: 22, textAlign: 'center' },

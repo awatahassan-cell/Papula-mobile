@@ -44,3 +44,21 @@ metadata for repairs; only statically imported MP3s enter the app bundle.
 Native offline playback should also be checked in an installed build with
 airplane mode enabled. A website still needs its files loaded or cached by the
 browser; exporting web files alone does not install a complete offline website.
+
+## Optional narration: syllables and handwriting tips
+
+The syllable game (🔊 on every syllable tile and «گوێ لە بڕگەکان بگرە») and the handwriting review («ڕێنماییەکە ببیستە») play **recorded** audio only. They need no network: the MP3s ship in the app like the rest of the pack.
+
+- `src/data/narratedExtras.ts` lists every syllable (`src/data/syllableWords.ts`) and every sentence the writing rubric can say (`RUBRIC_SENTENCES` in `src/services/writingRubric.ts`). The catalog flags them `optional` (categories `syllable`, `tip`).
+- Until they are generated, the app hides the 🔊 buttons (`soundService.canSpeak` checks the bundled pack). Nothing breaks, and `npm run test:audio` does not require them.
+- To record them (about 59 requests, ≈ 850 characters), run with a valid key:
+
+  ```sh
+  node scripts/generate-offline-audio.cjs             # preview: requests and characters, no credits spent
+  ELEVENLABS_API_KEY=... node scripts/generate-offline-audio.cjs --generate
+  npm run test:audio && npx tsc --noEmit && npx expo lint
+  ```
+
+  The generator only requests batches that are not yet in `manifest.records`; optional entries are queued last, so no earlier batch changes (`tests/optionalAudio.test.cjs` enforces this). Syllables are requested one at a time so they are read as a bare sound.
+- Listen to the new syllables before shipping: a bare two-letter string can be read as a letter name or a word. Replace any that sound wrong by changing its text in `narratedExtras` (or spelling it with a vowel mark) and regenerating.
+- When you change a rubric sentence or syllable, regenerate; the old recording is simply not found and the button disappears until then.

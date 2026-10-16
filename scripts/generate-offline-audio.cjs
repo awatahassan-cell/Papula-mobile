@@ -11,23 +11,29 @@ const cleanWord = text => text.replace(/\uFE0F/gu, '').replace(/^[\p{P}\p{S}]+|[
 function plan(entries) {
   const primary = entries.filter(item => item.category !== 'word');
   const words = new Map();
-  for (const entry of primary) for (const match of entry.text.matchAll(/\S+/gu)) {
+  // Optional entries never become the parent of a word: that would move an already-bought word into a new batch.
+  for (const entry of primary.filter(item => !item.optional)) for (const match of entry.text.matchAll(/\S+/gu)) {
     const word = cleanWord(match[0]);
     if (word && !words.has(word)) words.set(word, { key: entry.key, start: match.index + match[0].indexOf(word), end: match.index + match[0].indexOf(word) + word.length });
   }
-  const derived = [], generate = [...primary];
+  // Optional recordings are queued after everything else so earlier batches keep exactly the same contents.
+  const derived = [], generate = primary.filter(item => !item.optional), optional = primary.filter(item => item.optional);
   for (const entry of entries.filter(item => item.category === 'word')) {
     const parent = words.get(entry.text);
     if (parent) derived.push({ entry, parent }); else generate.push(entry);
   }
+  generate.push(...optional);
   // Keep isolated letter sounds in independent requests. Other phrases share
   // a new recording with exact character timestamps, never an old cache file.
   const batches = [];
   let batch = [];
   for (const entry of generate) {
-    if (entry.category === 'letter') {
+    if (entry.category === 'letter' || entry.category === 'syllable') {
+      // Isolated letter sounds and syllables are requested alone so they are read as a bare sound.
       if (batch.length) { batches.push(batch); batch = []; }
       batches.push([entry]);
+    } else if (entry.optional && batch.length && !batch[0].optional) {
+      batches.push(batch); batch = [entry];
     } else {
       if (batch.reduce((sum, item) => sum + item.narrationText.length + 2, 0) + entry.narrationText.length > 1100) { batches.push(batch); batch = []; }
       batch.push(entry);
@@ -66,7 +72,8 @@ async function main() {
   const { batches, derived } = plan(entries);
   fs.mkdirSync(directory, { recursive: true });
   const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : { voiceId: DEFAULT_VOICE, model: MODEL, createdAt: new Date().toISOString(), batches: {}, records: {} };
-  const pending = batches.filter(batch => { const id = digest(batch.map(item => item.key).join('\n')); return !manifest.batches[id] && !fs.existsSync(path.join(directory, id + '.alignment.json')); });
+  const covered = batch => batch.every(item => manifest.records[item.key]); // already recorded under an earlier batching
+  const pending = batches.filter(batch => { const id = digest(batch.map(item => item.key).join('\n')); return !manifest.batches[id] && !covered(batch) && !fs.existsSync(path.join(directory, id + '.alignment.json')); });
   const characters = pending.reduce((sum, batch) => sum + batch.map(item => item.narrationText).join('\n\n').length, 0);
   console.log(JSON.stringify({ tracks: entries.length, requests: pending.length, characters, derivedWords: derived.length }));
   if (!process.argv.includes('--generate') && !process.argv.includes('--finalize')) return;
@@ -89,7 +96,7 @@ async function main() {
   // completed batch durable. Re-running only resumes this fresh recording set.
   for (const [index, batch] of batches.entries()) {
     const id = digest(batch.map(item => item.key).join('\n'));
-    if (manifest.batches[id]) continue;
+    if (manifest.batches[id] || covered(batch)) continue;
     const text = batch.map(item => item.narrationText).join('\n\n');
     const savedPath = path.join(directory, id + '.alignment.json');
     let saved;
