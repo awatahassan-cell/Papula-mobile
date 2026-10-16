@@ -32,13 +32,13 @@ interface Palette { id: AppearanceTheme; label: string; description: string; col
 // `mint` is the main action colour (white labels sit on it); `coral` is the second accent.
 export const appearanceThemes: Palette[] = [
   { id: 'cloud', label: 'دوورگەی ڕەنگەکان', description: 'مۆر و شین و زەردی گەش',
-    colors: { background: '#fff9ec', paper: '#ffffff', ink: '#24304a', muted: '#626980', coral: '#ff795d', coralDark: '#b64028', mint: '#7436d8', mintDark: '#5623aa', lavender: '#eee4ff', sky: '#d7f2ff', peach: '#ffe8d4', leaf: '#dbf7df', edge: '#e9e0d1' },
+    colors: { background: '#ffffff', paper: '#ffffff', ink: '#24304a', muted: '#626980', coral: '#ff795d', coralDark: '#b64028', mint: '#7436d8', mintDark: '#5623aa', lavender: '#eee4ff', sky: '#d7f2ff', peach: '#ffe8d4', leaf: '#dbf7df', edge: '#e9e0d1' },
     night: { background: '#161062', paper: '#241c80', ink: '#f4f1ff', muted: '#c9c2f5', coral: '#ffb84d', coralDark: '#ffd66b', mint: '#8a6dff', mintDark: '#5a3fd6', lavender: '#2e2690', sky: '#1d3a86', peach: '#3a2b74', leaf: '#1d4d6b', edge: '#3f3698' } },
   { id: 'lagoon', label: 'دەریا', description: 'شینی ئاو و سەوزی نەرم',
-    colors: { background: '#eaf7f8', paper: '#ffffff', ink: '#12404a', muted: '#456f79', coral: '#ef8a5d', coralDark: '#b4552d', mint: '#0a7c93', mintDark: '#075f72', lavender: '#e4eeff', sky: '#ddf3f8', peach: '#ffebdd', leaf: '#ddf6ea', edge: '#cbe6eb' },
+    colors: { background: '#ffffff', paper: '#ffffff', ink: '#12404a', muted: '#456f79', coral: '#ef8a5d', coralDark: '#b4552d', mint: '#0a7c93', mintDark: '#075f72', lavender: '#e4eeff', sky: '#ddf3f8', peach: '#ffebdd', leaf: '#ddf6ea', edge: '#cbe6eb' },
     night: { background: '#062a38', paper: '#0d4257', ink: '#e9fbff', muted: '#9ed1dc', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#0b8aa6', mintDark: '#08657a', lavender: '#123f66', sky: '#0f5568', peach: '#134a57', leaf: '#0f5a55', edge: '#1d6178' } },
   { id: 'blossom', label: 'گوڵی ئاڵ', description: 'پەمبە و هەنگوین',
-    colors: { background: '#fff1f6', paper: '#ffffff', ink: '#4a2036', muted: '#855069', coral: '#e5883a', coralDark: '#a9570f', mint: '#c23a74', mintDark: '#992b5a', lavender: '#f6e8ff', sky: '#e6f1fa', peach: '#ffe6da', leaf: '#ffe1eb', edge: '#f3d5e1' },
+    colors: { background: '#ffffff', paper: '#ffffff', ink: '#4a2036', muted: '#855069', coral: '#e5883a', coralDark: '#a9570f', mint: '#c23a74', mintDark: '#992b5a', lavender: '#f6e8ff', sky: '#e6f1fa', peach: '#ffe6da', leaf: '#ffe1eb', edge: '#f3d5e1' },
     night: { background: '#29103f', paper: '#411860', ink: '#ffeff7', muted: '#e3b3cd', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#e0509a', mintDark: '#c23a74', lavender: '#4f2279', sky: '#2d3e7a', peach: '#5a2b55', leaf: '#5b1f58', edge: '#6b2d8f' } },
 ];
 export const getAppearanceColors = (value: unknown, mode: ResolvedMode = 'day'): AppearanceColors => {
@@ -93,7 +93,7 @@ function nightFallback(key: string, value: string, palette: AppearanceColors): s
 export function resolveAppearanceStyles<T extends Record<string, object>>(styles: T, theme: unknown = 'cloud', mode: ResolvedMode = 'day'): T {
   const palette = getAppearanceColors(theme, mode);
   const night = mode === 'night';
-  const hairline = night ? 'rgba(255,255,255,0.16)' : '#ffffff';
+  const hairline = night ? 'rgba(255,255,255,0.16)' : palette.edge; // white page by day: cards need a visible soft edge
   const replacements: Record<string,string> = {};
   for(const key of Object.keys(gardenColors) as (keyof AppearanceColors)[]) replacements[gardenColors[key]] = palette[key];
   Object.assign(replacements,{'#8d6636':palette.coralDark,'#eaf0ed':palette.edge,'#e6f3ea':palette.leaf,'#e3f5ec':palette.leaf,'#f2faf6':palette.background,'#eff8ed':palette.leaf,'#c8ead8':palette.leaf,'#62a384':palette.mint,'#fff9e8':palette.paper,'#fff1d8':palette.peach,'#fff3df':palette.peach,'#f0dfc0':palette.edge,'#efd2a0':palette.edge,'#e4d9ef':palette.edge,'#f5c487':palette.peach,'#fff1df':palette.peach});
@@ -184,9 +184,9 @@ export interface AppearanceExtras {
   glow: string;
 }
 const EXTRAS: Record<AppearanceTheme, { day: Omit<AppearanceExtras, 'cta' | 'ctaText' | 'glass' | 'glassEdge' | 'glow'>; night: Omit<AppearanceExtras, 'cta' | 'ctaText' | 'glass' | 'glassEdge' | 'glow'> }> = {
-  cloud: { day: { gradient: ['#fff9ec', '#fffaf0', '#fff4df'], hero: ['#8746df', '#168fe5'] }, night: { gradient: ['#120f55', '#231c80', '#3b2a96'], hero: ['#5a3fd6', '#7c5cff'] } },
-  lagoon: { day: { gradient: ['#e3f6f8', '#e4eeff', '#fff1e8'], hero: ['#0a7c93', '#3fb6a8'] }, night: { gradient: ['#05202c', '#0a3a4d', '#12506a'], hero: ['#08657a', '#0b8aa6'] } },
-  blossom: { day: { gradient: ['#ffeff5', '#f6e8ff', '#e6f2fa'], hero: ['#c23a74', '#f08a5d'] }, night: { gradient: ['#1f0a33', '#35134f', '#53206e'], hero: ['#992b5a', '#c23a74'] } },
+  cloud: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#8746df', '#168fe5'] }, night: { gradient: ['#120f55', '#231c80', '#3b2a96'], hero: ['#5a3fd6', '#7c5cff'] } },
+  lagoon: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#0a7c93', '#3fb6a8'] }, night: { gradient: ['#05202c', '#0a3a4d', '#12506a'], hero: ['#08657a', '#0b8aa6'] } },
+  blossom: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#c23a74', '#f08a5d'] }, night: { gradient: ['#1f0a33', '#35134f', '#53206e'], hero: ['#992b5a', '#c23a74'] } },
 };
 export const getAppearanceExtras = (theme: unknown, mode: ResolvedMode = 'day'): AppearanceExtras => {
   const base = EXTRAS[normalizeAppearanceTheme(theme)][mode];
