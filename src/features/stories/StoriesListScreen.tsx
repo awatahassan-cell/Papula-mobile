@@ -82,7 +82,8 @@ export const StoriesListScreen:React.FC=()=>{
   {row.items.map(entry=><View key={entry.id} style={s.bookCell}>{renderItem({item:entry})}</View>)}
   {Array.from({length:columns-row.items.length}).map((_,i)=><View key={'pad'+i} style={s.bookCell}/>)}
  </View>;
- return <FlatList key={category+columns} data={rows} keyExtractor={row=>row.id} renderItem={renderRow} ListHeaderComponent={header} contentContainerStyle={[s.container,tablet&&{maxWidth:pageMax}]} initialNumToRender={4} maxToRenderPerBatch={4} windowSize={5} showsVerticalScrollIndicator={false}/>;
+ if(columns===1)return <FlatList key={category} data={data} keyExtractor={item=>item.id} renderItem={renderItem} ListHeaderComponent={header} contentContainerStyle={s.container} initialNumToRender={4} maxToRenderPerBatch={4} windowSize={5} showsVerticalScrollIndicator={false}/>;
+ return <FlatList key={category+columns} data={rows} keyExtractor={row=>row.id} renderItem={renderRow} ListHeaderComponent={header} contentContainerStyle={[s.container,{maxWidth:pageMax}]} initialNumToRender={3} maxToRenderPerBatch={3} windowSize={5} showsVerticalScrollIndicator={false}/>;
 };
 const baseStyles=StyleSheet.create({
  bookRow:{flexDirection:'row',gap:16,alignItems:'stretch'},bookCell:{flex:1,minWidth:0},
