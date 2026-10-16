@@ -93,7 +93,7 @@ function nightFallback(key: string, value: string, palette: AppearanceColors): s
 export function resolveAppearanceStyles<T extends Record<string, object>>(styles: T, theme: unknown = 'cloud', mode: ResolvedMode = 'day'): T {
   const palette = getAppearanceColors(theme, mode);
   const night = mode === 'night';
-  const hairline = night ? 'rgba(255,255,255,0.16)' : '#ffffff';
+  const hairline = night ? 'rgba(255,255,255,0.16)' : palette.edge;
   const replacements: Record<string,string> = {};
   for(const key of Object.keys(gardenColors) as (keyof AppearanceColors)[]) replacements[gardenColors[key]] = palette[key];
   Object.assign(replacements,{'#8d6636':palette.coralDark,'#eaf0ed':palette.edge,'#e6f3ea':palette.leaf,'#e3f5ec':palette.leaf,'#f2faf6':palette.background,'#eff8ed':palette.leaf,'#c8ead8':palette.leaf,'#62a384':palette.mint,'#fff9e8':palette.paper,'#fff1d8':palette.peach,'#fff3df':palette.peach,'#f0dfc0':palette.edge,'#efd2a0':palette.edge,'#e4d9ef':palette.edge,'#f5c487':palette.peach,'#fff1df':palette.peach});
@@ -125,18 +125,21 @@ export function resolveAppearanceStyles<T extends Record<string, object>>(styles
     if (name === 'iconButton' && result.width === 36) { result.width = 44; result.height = 44; result.borderRadius = 22; }
 
     // Shape language: large soft cards with a hairline edge and a gentle coloured shadow, no chunky borders.
+    // One family: buttons and cards are both raised tiles with a darker bottom lip.
     if (controls.includes(name)) {
       result.borderRadius = 28;
-      result.borderBottomWidth = 0;
-      Object.assign(result, glowing.includes(name) ? soft(0.3, 16, 8, palette.mint) : soft(0.1, 10, 4));
+      result.borderBottomWidth = 4;
+      result.borderBottomColor = darken(typeof result.backgroundColor === 'string' ? result.backgroundColor : palette.mint, 0.22);
+      Object.assign(result, glowing.includes(name) ? soft(0.22, 12, 6, palette.mint) : soft(0.1, 8, 3));
     }
     if (cards.includes(name)) {
       result.borderRadius = 30;
-      result.borderWidth = 1.5;
+      result.borderWidth = 2;
       result.borderColor = hairline;
-      result.borderBottomWidth = 1.5;
+      result.borderBottomWidth = 4;
       if (name === 'panel' || name === 'karaokeCard') result.backgroundColor = palette.paper;
-      Object.assign(result, soft(0.13, 18, 8));
+      result.borderBottomColor = darken(hairline, 0.12);
+      Object.assign(result, soft(0.1, 12, 5));
     }
     if (name === 'boardFrame') {
       // The writing board: white paper by day, deep navy with glowing ink at night (pens and guides adapt).
@@ -149,7 +152,6 @@ export function resolveAppearanceStyles<T extends Record<string, object>>(styles
     if (name === 'glyphText') { result.fontSize = 44; result.color = palette.ink; }
     if (name === 'filterBtn') result.minHeight = 48;
     if (name === 'container') { result.width = '100%'; result.maxWidth = 840; result.alignSelf = 'center'; result.backgroundColor='transparent'; }
-    if (name === 'primary' || name === 'success') result.borderBottomWidth = 0;
     if (name === 'coverBanner') result.backgroundColor = palette.lavender;
     if (name === 'illustrationCard') { result.backgroundColor = palette.sky; result.borderRadius = 32; }
     if (name === 'playBtn') result.backgroundColor = palette.mint;
@@ -159,6 +161,15 @@ export function resolveAppearanceStyles<T extends Record<string, object>>(styles
     }
     return [name, result];
   })) as T;
+}
+
+/** Mix a #rrggbb colour with black; anything else gets a translucent black lip. */
+export function darken(color: string, amount: number): string {
+  const match = /^#([0-9a-f]{6})$/i.exec(color.trim());
+  if (!match) return `rgba(0,0,0,${Math.min(0.4, amount)})`;
+  const n = parseInt(match[1], 16);
+  const channel = (shift: number) => Math.round(((n >> shift) & 255) * (1 - amount)).toString(16).padStart(2, '0');
+  return `#${channel(16)}${channel(8)}${channel(0)}`;
 }
 
 export interface AppearanceExtras {

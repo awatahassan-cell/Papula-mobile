@@ -95,7 +95,7 @@ const ParentGateContent: React.FC = () => {
                 style={[styles.btn, styles.cancelBtn]}
                 activeOpacity={0.8}
               >
-                <X size={16} color="#64748b" style={{ marginRight: 4 }} />
+                <X size={16} color="#64748b" style={{ marginEnd: 4 }} />
                 <Text style={styles.cancelBtnText}>پاشگەزبوونەوە</Text>
               </TouchableOpacity>
 
@@ -107,7 +107,7 @@ const ParentGateContent: React.FC = () => {
                 style={[styles.btn, styles.confirmBtn,!userAnswer.trim()&&{opacity:0.5}]}
                 activeOpacity={0.8}
               >
-                <Check size={16} color="#ffffff" style={{ marginRight: 4 }} />
+                <Check size={16} color="#ffffff" style={{ marginEnd: 4 }} />
                 <Text style={styles.confirmBtnText}>کردنەوە</Text>
               </TouchableOpacity>
             </View>
