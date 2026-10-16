@@ -1,5 +1,6 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { Text } from '../../components/RTLText';
 import { StrokeGuide, StrokePoint } from '../../services/types';

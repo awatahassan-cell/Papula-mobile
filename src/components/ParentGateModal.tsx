@@ -1,7 +1,8 @@
+import { TactileButton as TouchableOpacity } from './TactileButton';
 import { rtlProps, rtlLayout } from '../theme/rtl';
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import React, { useState } from 'react';
-import { Modal, View, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
+import { Modal, View, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
 import { Text, TextInput } from './RTLText';
 import { ShieldCheck, Check, X } from 'lucide-react-native';
 import {

@@ -1,5 +1,6 @@
+import { TactileButton as TouchableOpacity } from './TactileButton';
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
 import { Compass, BookOpen, Puzzle, Route } from 'lucide-react-native';
 import { useAppStore, AppRoute } from '../store/useAppStore';

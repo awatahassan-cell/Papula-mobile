@@ -1,5 +1,6 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import React, {useEffect,useState} from 'react';
-import {View,TouchableOpacity,ScrollView,StyleSheet,Switch} from 'react-native';
+import {View,ScrollView,StyleSheet,Switch} from 'react-native';
 import {Text,TextInput} from '../../components/RTLText';
 import {ArrowRight,ShieldCheck,TrendingUp,Palette,SlidersHorizontal,Check,Plus,Clock,Volume2,Moon,BookOpen,Star,Users,Sun,Clock3} from 'lucide-react-native';
 import {useAppStore} from '../../store/useAppStore';

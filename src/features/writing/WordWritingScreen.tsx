@@ -1,5 +1,6 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { BigButton } from '../../components/BigButton';
 import { Text } from '../../components/RTLText';
 import { normalizeIndependentWriting } from '../../services/foundationalLearning';

@@ -1,5 +1,6 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Text } from '../../components/RTLText';
 import { soundService } from '../../services/soundService';
 import { assembleSyllables, checkSyllableOrder, syllableRounds } from '../../services/syllables';

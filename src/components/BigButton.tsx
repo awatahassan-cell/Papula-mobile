@@ -1,12 +1,11 @@
+import { TactileButton as TouchableOpacity } from './TactileButton';
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { Animated, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { usePressScale } from './Motion';
+import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { Text } from './RTLText';
 import { useResponsive } from '../theme/responsive';
 import { soundService } from '../services/soundService';
 
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 interface BigButtonProps {
   children: React.ReactNode;
@@ -31,8 +30,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
 }) => {
   const styles = useThemeStyles(baseStyles);
   const { tablet } = useResponsive();
-  const press = usePressScale();
-  const { isNight, extras } = useAppearance();
+  const { isNight, extras, colors } = useAppearance();
   // At night the main buttons glow gold, as in the night design.
   const gold = isNight && (variant === 'success' || variant === 'primary');
   const handlePress = () => {
@@ -77,12 +75,10 @@ export const BigButton: React.FC<BigButtonProps> = ({
   };
 
   return (
-    <AnimatedTouchable
+    <TouchableOpacity
       accessibilityRole="button"
       accessibilityState={{ disabled }}
       onPress={handlePress}
-      onPressIn={press.onPressIn}
-      onPressOut={press.onPressOut}
       disabled={disabled}
       activeOpacity={0.8}
       style={[
@@ -90,10 +86,12 @@ export const BigButton: React.FC<BigButtonProps> = ({
         tablet && styles.tabletCentered,
         getVariantStyle(),
         getSizeStyle(),
+        { borderBottomWidth: 4, borderBottomColor: variant === 'danger' ? '#b91c1c' : colors.mintDark },
+        variant === 'secondary' && { backgroundColor: '#0878c7', borderBottomColor: '#095b95' },
         gold && { backgroundColor: extras.cta, shadowColor: extras.cta, shadowOpacity: 0.55, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } },
+        gold && { borderBottomColor: '#e5a91c' },
         disabled && styles.disabled,
         style,
-        { transform: [{ scale: press.scale }] },
       ]}
     >
       {icon && icon}
@@ -102,7 +100,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
       ) : (
         children
       )}
-    </AnimatedTouchable>
+    </TouchableOpacity>
   );
 };
 

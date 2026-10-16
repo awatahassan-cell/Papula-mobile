@@ -1,5 +1,6 @@
+import { TactileButton as TouchableOpacity } from './TactileButton';
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import { Check, Lock, Play, Star } from 'lucide-react-native';
 import { Text } from './RTLText';
 import { useAppStore } from '../store/useAppStore';

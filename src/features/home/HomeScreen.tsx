@@ -1,9 +1,9 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import React from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { ArrowLeft, BookOpen, Flame, PencilLine, Puzzle, Settings, Sprout, Star } from 'lucide-react-native';
 import { Text } from '../../components/RTLText';
 import { AdventureMap } from '../../components/AdventureMap';
-import { PapulaMascot } from '../../components/PapulaMascot';
 import { useAppStore, AppRoute } from '../../store/useAppStore';
 import { dueReviewLetters } from '../../services/learningEngine';
 import { lessonChecklist, lessonPath, nextLessonLetter } from '../../services/lessonPath';
@@ -54,22 +54,21 @@ export const HomeScreen: React.FC = () => {
   </View>;
   const activities = <View style={s.tiles}>{ACTIVITIES.slice(0, tablet ? 4 : 2).map(({ route, title, hint, Icon, color, shadow }) =>
     <TouchableOpacity key={route} accessibilityRole="button" accessibilityLabel={title} activeOpacity={0.85} onPress={() => open(route)} style={[s.tile, { backgroundColor: color, borderBottomColor: shadow }]}>
-      <View style={s.tileIcon}><Icon size={29} color="#fff" strokeWidth={2.3} /></View>
-      <Text style={s.tileTitle}>{title}</Text><Text style={s.tileHint}>{hint}</Text>
+      <View style={s.tileIcon}><Icon size={29} color="#fff" strokeWidth={2.3} /></View><View style={s.flex}><Text style={s.tileTitle}>{title}</Text><Text style={s.tileHint}>{hint}</Text></View>
     </TouchableOpacity>)}</View>;
 
   return <ScrollView contentContainerStyle={[s.page, { maxWidth: pageMax }]}>
     <View style={s.header}>
-      <View style={s.brand}><PapulaMascot size={37} /><Text style={[s.brandText, { color: isNight ? '#d3baff' : '#7436d8' }]}>پەپوولە</Text></View>
+      <View style={s.brand}><Text style={[s.brandText, { color: isNight ? '#d3baff' : '#7436d8' }]}>پەپوولە</Text></View>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={`${currentProfile.stars} ئەستێرە، ستیکەرەکانم`} onPress={() => open('stickers')} style={s.stars}><Star size={20} color="#9b6000" fill="#ffcc26" /><Text style={s.starCount}>{currentProfile.stars}</Text></TouchableOpacity>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="ڕێکخستنەکانی دایک و باوک" onPress={() => openParentGateWithCallback(() => setRoute('parent-dashboard'))} style={[s.settings, { backgroundColor: c.paper }]}><Settings size={21} color={c.muted} /></TouchableOpacity>
     </View>
-    <View style={s.greetingRow}><View style={s.flex}><Text testID="home-greeting" style={[s.greeting, ink]}>سڵاو {currentProfile.name}!</Text><Text style={[s.subtitle, muted]}>ئامادەیت بۆ گەشتێکی نوێ؟</Text></View><View style={[s.unit, { backgroundColor: c.lavender }]}><Sprout size={19} color={c.mint} /><Text style={[s.unitText, { color: c.mint }]}>بەشی {Math.min(6, Math.floor(completed / 6) + 1)}</Text></View></View>
+    <View style={s.greetingRow}><View style={s.flex}><Text testID="home-greeting" style={[s.greeting, ink]}>سڵاو {currentProfile.name}!</Text><Text style={[s.subtitle, muted]}>ئامادەیت بۆ گەشتێکی نوێ؟</Text></View><View style={[s.unit, { backgroundColor: c.paper }]}><Sprout size={19} color={c.mint} /><Text style={[s.unitText, { color: c.mint }]}>بەشی {Math.min(6, Math.floor(completed / 6) + 1)}</Text></View></View>
     <View style={[s.content, wide && s.columns]}>
       <View style={[s.stack, s.flex]}><AdventureMap nodes={path.slice(start, start + 3)} isNight={isNight} onOpen={openNode} onAll={() => open('alphabet')} />
         <View style={s.summary}><View style={s.summaryItem}><Flame size={17} color={isNight ? '#ffb84d' : '#bd4919'} /><Text style={[s.caption, muted]}>{currentProfile.streakDays} ڕۆژ بەردەوام</Text></View><Text style={[s.caption, muted]}>{completed} لە {path.length} پیت</Text></View>
       </View>
-      <View style={[s.stack, s.flex]}>{lesson}{activities}</View>
+      <View style={[s.stack, s.flex]}>{lesson}<Text style={[s.sectionTitle, ink]}>با زیاتر فێر بین</Text>{activities}</View>
     </View>
     <View style={[s.goal, { backgroundColor: c.paper, borderColor: c.edge }]}>
       <View style={s.summary}><Text style={[s.goalTitle, ink]}>ئەرکەکانی ئەمڕۆ</Text><Text style={[s.caption, muted]}>{missionsDone} لە {missions.length}</Text></View>
@@ -79,14 +78,15 @@ export const HomeScreen: React.FC = () => {
   </ScrollView>;
 };
 const s = StyleSheet.create({
-  page: { width: '100%', alignSelf: 'center', padding: 16, paddingBottom: 28, gap: 18 },
+  page: { width: '100%', alignSelf: 'center', padding: 17, paddingTop: 20, paddingBottom: 28, gap: 14 },
   flex: { flex: 1, minWidth: 0 }, stack: { gap: 12 }, content: { gap: 16 }, columns: { flexDirection: 'row', alignItems: 'flex-start', gap: 22 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 10 }, brand: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 3 }, brandText: { fontSize: 25, fontFamily: 'IBMPlexSansArabic_700Bold' },
-  stars: { minHeight: 44, paddingHorizontal: 12, backgroundColor: '#fff0a3', borderRadius: 17, flexDirection: 'row', alignItems: 'center', gap: 6 }, starCount: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16, color: '#80500b' }, settings: { width: 44, height: 44, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+  stars: { minHeight: 44, paddingHorizontal: 12, backgroundColor: '#ffe46a', borderWidth: 2, borderColor: '#ffd02d', borderRadius: 16, flexDirection: 'row', alignItems: 'center', gap: 6 }, starCount: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16, color: '#80500b' }, settings: { width: 44, height: 44, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
   greetingRow: { flexDirection: 'row', alignItems: 'center', gap: 10 }, greeting: { fontSize: 23, fontFamily: 'IBMPlexSansArabic_700Bold' }, subtitle: { fontSize: 13, fontFamily: 'IBMPlexSansArabic_400Regular' }, unit: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 7, gap: 5, borderRadius: 14 }, unitText: { fontSize: 12, fontFamily: 'IBMPlexSansArabic_700Bold' },
-  lesson: { padding: 16, borderRadius: 26, borderWidth: 1, borderBottomWidth: 4, gap: 15 }, lessonRow: { flexDirection: 'row', alignItems: 'center', gap: 12 }, letterTile: { width: 60, height: 64, borderRadius: 21, backgroundColor: '#ff795d', borderBottomWidth: 4, borderBottomColor: '#df503c', alignItems: 'center', justifyContent: 'center' }, letter: { color: '#57261c', fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 35, textAlign: 'center' }, caption: { fontSize: 12, fontFamily: 'IBMPlexSansArabic_500Medium' }, lessonTitle: { fontSize: 20, fontFamily: 'IBMPlexSansArabic_700Bold', lineHeight: 33 },
+  lesson: { padding: 16, borderRadius: 27, borderWidth: 1, gap: 12 }, lessonRow: { flexDirection: 'row', alignItems: 'center', gap: 12 }, letterTile: { width: 60, height: 64, borderRadius: 21, backgroundColor: '#ff795d', borderBottomWidth: 4, borderBottomColor: '#df503c', alignItems: 'center', justifyContent: 'center' }, letter: { color: '#57261c', fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 35, textAlign: 'center' }, caption: { fontSize: 12, fontFamily: 'IBMPlexSansArabic_500Medium' }, lessonTitle: { fontSize: 20, fontFamily: 'IBMPlexSansArabic_700Bold', lineHeight: 33 },
   cta: { minHeight: 58, paddingHorizontal: 14, paddingVertical: 8, backgroundColor: '#ffd43b', borderBottomWidth: 5, borderBottomColor: '#e5a91c', borderRadius: 19, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 }, ctaText: { color: '#5a3a0a', fontSize: 18, fontFamily: 'IBMPlexSansArabic_700Bold', flexShrink: 1, textAlign: 'center' },
   progressRow: { flexDirection: 'row', alignItems: 'center', gap: 10 }, steps: { flex: 1, flexDirection: 'row', gap: 5 }, step: { flex: 1, height: 7, borderRadius: 4 },
-  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 }, tile: { flexGrow: 1, width: '46%', borderRadius: 23, padding: 14, minHeight: 142, borderBottomWidth: 5, gap: 4 }, tileIcon: { backgroundColor: '#ffffff25', width: 46, height: 46, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 3 }, tileTitle: { color: '#fff', fontSize: 17, fontFamily: 'IBMPlexSansArabic_700Bold' }, tileHint: { color: '#fff', fontSize: 12, fontFamily: 'IBMPlexSansArabic_400Regular' },
+  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 }, tile: { flexGrow: 1, width: '46%', borderRadius: 23, padding: 14, minHeight: 88, borderBottomWidth: 5, gap: 10, flexDirection: 'row', alignItems: 'center' }, tileIcon: { backgroundColor: '#ffffff25', width: 40, height: 40, borderRadius: 14, alignItems: 'center', justifyContent: 'center', marginBottom: 3 }, tileTitle: { color: '#fff', fontSize: 16, fontFamily: 'IBMPlexSansArabic_700Bold' }, tileHint: { color: '#fff', fontSize: 11, fontFamily: 'IBMPlexSansArabic_400Regular' },
+  sectionTitle: { fontSize: 15, fontFamily: 'IBMPlexSansArabic_600SemiBold', marginTop: 2 },
   summary: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }, summaryItem: { flexDirection: 'row', alignItems: 'center', gap: 5 }, goal: { padding: 16, borderRadius: 23, borderWidth: 1, gap: 10 }, goalTitle: { fontSize: 15, fontFamily: 'IBMPlexSansArabic_700Bold' }, track: { height: 10, borderRadius: 6, overflow: 'hidden' }, fill: { height: '100%', backgroundColor: '#21b977', borderRadius: 6 }, review: { flexDirection: 'row', alignItems: 'center', padding: 16, gap: 10, borderRadius: 23 },
 });

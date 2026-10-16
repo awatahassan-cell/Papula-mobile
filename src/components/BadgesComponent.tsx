@@ -150,7 +150,7 @@ const baseStyles = StyleSheet.create({
   },
   header: {
     marginBottom: 16,
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
   },
   title: {
     fontSize: 20,

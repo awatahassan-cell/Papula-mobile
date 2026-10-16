@@ -1,5 +1,6 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import React, {useEffect,useRef,useState} from 'react';
-import {View,TouchableOpacity} from 'react-native';
+import {View} from 'react-native';
 import {Mic, Square, Play, ChevronDown, ChevronUp} from 'lucide-react-native';
 import {Text} from '../../components/RTLText';
 import {voiceRecorderService} from '../../services/voiceRecorderService';

@@ -1,8 +1,9 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
 import { LetterVoicePractice } from './LetterVoicePractice';
 import { LetterFormsLesson } from '../learning/LetterFormsLesson';
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, View, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { Image, View, ScrollView, StyleSheet } from 'react-native';
 import { Text } from '../../components/RTLText';
 import { Volume2, Headphones, Shapes, Images, Target, PencilLine, Check, Sparkles, Sprout, BookOpen, ArrowLeft } from 'lucide-react-native';
 import { LetterItem } from '../../services/types';

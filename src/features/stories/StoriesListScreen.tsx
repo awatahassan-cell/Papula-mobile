@@ -1,6 +1,7 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useResponsive } from '../../theme/responsive';
 import React,{useEffect,useState} from 'react';
-import {FlatList,Image,View,TouchableOpacity,StyleSheet,ScrollView} from 'react-native';
+import {FlatList,Image,View,StyleSheet,ScrollView} from 'react-native';
 import {Text} from '../../components/RTLText';
 import {BookOpen,Shapes,Headphones,ArrowLeft,Check,Lock,Sparkles,WholeWord} from 'lucide-react-native';
 import {useAppearance,useThemeStyles} from '../../theme/useAppearance';

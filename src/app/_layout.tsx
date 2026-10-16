@@ -5,8 +5,7 @@ import { rtlProps, rtlLayout } from '../theme/rtl';
 import { View, StyleSheet, StatusBar, ActivityIndicator, I18nManager } from 'react-native';
 import { Text } from '../components/RTLText';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { useFonts } from '@expo-google-fonts/ibm-plex-sans-arabic';
-import { Vazirmatn_400Regular, Vazirmatn_500Medium, Vazirmatn_600SemiBold, Vazirmatn_700Bold } from '@expo-google-fonts/vazirmatn';
+import { useFonts, IBMPlexSansArabic_400Regular, IBMPlexSansArabic_500Medium, IBMPlexSansArabic_600SemiBold, IBMPlexSansArabic_700Bold } from '@expo-google-fonts/ibm-plex-sans-arabic';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
   IBMPlexSans_400Regular,
@@ -88,7 +87,7 @@ const MainRouter: React.FC = () => {
           <GardenPageHeader />
           <View style={[styles.screenContainer, isGarden && { backgroundColor: 'transparent' }]}>
             <ThemeProvider value={TRANSPARENT_THEME}>
-              <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
+              <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: 'transparent', ...rtlLayout } }} />
             </ThemeProvider>
           </View>
           {!tablet && <GardenNavigation />}
@@ -109,11 +108,10 @@ const MainRouter: React.FC = () => {
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    // Vazirmatn (full Kurdish coverage) is registered under the names every style sheet already uses.
-    IBMPlexSansArabic_400Regular: Vazirmatn_400Regular,
-    IBMPlexSansArabic_500Medium: Vazirmatn_500Medium,
-    IBMPlexSansArabic_600SemiBold: Vazirmatn_600SemiBold,
-    IBMPlexSansArabic_700Bold: Vazirmatn_700Bold,
+    IBMPlexSansArabic_400Regular,
+    IBMPlexSansArabic_500Medium,
+    IBMPlexSansArabic_600SemiBold,
+    IBMPlexSansArabic_700Bold,
     IBMPlexSans_400Regular,
     IBMPlexSans_600SemiBold,
     IBMPlexSans_700Bold,

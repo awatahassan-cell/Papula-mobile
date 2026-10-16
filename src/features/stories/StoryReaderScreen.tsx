@@ -1,10 +1,11 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import { mockLetters } from '../../data/mockLetters';
 import { LEARNING_PAGE_PAUSE_MS } from '../../services/storyPlayback';
 import { StorySequence } from '../learning/StorySequence';
 import { readableText } from '../../services/foundationalLearning';
 import React, { useState, useEffect, useRef } from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { ResponsiveStoryImage } from '../../components/ResponsiveStoryImage';
 import { Text } from '../../components/RTLText';
 import {

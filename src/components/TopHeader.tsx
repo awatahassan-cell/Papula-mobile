@@ -1,5 +1,6 @@
+import { TactileButton as TouchableOpacity } from './TactileButton';
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { ArrowRight, Settings, Volume2, VolumeX, Square, Star, Flame } from 'lucide-react-native';
 import { Text } from './RTLText';
 import { PapulaMascot } from './PapulaMascot';

@@ -1,6 +1,7 @@
+import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, TextInput } from '../../components/RTLText';
 import { BigButton } from '../../components/BigButton';
 import { soundService } from '../../services/soundService';
@@ -172,7 +173,7 @@ const baseStyles = StyleSheet.create({
   section: {
     width: '100%',
     marginBottom: 16,
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
   },
   label: {
     fontSize: 13,
