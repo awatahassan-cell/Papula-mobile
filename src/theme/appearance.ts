@@ -67,6 +67,29 @@ const gardenColorMap: Record<string, string> = {
   '#38bdf8': '#3289a5', '#eaf2f8': gardenColors.sky, '#e0f2fe': gardenColors.sky,
 };
 
+
+const hexRgb = (hex: string) => /^#[0-9a-f]{6}$/i.test(hex) ? [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)) : null;
+const relativeLuminance = ([r, g, b]: number[]) => [r, g, b].map(v => v / 255).map(v => v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+/**
+ * Night-mode safety net for colours no table knows: a pale fill becomes a deep tint of the palette, a pale
+ * border becomes the palette edge, and neutral dark text becomes the light ink. Saturated dark text (red errors,
+ * green ticks) keeps its hue but is lightened.
+ */
+function nightFallback(key: string, value: string, palette: AppearanceColors): string {
+  const rgb = hexRgb(value);
+  if (!rgb) return value;
+  const light = relativeLuminance(rgb);
+  const neutral = (Math.max(...rgb) - Math.min(...rgb)) / 255 < 0.25;
+  if (/backgroundColor$/i.test(key) && light > 0.72) return palette.lavender;
+  if (/border.*Color$/i.test(key) && light > 0.72) return palette.edge;
+  if (key === 'color' && light < 0.22) {
+    if (neutral) return palette.ink;
+    // Keep the hue (green tick, red error) but lift it so it reads on a dark card.
+    return '#' + rgb.map(v => Math.round(v + (255 - v) * 0.62).toString(16).padStart(2, '0')).join('');
+  }
+  return value;
+}
+
 export function resolveAppearanceStyles<T extends Record<string, object>>(styles: T, theme: unknown = 'cloud', mode: ResolvedMode = 'day'): T {
   const palette = getAppearanceColors(theme, mode);
   const night = mode === 'night';
@@ -90,8 +113,9 @@ export function resolveAppearanceStyles<T extends Record<string, object>>(styles
     for (const [key, value] of Object.entries(result)) {
       if (typeof value === 'string' && /color$/i.test(key)) {
         // Inverted text on filled controls must remain white for contrast.
-        result[key] = key === 'color' && ['#fff', '#ffffff'].includes(value.toLowerCase())
+        const mapped = key === 'color' && ['#fff', '#ffffff'].includes(value.toLowerCase())
           ? '#ffffff' : replacements[(gardenColorMap[value.toLowerCase()] ?? value).toLowerCase()] ?? gardenColorMap[value.toLowerCase()] ?? value;
+        result[key] = night && mapped === value ? nightFallback(key, value, palette) : mapped;
       }
     }
     if (typeof result.fontFamily === 'string' && result.fontFamily.includes('IBM Plex Sans Arabic')) {
