@@ -1,12 +1,10 @@
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { Animated, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { usePressScale } from './Motion';
+import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { usePressSink } from './Motion';
 import { Text } from './RTLText';
 import { useResponsive } from '../theme/responsive';
 import { soundService } from '../services/soundService';
-
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 interface BigButtonProps {
   children: React.ReactNode;
@@ -31,7 +29,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
 }) => {
   const styles = useThemeStyles(baseStyles);
   const { tablet } = useResponsive();
-  const press = usePressScale();
+  const press = usePressSink();
   const { isNight, extras } = useAppearance();
   // At night the main buttons glow gold, as in the night design.
   const gold = isNight && (variant === 'success' || variant === 'primary');
@@ -77,14 +75,14 @@ export const BigButton: React.FC<BigButtonProps> = ({
   };
 
   return (
-    <AnimatedTouchable
+    <TouchableOpacity
       accessibilityRole="button"
       accessibilityState={{ disabled }}
       onPress={handlePress}
       onPressIn={press.onPressIn}
       onPressOut={press.onPressOut}
       disabled={disabled}
-      activeOpacity={0.8}
+      activeOpacity={0.9}
       style={[
         styles.buttonBase,
         tablet && styles.tabletCentered,
@@ -93,7 +91,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
         gold && { backgroundColor: extras.cta, shadowColor: extras.cta, shadowOpacity: 0.55, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } },
         disabled && styles.disabled,
         style,
-        { transform: [{ scale: press.scale }] },
+        press.sinkStyle,
       ]}
     >
       {icon && icon}
@@ -102,7 +100,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
       ) : (
         children
       )}
-    </AnimatedTouchable>
+    </TouchableOpacity>
   );
 };
 
@@ -113,7 +111,8 @@ const baseStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 24,
+    borderRadius: 999,
+    minHeight: 54,
     gap: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -144,21 +143,22 @@ const baseStyles = StyleSheet.create({
   sizeSm: {
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 16,
+    minHeight: 44,
+    borderRadius: 999,
   },
   sizeMd: {
     paddingHorizontal: 18,
     paddingVertical: 12,
-    borderRadius: 20,
+    borderRadius: 999,
   },
   sizeLg: {
     paddingHorizontal: 24,
     paddingVertical: 16,
-    borderRadius: 24,
+    borderRadius: 999,
   },
   textBase: {
-    fontWeight: '900',
-    fontSize: 16,
+    fontFamily: 'IBMPlexSansArabic_700Bold',
+    fontSize: 18,
     textAlign: 'center',
   },
   textLight: {

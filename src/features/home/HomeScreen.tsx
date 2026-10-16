@@ -7,6 +7,7 @@ import { Glass } from '../../components/Glass';
 import { gardenMascot } from '../../components/GardenArtwork';
 import { ProgressRing } from '../../components/ProgressRing';
 import { JourneyMap, MapNode } from '../../components/JourneyMap';
+import { SinkTouchable } from '../../components/SinkTouchable';
 import { Breathe, RiseIn } from '../../components/Motion';
 import { useAppStore, AppRoute } from '../../store/useAppStore';
 import { dueReviewLetters } from '../../services/learningEngine';
@@ -77,9 +78,9 @@ export const HomeScreen: React.FC = () => {
         <Text style={s.ringText}>{stepsDone} هەنگاو لە ٥ تەواو بووە</Text>
       </View>}
       <Breathe style={s.ctaWrap}>
-        <TouchableOpacity accessibilityRole="button" accessibilityLabel={next ? `دەستپێکردنی وانەی پیتی ${next.glyph}` : 'دووبارەکردنەوە'} activeOpacity={0.85} onPress={startLesson} style={[s.cta, { backgroundColor: extras.cta }]}>
+        <SinkTouchable accessibilityRole="button" accessibilityLabel={next ? `دەستپێکردنی وانەی پیتی ${next.glyph}` : 'دووبارەکردنەوە'} activeOpacity={0.85} onPress={startLesson} style={[s.cta, { backgroundColor: extras.cta }]}>
           <Text style={[s.ctaText, { color: extras.ctaText }]}>{next ? (stepsDone > 0 ? 'بەردەوام بین' : 'دەست پێ بکەین') : 'دووبارە بکەوە'}</Text>
-        </TouchableOpacity>
+        </SinkTouchable>
       </Breathe>
     </LinearGradient>
   </View>;
@@ -124,9 +125,9 @@ export const HomeScreen: React.FC = () => {
       <Text style={[s.barTitle, text]}>{next ? `پیتی «${next.glyph}»` : 'ئافەرم!'}</Text>
       <View style={s.steps}>{[0, 1, 2, 3, 4].map(i => <View key={i} style={[s.step, { backgroundColor: i < stepsDone ? '#5eead4' : 'rgba(255,255,255,0.2)' }]} />)}</View>
     </View>
-    <Breathe><TouchableOpacity accessibilityRole="button" accessibilityLabel={next ? `دەستپێکردنی وانەی پیتی ${next.glyph}` : 'دووبارەکردنەوە'} activeOpacity={0.85} onPress={startLesson} style={[s.goldButton, { backgroundColor: extras.cta }]}>
+    <Breathe><SinkTouchable accessibilityRole="button" accessibilityLabel={next ? `دەستپێکردنی وانەی پیتی ${next.glyph}` : 'دووبارەکردنەوە'} activeOpacity={0.85} onPress={startLesson} style={[s.goldButton, { backgroundColor: extras.cta }]}>
       <Text style={[s.ctaText, { color: extras.ctaText }]}>{next ? 'دەست پێ بکە' : 'دووبارە'}</Text>
-    </TouchableOpacity></Breathe>
+    </SinkTouchable></Breathe>
   </Glass>;
 
   const pathStrip = <Glass style={s.pathStrip}>

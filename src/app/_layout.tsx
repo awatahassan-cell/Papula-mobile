@@ -86,9 +86,9 @@ const MainRouter: React.FC = () => {
         {tablet && <GardenNavigation />}
         <View style={styles.main}>
           <GardenPageHeader />
-          <View style={[styles.screenContainer, isGarden && { backgroundColor: 'transparent' }]}>
+          <View {...rtlProps} style={[styles.screenContainer, rtlLayout, isGarden && { backgroundColor: 'transparent' }]}>
             <ThemeProvider value={TRANSPARENT_THEME}>
-              <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
+              <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: 'transparent', ...rtlLayout } }} />
             </ThemeProvider>
           </View>
           {!tablet && <GardenNavigation />}

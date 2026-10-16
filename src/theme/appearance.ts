@@ -174,9 +174,9 @@ export interface AppearanceExtras {
   glow: string;
 }
 const EXTRAS: Record<AppearanceTheme, { day: Omit<AppearanceExtras, 'cta' | 'ctaText' | 'glass' | 'glassEdge' | 'glow'>; night: Omit<AppearanceExtras, 'cta' | 'ctaText' | 'glass' | 'glassEdge' | 'glow'> }> = {
-  cloud: { day: { gradient: ['#f3ecff', '#e4f5fb', '#fff0e6'], hero: ['#7c5cff', '#4ea8ff'] }, night: { gradient: ['#120f55', '#231c80', '#3b2a96'], hero: ['#5a3fd6', '#7c5cff'] } },
-  lagoon: { day: { gradient: ['#e3f6f8', '#e4eeff', '#fff1e8'], hero: ['#0a7c93', '#3fb6a8'] }, night: { gradient: ['#05202c', '#0a3a4d', '#12506a'], hero: ['#08657a', '#0b8aa6'] } },
-  blossom: { day: { gradient: ['#ffeff5', '#f6e8ff', '#e6f2fa'], hero: ['#c23a74', '#f08a5d'] }, night: { gradient: ['#1f0a33', '#35134f', '#53206e'], hero: ['#992b5a', '#c23a74'] } },
+  cloud: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#7c5cff', '#4ea8ff'] }, night: { gradient: ['#120f55', '#231c80', '#3b2a96'], hero: ['#5a3fd6', '#7c5cff'] } },
+  lagoon: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#0a7c93', '#3fb6a8'] }, night: { gradient: ['#05202c', '#0a3a4d', '#12506a'], hero: ['#08657a', '#0b8aa6'] } },
+  blossom: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#c23a74', '#f08a5d'] }, night: { gradient: ['#1f0a33', '#35134f', '#53206e'], hero: ['#992b5a', '#c23a74'] } },
 };
 export const getAppearanceExtras = (theme: unknown, mode: ResolvedMode = 'day'): AppearanceExtras => {
   const base = EXTRAS[normalizeAppearanceTheme(theme)][mode];
