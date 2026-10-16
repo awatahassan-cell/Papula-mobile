@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { normalizeAppearanceTheme } from '../theme/appearance';
+import { normalizeAppearanceMode, normalizeAppearanceTheme } from '../theme/appearance';
 import { mockLetters } from '../data/mockLetters';
 import { mockStories } from '../data/mockStories';
 import { letterStories } from '../data/letterStories';
@@ -41,7 +41,8 @@ export const defaultChildProfile: ChildProfile = {
 };
 
 export const defaultParentSettings: ParentSettings = {
-  appearanceTheme: 'garden',
+  appearanceTheme: 'cloud',
+  appearanceMode: 'auto',
   dailyLimitMinutes: 30,
   bedtimeLockEnabled: false,
   soundFxEnabled: true,
@@ -196,7 +197,7 @@ export class MobileAuthRepository implements AuthRepository {
       const data = await AsyncStorage.getItem(PARENT_SETTINGS_KEY);
       if (data) {
         const stored = JSON.parse(data);
-        cachedSettings = { ...defaultParentSettings, ...stored, appearanceTheme: normalizeAppearanceTheme(stored.appearanceTheme) };
+        cachedSettings = { ...defaultParentSettings, ...stored, appearanceTheme: normalizeAppearanceTheme(stored.appearanceTheme), appearanceMode: normalizeAppearanceMode(stored.appearanceMode) };
         return cachedSettings!;
       }
     } catch {

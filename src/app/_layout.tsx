@@ -35,7 +35,7 @@ try {
 }
 
 const MainRouter: React.FC = () => {
-  const { isGarden, colors: appearanceColors } = useAppearance();
+  const { isGarden, isNight, colors: appearanceColors } = useAppearance();
   const {
     route,
     parentSettings,
@@ -75,7 +75,7 @@ const MainRouter: React.FC = () => {
 
   return (
     <SafeAreaView {...rtlProps} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={isGarden ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}>
-      <StatusBar barStyle="dark-content" backgroundColor={isGarden ? appearanceColors.background : '#ffffff'} />
+      <StatusBar barStyle={isNight ? 'light-content' : 'dark-content'} backgroundColor={isGarden ? appearanceColors.background : '#ffffff'} />
       {route !== 'onboarding' && <TopHeader />}
       {/* Phones: tab bar under the content. Tablets: a rail on the right (first child of an RTL row). */}
       <View style={[styles.body, tablet && styles.bodyRow]}>
@@ -83,7 +83,7 @@ const MainRouter: React.FC = () => {
         <View style={styles.main}>
           <GardenPageHeader />
           <View style={[styles.screenContainer, isGarden && { backgroundColor: 'transparent' }]}>
-            <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
+            <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: appearanceColors.background } }} />
           </View>
           {!tablet && <GardenNavigation />}
         </View>

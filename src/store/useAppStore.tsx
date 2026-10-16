@@ -122,7 +122,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const [parentSettings, setParentSettings] = useState<ParentSettings>({
-    appearanceTheme: 'garden',
+    appearanceTheme: 'cloud',
+    appearanceMode: 'auto',
     dailyLimitMinutes: 30,
     bedtimeLockEnabled: false,
     soundFxEnabled: true,

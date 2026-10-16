@@ -1,5 +1,5 @@
 import { rtlProps, rtlLayout } from '../../theme/rtl';
-import { useThemeStyles } from '../../theme/useAppearance';
+import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import { assessWriting, advanceWriting, normalizeIndependentWriting, writingMastered, suggestedWritingMode } from '../../services/foundationalLearning';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, PanResponder, Modal } from 'react-native';
@@ -30,6 +30,7 @@ const Stroke: React.FC<{ points: StrokePoint[]; color: string; width: number }> 
 
 export const WritingScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
+  const { colors } = useAppearance();
   const { selectedLetter, setSelectedLetter, setRoute, saveWritingScore, currentProfile } = useAppStore();
   const [letter, setLetter] = useState(selectedLetter || mockLetters[0]);
   const [mode,setMode]=useState<WritingMode>(()=>suggestedWritingMode(currentProfile.writingProgress?.[(selectedLetter||mockLetters[0]).id]));
@@ -185,7 +186,7 @@ export const WritingScreen: React.FC = () => {
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="پیتی دواتر" disabled={!hasNext || busy}
         style={[styles.arrow, !hasNext && styles.disabled]} onPress={() => selectLetter(index + 1)}><Text style={styles.arrowText}>←</Text></TouchableOpacity>
     </View>
-    <View style={[styles.tools, split && styles.toolsCompact]}>{(['trace','copy','independent'] as const).map((value,i)=><TouchableOpacity key={value} accessibilityRole="button" accessibilityState={{selected:mode===value}} disabled={busy || (value==='copy'&&!currentProfile.writingProgress?.[letter.id]?.tracePassed) || (value==='independent'&&!currentProfile.writingProgress?.[letter.id]?.copyPassed)} style={[styles.tool,split&&{minHeight:46},mode===value&&{backgroundColor:'#bbf7d0'}]} onPress={()=>changeMode(value)}><Text style={styles.toolText}>{['١. لەسەر ڕێنما','٢. بە نموونە','٣. سەربەخۆ'][i]}</Text></TouchableOpacity>)}</View>
+    <View style={[styles.tools, split && styles.toolsCompact]}>{(['trace','copy','independent'] as const).map((value,i)=><TouchableOpacity key={value} accessibilityRole="button" accessibilityState={{selected:mode===value}} disabled={busy || (value==='copy'&&!currentProfile.writingProgress?.[letter.id]?.tracePassed) || (value==='independent'&&!currentProfile.writingProgress?.[letter.id]?.copyPassed)} style={[styles.tool,split&&{minHeight:46},mode===value&&{backgroundColor:colors.leaf,borderWidth:2,borderColor:colors.mint}]} onPress={()=>changeMode(value)}><Text style={styles.toolText}>{['١. لەسەر ڕێنما','٢. بە نموونە','٣. سەربەخۆ'][i]}</Text></TouchableOpacity>)}</View>
     <Text style={styles.stage}>{STAGE_TITLES[mode]}</Text>
     <Text style={styles.instruction}>{mode==='trace'?guide?.instructionKu:mode==='copy'?'نموونەکە سەیر بکە و لە بۆردە بەتاڵەکە بینووسە.':'بەبێ ڕێنما پیتەکە بنووسە؛ هەموو هێڵ و خاڵەکانی بیر بکەرەوە.'}</Text>
     {split ? <View style={styles.split}><View style={styles.splitBoard}>

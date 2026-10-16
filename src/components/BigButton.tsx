@@ -1,9 +1,12 @@
 import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { Animated, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { usePressScale } from './Motion';
 import { Text } from './RTLText';
 import { useResponsive } from '../theme/responsive';
 import { soundService } from '../services/soundService';
+
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 interface BigButtonProps {
   children: React.ReactNode;
@@ -28,6 +31,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
 }) => {
   const styles = useThemeStyles(baseStyles);
   const { tablet } = useResponsive();
+  const press = usePressScale();
   const handlePress = () => {
     if (disabled) return;
     soundService.playPop();
@@ -70,10 +74,12 @@ export const BigButton: React.FC<BigButtonProps> = ({
   };
 
   return (
-    <TouchableOpacity
+    <AnimatedTouchable
       accessibilityRole="button"
       accessibilityState={{ disabled }}
       onPress={handlePress}
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
       disabled={disabled}
       activeOpacity={0.8}
       style={[
@@ -83,6 +89,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
         getSizeStyle(),
         disabled && styles.disabled,
         style,
+        { transform: [{ scale: press.scale }] },
       ]}
     >
       {icon && icon}
@@ -91,7 +98,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
       ) : (
         children
       )}
-    </TouchableOpacity>
+    </AnimatedTouchable>
   );
 };
 

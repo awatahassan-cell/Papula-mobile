@@ -486,7 +486,7 @@ const baseStyles = StyleSheet.create({
     marginBottom: 16,
     width:'100%',maxWidth:620,alignSelf:'center',
   },
-  storyParagraph: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 26, lineHeight: 46, textAlign: 'right', writingDirection: 'rtl', direction: 'rtl', width: '100%' },
+  storyParagraph: { color: '#1e293b', fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 26, lineHeight: 46, textAlign: 'right', writingDirection: 'rtl', direction: 'rtl', width: '100%' },
   wordsWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',

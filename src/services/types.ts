@@ -187,7 +187,10 @@ export interface LetterReview {
 }
 
 export interface ParentSettings {
-  appearanceTheme?: 'classic' | 'garden' | 'sky' | 'lavender' | 'rose' | 'sunset';
+  /** Colour palette chosen by a parent: cloud, lagoon or blossom (older saved names are migrated). */
+  appearanceTheme?: 'cloud' | 'lagoon' | 'blossom' | 'classic' | 'garden' | 'sky' | 'lavender' | 'rose' | 'sunset';
+  /** Day, night, or follow the clock (night from 19:00 to 06:00). */
+  appearanceMode?: 'day' | 'night' | 'auto';
   dailyLimitMinutes: number;
   bedtimeLockEnabled: boolean;
   soundFxEnabled: boolean;

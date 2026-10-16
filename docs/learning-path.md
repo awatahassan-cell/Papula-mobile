@@ -40,3 +40,16 @@ A letter is no longer judged by the stroke path alone. `assessWriting` builds a 
 Three stars (mastery) need the shape check, every part present, no misplaced or duplicate dots, adequate size and tidiness, and an overall score of 75 or more. The thresholds and the tremor tolerance are heuristics and should be tuned with real children's handwriting.
 
 Word and sentence writing (`/word-writing`): the child writes a word, or a two-word sentence, one letter at a time. Each letter is checked with the same rubric and must pass before the next one opens; a miss feeds the spaced-review queue. Words are offered only when all their letters are known (lesson finished or tracing passed). Tips are screen text only; they have no recorded narration.
+
+## Appearance: day, night and three palettes
+
+Parents choose the look in **Parent dashboard → ڕەنگەکان**:
+
+- **Mode:** ڕۆژ (day, soft "cloud" look), شەو (night, dark starry look) or خۆکار (night from 19:00 to 06:00, evaluated whenever a screen renders).
+- **Palette:** three colour families, each with a day and a night version — هەوری بنەوشەیی (`cloud`, default), دەریا (`lagoon`) and گوڵی ئاڵ (`blossom`).
+
+Older saved names migrate: garden/classic/lavender → cloud, sky → lagoon, rose/sunset → blossom. Unknown values fall back to cloud / auto. Child progress is never touched.
+
+How it works: style sheets keep their original colours; `resolveAppearanceStyles` (src/theme/appearance.ts) replaces them with the chosen palette and applies the shape language — large 30 px cards with a hairline edge and a soft coloured shadow, 28 px buttons with a glow, no chunky bottom borders. The writing sheet stays light in every mode so pen colours and guides keep their contrast. In night mode pale feedback tints (correct / retry) become deep tints.
+
+Motion (`src/components/Motion.tsx`): a slow "breathing" pulse on the main call to action, content that rises in when the home screen appears, a spring squish on every `BigButton`, and the floating mascot. All of it stops when the device asks for reduced motion.
