@@ -106,7 +106,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   });
 
   const profileRef = useRef(currentProfile);
-  profileRef.current = currentProfile;
+  useEffect(() => { profileRef.current = currentProfile; }, [currentProfile]);
 
   const setSelectedLetter = (letter: LetterItem | null) => {
     if (!letter || isLessonUnlocked(profileRef.current, letter.id)) setSelectedLetterState(letter);
@@ -204,6 +204,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
 
     loadInitialData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- load persisted data once on mount
   }, []);
 
   const triggerConfetti = () => {

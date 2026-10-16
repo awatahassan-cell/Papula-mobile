@@ -2,7 +2,7 @@ import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Text } from '../../components/RTLText';
-import { Sparkles, Lock, Award, Gift, Home } from 'lucide-react-native';
+import { Lock, Award, Gift, Home } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
 import { BadgesComponent } from '../../components/BadgesComponent';
 import { mockStickers } from '../../data/mockStickers';

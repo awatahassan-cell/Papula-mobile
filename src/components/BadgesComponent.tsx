@@ -2,7 +2,7 @@ import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
-import { Trophy, Lock, Sparkles, CheckCircle2, Award, Star } from 'lucide-react-native';
+import { Trophy, Lock, CheckCircle2, Award } from 'lucide-react-native';
 import { mockBadges } from '../data/mockBadges';
 import { useAppStore } from '../store/useAppStore';
 

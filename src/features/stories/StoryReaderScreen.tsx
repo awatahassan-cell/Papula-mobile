@@ -54,11 +54,15 @@ export const StoryReaderScreen: React.FC = () => {
   };
 
   useEffect(() => {
+    // Narration is restarted whenever the page or mode changes; the starter is defined below the early return.
+    /* eslint-disable react-hooks/set-state-in-effect, react-hooks/immutability */
     stopNarration();
     if (readMode === 'read_to_me' && story && !showQuiz && !storyFinished && !sequencing) {
       startKaraokeNarration(pageIndex);
     }
     return () => stopNarration();
+    /* eslint-enable react-hooks/set-state-in-effect, react-hooks/immutability */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex, readMode, showQuiz, storyFinished, sequencing]);
 
   useEffect(() => () => { if (quizTimerRef.current) clearTimeout(quizTimerRef.current); }, []);

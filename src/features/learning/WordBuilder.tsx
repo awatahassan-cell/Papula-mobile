@@ -21,7 +21,7 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
   const locked=useRef(false);
   const helped=useRef(false);
   const word=queue[round] || queue[0];
-  const bank=useMemo(()=>word?shuffled(word.units.map((glyph,id)=>({glyph,id}))):[],[word?.id]);
+  const bank=useMemo(()=>word?shuffled(word.units.map((glyph,id)=>({glyph,id}))):[],[word]);
   useEffect(()=>()=>{void soundService.stopSpeaking();},[]);
   const reset=()=>{locked.current=false;setSelected([]);setFeedback('');setCorrect(false);};
   const assembled=selected.map(id=>bank.find(tile=>tile.id===id)!.glyph).join('');

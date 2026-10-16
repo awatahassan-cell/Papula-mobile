@@ -1,8 +1,7 @@
 import { rtlProps, rtlLayout } from '../../theme/rtl';
 import { useThemeStyles } from '../../theme/useAppearance';
 import { assessWriting, advanceWriting, writingMastered, suggestedWritingMode } from '../../services/foundationalLearning';
-import { WritingMode } from '../../services/types';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView, PanResponder, Modal, useWindowDimensions } from 'react-native';
 import { Text } from '../../components/RTLText';
 import Svg, { Path, Line, Circle } from 'react-native-svg';
@@ -14,7 +13,7 @@ import { getKurdishStrokeGuide } from '../../data/kurdishLetterGuides';
 import { soundService } from '../../services/soundService';
 import { TracingScoreResult } from '../../services/tracingScorer';
 import { resamplePolyline } from '../../services/pathSimilarity';
-import { StrokePoint } from '../../services/types';
+import { StrokePoint, WritingMode } from '../../services/types';
 import { useAppStore } from '../../store/useAppStore';
 import { isLessonUnlocked, isLessonComplete } from '../../services/lessonPath';
 
@@ -32,7 +31,7 @@ export const WritingScreen: React.FC = () => {
   const [letter, setLetter] = useState(selectedLetter || mockLetters[0]);
   const [mode,setMode]=useState<WritingMode>(()=>suggestedWritingMode(currentProfile.writingProgress?.[(selectedLetter||mockLetters[0]).id]));
   const [confirmedMastery,setConfirmedMastery]=useState(false);
-  const attemptStarted=useRef(Date.now());
+  const attemptStarted=useRef(0);
   const usedHelp=useRef(false);
   const [strokes, setStrokes] = useState<StrokePoint[][]>([]);
   const [active, setActive] = useState<StrokePoint[]>([]);
@@ -45,11 +44,12 @@ export const WritingScreen: React.FC = () => {
   const { width } = useWindowDimensions();
   const side = Math.max(160, Math.min(width - 40, 460));
   const sideRef = useRef(side);
-  sideRef.current = side;
+  useLayoutEffect(() => { sideRef.current = side; }, [side]);
   const strokeRef = useRef<StrokePoint[][]>([]);
   const activeRef = useRef<StrokePoint[]>([]);
   const lockedRef = useRef(false);
-  lockedRef.current = busy || result !== null || demo !== null;
+  const isLocked = busy || result !== null || demo !== null;
+  useLayoutEffect(() => { lockedRef.current = isLocked; }, [isLocked]);
   const checkingRef = useRef(false);
   const demoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const scrollRef = useRef<ScrollView>(null);
@@ -70,9 +70,12 @@ export const WritingScreen: React.FC = () => {
     setError('');
   };
   useEffect(() => {
+    // Reset the whole attempt whenever the letter changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     clear(); stopDemo(); setResult(null); setDrawing(false);setMode(suggestedWritingMode(currentProfile.writingProgress?.[letter.id]));usedHelp.current=false;attemptStarted.current=Date.now();
     scrollRef.current?.scrollTo({ y: 0, animated: false });
     return () => { if (demoTimer.current) clearInterval(demoTimer.current); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only reset when the letter (or its guide) changes
   }, [letter.id, guide]);
   useEffect(() => () => { void soundService.stopSpeaking(); }, []);
 
@@ -89,6 +92,8 @@ export const WritingScreen: React.FC = () => {
       activeRef.current = [];
       setActive([]); setDrawing(false);
     };
+    // PanResponder callbacks only read the refs at gesture time, never during render.
+    // eslint-disable-next-line react-hooks/refs
     return PanResponder.create({
       onStartShouldSetPanResponder: () => !lockedRef.current,
       onMoveShouldSetPanResponder: () => !lockedRef.current,
@@ -156,6 +161,7 @@ export const WritingScreen: React.FC = () => {
     if (!next || busy || !isLessonUnlocked(currentProfile, next.id)) return;
     void soundService.stopSpeaking(); setSelectedLetter(next); setLetter(next);
   };
+  // eslint-disable-next-line react-hooks/purity -- runs in an event handler, not during render
   const changeMode=(next:WritingMode)=>{stopDemo();void soundService.stopSpeaking();setMode(next);setResult(null);clear();usedHelp.current=false;attemptStarted.current=Date.now();};
   const goHome = () => { void soundService.stopSpeaking(); setResult(null); setRoute('home'); };
   const nextLesson = () => {

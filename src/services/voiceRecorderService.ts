@@ -10,6 +10,7 @@ class MobileVoiceRecorderService {
       const permission=await AudioModule.requestRecordingPermissionsAsync();if(!permission.granted)return false;
       await setAudioModeAsync({allowsRecording:true,playsInSilentMode:true});
       this.playbackSound?.pause();this.playbackSound?.release();this.playbackSound=null;
+      // eslint-disable-next-line import/namespace -- AudioRecorder is a native class exposed on AudioModule
       const recording=new AudioModule.AudioRecorder(RecordingPresets.HIGH_QUALITY);
       this.recording=recording;await recording.prepareToRecordAsync();recording.record();this.isRecordingState=true;return true;
     } catch {this.recording?.release();this.recording=null;this.isRecordingState=false;return false;}

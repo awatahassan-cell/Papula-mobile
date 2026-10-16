@@ -1,5 +1,6 @@
 import { registerRootComponent } from 'expo';
 import { I18nManager } from 'react-native';
+import App from './App';
 
 try {
   I18nManager.allowRTL(true);
@@ -7,7 +8,5 @@ try {
 } catch (e) {
   console.warn(e);
 }
-
-import App from './App';
 
 registerRootComponent(App);

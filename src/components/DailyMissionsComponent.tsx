@@ -2,7 +2,7 @@ import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
-import { Trophy, Flame, Sparkles, CheckCircle2, ArrowRight, Award } from 'lucide-react-native';
+import { Trophy, Flame, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react-native';
 import { useAppStore } from '../store/useAppStore';
 import { soundService } from '../services/soundService';
 import { DailyMission } from '../services/types';

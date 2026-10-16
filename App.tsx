@@ -127,6 +127,14 @@ export default function App() {
     IBMPlexSans_700Bold,
   });
 
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="#7c3aed" />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaProvider>
       <AppProvider>
@@ -137,6 +145,12 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fffdfa',
+  },
   safeArea: {
     flex: 1,
     backgroundColor: '#ffffff',
