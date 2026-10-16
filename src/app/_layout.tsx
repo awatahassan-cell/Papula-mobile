@@ -25,6 +25,7 @@ import { BigButton } from '../components/BigButton';
 import { GardenNavigation } from '../components/GardenNavigation';
 import { GardenPageHeader } from '../components/GardenPageHeader';
 import { useAppearance } from '../theme/useAppearance';
+import { useResponsive } from '../theme/responsive';
 
 try {
   I18nManager.allowRTL(true);
@@ -44,6 +45,7 @@ const MainRouter: React.FC = () => {
     setAllMissionsCelebrationOpen,
   } = useAppStore();
 
+  const { tablet } = useResponsive();
   const isBedtimeActive = parentSettings.bedtimeLockEnabled;
 
   const bedtimeOverlay = isBedtimeActive && route !== 'parent-dashboard' ? (
@@ -75,14 +77,19 @@ const MainRouter: React.FC = () => {
     <SafeAreaView {...rtlProps} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={isGarden ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor={isGarden ? appearanceColors.background : '#ffffff'} />
       {route !== 'onboarding' && <TopHeader />}
-      <GardenPageHeader />
-
-      <View style={[styles.screenContainer, isGarden && { backgroundColor: 'transparent' }]}>
-        <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
+      {/* Phones: tab bar under the content. Tablets: a rail on the right (first child of an RTL row). */}
+      <View style={[styles.body, tablet && styles.bodyRow]}>
+        {tablet && <GardenNavigation />}
+        <View style={styles.main}>
+          <GardenPageHeader />
+          <View style={[styles.screenContainer, isGarden && { backgroundColor: 'transparent' }]}>
+            <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: 'transparent' } }} />
+          </View>
+          {!tablet && <GardenNavigation />}
+        </View>
       </View>
 
       {/* Global Modals */}
-      <GardenNavigation />
       <ParentGateModal />
       <PaywallModal />
       <DailyMissionsRewardCelebration
@@ -123,6 +130,9 @@ export default function RootLayout() {
 }
 
 const styles = StyleSheet.create({
+  body: { flex: 1 },
+  bodyRow: { flexDirection: 'row' },
+  main: { flex: 1, minWidth: 0 },
   overlay: {
     ...StyleSheet.absoluteFill,
     zIndex: 100,

@@ -27,8 +27,9 @@ export function GardenNavigation() {
 const baseStyles = StyleSheet.create({
   nav: { flexDirection: 'row', direction: 'rtl', backgroundColor: c.paper, borderTopWidth: 1, borderColor: c.edge, padding: 8, gap: 6, width: '100%', maxWidth: 840, alignSelf: 'center' },
   tab: { flex: 1, minHeight: 62, alignItems: 'center', justifyContent: 'center', borderRadius: 20, gap: 4 },
-  navTablet: { maxWidth: 680, marginBottom: 8, borderRadius: 26, borderWidth: 1 },
-  tabTablet: { minHeight: 52, flexDirection: 'row', gap: 10 },
+  // Tablets: a vertical rail on the reading-start (right) edge.
+  navTablet: { flexDirection: 'column', width: 116, maxWidth: 116, alignSelf: 'stretch', borderTopWidth: 0, borderLeftWidth: 1, paddingVertical: 16, paddingHorizontal: 10, gap: 10, justifyContent: 'flex-start' },
+  tabTablet: { flex: 0, width: '100%', minHeight: 88, flexDirection: 'column', gap: 6, paddingVertical: 10 },
   selected: { backgroundColor: c.lavender },
   label: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 12, color: c.ink },
 });

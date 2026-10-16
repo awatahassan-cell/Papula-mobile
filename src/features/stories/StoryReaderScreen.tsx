@@ -20,10 +20,15 @@ import { BigButton } from '../../components/BigButton';
 import { soundService } from '../../services/soundService';
 import { StoryPage } from '../../services/types';
 import { useAppStore } from '../../store/useAppStore';
+import { useResponsive } from '../../theme/responsive';
 
 export const StoryReaderScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
   const { selectedStory, setSelectedLetter, setRoute, completeStory, saveWord, triggerConfetti, currentProfile, recordSkillResult } = useAppStore();
+  const info = useResponsive();
+  const { tablet, pageMax } = info;
+  const split = info.wide && info.landscape;
+  const artSize = Math.max(300, Math.min(560, info.height - 330));
   const [pageIndex, setPageIndex] = useState(0);
   const [readMode, setReadMode] = useState<'read_to_me' | 'i_read'>(selectedStory?.practiceMode==='read'?'i_read':'read_to_me');
   const [isPlaying, setIsPlaying] = useState(false);
@@ -223,7 +228,7 @@ export const StoryReaderScreen: React.FC = () => {
   }
 
   return (
-    <View style={styles.readerScreen}><ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.readerScreen}><ScrollView contentContainerStyle={[styles.container, tablet && { maxWidth: pageMax, width: '100%', alignSelf: 'center' }]}>
       {targetLetter && <TouchableOpacity accessibilityRole="button" accessibilityLabel={`گەڕانەوە بۆ وانەی پیتی ${targetLetter.glyph}`} onPress={()=>{stopNarration();setSelectedLetter(targetLetter);setRoute('letter-detail');}} style={styles.backToLesson}>
         <ChevronRight size={18} color={styles.backText.color}/><Text style={styles.backText}>وانەی پیتی «{targetLetter.glyph}»</Text>
       </TouchableOpacity>}
@@ -262,6 +267,32 @@ export const StoryReaderScreen: React.FC = () => {
         </Text>
       </View>
 
+    {split ? <View style={styles.readerSplit}>
+      <View style={{ width: artSize }}>
+      {/* Story Illustration Card */}
+      <View style={[styles.storyArtworkFrame, split && { maxWidth: artSize }]}>
+        {currentPage.illustrationImage !== undefined
+          ? <ResponsiveStoryImage source={currentPage.illustrationImage} label={story.titleKu} />
+          : <Text style={styles.illustrationEmoji}>{story.coverEmoji}</Text>}
+      </View>
+      {currentPage.additionalImages?.map((source, index) => <ResponsiveStoryImage key={index} source={source} label={`${story.titleKu}، وێنەی ${index + 2}`} />)}
+
+
+      </View>
+      <View style={styles.readerText}>
+      {readMode==='i_read' && !readableText(currentPage.textKu,currentProfile) && <Text style={styles.finishedSub}>وشە یان پیتی نوێ تێدایە؛ دەتوانیت بە یارمەتی بخوێنیتەوە یان گوێی لێ بگریت.</Text>}
+      {/* Synchronized Word by Word Karaoke Text */}
+      <View style={[styles.readingCard, split && styles.readingCardSplit]}>
+        <Text testID="story-paragraph" accessibilityLabel={currentPage.textKu} style={[styles.storyParagraph, split && styles.storyParagraphSplit]}>
+          {currentPage.textKu.split(/(\s+)/).map((part, index, parts) => /\s/.test(part)
+            ? part
+            : <Text key={index} style={activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? {backgroundColor:'#fef08a',color:'#166534'} : undefined} onPress={() => handleWordTap(part)}>{targetLetter ? part.split(new RegExp(`(${targetLetter.glyph === 'ھ' ? '[هھ]' : targetLetter.glyph})`, 'g')).map((piece, pieceIndex)=>
+              <Text key={pieceIndex} style={piece.replace(/ھ/g,'ه')===targetLetter.glyph.replace(/ھ/g,'ه') ? styles.targetGlyph : undefined}>{piece}</Text>) : part}</Text>)}
+        </Text>
+      </View>
+
+      </View>
+    </View> : <>
       {readMode==='i_read' && !readableText(currentPage.textKu,currentProfile) && <Text style={styles.finishedSub}>وشە یان پیتی نوێ تێدایە؛ دەتوانیت بە یارمەتی بخوێنیتەوە یان گوێی لێ بگریت.</Text>}
       {/* Story Illustration Card */}
       <View style={styles.storyArtworkFrame}>
@@ -270,6 +301,7 @@ export const StoryReaderScreen: React.FC = () => {
           : <Text style={styles.illustrationEmoji}>{story.coverEmoji}</Text>}
       </View>
       {currentPage.additionalImages?.map((source, index) => <ResponsiveStoryImage key={index} source={source} label={`${story.titleKu}، وێنەی ${index + 2}`} />)}
+
 
 
       {/* Synchronized Word by Word Karaoke Text */}
@@ -282,9 +314,10 @@ export const StoryReaderScreen: React.FC = () => {
         </Text>
       </View>
 
+    </>}
     </ScrollView>
       {/* Navigation & Audio Controls */}
-      <View style={styles.controlsRow}>
+      <View style={[styles.controlsRow, tablet && { maxWidth: pageMax }]}>
         <TouchableOpacity
           onPress={() => {
             if (pageIndex > 0) {
@@ -359,6 +392,9 @@ const baseStyles = StyleSheet.create({
   completionSecondary:{width:'100%',minHeight:54,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:8,padding:12,borderRadius:17,backgroundColor:'#ffffff',borderWidth:1.5,borderColor:'#dce9e1'},
   completionSecondaryText:{flexShrink:1,color:'#176445',fontSize:15,lineHeight:25,textAlign:'center',fontFamily:'IBMPlexSansArabic_600SemiBold'},
   readerScreen:{flex:1},
+  readerSplit:{flexDirection:'row',gap:24,alignItems:'stretch',justifyContent:'center'},readerText:{flex:1,minWidth:0,justifyContent:'center'},
+  readingCardSplit:{maxWidth:undefined,padding:28},
+  storyParagraphSplit:{fontSize:34,lineHeight:62},
   backToLesson:{minHeight:44,flexDirection:'row',alignItems:'center',gap:5,paddingHorizontal:4,marginBottom:12},
   backText:{fontSize:14,color:'#657d79',fontFamily:'IBMPlexSansArabic_600SemiBold'},
   targetGlyph: { color: '#ea580c' },
