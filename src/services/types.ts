@@ -171,7 +171,7 @@ export interface ChildProfile {
   dailyMissionsBonusClaimedDate?: string;
 }
 
-export type LearningSkill = 'recognition' | 'forms' | 'phonics' | 'word' | 'writing' | 'reading';
+export type LearningSkill = 'recognition' | 'forms' | 'phonics' | 'syllables' | 'word' | 'writing' | 'reading';
 export type WritingMode = 'trace' | 'copy' | 'independent';
 export interface SkillProgress { independentCorrect?: number; attempts: number; correct: number; helped: number; lastAt: string; }
 export interface WritingProgress { tracePassed: boolean; copyPassed: boolean; independentPassDates: string[]; }

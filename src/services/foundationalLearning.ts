@@ -3,8 +3,9 @@ import { ChildProfile, LearningSkill, SkillProgress, StrokeGuide, StrokePoint, W
 import { LEARNING_WORDS, shuffled, localDay, normalizedWord, reviewPlan, wordUnits } from './learningEngine';
 import { evaluateTracing } from './tracingScorer';
 import { resamplePolyline } from './pathSimilarity';
+import { SKILL_LABELS } from './skillLabels';
 
-export const SKILL_LABELS: Record<LearningSkill, string> = {recognition:'ناسینەوەی پیت',forms:'شێوەی پیت لە وشەدا',phonics:'دەنگی سەرەتای وشە',word:'وشەسازی',writing:'نووسین',reading:'تێگەیشتن لە چیرۆک'};
+export { SKILL_LABELS };
 export function skillAttempt(previous: SkillProgress | undefined, correct: boolean, helped=false): SkillProgress {
   return {independentCorrect:(previous?.independentCorrect||0)+(correct&&!helped?1:0),attempts:(previous?.attempts||0)+1,correct:(previous?.correct||0)+(correct?1:0),helped:(previous?.helped||0)+(helped?1:0),lastAt:new Date().toISOString()};
 }

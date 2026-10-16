@@ -102,3 +102,26 @@ export function personalStories(profile: ChildProfile): StoryItem[] {
       imageEmoji:LEARNING_WORDS.find(item=>normalizedWord(item.word)===normalizedWord(word))?.imageEmoji || template.emoji,isCorrect:word===template.answer}))},
   }));
 }
+
+/** Unlocked letters that are due for spaced review now (missed last time, or their review date has come). */
+export function dueReviewLetters(profile: ChildProfile, now = new Date()): LetterItem[] {
+  return mockLetters.filter(letter => {
+    const record = profile.letterReviews?.[letter.id];
+    return !!record && (record.level === 0 || new Date(record.dueAt).getTime() <= now.getTime());
+  });
+}
+
+export interface HardLetter { letter: LetterItem; errors: number; attempts: number; accuracy: number; confusedWith: LetterItem[]; }
+/** Letters a child struggles with most, so parents know what to practise at home. */
+export function hardLetters(profile: ChildProfile, count = 3): HardLetter[] {
+  return mockLetters.flatMap(letter => {
+    const record = profile.letterReviews?.[letter.id];
+    if (!record || record.errors < 2 || record.attempts < 3) return [];
+    const group = CONFUSABLE_GROUPS.find(ids => ids.includes(letter.id)) || [];
+    return [{
+      letter, errors: record.errors, attempts: record.attempts,
+      accuracy: Math.round(record.correct / record.attempts * 100),
+      confusedWith: mockLetters.filter(other => other.id !== letter.id && group.includes(other.id)),
+    }];
+  }).sort((a, b) => a.accuracy - b.accuracy || b.errors - a.errors).slice(0, count);
+}

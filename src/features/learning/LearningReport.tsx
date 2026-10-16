@@ -1,17 +1,18 @@
 import React from 'react';
 import {View,StyleSheet} from 'react-native';
 import {Text} from '../../components/RTLText';
-import {Shapes,Link2,AudioLines,WholeWord,PencilLine,BookOpen,TrendingUp,Clock,MessageCircle,EyeOff} from 'lucide-react-native';
+import {Layers,Shapes,Link2,AudioLines,WholeWord,PencilLine,BookOpen,TrendingUp,Clock,MessageCircle,EyeOff} from 'lucide-react-native';
 import {useThemeStyles} from '../../theme/useAppearance';
 import {ChildProfile,LearningSkill} from '../../services/types';
-import {reviewPlan} from '../../services/learningEngine';
+import {hardLetters,reviewPlan} from '../../services/learningEngine';
 import {skillSummary,writingMastered} from '../../services/foundationalLearning';
 
-const skillIcons={recognition:Shapes,forms:Link2,phonics:AudioLines,word:WholeWord,writing:PencilLine,reading:BookOpen};
-const skillLabels:Record<LearningSkill,string>={recognition:'ناسینەوەی پیت',forms:'شێوەی پیت لە وشەدا',phonics:'دەنگی سەرەتای وشە',word:'دروستکردنی وشە',writing:'نووسینی پیت',reading:'خوێندنەوە و تێگەیشتن'};
+const skillIcons={recognition:Shapes,forms:Link2,phonics:AudioLines,syllables:Layers,word:WholeWord,writing:PencilLine,reading:BookOpen};
+const skillLabels:Record<LearningSkill,string>={recognition:'ناسینەوەی پیت',forms:'شێوەی پیت لە وشەدا',phonics:'دەنگی سەرەتای وشە',syllables:'بڕگەکانی وشە',word:'دروستکردنی وشە',writing:'نووسینی پیت',reading:'خوێندنەوە و تێگەیشتن'};
 export const LearningReport:React.FC<{profile:ChildProfile}>=({profile})=>{
  const s=useThemeStyles(baseStyles);
  const next=reviewPlan(profile,3);
+ const hard=hardLetters(profile);
  const independent=Object.values(profile.writingProgress||{}).filter(writingMastered).length;
  const minutes=Math.round((profile.practiceSeconds||0)/60);
  return <View testID="learning-report" style={s.report}>
@@ -33,6 +34,9 @@ export const LearningReport:React.FC<{profile:ChildProfile}>=({profile})=>{
     </View>;
    })}
   </View>
+  {hard.length>0&&<View style={s.reviewCard}><Text style={s.sectionTitle}>پیتە قورسەکان</Text><Text style={s.subtitle}>ئەم پیتانە هەڵەی زۆرتریان تێدا کراوە؛ بە هێواشی و بە یاری دووبارەیان بکەنەوە</Text>
+   {hard.map(item=><View key={item.letter.id} style={s.reviewLetters}><View style={s.reviewLetter}><Text style={s.reviewGlyph}>{item.letter.glyph}</Text></View><View style={s.copy}><Text style={s.skillTitle}>{item.accuracy}٪ دروست ({item.attempts} هەوڵ)</Text>{item.confusedWith.length>0&&<Text style={s.skillCaption}>لەگەڵ {item.confusedWith.map(letter=>letter.glyph).join('، ')} تێکەڵ دەبێت</Text>}</View></View>)}
+  </View>}
   <View style={s.reviewCard}><Text style={s.sectionTitle}>ئەمڕۆ چی دووبارە بکەینەوە؟</Text><Text style={s.subtitle}>چەند خولەکێکی خۆش لەگەڵ منداڵەکەت</Text><View style={s.reviewLetters}>{next.map(letter=><View key={letter.id} style={s.reviewLetter}><Text style={s.reviewGlyph}>{letter.glyph}</Text></View>)}</View>
    {[{Icon:MessageCircle,text:`وشەیەک بڵێن کە بە «${next[0]?.glyph||''}» دەست پێ بکات.`},{Icon:PencilLine,text:'پیتەکە لەسەر کاغەز بنووسن.'},{Icon:EyeOff,text:'نموونەکە بشارنەوە و با خۆی هەوڵ بدات.'}].map(({Icon,text})=><View key={text} style={s.tipRow}><View style={s.tipIcon}><Icon size={17} color={s.accent.color}/></View><Text style={s.tipText}>{text}</Text></View>)}
   </View>

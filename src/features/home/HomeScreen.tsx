@@ -5,6 +5,7 @@ import { Text } from '../../components/RTLText';
 import { LearningPath } from '../../components/LearningPath';
 import { FloatingMascot } from '../../components/FloatingMascot';
 import { useAppStore, AppRoute } from '../../store/useAppStore';
+import { dueReviewLetters } from '../../services/learningEngine';
 import { lessonChecklist, lessonPath, nextLessonLetter } from '../../services/lessonPath';
 import { learningLayout } from '../../theme/layout';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
@@ -23,6 +24,7 @@ export const HomeScreen: React.FC = () => {
   const unit=Math.floor(completed/6);
   const lessonColor=[c.peach,c.sky,c.lavender][unit%3];
   const greeting=next ? stepsDone>0 ? `وانەی پیتی «${next.glyph}» چاوەڕێتە؛ با بەردەوام بین!` : completed>0 ? `${completed} وانەت تەواو کردووە؛ با هەنگاوێکی تر بنێین.` : 'ئامادەیت یەکەم پیتت فێر بیت؟' : 'گەشتەکەت تەواو کرد! با یاری و دووبارەکردنەوە بکەین.';
+  const dueCount = dueReviewLetters(currentProfile).length;
   const open = (route: AppRoute) => { void soundService.stopSpeaking(); setRoute(route); };
   return <ScrollView contentContainerStyle={[s.container, { padding: layout.padding }]}>
     <View testID="home-greeting" style={s.greetingRow}><View style={s.greetingCopy}><View style={s.heroEyebrow}><Sparkles size={15} color={c.coralDark}/><Text style={s.eyebrow}>دنیای فێربوونی تۆ</Text></View><Text style={[s.greeting, layout.compact && { fontSize: 24 }]}>سڵاو، {currentProfile.name}!</Text><Text style={s.subtitle}>{greeting}</Text></View><FloatingMascot size={layout.mascotSize}/></View>
@@ -36,6 +38,9 @@ export const HomeScreen: React.FC = () => {
     </View>
     <View style={s.sectionHeading}><Text style={s.sectionTitle}>ڕێڕەوی فێربوون</Text><TouchableOpacity accessibilityRole="button" onPress={()=>open('alphabet')} style={s.allButton}><Text style={s.allLabel}>هەموو وانەکان ←</Text></TouchableOpacity></View>
     <LearningPath preview />
+    {dueCount > 0 && <TouchableOpacity accessibilityRole="button" accessibilityLabel={`${dueCount} پیت ئامادەیە بۆ دووبارەکردنەوە`} style={[s.activity, { backgroundColor: c.peach, minHeight: 0, flexDirection: 'row', alignItems: 'center' }]} onPress={() => open('daily-practice')}>
+      <Sprout size={29} color={c.ink} /><View style={{ flex: 1 }}><Text style={s.activityTitle}>کاتی دووبارەکردنەوەیە 🌱</Text><Text style={s.small}>{dueCount} پیت چاوەڕێی مەشقن تا لە بیرت نەچن</Text></View>
+    </TouchableOpacity>}
     <Text style={s.sectionTitle}>با زیاتر فێر بین</Text>
     <View style={s.activities}>{[
       { route: 'daily-practice' as const, title: 'مەشقی من', subtitle: 'پیتەکانت بیر بکەرەوە', Icon: Sprout, color: c.peach },

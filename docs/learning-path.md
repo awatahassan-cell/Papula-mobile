@@ -17,3 +17,9 @@ Lesson completion earns two stars once and opens the next letter immediately, in
 Images no longer form the page background or a stretched sign behind headings. The mascot scales with the viewport; story illustrations occupy square containers that determine their display size. The learning path uses text, icons and flexible layout rather than a fixed bitmap.
 
 Validation includes unit tests for progress, duplicate actions, persistence, migration and layout geometry. Browser checks cover 320, 390, 768 and 1024 CSS pixels. A browser walkthrough completed listening, form recognition, all three examples and tracing of د, then verified that ر opened and remained available with the progress saved.
+
+## Syllables, review reminders and hard letters
+
+- **Syllable builder** (Games → «بڕگەکان»): the child hears a whole word and puts its syllables in order. Words come from `src/data/syllableWords.ts`; every entry must join back into the word and exist in the narrated vocabulary (`tests/syllables.test.cjs`). Maximum syllables follow the age group or placement result (3–4: 2, 5–6: 3, 7–8: 4). Syllables themselves are not narrated yet; recording them needs a new offline-audio generation run.
+- **Review reminder**: `dueReviewLetters` counts letters whose spaced-review date has arrived (or that were missed last time); Home shows a banner that opens daily practice.
+- **Parent report**: `hardLetters` lists letters with at least 2 errors in 3 attempts, with the similar letters they are mixed up with.
