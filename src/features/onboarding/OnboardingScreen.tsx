@@ -1,12 +1,7 @@
+import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Text, TextInput } from '../../components/RTLText';
 import { BigButton } from '../../components/BigButton';
 import { soundService } from '../../services/soundService';
 import { useAppStore } from '../../store/useAppStore';
@@ -23,6 +18,7 @@ const avatars = [
 const ageGroups: ('3-4' | '5-6' | '7-8')[] = ['3-4', '5-6', '7-8'];
 
 export const OnboardingScreen: React.FC = () => {
+  const styles = useThemeStyles(baseStyles);
   const { createProfile, setRoute, strings } = useAppStore();
   const [name, setName] = useState('ڕۆژین');
   const [selectedAvatar, setSelectedAvatar] = useState('🦋');
@@ -132,7 +128,7 @@ export const OnboardingScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#fffbeb',

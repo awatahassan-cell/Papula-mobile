@@ -1,10 +1,11 @@
 import { advanceWriting, writingMastered, skillAttempt } from '../services/foundationalLearning';
+import { applyLessonStep, isLessonUnlocked, nextLessonLetter, reconcileLessons } from '../services/lessonPath';
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { LEARNING_WORDS, learningActivity, localDay, updateReview } from '../services/learningEngine';
 import { mockLetters } from '../data/mockLetters';
 import { authRepo, lettersRepo, progressRepo, storiesRepo, writingRepo } from '../services/repositories';
 import { soundService } from '../services/soundService';
-import { ChildProfile, DailyMission, LetterItem, LetterScoreRecord, ParentSettings, StoryItem, WritingMode, LearningSkill } from '../services/types';
+import { ChildProfile, DailyMission, LetterItem, LetterScoreRecord, ParentSettings, StoryItem, WritingMode, LearningSkill, LessonStep } from '../services/types';
 import { generateDailyMissions, getTodayDateString } from '../data/mockMissions';
 import { defaultStrings, LocaleStrings } from '../theme/strings';
 
@@ -29,6 +30,7 @@ export interface AppContextType {
   setRoute: (route: AppRoute) => void;
   selectedLetter: LetterItem | null;
   setSelectedLetter: (letter: LetterItem | null) => void;
+  recordLessonStep: (letterId: string, step: LessonStep, exampleId?: string) => void;
   selectedStory: StoryItem | null;
   setSelectedStory: (story: StoryItem | null) => void;
 
@@ -81,7 +83,7 @@ const AppContext = createContext<AppContextType | null>(null);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [route, setRoute] = useState<AppRoute>('home');
-  const [selectedLetter, setSelectedLetter] = useState<LetterItem | null>(null);
+  const [selectedLetter, setSelectedLetterState] = useState<LetterItem | null>(null);
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
 
   const [profiles, setProfiles] = useState<ChildProfile[]>([]);
@@ -106,7 +108,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const profileRef = useRef(currentProfile);
   profileRef.current = currentProfile;
 
+  const setSelectedLetter = (letter: LetterItem | null) => {
+    if (!letter || isLessonUnlocked(profileRef.current, letter.id)) setSelectedLetterState(letter);
+    else { setSelectedLetterState(nextLessonLetter(profileRef.current) || mockLetters[0]); setRoute('alphabet'); }
+  };
+
   const [parentSettings, setParentSettings] = useState<ParentSettings>({
+    appearanceTheme: 'garden',
     dailyLimitMinutes: 30,
     bedtimeLockEnabled: false,
     soundFxEnabled: true,
@@ -480,6 +488,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const base=learningActivity(profileRef.current);
     updateCurrentProfile({...base,skillProgress:{...base.skillProgress,[skill]:skillAttempt(base.skillProgress?.[skill],correct,helped)}});
   };
+  const recordLessonStep = (letterId: string, step: LessonStep, exampleId?: string) => {
+    const base = profileRef.current;
+    const next = applyLessonStep(base, letterId, step, exampleId);
+    if (next !== base) updateCurrentProfile(next);
+  };
   const savePlacement = (correct: number, total: number, letterIds: string[]) => {
     const base=profileRef.current;
     const ratio=total?correct/total:0;
@@ -546,7 +559,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       dailyMissions: missions,
     };
     // Save the score, mastery, rewards and learning activity together. Separate updates used to overwrite one another.
-    updateCurrentProfile(evaluateStreak(updatedProfile));
+    updateCurrentProfile(evaluateStreak(reconcileLessons(updatedProfile)));
     return record;
   };
 
@@ -568,6 +581,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setRoute,
         selectedLetter,
         setSelectedLetter,
+        recordLessonStep,
         selectedStory,
         setSelectedStory,
         profiles,

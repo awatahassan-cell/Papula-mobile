@@ -1,5 +1,7 @@
+import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text } from './RTLText';
 import { soundService } from '../services/soundService';
 
 interface MascotGuideProps {
@@ -13,6 +15,7 @@ export const MascotGuide: React.FC<MascotGuideProps> = ({
   mood = 'happy',
   onPress,
 }) => {
+  const styles = useThemeStyles(baseStyles);
   const getAvatarEmoji = () => {
     switch (mood) {
       case 'celebrating':
@@ -48,7 +51,7 @@ export const MascotGuide: React.FC<MascotGuideProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',

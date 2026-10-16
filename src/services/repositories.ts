@@ -1,6 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { normalizeAppearanceTheme } from '../theme/appearance';
 import { mockLetters } from '../data/mockLetters';
 import { mockStories } from '../data/mockStories';
+import { letterStories } from '../data/letterStories';
+import { alfubeNweStories } from '../data/alfubeNweStories';
 import { getKurdishStrokeGuide } from '../data/kurdishLetterGuides';
 import {
   AuthRepository,
@@ -38,6 +41,7 @@ export const defaultChildProfile: ChildProfile = {
 };
 
 export const defaultParentSettings: ParentSettings = {
+  appearanceTheme: 'garden',
   dailyLimitMinutes: 30,
   bedtimeLockEnabled: false,
   soundFxEnabled: true,
@@ -81,11 +85,11 @@ export class MobileLettersRepository implements LettersRepository {
 // ================= 2. STORIES REPOSITORY =================
 export class MobileStoriesRepository implements StoriesRepository {
   async getAllStories(): Promise<StoryItem[]> {
-    return [...mockStories];
+    return [...alfubeNweStories, ...letterStories, ...mockStories];
   }
 
   async getStoryById(id: string): Promise<StoryItem | undefined> {
-    return mockStories.find((s) => s.id === id);
+    return [...alfubeNweStories, ...letterStories, ...mockStories].find((s) => s.id === id);
   }
 
   async getFeaturedStory(): Promise<StoryItem> {
@@ -191,7 +195,8 @@ export class MobileAuthRepository implements AuthRepository {
     try {
       const data = await AsyncStorage.getItem(PARENT_SETTINGS_KEY);
       if (data) {
-        cachedSettings = JSON.parse(data);
+        const stored = JSON.parse(data);
+        cachedSettings = { ...defaultParentSettings, ...stored, appearanceTheme: normalizeAppearanceTheme(stored.appearanceTheme) };
         return cachedSettings!;
       }
     } catch {

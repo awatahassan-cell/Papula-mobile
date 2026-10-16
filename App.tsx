@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
+import { rtlProps, rtlLayout } from './src/theme/rtl';
+import { View, StyleSheet, StatusBar, ActivityIndicator } from 'react-native';
+import { Text } from './src/components/RTLText';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import {
   useFonts,
@@ -32,8 +34,12 @@ import { BadgesComponent } from './src/components/BadgesComponent';
 import { MyWordsScreen } from './src/features/words/MyWordsScreen';
 import { ParentDashboardScreen } from './src/features/parent/ParentDashboardScreen';
 import { BigButton } from './src/components/BigButton';
+import { GardenNavigation } from './src/components/GardenNavigation';
+import { GardenPageHeader } from './src/components/GardenPageHeader';
+import { useAppearance } from './src/theme/useAppearance';
 
 const MainRouter: React.FC = () => {
+  const { isGarden, colors: appearanceColors } = useAppearance();
   const {
     route,
     parentSettings,
@@ -47,7 +53,7 @@ const MainRouter: React.FC = () => {
 
   if (isBedtimeActive && route !== 'parent-dashboard') {
     return (
-      <View style={styles.bedtimeContainer}>
+      <View {...rtlProps} style={[styles.bedtimeContainer, rtlLayout]}>
         <View style={styles.bedtimeCard}>
           <Text style={styles.moonEmoji}>🌙</Text>
           <Text style={styles.bedtimeTitle}>کاتی خەوتنی منداڵانە</Text>
@@ -73,11 +79,12 @@ const MainRouter: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+    <SafeAreaView {...rtlProps} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={isGarden ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}>
+      <StatusBar barStyle="dark-content" backgroundColor={isGarden ? appearanceColors.background : '#ffffff'} />
       {route !== 'onboarding' && <TopHeader />}
+      <GardenPageHeader />
 
-      <View style={styles.screenContainer}>
+      <View style={[styles.screenContainer, isGarden && { backgroundColor: 'transparent' }]}>
         {route === 'onboarding' && <OnboardingScreen />}
         {route === 'home' && <HomeScreen />}
         {route === 'alphabet' && <AlphabetGridScreen />}
@@ -98,6 +105,7 @@ const MainRouter: React.FC = () => {
       </View>
 
       {/* Global Modals */}
+      <GardenNavigation />
       <ParentGateModal />
       <PaywallModal />
       <DailyMissionsRewardCelebration
@@ -132,12 +140,10 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#ffffff',
-    direction: 'rtl',
   },
   screenContainer: {
     flex: 1,
     backgroundColor: '#fffdfa',
-    direction: 'rtl',
   },
   bedtimeContainer: {
     flex: 1,

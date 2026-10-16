@@ -58,7 +58,7 @@ export function readableText(text:string,profile:ChildProfile): boolean {
   });
 }
 export function skillSummary(profile:ChildProfile) {
-  return Object.entries(SKILL_LABELS).map(([skill,label])=>{const record=profile.skillProgress?.[skill as LearningSkill];return {skill,label,record,accuracy:record?.attempts?Math.round(record.correct/record.attempts*100):null};});
+  return Object.entries(SKILL_LABELS).map(([skill,label])=>{const record=profile.skillProgress?.[skill as LearningSkill];return {skill:skill as LearningSkill,label,record,accuracy:record?.attempts?Math.round(record.correct/record.attempts*100):null};});
 }
 
 export function readingPracticeStories(profile:ChildProfile) {

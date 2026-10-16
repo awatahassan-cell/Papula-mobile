@@ -2,9 +2,10 @@ const fs=require('fs'),path=require('path'),assert=require('node:assert/strict')
 const profile={id:'test',ageGroup:'5-6',masteredLetterIds:[],inProgressLetterIds:[],learnedWordIds:[]};
 const results=[],games=[],spoken=[],skills=[],placements=[];let states=[],refs=[],cursor=0,refCursor=0;
 const react={useEffect:()=>{},useMemo:fn=>fn(),useRef:initial=>{const i=refCursor++;return refs[i]||(refs[i]={current:initial});},useState:initial=>{const i=cursor++;if(!(i in states))states[i]=typeof initial==='function'?initial():initial;return[states[i],value=>states[i]=typeof value==='function'?value(states[i]):value];},createElement:(type,props,...children)=>({type,props:{...props,children}})};react.default=react;
-const store={recordSkillResult:(...args)=>skills.push(args),savePlacement:(...args)=>placements.push(args),currentProfile:profile,recordPracticeResult:(ids,correct,word)=>results.push({ids,correct,word}),finishLearningGame:kind=>games.push(kind)};
+const store={recordLessonStep(){},recordSkillResult:(...args)=>skills.push(args),savePlacement:(...args)=>placements.push(args),currentProfile:profile,recordPracticeResult:(ids,correct,word)=>results.push({ids,correct,word}),finishLearningGame:kind=>games.push(kind)};
+let speechEndCallbacks=null;
 const cache=new Map();
-function load(file){file=path.resolve(file);if(cache.has(file))return cache.get(file);const module={exports:{}};cache.set(file,module.exports);const source=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.React}}).outputText;new Function('exports','module','require',source)(module.exports,module,p=>p==='react'?react:p==='react-native'?{View:'View',Text:'Text',ScrollView:'ScrollView',TouchableOpacity:'Button',StyleSheet:{create:value=>value}}:p.endsWith('/useAppStore')?{useAppStore:()=>store}:p.endsWith('/soundService')?{soundService:{speakWord:async(text,options)=>{spoken.push(text);options?.onEnd?.();},stopSpeaking:async()=>{},playCorrect(){},playEncouragingTryAgain(){}}}:load(path.resolve(path.dirname(file),p+'.ts')));return module.exports;}
+function load(file){file=path.resolve(file);if(file.endsWith('.json.ts'))return JSON.parse(fs.readFileSync(file.slice(0,-3),'utf8'));if(!fs.existsSync(file)&&fs.existsSync(file+'x'))file+='x';if(cache.has(file))return cache.get(file);const module={exports:{}};cache.set(file,module.exports);const source=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.React}}).outputText;new Function('exports','module','require',source)(module.exports,module,p=>p.endsWith('.webp')?1:p==='react'?react:p==='lucide-react-native'?{Volume2:'SpeakerIcon'}:p.endsWith('/voiceRecorderService')?{voiceRecorderService:{}}:p.endsWith('/RTLText')?{Text:'Text',TextInput:'TextInput'}:p==='react-native'?{View:'View',Text:'Text',ScrollView:'ScrollView',TouchableOpacity:'Button',StyleSheet:{create:value=>value}}:p.endsWith('/useAppStore')?{useAppStore:()=>store}:p.endsWith('/soundService')?{soundService:{speakWord:async(text,options)=>{spoken.push(text);if(speechEndCallbacks)speechEndCallbacks.push(options?.onEnd);else options?.onEnd?.();},stopSpeaking:async()=>{},playCorrect(){},playEncouragingTryAgain(){}}}:load(path.resolve(path.dirname(file),p+'.ts')));return module.exports;}
 const {WordBuilder}=load(path.join(__dirname,'../src/features/learning/WordBuilder.tsx'));
 const {LetterPractice}=load(path.join(__dirname,'../src/features/learning/LetterPractice.tsx'));
 const engine=load(path.join(__dirname,'../src/services/learningEngine.ts'));
@@ -53,3 +54,46 @@ const {LetterFormsLesson}=load(path.join(__dirname,'../src/features/learning/Let
 states=[];refs=[];let formsPassed=0;const formsProps={letter:load(path.join(__dirname,'../src/data/mockLetters.ts')).mockLetters[7],onPass(){formsPassed++;}};
 tree=render(LetterFormsLesson,formsProps);const choices=states[1];const wrong=choices.find(l=>l.id!==formsProps.letter.id);button(tree,'شێوەی '+wrong.forms.medial).props.onPress();tree=render(LetterFormsLesson,formsProps);assert.equal(formsPassed,0);button(tree,'دووبارە تاقی بکەمەوە').props.onPress();tree=render(LetterFormsLesson,formsProps);const right=button(tree,'شێوەی '+formsProps.letter.forms.medial);right.props.onPress();right.props.onPress();assert.equal(formsPassed,1);
 console.log('PASS: starting-sound listening gate and all rounds, letter-form retry/recognition and duplicate-action guards.');
+
+const {GuidedLetterLesson}=load(path.join(__dirname,'../src/features/alphabet/GuidedLetterLesson.tsx'));
+states=[];refs=[];const lessonLetter=load(path.join(__dirname,'../src/data/mockLetters.ts')).mockLetters[0];
+let lessonDestination=null,detailsOpened=0;
+store.setRoute=route=>lessonDestination=route;store.setSelectedLetter=letter=>assert.equal(letter.id,lessonLetter.id);store.saveWord=()=>{};
+const lessonProps={letter:lessonLetter,onDetails:()=>detailsOpened++};
+tree=render(GuidedLetterLesson,lessonProps);
+let openedLetterStory=null;store.setSelectedStory=story=>openedLetterStory=story;
+// Re-render to capture the newly installed store callback.
+tree=render(GuidedLetterLesson,lessonProps);
+nodes(tree).find(n=>n.props?.accessibilityLabel?.startsWith('چیرۆکی پیتی '+lessonLetter.glyph+':')).props.onPress();
+assert.equal(openedLetterStory.targetLetterId,lessonLetter.id);assert.equal(lessonDestination,'story-reader');
+assert.ok(button(tree,'دەنگەکە ببیستە'),'audio guidance remains directly accessible');
+assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,true,'listening cannot be skipped');
+const speechBeforeThree=spoken.length;
+speechEndCallbacks=[];
+for(let listen=0;listen<3;listen++){
+  button(tree,'دەنگەکە ببیستە').props.onPress();tree=render(GuidedLetterLesson,lessonProps);
+  assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,true,'next stays locked while listening');
+  assert.equal(spoken.at(-1),`پیتی ${lessonLetter.name}`,'each tap plays the letter once');
+  speechEndCallbacks.shift()();tree=render(GuidedLetterLesson,lessonProps);
+  assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,true,'next stays locked until praise finishes');
+  if(listen<2)assert.equal(speechEndCallbacks.length,0,'another repetition needs another tap');
+}
+assert.deepEqual(spoken.slice(speechBeforeThree),[...Array(3).fill(`پیتی ${lessonLetter.name}`),'ئافەرم! ئامادەیت بۆ هەنگاوی دواتر.']);
+speechEndCallbacks.shift()();speechEndCallbacks=null;tree=render(GuidedLetterLesson,lessonProps);
+assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,false,'next unlocks only after the praise audio ends');
+button(tree,'هەنگاوی دواتر ←').props.onPress();tree=render(GuidedLetterLesson,lessonProps);
+assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,true,'compact footer keeps the forms prerequisite');
+nodes(tree).find(n=>n.type===LetterFormsLesson).props.onPass();tree=render(GuidedLetterLesson,lessonProps);
+button(tree,'هەنگاوی دواتر ←').props.onPress();tree=render(GuidedLetterLesson,lessonProps);
+for(let i=0;i<lessonLetter.exampleWords.length-1;i++){button(tree,'وشەی دواتر ←').props.onPress();tree=render(GuidedLetterLesson,lessonProps);}
+button(tree,'هەنگاوی دواتر ←').props.onPress();tree=render(GuidedLetterLesson,lessonProps);
+for(let i=0;i<lessonLetter.exampleWords.length;i++){
+ const advanceLabel=i<lessonLetter.exampleWords.length-1?'یاریی دواتر ←':'هەنگاوی دواتر ←';
+ assert.equal(button(tree,advanceLabel).props.disabled,true,'recognition cannot be skipped');
+ const choice=button(tree,'پیتی '+lessonLetter.glyph);choice.props.onPress();choice.props.onPress();tree=render(GuidedLetterLesson,lessonProps);
+ assert.equal(button(tree,advanceLabel).props.disabled,false);
+ button(tree,advanceLabel).props.onPress();tree=render(GuidedLetterLesson,lessonProps);
+}
+button(tree,'بنووسم ✍️').props.onPress();assert.equal(lessonDestination,'writing');
+assert.ok(!button(tree,'زانیاری زیاتر دەربارەی پیتی '+lessonLetter.glyph),'details no longer open a separate screen');
+console.log('PASS: compact guided lesson retains audio, all examples, forms/recognition gates, details and writing navigation.');

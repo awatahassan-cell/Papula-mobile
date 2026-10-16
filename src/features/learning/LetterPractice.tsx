@@ -1,12 +1,15 @@
+import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useEffect, useRef, useState } from 'react';
-import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { Text } from '../../components/RTLText';
 import { mockLetters } from '../../data/mockLetters';
 import { CONFUSABLE_GROUPS, reviewPlan, shuffled } from '../../services/learningEngine';
 import { soundService } from '../../services/soundService';
 import { useAppStore } from '../../store/useAppStore';
-import { learningStyles as s } from './learningStyles';
+import { learningStyles as baseLearningStyles } from './learningStyles';
 
 export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:()=>void; onComplete?:()=>void }> = ({mode,onExit,onComplete}) => {
+  const s = useThemeStyles(baseLearningStyles);
   const {currentProfile,recordPracticeResult,finishLearningGame}=useAppStore();
   const [rounds]=useState(()=>{
     const candidates=reviewPlan(currentProfile,mockLetters.length).filter(letter=>mode!=='similar'||CONFUSABLE_GROUPS.some(group=>group.includes(letter.id)));

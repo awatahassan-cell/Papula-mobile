@@ -1,12 +1,15 @@
+import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { Text } from '../../components/RTLText';
 import { mockLetters } from '../../data/mockLetters';
 import { soundService } from '../../services/soundService';
 import { LEARNING_WORDS, LearningWord, shuffled, wordPlan, normalizedWord } from '../../services/learningEngine';
 import { useAppStore } from '../../store/useAppStore';
-import { learningStyles as s } from './learningStyles';
+import { learningStyles as baseLearningStyles } from './learningStyles';
 
 export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord[]; onComplete?:()=>void }> = ({onExit,initialWords,onComplete}) => {
+  const s = useThemeStyles(baseLearningStyles);
   const { currentProfile,recordPracticeResult,finishLearningGame }=useAppStore();
   const [queue,setQueue]=useState(()=>initialWords?.length?initialWords:wordPlan(currentProfile));
   const [round,setRound]=useState(0);

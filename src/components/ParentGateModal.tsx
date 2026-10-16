@@ -1,15 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Modal,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from 'react-native';
-import { Lock, Check, X } from 'lucide-react-native';
+import { rtlProps, rtlLayout } from '../theme/rtl';
+import { useAppearance, useThemeStyles } from '../theme/useAppearance';
+import React, { useState } from 'react';
+import { Modal, View, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
+import { Text, TextInput } from './RTLText';
+import { ShieldCheck, Check, X } from 'lucide-react-native';
 import {
   generateParentGateChallenge,
   verifyParentGateAnswer,
@@ -19,18 +13,17 @@ import { soundService } from '../services/soundService';
 import { useAppStore } from '../store/useAppStore';
 
 export const ParentGateModal: React.FC = () => {
+  const {parentGateOpen}=useAppStore();
+  return parentGateOpen ? <ParentGateContent /> : null;
+};
+
+const ParentGateContent: React.FC = () => {
+  const styles = useThemeStyles(baseStyles);
+  const {colors}=useAppearance();
   const { parentGateOpen, setParentGateOpen, handleParentGateSuccess } = useAppStore();
-  const [challenge, setChallenge] = useState<MathChallenge | null>(null);
+  const [challenge, setChallenge] = useState<MathChallenge>(()=>generateParentGateChallenge());
   const [userAnswer, setUserAnswer] = useState('');
   const [errorText, setErrorText] = useState('');
-
-  useEffect(() => {
-    if (parentGateOpen) {
-      setChallenge(generateParentGateChallenge());
-      setUserAnswer('');
-      setErrorText('');
-    }
-  }, [parentGateOpen]);
 
   const handleClose = () => {
     soundService.playPop();
@@ -62,14 +55,14 @@ export const ParentGateModal: React.FC = () => {
       onRequestClose={handleClose}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.backdrop}>
-          <View style={styles.card}>
+        <View {...rtlProps} style={[styles.backdrop, rtlLayout]}>
+          <ScrollView style={styles.scroll} contentContainerStyle={styles.gateCard} keyboardShouldPersistTaps="handled">
             <View style={styles.iconCircle}>
-              <Lock size={32} color="#4f46e5" />
+              <ShieldCheck size={31} color={colors.mint} strokeWidth={1.8} />
             </View>
             <Text style={styles.title}>ناوچەی دایک و باوک</Text>
             <Text style={styles.subtitle}>
-              تکایە ئەم پرسیارە بیرکارییە چارەسەر بکە بۆ چوونەژوورەوە:
+              با پێکەوە چاودێری گەشتی فێربوونی بکەین. بۆ چوونەژوورەوە وەڵامی ئەم پرسیارە بدەن.
             </Text>
 
             <View style={styles.challengeBox}>
@@ -77,6 +70,7 @@ export const ParentGateModal: React.FC = () => {
             </View>
 
             <TextInput
+              accessibilityLabel="وەڵامی پرسیاری دایک و باوک"
               value={userAnswer}
               onChangeText={(txt) => {
                 setUserAnswer(txt);
@@ -87,6 +81,7 @@ export const ParentGateModal: React.FC = () => {
               keyboardType="number-pad"
               style={styles.input}
               maxLength={4}
+              onSubmitEditing={handleCheck}
               autoFocus
             />
 
@@ -94,6 +89,7 @@ export const ParentGateModal: React.FC = () => {
 
             <View style={styles.buttonRow}>
               <TouchableOpacity
+                accessibilityRole="button"
                 onPress={handleClose}
                 style={[styles.btn, styles.cancelBtn]}
                 activeOpacity={0.8}
@@ -103,35 +99,39 @@ export const ParentGateModal: React.FC = () => {
               </TouchableOpacity>
 
               <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityState={{disabled:!userAnswer.trim()}}
+                disabled={!userAnswer.trim()}
                 onPress={handleCheck}
-                style={[styles.btn, styles.confirmBtn]}
+                style={[styles.btn, styles.confirmBtn,!userAnswer.trim()&&{opacity:0.5}]}
                 activeOpacity={0.8}
               >
                 <Check size={16} color="#ffffff" style={{ marginRight: 4 }} />
                 <Text style={styles.confirmBtnText}>کردنەوە</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
         </View>
       </TouchableWithoutFeedback>
     </Modal>
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.65)',
+    backgroundColor: 'rgba(20, 37, 33, 0.58)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
-  card: {
+  scroll: {width:'100%',maxWidth:420,maxHeight:'100%',flexGrow:0},
+  gateCard: {
     width: '100%',
-    maxWidth: 380,
+    maxWidth: 420,
     backgroundColor: '#ffffff',
     borderRadius: 28,
-    padding: 24,
+    padding: 22,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -140,22 +140,24 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   iconCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#eef2ff',
+    width: 72,
+    height: 72,
+    borderRadius: 25,
+    backgroundColor: '#e3f5ec',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
   },
   title: {
-    fontSize: 20,
+    fontSize: 23,
+    fontFamily:'IBMPlexSansArabic_700Bold',
     fontWeight: '900',
     color: '#0f172a',
     marginBottom: 6,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: 14,
+    lineHeight:25,
     color: '#64748b',
     textAlign: 'center',
     marginBottom: 16,
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    backgroundColor: '#f1f5f9',
+    backgroundColor: '#f4f9f6',
     borderRadius: 16,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -205,13 +207,16 @@ const styles = StyleSheet.create({
   },
   btn: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: 14,
+    minHeight:56,
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection:'row',
+    gap:6,
   },
   cancelBtn: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: '#f4f9f6',
   },
   cancelBtnText: {
     fontSize: 14,
@@ -219,7 +224,7 @@ const styles = StyleSheet.create({
     color: '#64748b',
   },
   confirmBtn: {
-    backgroundColor: '#f59e0b',
+    backgroundColor: '#23875f',
   },
   confirmBtnText: {
     fontSize: 14,

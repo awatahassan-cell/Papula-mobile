@@ -1,18 +1,22 @@
+import { useThemeStyles } from '../../theme/useAppearance';
 import { StartingAssessment } from '../learning/StartingAssessment';
 import React, { useState } from 'react';
-import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { Text } from '../../components/RTLText';
 import { DailyMissionsComponent } from '../../components/DailyMissionsComponent';
 import { reviewPlan } from '../../services/learningEngine';
+import { isLessonUnlocked } from '../../services/lessonPath';
 import { useAppStore } from '../../store/useAppStore';
 import { LetterPractice } from '../learning/LetterPractice';
-import { learningStyles as s } from '../learning/learningStyles';
+import { learningStyles as baseLearningStyles } from '../learning/learningStyles';
 
 export const DailyPracticeScreen: React.FC = () => {
+  const s = useThemeStyles(baseLearningStyles);
   const {currentProfile,setSelectedLetter,setRoute,completeDailyPractice}=useAppStore();
   const [tab,setTab]=useState<'personal'|'missions'>('personal');
   const [assessing,setAssessing]=useState(false);
   const [practicing,setPracticing]=useState(false);
-  const plan=reviewPlan(currentProfile,3);
+  const plan=reviewPlan(currentProfile,34).filter(letter=>isLessonUnlocked(currentProfile,letter.id)).slice(0,3);
   if(assessing)return <StartingAssessment onExit={()=>setAssessing(false)} />;
   if(practicing)return <LetterPractice mode="review" onComplete={()=>{completeDailyPractice();}} onExit={()=>setPracticing(false)} />;
   return <ScrollView contentContainerStyle={s.container}>

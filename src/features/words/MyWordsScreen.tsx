@@ -1,17 +1,14 @@
+import { useThemeStyles } from '../../theme/useAppearance';
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Text } from '../../components/RTLText';
 import { Volume2, BookOpen, Trash2 } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
 import { soundService } from '../../services/soundService';
 import { useAppStore } from '../../store/useAppStore';
 
 export const MyWordsScreen: React.FC = () => {
+  const styles = useThemeStyles(baseStyles);
   const { currentProfile, updateCurrentProfile, setRoute, strings } = useAppStore();
 
   const handlePlayWord = (word: string) => {
@@ -93,7 +90,7 @@ export const MyWordsScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   container: {
     padding: 16,
     paddingBottom: 40,

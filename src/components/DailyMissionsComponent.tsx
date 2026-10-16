@@ -1,11 +1,14 @@
+import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text } from './RTLText';
 import { Trophy, Flame, Sparkles, CheckCircle2, ArrowRight, Award } from 'lucide-react-native';
 import { useAppStore } from '../store/useAppStore';
 import { soundService } from '../services/soundService';
 import { DailyMission } from '../services/types';
 
 export const DailyMissionsComponent: React.FC = () => {
+  const styles = useThemeStyles(baseStyles);
   const { currentProfile, dailyMissions, claimMissionReward, setRoute } = useAppStore();
 
   const handleAction = (mission: DailyMission) => {
@@ -109,7 +112,7 @@ export const DailyMissionsComponent: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   container: {
     width: '100%',
   },

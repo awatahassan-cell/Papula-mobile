@@ -1,5 +1,7 @@
+import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Text } from './RTLText';
 
 interface StarRatingProps {
   stars: number; // 0 to 3
@@ -12,6 +14,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
   maxStars = 3,
   size = 'md',
 }) => {
+  const styles = useThemeStyles(baseStyles);
   const getFontSize = () => {
     switch (size) {
       case 'sm':
@@ -40,7 +43,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',

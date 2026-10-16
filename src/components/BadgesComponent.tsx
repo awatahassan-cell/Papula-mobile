@@ -1,10 +1,13 @@
+import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Text } from './RTLText';
 import { Trophy, Lock, Sparkles, CheckCircle2, Award, Star } from 'lucide-react-native';
 import { mockBadges } from '../data/mockBadges';
 import { useAppStore } from '../store/useAppStore';
 
 export const BadgesComponent: React.FC = () => {
+  const styles = useThemeStyles(baseStyles);
   const { currentProfile } = useAppStore();
 
   const isBadgeUnlocked = (badgeId: string) => {
@@ -100,7 +103,7 @@ export const BadgesComponent: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   container: {
     width: '100%',
   },

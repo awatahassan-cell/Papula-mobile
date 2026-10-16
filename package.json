@@ -23,6 +23,8 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~57.0.2",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -31,7 +33,9 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test:writing": "node --test tests/writingScorer.test.cjs tests/writingProgress.test.cjs tests/speechCancellation.test.cjs",
-    "test:learning": "node --test tests/learningEngine.test.cjs tests/audioCache.test.cjs tests/writingProgress.test.cjs tests/speechCancellation.test.cjs tests/learningScreens.test.cjs tests/storyReader.test.cjs tests/foundationalLearning.test.cjs"
+    "test:audio": "node --test tests/offlineAudio.test.cjs tests/speechCancellation.test.cjs tests/storyReader.test.cjs",
+    "test:learning": "node --test tests/learningEngine.test.cjs tests/audioCache.test.cjs tests/writingProgress.test.cjs tests/speechCancellation.test.cjs tests/learningScreens.test.cjs tests/storyReader.test.cjs tests/foundationalLearning.test.cjs",
+    "lint": "expo lint"
   },
   "private": true
 }

@@ -1,5 +1,7 @@
+import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text } from './RTLText';
 import { LetterItem } from '../services/types';
 import { StarRating } from './StarRating';
 import { soundService } from '../services/soundService';
@@ -19,6 +21,7 @@ export const LetterCard: React.FC<LetterCardProps> = ({
   onClick,
   index = 0,
 }) => {
+  const styles = useThemeStyles(baseStyles);
   const isMastered = status === 'mastered';
   const isInProgress = status === 'in_progress';
 
@@ -65,7 +68,7 @@ export const LetterCard: React.FC<LetterCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   card: {
     backgroundColor: '#ffffff',
     borderRadius: 20,

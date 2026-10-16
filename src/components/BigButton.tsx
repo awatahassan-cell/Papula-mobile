@@ -1,5 +1,7 @@
+import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { Text } from './RTLText';
 import { soundService } from '../services/soundService';
 
 interface BigButtonProps {
@@ -23,6 +25,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
   textStyle,
   icon,
 }) => {
+  const styles = useThemeStyles(baseStyles);
   const handlePress = () => {
     if (disabled) return;
     soundService.playPop();
@@ -89,7 +92,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   buttonBase: {
     flexDirection: 'row',
     alignItems: 'center',

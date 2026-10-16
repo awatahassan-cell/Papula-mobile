@@ -1,13 +1,16 @@
+import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, Text, View, TouchableOpacity } from 'react-native';
+import { ScrollView, View, TouchableOpacity } from 'react-native';
+import { Text } from '../../components/RTLText';
 import { mockLetters } from '../../data/mockLetters';
 import { soundService } from '../../services/soundService';
 import { shuffled, normalizedWord } from '../../services/learningEngine';
 import { startingSoundWords } from '../../services/foundationalLearning';
 import { useAppStore } from '../../store/useAppStore';
-import { learningStyles as s } from './learningStyles';
+import { learningStyles as baseLearningStyles } from './learningStyles';
 
 export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
+  const s = useThemeStyles(baseLearningStyles);
   const {currentProfile,recordPracticeResult,finishLearningGame}=useAppStore();
   const [rounds]=useState(()=>startingSoundWords(currentProfile).map(word=>{
     const target=mockLetters.find(letter=>normalizedWord(letter.glyph)===normalizedWord(word.units[0]))!;

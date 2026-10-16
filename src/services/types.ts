@@ -66,6 +66,8 @@ export interface StoryQuiz {
 }
 
 export interface StoryPage {
+  illustrationImage?: number;
+  additionalImages?: number[];
   pageNumber: number;
   textKu: string;
   illustrationTheme: string;
@@ -75,6 +77,11 @@ export interface StoryPage {
 }
 
 export interface StoryItem {
+  targetLetterIds?: string[];
+  sourceBook?: string;
+  authorKu?: string;
+  coverImage?: number;
+  targetLetterId?: string;
   practiceMode?: 'listen' | 'read';
   id: string;
   titleKu: string;
@@ -86,7 +93,7 @@ export interface StoryItem {
   coverThemeColor: string;
   summaryKu: string;
   pages: StoryPage[];
-  quiz: StoryQuiz;
+  quiz?: StoryQuiz;
 }
 
 export interface StickerItem {
@@ -124,7 +131,17 @@ export interface DailyMission {
   actionRoute: 'writing' | 'stories' | 'match-game' | 'alphabet' | 'daily-practice';
 }
 
+export type LessonStep = 'listening' | 'forms' | 'example' | 'recognition';
+export interface LessonProgress {
+  listened: boolean;
+  formsPassed: boolean;
+  seenExampleIds: string[];
+  recognizedExampleIds: string[];
+  completedAt?: string;
+}
+
 export interface ChildProfile {
+  lessonProgress?: Record<string, LessonProgress>;
   skillProgress?: Partial<Record<LearningSkill, SkillProgress>>;
   writingProgress?: Record<string, WritingProgress>;
   placement?: { completedAt: string; correct: number; total: number; recommendedLevel: 1 | 2 | 3; letterIds: string[] };
@@ -170,6 +187,7 @@ export interface LetterReview {
 }
 
 export interface ParentSettings {
+  appearanceTheme?: 'classic' | 'garden' | 'sky' | 'lavender' | 'rose' | 'sunset';
   dailyLimitMinutes: number;
   bedtimeLockEnabled: boolean;
   soundFxEnabled: boolean;

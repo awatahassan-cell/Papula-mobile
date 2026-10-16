@@ -1,14 +1,22 @@
-import { BUNDLED_AUDIO, LEGACY_AUDIO } from '../data/bundledAudio';
+import { OFFLINE_AUDIO, OfflineTrack } from '../data/offlineAudio';
+import { mockLetters } from '../data/mockLetters';
 import { audioCache, audioCacheKey, bytesToBase64, base64ToBytes } from './audioCache';
 import { Platform } from 'react-native';
 import { createAudioPlayer, AudioPlayer } from 'expo-audio';
 import { File, Paths } from 'expo-file-system';
 import * as Speech from 'expo-speech';
+import { learningStoryChunks, LEARNING_STORY_RATE, LEARNING_SENTENCE_PAUSE_MS, NarrationChunk } from './storyPlayback';
+
+// Applied at playback so bundled and cached ElevenLabs recordings slow down too.
+export const CHILD_NARRATION_RATE = 0.85;
 
 export interface SpeechOptions {
+  narrationText?: string;
+  playbackRate?: number;
   letterName?: string;
   voice?: string;
   voiceId?: string;
+  onWord?: (start: number, end: number) => void;
   onStart?: () => void;
   onEnd?: () => void;
   onError?: () => void;
@@ -24,7 +32,11 @@ class MobileSoundService {
   private currentSound: AudioPlayer | null = null;
   private playbackFile: File | null = null;
   private speechGeneration = 0;
+  private storyGeneration = 0;
+  private storyPauseTimer: ReturnType<typeof setTimeout> | null = null;
+  private segmentTimer: ReturnType<typeof setTimeout> | null = null;
   private cachedVoices: any[] = [];
+  private timingCache = new Map<string, {start:number;end:number;from:number;to:number}[]>();
 
   constructor() {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
@@ -80,9 +92,11 @@ class MobileSoundService {
     this.volume = Math.max(0, Math.min(1, vol));
   }
 
-  private elevenLabsApiKey: string = process.env.EXPO_PUBLIC_ELEVENLABS_API_KEY || '';
-  private selectedVoice: string = 'Bella';
-  private selectedVoiceId: string = 'hpp4J3VqNfWAUOO0d1Us';
+  // Generation credentials belong to the build script, never the installed app.
+  // Explicit opt-in remains available for development tools and their tests.
+  private elevenLabsApiKey: string = '';
+  private selectedVoice: string = 'Papula';
+  private selectedVoiceId: string = 'tkI70vi7ETrk5NakcLUP';
   private currentAudioElement: any = null;
   private audioMemoryCache = new Map<string, string>();
 
@@ -90,11 +104,9 @@ class MobileSoundService {
     this.elevenLabsApiKey = key;
   }
 
-  public setVoice(voice: string, voiceId?: string) {
-    this.selectedVoice = voice;
-    if (voiceId) {
-      this.selectedVoiceId = voiceId;
-    }
+  public setVoice(_voice: string, _voiceId?: string) {
+    this.selectedVoice = 'Papula';
+    this.selectedVoiceId = 'tkI70vi7ETrk5NakcLUP';
   }
 
   public getVoice(): string {
@@ -105,7 +117,14 @@ class MobileSoundService {
     return this.selectedVoiceId;
   }
 
-  public async stopSpeaking() {
+  public async stopSpeaking(preserveStory = false) {
+    if (this.segmentTimer !== null) clearTimeout(this.segmentTimer);
+    this.segmentTimer = null;
+    if (!preserveStory) {
+      this.storyGeneration++;
+      if (this.storyPauseTimer !== null) clearTimeout(this.storyPauseTimer);
+      this.storyPauseTimer = null;
+    }
     this.speechGeneration++;
     if (this.currentAudioElement) {
       try {
@@ -135,24 +154,88 @@ class MobileSoundService {
     this.notify();
   }
 
-  public getBundledAudioCount() { return Object.keys(BUNDLED_AUDIO).length; }
-  public getLegacyCachedSoundKeys() { return Object.keys(LEGACY_AUDIO); }
-  public getLegacyAudioCount() { return Object.keys(LEGACY_AUDIO).length; }
-  public async playLegacyCachedSound(key: string) {
-    const source=LEGACY_AUDIO[key];if(source===undefined)return;
-    const stopping=this.stopSpeaking();const generation=this.speechGeneration;await stopping;
-    if(generation!==this.speechGeneration)return;
-    this.isSpeaking=true;this.activeSpeakingText=null;this.notify();await this.playAudioUrl(source);
+  public getBundledAudioCount() { return Object.keys(OFFLINE_AUDIO).length; }
+  public getLegacyCachedSoundKeys(): string[] { return []; }
+  public getLegacyAudioCount() { return 0; }
+  public async playLegacyCachedSound(_key: string) {
+    // Old recordings are intentionally excluded from the fresh offline pack.
   }
   public async playReviewedSound(uri: string, options: SpeechOptions = {}) {
     const stopping=this.stopSpeaking();const generation=this.speechGeneration;await stopping;
     if(generation!==this.speechGeneration)return;
     this.isSpeaking=true;this.activeSpeakingText=null;this.notify();options.onStart?.();
-    try {await this.playAudioUrl(uri,options.onEnd,options.onError);} catch {if(generation===this.speechGeneration){this.isSpeaking=false;this.notify();options.onError?.();}}
+    try {await this.playAudioUrl(uri,options.onEnd,options.onError,1);} catch {if(generation===this.speechGeneration){this.isSpeaking=false;this.notify();options.onError?.();}}
   }
 
-  // Speak Kurdish words or letters via ElevenLabs v4
+  // Sentence-by-sentence learning: wait for actual completion, then give the
+  // child time to understand before starting the next sentence.
+  public async speakStory(storyId: string, pageNumber: number, text: string, options: SpeechOptions = {}) {
+    return this.speakSequence(learningStoryChunks(storyId, pageNumber, text), options, LEARNING_SENTENCE_PAUSE_MS, LEARNING_STORY_RATE);
+  }
+
+  public async speakLetter(name: string, options: SpeechOptions = {}) {
+    return this.speakSequence([
+      { text: 'پیتی', narrationText: 'پیتی.' },
+      { text: name, narrationText: name },
+    ], options, 300, CHILD_NARRATION_RATE);
+  }
+
+  private async speakSequence(chunks: NarrationChunk[], options: SpeechOptions, pauseMs: number, rate: number) {
+    const stopping = this.stopSpeaking();
+    const token = this.storyGeneration;
+    await stopping;
+    if (token !== this.storyGeneration) return;
+    if (!chunks.length) { options.onEnd?.(); return; }
+    const play = (index: number): Promise<void> => {
+      let settled = false;
+      return this.speakChunk(chunks[index].text, {
+      ...options,
+      narrationText: chunks[index].narrationText,
+      onWord: options.onWord ? (start, end) => options.onWord!((chunks[index].startOffset || 0) + start, (chunks[index].startOffset || 0) + end) : undefined,
+      playbackRate: rate,
+      onStart: index === 0 ? options.onStart : undefined,
+      onEnd: () => {
+        if (settled || token !== this.storyGeneration) return;
+        settled = true;
+        if (index === chunks.length - 1) { options.onEnd?.(); return; }
+        this.isSpeaking = true;
+        this.activeSpeakingText = null;
+        this.notify();
+        this.storyPauseTimer = setTimeout(() => {
+          this.storyPauseTimer = null;
+          if (token === this.storyGeneration) void play(index + 1);
+        }, pauseMs);
+      },
+      onError: () => {
+        if (settled || token !== this.storyGeneration) return;
+        settled = true;
+        void this.stopSpeaking();
+        options.onError?.();
+      },
+      }, true);
+    };
+    await play(0);
+  }
+
+  // Speak Kurdish words or letters via ElevenLabs v4.
   public async speakWord(text: string, options?: SpeechOptions | (() => void)) {
+    const opts = typeof options === 'function' ? { onEnd: options } : options || {};
+    const mastery = mockLetters.find(item => text === `ئافەرم! تەواو فێری نووسینی پیتی ${item.name} بوویت.`);
+    if (mastery) return this.speakSequence([
+      { text: 'ئافەرم! تەواو فێری نووسینی پیتی', narrationText: 'ئافەرم! تەواو فێری نووسینی پیتی' },
+      { text: mastery.name, narrationText: mastery.name }, { text: 'بوویت.', narrationText: 'بوویت.' },
+    ], opts, 100, CHILD_NARRATION_RATE);
+    const lesson = mockLetters.find(item => item.exampleWords.some(word => text === `وشەی ${word.word}. پیتی ${item.name} بدۆزەوە.`));
+    if (lesson) {
+      const word = lesson.exampleWords.find(word => text === `وشەی ${word.word}. پیتی ${lesson.name} بدۆزەوە.`)!;
+      return this.speakSequence(['وشەی', word.word, 'پیتی', lesson.name, 'بدۆزەوە.'].map(part => ({ text: part, narrationText: part === 'پیتی' ? 'پیتی.' : part })), opts, 100, CHILD_NARRATION_RATE);
+    }
+    const letter = mockLetters.find(item => text.trim() === item.glyph || text.trim() === `پیتی ${item.name}`);
+    if (opts.letterName || letter) return this.speakLetter(opts.letterName || letter!.name, opts);
+    return this.speakChunk(text, options);
+  }
+
+  private async speakChunk(text: string, options?: SpeechOptions | (() => void), preserveStory = false) {
     let opts: SpeechOptions = {};
     if (typeof options === 'function') {
       opts = { onEnd: options };
@@ -160,7 +243,7 @@ class MobileSoundService {
       opts = options;
     }
 
-    const stopping = this.stopSpeaking();
+    const stopping = this.stopSpeaking(preserveStory);
     const generation = this.speechGeneration;
     await stopping;
     if (generation !== this.speechGeneration) return;
@@ -169,43 +252,83 @@ class MobileSoundService {
     this.notify();
     if (opts.onStart) opts.onStart();
 
-    let speakText = text;
-    if (opts.letterName && text.length <= 4) {
-      speakText = `پیتی ${opts.letterName}`;
-    } else if (text.length === 1 && !text.startsWith('پیتی')) {
-      speakText = `پیتی ${text}`;
-    }
+    const speakText = text;
 
-    const voiceId = opts.voiceId || this.selectedVoiceId;
-    const cacheKey = audioCacheKey(speakText, voiceId);
-    const bundled = BUNDLED_AUDIO[cacheKey];
+    const voiceId = this.selectedVoiceId;
+    const playbackRate = opts.playbackRate ?? CHILD_NARRATION_RATE;
+    // Tagged narration has its own cache entry. Device speech fallbacks keep
+    // the clean reading text because they do not interpret ElevenLabs tags.
+    const narrationText = opts.narrationText?.trim() || speakText;
+    const literalLetter = mockLetters.some(letter => letter.name === text);
+    const cacheKey = audioCacheKey(narrationText + (literalLetter ? '[literal-letter-v1]' : ''), voiceId);
+    const timedKey = cacheKey + (opts.onWord ? ":timed-v1" : "");
+    const timings = this.timingCache.get(timedKey);
+    const progress = (seconds:number) => {
+      const word = timings?.find(item => seconds >= item.from && seconds < item.to);
+      if (word && generation === this.speechGeneration) opts.onWord?.(word.start,word.end);
+    };
+    const bundled = OFFLINE_AUDIO[cacheKey];
     if (bundled !== undefined) {
-      try { await this.playAudioUrl(bundled, opts.onEnd, opts.onError); return; } catch {}
+      try { await this.playOfflineTrack(bundled, opts, playbackRate); }
+      catch { if (generation === this.speechGeneration) { this.isSpeaking = false; this.activeSpeakingText = null; this.notify(); opts.onError?.(); } }
+      return;
     }
-    const cached = this.audioMemoryCache.get(cacheKey) || await audioCache.get(cacheKey);
+    // A missing asset is an explicit error; never silently switch to an online
+    // device voice or a stale cache in the installed app.
+    if (!this.elevenLabsApiKey) {
+      this.isSpeaking = false; this.activeSpeakingText = null; this.notify(); opts.onError?.(); return;
+    }
+    const cached = this.audioMemoryCache.get(timedKey) || (!opts.onWord ? await audioCache.get(cacheKey) : null);
     if (generation !== this.speechGeneration) return;
     if (cached) {
-      try { await this.playAudioUrl(cached, opts.onEnd, opts.onError); return; } catch {}
+      try { await this.playAudioUrl(cached, opts.onEnd, opts.onError, playbackRate, progress); return; } catch {}
     }
 
     // 1. ElevenLabs v4 API with audio playback
     if (this.elevenLabsApiKey) {
       try {
-        const endpoint = 'https://api.elevenlabs.io/v1/text-to-dialogue';
+        const endpoint = opts.onWord ? `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}/with-timestamps` : literalLetter ? `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}` : 'https://api.elevenlabs.io/v1/text-to-dialogue';
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'xi-api-key': this.elevenLabsApiKey,
           },
-          body: JSON.stringify({
-            inputs: [{ text: speakText, voice_id: voiceId }],
+          body: JSON.stringify(opts.onWord ? {text:narrationText, model_id:'eleven_v4',apply_text_normalization:'off'} : literalLetter ? {text:narrationText,model_id:'eleven_v4',apply_text_normalization:'off'} : {
+            inputs: [{ text: narrationText, voice_id: voiceId }],
             model_id: 'eleven_v4',
           }),
         });
 
         if (generation !== this.speechGeneration) return;
         if (res.ok) {
+          if (opts.onWord) {
+            const result = await res.json();
+            if (generation !== this.speechGeneration) return;
+            const alignment = result.normalized_alignment || result.alignment;
+            const spoken = alignment?.characters?.join('') || '';
+            const words: {start:number;end:number;from:number;to:number}[] = [];
+            let cursor = 0;
+            for (const match of speakText.matchAll(/\S+/g)) {
+              const word = match[0];
+              const at = spoken.indexOf(word, cursor);
+              if (at < 0) continue;
+              const from = alignment.character_start_times_seconds[at];
+              const to = alignment.character_end_times_seconds[at + word.length - 1];
+              if (Number.isFinite(from) && Number.isFinite(to)) words.push({start:match.index!,end:match.index!+word.length,from,to});
+              cursor = at + word.length;
+            }
+            if (!result.audio_base64) throw new Error('Empty timed audio');
+            const uri = 'data:audio/mpeg;base64,' + result.audio_base64;
+            this.timingCache.set(timedKey,words);
+            this.audioMemoryCache.set(timedKey,uri);
+            while(this.timingCache.size>64) {const oldest=this.timingCache.keys().next().value!;this.timingCache.delete(oldest);this.audioMemoryCache.delete(oldest);}
+            await this.playAudioUrl(uri,opts.onEnd,opts.onError,playbackRate,seconds=>{
+              const word=words.find(item=>seconds>=item.from&&seconds<item.to);
+              if(word&&generation===this.speechGeneration)opts.onWord?.(word.start,word.end);
+            });
+            return;
+          }
           const arrayBuf = await res.arrayBuffer();
           if (generation !== this.speechGeneration) return;
           const bytes = new Uint8Array(arrayBuf);
@@ -215,7 +338,7 @@ class MobileSoundService {
           if (generation !== this.speechGeneration) return;
           this.audioMemoryCache.set(cacheKey, uri);
           while (this.audioMemoryCache.size > 64) this.audioMemoryCache.delete(this.audioMemoryCache.keys().next().value!);
-          await this.playAudioUrl(uri, opts.onEnd, opts.onError);
+          await this.playAudioUrl(uri, opts.onEnd, opts.onError, playbackRate);
           return;
         }
       } catch (err) {
@@ -250,10 +373,11 @@ class MobileSoundService {
           utterance.lang = 'ar-IQ';
         }
 
-        utterance.rate = 0.8;
+        utterance.rate = opts.playbackRate ?? 0.75;
         utterance.pitch = 1.12;
         utterance.volume = this.volume;
 
+        utterance.onboundary = event => { if(generation === this.speechGeneration) opts.onWord?.(event.charIndex,event.charIndex+(event.charLength || speakText.slice(event.charIndex).search(/\s|$/))); };
         utterance.onend = () => {
           if (generation !== this.speechGeneration) return;
           this.isSpeaking = false;
@@ -282,7 +406,8 @@ class MobileSoundService {
       Speech.speak(speakText, {
         language: 'ar-IQ',
         pitch: 1.12,
-        rate: 0.8,
+        rate: opts.playbackRate ?? 0.75,
+        onBoundary: (event: {charIndex:number;charLength:number}) => { if(generation === this.speechGeneration) opts.onWord?.(event.charIndex,event.charIndex+event.charLength); },
         onDone: () => {
           if (generation !== this.speechGeneration) return;
           this.isSpeaking = false;
@@ -309,14 +434,93 @@ class MobileSoundService {
     }
   }
 
-  private async playAudioUrl(url: string | number, onEnd?: () => void, onError?: () => void) {
+  private async playOfflineTrack(track: OfflineTrack, options: SpeechOptions, rate: number) {
+    const generation = this.speechGeneration;
+    let settled = false;
+    const clearBoundary = () => {
+      if (this.segmentTimer !== null) clearTimeout(this.segmentTimer);
+      this.segmentTimer = null;
+    };
+    const finish = (error = false) => {
+      if (settled || generation !== this.speechGeneration) return;
+      settled = true; clearBoundary();
+      this.currentAudioElement?.pause();
+      this.currentSound?.pause();
+      this.isSpeaking = false; this.activeSpeakingText = null; this.notify();
+      if (error) options.onError?.(); else options.onEnd?.();
+    };
+    const progress = (seconds: number) => {
+      const word = track.timings.find(item => seconds >= item.from && seconds < item.to);
+      if (word) options.onWord?.(word.start, word.end);
+    };
+    // Each segment ends at its measured audio boundary. Recheck media time
+    // after the timer so buffering never falsely completes a lesson.
+    const scheduleBoundary = (position: () => number) => {
+      if (settled || generation !== this.speechGeneration) return;
+      clearBoundary();
+      const check = () => {
+        if (settled || generation !== this.speechGeneration) return;
+        const remaining = track.end - position();
+        if (remaining <= 0.015) finish();
+        else this.segmentTimer = setTimeout(check, Math.max(16, remaining / rate * 1000));
+      };
+      check();
+    };
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      const audio = new (window as any).Audio(String(track.source));
+      this.currentAudioElement = audio;
+      audio.volume = this.volume; audio.preservesPitch = true; audio.playbackRate = rate;
+      audio.currentTime = track.start;
+      audio.onloadedmetadata = () => { if (generation === this.speechGeneration) audio.currentTime = track.start; };
+      audio.onplaying = () => scheduleBoundary(() => audio.currentTime);
+      audio.onwaiting = () => { if (!settled && generation === this.speechGeneration) clearBoundary(); };
+      audio.ontimeupdate = () => {
+        if (generation !== this.speechGeneration || settled) return;
+        progress(audio.currentTime);
+        if (audio.currentTime >= track.end) finish();
+      };
+      audio.onended = () => finish(); audio.onerror = () => finish(true);
+      try { await audio.play(); } catch { finish(true); }
+      return;
+    }
+    const source = typeof track.source === 'number' ? track.source : { uri: track.source };
+    const player = createAudioPlayer(source, { updateInterval: 40 });
+    this.currentSound = player;
+    player.volume = this.volume; player.shouldCorrectPitch = true; player.setPlaybackRate(rate, 'high');
+    let starting = false, started = false;
+    const start = async () => {
+      if (starting || started || settled || generation !== this.speechGeneration) return;
+      starting = true;
+      try {
+        await player.seekTo(track.start, 0, 0);
+        if (generation !== this.speechGeneration || settled) return;
+        started = true; player.play();
+      } catch { finish(true); }
+    };
+    player.addListener('playbackStatusUpdate', status => {
+      if (generation !== this.speechGeneration || settled) return;
+      if (status.error) { finish(true); return; }
+      if (status.isLoaded && !started) { void start(); return; }
+      if (!started) return;
+      progress(status.currentTime);
+      if (status.didJustFinish || status.currentTime >= track.end) finish();
+      else if (status.playing && !status.isBuffering) scheduleBoundary(() => player.currentTime);
+      else clearBoundary();
+    });
+    if (player.isLoaded) await start();
+  }
+
+  private async playAudioUrl(url: string | number, onEnd?: () => void, onError?: () => void, rate = CHILD_NARRATION_RATE, onProgress?: (seconds:number) => void) {
     const generation = this.speechGeneration;
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       const AudioClass = (window as any).Audio;
       const audio = new AudioClass(typeof url==='string'?url:String(url));
       audio.volume = this.volume;
+      audio.preservesPitch = true;
+      audio.playbackRate = rate;
       this.currentAudioElement = audio;
 
+      audio.ontimeupdate = () => { if(generation === this.speechGeneration) onProgress?.(audio.currentTime); };
       audio.onended = () => {
         if (generation !== this.speechGeneration) return;
         this.isSpeaking = false;
@@ -340,11 +544,14 @@ class MobileSoundService {
         const file=new File(Paths.cache,'papoole-voice-'+generation+'.mp3');file.create({overwrite:true});file.write(base64ToBytes(url.slice(url.indexOf(',')+1)));this.playbackFile=file;source={uri:file.uri};
       }
       if(generation!==this.speechGeneration)return;
-      const sound=createAudioPlayer(source);
+      const sound=createAudioPlayer(source, {updateInterval:80});
       this.currentSound=sound;sound.volume=this.volume;
+      sound.shouldCorrectPitch = true;
+      sound.setPlaybackRate(rate, 'high');
       let finished=false;
       sound.addListener('playbackStatusUpdate',status=>{
         if(generation!==this.speechGeneration||finished)return;
+        onProgress?.(status.currentTime);
         if(status.error){finished=true;this.isSpeaking=false;this.activeSpeakingText=null;this.notify();onError?.();}
         else if(status.didJustFinish){finished=true;this.isSpeaking=false;this.activeSpeakingText=null;this.notify();onEnd?.();}
       });

@@ -1,7 +1,10 @@
+import { rtlProps, rtlLayout } from '../../theme/rtl';
+import { useThemeStyles } from '../../theme/useAppearance';
 import { assessWriting, advanceWriting, writingMastered, suggestedWritingMode } from '../../services/foundationalLearning';
 import { WritingMode } from '../../services/types';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, PanResponder, Modal, useWindowDimensions } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView, PanResponder, Modal, useWindowDimensions } from 'react-native';
+import { Text } from '../../components/RTLText';
 import Svg, { Path, Line, Circle } from 'react-native-svg';
 import { Play, Eraser, Undo2, Volume2 } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
@@ -13,6 +16,7 @@ import { TracingScoreResult } from '../../services/tracingScorer';
 import { resamplePolyline } from '../../services/pathSimilarity';
 import { StrokePoint } from '../../services/types';
 import { useAppStore } from '../../store/useAppStore';
+import { isLessonUnlocked, isLessonComplete } from '../../services/lessonPath';
 
 const PENS = ['#0369a1', '#7c3aed', '#047857'];
 const pathFor = (points: StrokePoint[]) => points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
@@ -23,6 +27,7 @@ const Stroke: React.FC<{ points: StrokePoint[]; color: string; width: number }> 
 };
 
 export const WritingScreen: React.FC = () => {
+  const styles = useThemeStyles(baseStyles);
   const { selectedLetter, setSelectedLetter, setRoute, saveWritingScore, currentProfile } = useAppStore();
   const [letter, setLetter] = useState(selectedLetter || mockLetters[0]);
   const [mode,setMode]=useState<WritingMode>(()=>suggestedWritingMode(currentProfile.writingProgress?.[(selectedLetter||mockLetters[0]).id]));
@@ -50,7 +55,7 @@ export const WritingScreen: React.FC = () => {
   const scrollRef = useRef<ScrollView>(null);
   const guide = getKurdishStrokeGuide(letter.id) || getKurdishStrokeGuide(letter.glyph) || letter.strokeGuide;
   const index = mockLetters.findIndex(item => item.id === letter.id);
-  const hasNext = index < mockLetters.length - 1;
+  const hasNext = index < mockLetters.length - 1 && isLessonUnlocked(currentProfile, mockLetters[index + 1].id);
 
   const stopDemo = () => {
     if (demoTimer.current) clearInterval(demoTimer.current);
@@ -148,13 +153,13 @@ export const WritingScreen: React.FC = () => {
   };
   const selectLetter = (nextIndex: number) => {
     const next = mockLetters[nextIndex];
-    if (!next || busy) return;
+    if (!next || busy || !isLessonUnlocked(currentProfile, next.id)) return;
     void soundService.stopSpeaking(); setSelectedLetter(next); setLetter(next);
   };
   const changeMode=(next:WritingMode)=>{stopDemo();void soundService.stopSpeaking();setMode(next);setResult(null);clear();usedHelp.current=false;attemptStarted.current=Date.now();};
   const goHome = () => { void soundService.stopSpeaking(); setResult(null); setRoute('home'); };
   const nextLesson = () => {
-    if (!hasNext || !result?.mastered) return;
+    if (!hasNext || !result?.mastered || !isLessonComplete(currentProfile, letter.id)) return;
     void soundService.stopSpeaking();
     setSelectedLetter(mockLetters[index + 1]);
     setResult(null); setRoute('letter-detail');
@@ -184,7 +189,7 @@ export const WritingScreen: React.FC = () => {
         </Svg>
       </View>
     </View>
-    <Text style={styles.hint}>{demo !== null ? 'سەیر بکە چۆن دەنووسرێت…' : mode==='trace'?'لە خاڵە سەوزەکە دەست پێ بکە؛ بە پەنجە بەسەر هێڵەکەدا بڕۆ':'لە ناو بۆردەکە بە پەنجە بنووسە'}</Text>
+    {demo !== null && <Text style={styles.hint}>سەیر بکە چۆن دەنووسرێت…</Text>}
     <View style={styles.tools}>
       <TouchableOpacity accessibilityRole="button" style={styles.tool} onPress={() => { if (demo !== null) stopDemo(); else playDemo(); }} disabled={busy || mode!=='trace'}>
         <Play size={22} color="#0369a1" /><Text style={styles.toolText}>{demo !== null ? 'وەستاندن' : 'پیشاندان'}</Text></TouchableOpacity>
@@ -200,7 +205,7 @@ export const WritingScreen: React.FC = () => {
       {busy ? 'پشکنین دەکەم…' : 'نووسینەکەم چۆنە؟ ✓'}
     </BigButton>
     {result && <Modal transparent animationType="fade" visible onRequestClose={() => setResult(null)}>
-      <View style={styles.backdrop}><ScrollView contentContainerStyle={styles.modalScroll}><View style={styles.modalCard}>
+      <View {...rtlProps} style={[styles.backdrop, rtlLayout]}><ScrollView contentContainerStyle={styles.modalScroll}><View style={styles.modalCard}>
         <Text style={styles.celebration}>{result.mastered ? '🌟' : '🌱'}</Text>
         <Text style={styles.resultTitle}>{confirmedMastery ? 'تەواو فێر بوویت!' : result.mastered ? 'ئافەرم! ئەم مەشقەت تەواو کرد' : 'با جارێکی تر ڕاهێنان بکەین'}</Text>
         <Text style={styles.resultText}>{result.mastered ? `ئافەرم! پیتی «${letter.glyph}» بە جوانی نووسیت.` : result.feedbackKu}</Text>
@@ -209,8 +214,9 @@ export const WritingScreen: React.FC = () => {
         {result.mastered ? <>
           {mode!=='independent' && <BigButton onPress={()=>changeMode(mode==='trace'?'copy':'independent')} variant="success" size="lg" style={styles.fullButton}>{mode==='trace'?'ئێستا بە نموونە بنووسم':'ئێستا سەربەخۆ بنووسم'}</BigButton>}
           {mode==='independent' && !confirmedMastery && <Text style={styles.resultText}>سەربەخۆ نووسیت! لە ڕۆژێکی دیکە دووبارەی بکەوە، بۆ دڵنیابوون لە فێربوون.</Text>}
-          {hasNext && <BigButton onPress={nextLesson} variant="success" size="lg" style={styles.fullButton}>{`پیتی دواتر «${mockLetters[index + 1].glyph}» ←`}</BigButton>}
-          {!hasNext && <Text style={styles.resultText}>گەیشتیتە کۆتایی پیتەکان! 🎉</Text>}
+          {hasNext && isLessonComplete(currentProfile,letter.id) && <BigButton onPress={nextLesson} variant="success" size="lg" style={styles.fullButton}>{`پیتی نوێ «${mockLetters[index + 1].glyph}» کراوەتەوە ←`}</BigButton>}
+          {!isLessonComplete(currentProfile,letter.id) && <BigButton onPress={()=>{setResult(null);setRoute('letter-detail');}} variant="outline" style={styles.fullButton}>هەنگاوەکانی وانەکە تەواو بکەم</BigButton>}
+          {index===mockLetters.length-1 && isLessonComplete(currentProfile,letter.id) && <Text style={styles.resultText}>گەیشتیتە کۆتایی پیتەکان! 🎉</Text>}
           <BigButton onPress={goHome} variant="outline" size="lg" style={styles.fullButton}>گەڕانەوە بۆ سەرەتا 🏠</BigButton>
         </> : <>
           {mode!=='trace' && <BigButton onPress={()=>changeMode('trace')} variant="outline" style={styles.fullButton}>ڕێنما ببینم؛ یارمەتی دەوێت</BigButton>}
@@ -222,19 +228,19 @@ export const WritingScreen: React.FC = () => {
   </ScrollView>;
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 32, alignItems: 'center', gap: 12, width: '100%', maxWidth: 520, alignSelf: 'center' },
-  header: { flexDirection: 'row-reverse', alignItems: 'center', width: '100%', gap: 8 },
+  header: { flexDirection: 'row', alignItems: 'center', width: '100%', gap: 8 },
   letterInfo: { flex: 1, alignItems: 'center' },
   label: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, color: '#1e293b', textAlign: 'center' },
-  reference: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 64, lineHeight: 90, color: '#78350f' },
+  reference: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 44, lineHeight: 62, color: '#78350f' },
   arrow: { width: 56, height: 56, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fef3c7' },
   arrowText: { fontSize: 26, color: '#78350f' },
   disabled: { opacity: 0.3 },
   instruction: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 16, textAlign: 'center', color: '#334155' },
   boardFrame: { backgroundColor: '#fffef7', borderColor: '#cbd5e1', borderWidth: 2, borderRadius: 22, overflow: 'hidden' },
   hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 14, color: '#475569', textAlign: 'center' },
-  tools: { width: '100%', flexDirection: 'row-reverse', gap: 8 },
+  tools: { width: '100%', flexDirection: 'row', gap: 8 },
   tool: { flex: 1, minHeight: 68, padding: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eaf2f8', borderRadius: 18, gap: 6 },
   toolText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: '#334155', textAlign: 'center' },
   colors: { flexDirection: 'row', gap: 16, marginVertical: 4 },
@@ -248,5 +254,5 @@ const styles = StyleSheet.create({
   celebration: { fontSize: 56 },
   resultTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 26, color: '#047857', textAlign: 'center' },
   resultText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 17, color: '#334155', textAlign: 'center' },
-  listenHelp: { minHeight: 64, flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'center', gap: 12 },
+  listenHelp: { minHeight: 64, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 },
 });

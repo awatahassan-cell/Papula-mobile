@@ -8,7 +8,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'dal',
     glyph: 'د',
-    name: 'دال',
+    name: 'د',
     soundPlaceholder: '/audio/letters/dal.mp3',
     phoneticAudioFreq: 620,
     forms: { isolated: 'د', initial: 'د', medial: 'ـد', final: 'ـد' },
@@ -45,7 +45,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'ra',
     glyph: 'ر',
-    name: 'ڕێی باریک',
+    name: 'ر',
     soundPlaceholder: '/audio/letters/ra.mp3',
     phoneticAudioFreq: 640,
     forms: { isolated: 'ر', initial: 'ر', medial: 'ـر', final: 'ـر' },
@@ -82,7 +82,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'alif',
     glyph: 'ا',
-    name: 'ئەلف',
+    name: 'ئا',
     soundPlaceholder: '/audio/letters/alif.mp3',
     phoneticAudioFreq: 460,
     forms: { isolated: 'ا', initial: 'ا', medial: 'ـا', final: 'ـا' },
@@ -130,7 +130,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'waw_kurt',
     glyph: 'و',
-    name: 'واوی کورت',
+    name: 'ووی کورت',
     soundPlaceholder: '/audio/letters/waw_kurt.mp3',
     phoneticAudioFreq: 1020,
     forms: { isolated: 'و', initial: 'و', medial: 'ـو', final: 'ـو' },
@@ -167,7 +167,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'sar_e',
     glyph: 'ە',
-    name: 'سەرە (ئە)',
+    name: 'بزوێن (ئە)',
     soundPlaceholder: '/audio/letters/sar_e.mp3',
     phoneticAudioFreq: 1000,
     forms: { isolated: 'ە', initial: 'ە', medial: 'ـە', final: 'ـە' },
@@ -204,7 +204,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'wwaw',
     glyph: 'وو',
-    name: 'واوی دووانە (وو)',
+    name: 'ووی درێژ',
     soundPlaceholder: '/audio/letters/wwaw.mp3',
     phoneticAudioFreq: 1030,
     forms: { isolated: 'وو', initial: 'وو', medial: 'ـوو', final: 'ـوو' },
@@ -267,7 +267,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'za',
     glyph: 'ز',
-    name: 'زێ',
+    name: 'ز',
     soundPlaceholder: '/audio/letters/za.mp3',
     phoneticAudioFreq: 680,
     forms: { isolated: 'ز', initial: 'ز', medial: 'ـز', final: 'ـز' },
@@ -304,7 +304,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'ba',
     glyph: 'ب',
-    name: 'بێ',
+    name: 'ب',
     soundPlaceholder: '/audio/letters/ba.mp3',
     phoneticAudioFreq: 480,
     forms: { isolated: 'ب', initial: 'بـ', medial: 'ـبـ', final: 'ـب' },
@@ -358,7 +358,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'hamza',
     glyph: 'ئ',
-    name: 'هەمزە',
+    name: 'ئ',
     soundPlaceholder: '/audio/letters/hamza.mp3',
     phoneticAudioFreq: 440,
     forms: { isolated: 'ئ', initial: 'ئـ', medial: 'ـئـ', final: 'ـئ' },
@@ -409,7 +409,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'rra_heavy',
     glyph: 'ڕ',
-    name: 'ڕێی قەڵەو (قورس)',
+    name: 'ڕ',
     soundPlaceholder: '/audio/letters/rra.mp3',
     phoneticAudioFreq: 660,
     isHeavySound: true,
@@ -447,7 +447,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'mim',
     glyph: 'م',
-    name: 'میم',
+    name: 'م',
     soundPlaceholder: '/audio/letters/mim.mp3',
     phoneticAudioFreq: 940,
     forms: { isolated: 'م', initial: 'مـ', medial: 'ـمـ', final: 'ـم' },
@@ -484,7 +484,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'noon',
     glyph: 'ن',
-    name: 'نون',
+    name: 'ن',
     soundPlaceholder: '/audio/letters/noon.mp3',
     phoneticAudioFreq: 960,
     forms: { isolated: 'ن', initial: 'نـ', medial: 'ـنـ', final: 'ـن' },
@@ -521,7 +521,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'e_drej',
     glyph: 'ێ',
-    name: 'یێی درێژ (ێ)',
+    name: 'ێ',
     soundPlaceholder: '/audio/letters/e_drej.mp3',
     phoneticAudioFreq: 1080,
     forms: { isolated: 'ێ', initial: 'ێـ', medial: 'ـێـ', final: 'ـێ' },
@@ -558,7 +558,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'ta',
     glyph: 'ت',
-    name: 'تێ',
+    name: 'ت',
     soundPlaceholder: '/audio/letters/ta.mp3',
     phoneticAudioFreq: 520,
     forms: { isolated: 'ت', initial: 'تـ', medial: 'ـتـ', final: 'ـت' },
@@ -595,7 +595,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'ya_kurt',
     glyph: 'ی',
-    name: 'یێی کورت',
+    name: 'ی',
     soundPlaceholder: '/audio/letters/ya_kurt.mp3',
     phoneticAudioFreq: 1060,
     forms: { isolated: 'ی', initial: 'یـ', medial: 'ـیـ', final: 'ـی' },
@@ -632,7 +632,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'sin',
     glyph: 'س',
-    name: 'سین',
+    name: 'س',
     soundPlaceholder: '/audio/letters/sin.mp3',
     phoneticAudioFreq: 720,
     forms: { isolated: 'س', initial: 'سـ', medial: 'ـسـ', final: 'ـس' },
@@ -669,7 +669,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'shin',
     glyph: 'ش',
-    name: 'شین',
+    name: 'ش',
     soundPlaceholder: '/audio/letters/shin.mp3',
     phoneticAudioFreq: 740,
     forms: { isolated: 'ش', initial: 'شـ', medial: 'ـشـ', final: 'ـش' },
@@ -706,7 +706,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'pa',
     glyph: 'پ',
-    name: 'پێ',
+    name: 'پ',
     soundPlaceholder: '/audio/letters/pa.mp3',
     phoneticAudioFreq: 500,
     forms: { isolated: 'پ', initial: 'پـ', medial: 'ـپـ', final: 'ـپ' },
@@ -759,7 +759,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'lam',
     glyph: 'ل',
-    name: 'لامی باریک',
+    name: 'ل',
     soundPlaceholder: '/audio/letters/lam.mp3',
     phoneticAudioFreq: 900,
     forms: { isolated: 'ل', initial: 'لـ', medial: 'ـلـ', final: 'ـل' },
@@ -796,7 +796,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'lla_heavy',
     glyph: 'ڵ',
-    name: 'لامی قەڵەو (قورس)',
+    name: 'ڵ',
     soundPlaceholder: '/audio/letters/lla.mp3',
     phoneticAudioFreq: 920,
     isHeavySound: true,
@@ -834,7 +834,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'kaf',
     glyph: 'ک',
-    name: 'کاف',
+    name: 'ک',
     soundPlaceholder: '/audio/letters/kaf.mp3',
     phoneticAudioFreq: 860,
     forms: { isolated: 'ک', initial: 'کـ', medial: 'ـکـ', final: 'ـک' },
@@ -871,7 +871,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'gaf',
     glyph: 'گ',
-    name: 'گاف',
+    name: 'گ',
     soundPlaceholder: '/audio/letters/gaf.mp3',
     phoneticAudioFreq: 880,
     forms: { isolated: 'گ', initial: 'گـ', medial: 'ـگـ', final: 'ـگ' },
@@ -908,7 +908,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'o_drej',
     glyph: 'ۆ',
-    name: 'واوی درێژ (ۆ)',
+    name: 'ۆ',
     soundPlaceholder: '/audio/letters/o_drej.mp3',
     phoneticAudioFreq: 1040,
     forms: { isolated: 'ۆ', initial: 'ۆ', medial: 'ـۆ', final: 'ـۆ' },
@@ -945,7 +945,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'jim',
     glyph: 'ج',
-    name: 'جیم',
+    name: 'ج',
     soundPlaceholder: '/audio/letters/jim.mp3',
     phoneticAudioFreq: 540,
     forms: { isolated: 'ج', initial: 'جـ', medial: 'ـجـ', final: 'ـج' },
@@ -982,7 +982,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'chim',
     glyph: 'چ',
-    name: 'چێ',
+    name: 'چ',
     soundPlaceholder: '/audio/letters/chim.mp3',
     phoneticAudioFreq: 560,
     forms: { isolated: 'چ', initial: 'چـ', medial: 'ـچـ', final: 'ـچ' },
@@ -1019,7 +1019,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'kha',
     glyph: 'خ',
-    name: 'خێ',
+    name: 'خ',
     soundPlaceholder: '/audio/letters/kha.mp3',
     phoneticAudioFreq: 600,
     forms: { isolated: 'خ', initial: 'خـ', medial: 'ـخـ', final: 'ـخ' },
@@ -1056,7 +1056,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'ha_hezi',
     glyph: 'ح',
-    name: 'حێ',
+    name: 'ح',
     soundPlaceholder: '/audio/letters/ha_hezi.mp3',
     phoneticAudioFreq: 580,
     forms: { isolated: 'ح', initial: 'حـ', medial: 'ـحـ', final: 'ـح' },
@@ -1093,7 +1093,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'zha',
     glyph: 'ژ',
-    name: 'ژێ',
+    name: 'ژ',
     soundPlaceholder: '/audio/letters/zha.mp3',
     phoneticAudioFreq: 700,
     forms: { isolated: 'ژ', initial: 'ژ', medial: 'ـژ', final: 'ـژ' },
@@ -1130,7 +1130,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'fa',
     glyph: 'ف',
-    name: 'فێ',
+    name: 'ف',
     soundPlaceholder: '/audio/letters/fa.mp3',
     phoneticAudioFreq: 800,
     forms: { isolated: 'ف', initial: 'فـ', medial: 'ـفـ', final: 'ـف' },
@@ -1167,7 +1167,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'va',
     glyph: 'ڤ',
-    name: 'ڤێ',
+    name: 'ڤ',
     soundPlaceholder: '/audio/letters/va.mp3',
     phoneticAudioFreq: 820,
     forms: { isolated: 'ڤ', initial: 'ڤـ', medial: 'ـڤـ', final: 'ـڤ' },
@@ -1204,7 +1204,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'qaf',
     glyph: 'ق',
-    name: 'قاف',
+    name: 'ق',
     soundPlaceholder: '/audio/letters/qaf.mp3',
     phoneticAudioFreq: 840,
     forms: { isolated: 'ق', initial: 'قـ', medial: 'ـقـ', final: 'ـق' },
@@ -1241,7 +1241,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'ghayn',
     glyph: 'غ',
-    name: 'غەین',
+    name: 'غ',
     soundPlaceholder: '/audio/letters/ghayn.mp3',
     phoneticAudioFreq: 780,
     forms: { isolated: 'غ', initial: 'غـ', medial: 'ـغـ', final: 'ـغ' },
@@ -1278,7 +1278,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'ayn',
     glyph: 'ع',
-    name: 'عەین',
+    name: 'ع',
     soundPlaceholder: '/audio/letters/ayn.mp3',
     phoneticAudioFreq: 760,
     forms: { isolated: 'ع', initial: 'عـ', medial: 'ـعـ', final: 'ـع' },
@@ -1315,7 +1315,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'ha_hawa',
     glyph: 'ھ',
-    name: 'ھێی هەوا',
+    name: 'هـ',
     soundPlaceholder: '/audio/letters/ha_hawa.mp3',
     phoneticAudioFreq: 980,
     forms: { isolated: 'ھ', initial: 'ھـ', medial: 'ـھـ', final: 'ـھ' },

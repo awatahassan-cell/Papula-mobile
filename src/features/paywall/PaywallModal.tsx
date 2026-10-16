@@ -1,12 +1,8 @@
+import { rtlProps, rtlLayout } from '../../theme/rtl';
+import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
-import {
-  Modal,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import { Modal, View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Text } from '../../components/RTLText';
 import { X, Crown, Check } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
 import { authRepo } from '../../services/repositories';
@@ -14,6 +10,7 @@ import { soundService } from '../../services/soundService';
 import { useAppStore } from '../../store/useAppStore';
 
 export const PaywallModal: React.FC = () => {
+  const styles = useThemeStyles(baseStyles);
   const { paywallOpen, setPaywallOpen, updateParentSettings, triggerConfetti, strings } = useAppStore();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [loading, setLoading] = useState(false);
@@ -65,7 +62,7 @@ export const PaywallModal: React.FC = () => {
       visible={paywallOpen}
       onRequestClose={handleClose}
     >
-      <View style={styles.backdrop}>
+      <View {...rtlProps} style={[styles.backdrop, rtlLayout]}>
         <View style={styles.card}>
           <TouchableOpacity onPress={handleClose} style={styles.closeBtn}>
             <X size={20} color="#64748b" />
@@ -160,7 +157,7 @@ export const PaywallModal: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(15, 23, 42, 0.7)',

@@ -1,12 +1,15 @@
+import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
+import { Text } from '../../components/RTLText';
 import { mockLetters } from '../../data/mockLetters';
 import { LEARNING_WORDS, shuffled } from '../../services/learningEngine';
 import { soundService } from '../../services/soundService';
 import { useAppStore } from '../../store/useAppStore';
-import { learningStyles as s } from './learningStyles';
+import { learningStyles as baseLearningStyles } from './learningStyles';
 
 export const StartingAssessment:React.FC<{onExit:()=>void}>=({onExit})=>{
+  const s = useThemeStyles(baseLearningStyles);
   const {savePlacement,recordPracticeResult,recordSkillResult}=useAppStore();
   const [questions]=useState(()=>[
     ...[0,7,10,17].map(index=>{const target=mockLetters[index];return {id:target.id,prompt:`پیتی ${target.name}`,glyph:target.glyph,letterId:target.id,emoji:'👂',options:shuffled([target,...shuffled(mockLetters.filter(l=>l.id!==target.id)).slice(0,2)]).map(l=>({id:l.id,text:l.glyph}))};}),

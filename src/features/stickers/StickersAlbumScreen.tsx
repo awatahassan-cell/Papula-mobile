@@ -1,11 +1,7 @@
+import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Text } from '../../components/RTLText';
 import { Sparkles, Lock, Award, Gift, Home } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
 import { BadgesComponent } from '../../components/BadgesComponent';
@@ -14,6 +10,7 @@ import { soundService } from '../../services/soundService';
 import { useAppStore } from '../../store/useAppStore';
 
 export const StickersAlbumScreen: React.FC = () => {
+  const styles = useThemeStyles(baseStyles);
   const { currentProfile, setRoute, strings } = useAppStore();
   const [activeTab, setActiveTab] = useState<'stickers' | 'badges'>('stickers');
 
@@ -128,7 +125,7 @@ export const StickersAlbumScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   container: {
     padding: 16,
     paddingBottom: 40,

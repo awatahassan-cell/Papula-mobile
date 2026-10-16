@@ -1,13 +1,12 @@
+import { useThemeStyles } from '../../theme/useAppearance';
+import { mockLetters } from '../../data/mockLetters';
+import { LEARNING_PAGE_PAUSE_MS } from '../../services/storyPlayback';
 import { StorySequence } from '../learning/StorySequence';
 import { readableText } from '../../services/foundationalLearning';
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { ResponsiveStoryImage } from '../../components/ResponsiveStoryImage';
+import { Text } from '../../components/RTLText';
 import {
   Play,
   Pause,
@@ -15,18 +14,21 @@ import {
   ChevronLeft,
   Volume2,
   BookOpen,
+  Trophy, Sparkles, Star, Check, ArrowLeft, Shapes,
 } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
-import { StarRating } from '../../components/StarRating';
 import { soundService } from '../../services/soundService';
 import { StoryPage } from '../../services/types';
 import { useAppStore } from '../../store/useAppStore';
 
 export const StoryReaderScreen: React.FC = () => {
-  const { selectedStory, setRoute, completeStory, saveWord, triggerConfetti, strings, currentProfile, recordSkillResult } = useAppStore();
+  const styles = useThemeStyles(baseStyles);
+  const { selectedStory, setSelectedLetter, setRoute, completeStory, saveWord, triggerConfetti, currentProfile, recordSkillResult } = useAppStore();
   const [pageIndex, setPageIndex] = useState(0);
   const [readMode, setReadMode] = useState<'read_to_me' | 'i_read'>(selectedStory?.practiceMode==='read'?'i_read':'read_to_me');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [activeWord,setActiveWord]=useState<{start:number;end:number}|null>(null);
+  const introduced=useRef(false);
   const [sequencing,setSequencing]=useState(false);
   const readingHelp=useRef(false);
   const [showQuiz, setShowQuiz] = useState(false);
@@ -37,12 +39,15 @@ export const StoryReaderScreen: React.FC = () => {
   const playbackTimerRef = useRef<any>(null);
   const narrationRef = useRef(0);
   const quizLockedRef = useRef(false);
+  const completionLockedRef = useRef(false);
   const quizTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const story = selectedStory;
+  const targetLetter = mockLetters.find(letter => letter.id === story?.targetLetterId);
 
   const stopNarration = () => {
     setIsPlaying(false);
+    setActiveWord(null);
     if (playbackTimerRef.current) clearTimeout(playbackTimerRef.current);
     narrationRef.current++;
     void soundService.stopSpeaking();
@@ -71,23 +76,41 @@ export const StoryReaderScreen: React.FC = () => {
 
   const currentPage: StoryPage = story.pages[pageIndex];
 
+  const finishReading = () => {
+    if (story.quiz) setShowQuiz(true);
+    else {
+      if (completionLockedRef.current) return;
+      completionLockedRef.current = true;
+      stopNarration();
+      setStoryFinished(true);
+      completeStory(story.id);
+    }
+  };
+
   const startKaraokeNarration = (pIdx: number) => {
     stopNarration();
     setIsPlaying(true);
 
     const page = story.pages[pIdx];
     const token = narrationRef.current;
-    void soundService.speakWord(page.textKu, { onEnd: () => {
+    const readPage = () => { if(token !== narrationRef.current)return; void soundService.speakStory(story.id, page.pageNumber, page.textKu, {
+      onWord:(start,end)=>{if(token===narrationRef.current)setActiveWord({start,end});},
+      onEnd: () => {
       if (token !== narrationRef.current) return;
       setIsPlaying(false);
+      setActiveWord(null);
       if (readMode === 'read_to_me') {
         playbackTimerRef.current = setTimeout(() => {
           if (token !== narrationRef.current) return;
           if (pIdx < story.pages.length - 1) setPageIndex(pIdx + 1);
-          else setShowQuiz(true);
-        }, 1400);
+          else finishReading();
+        }, LEARNING_PAGE_PAUSE_MS);
       }
-    }, onError: () => { if (token === narrationRef.current) setIsPlaying(false); }});
+    }, onError: () => { if (token === narrationRef.current) {setIsPlaying(false);setActiveWord(null);} }}); };
+    if(targetLetter && pIdx===0 && !introduced.current){
+      introduced.current=true;
+      void soundService.speakWord(`پیتی ${targetLetter.name}`,{onEnd:()=>{if(token!==narrationRef.current)return;void soundService.speakWord('ئێستا با چیرۆکێک ببیستین. لە وشەکاندا پیتەکە بدۆزەوە.',{onEnd:readPage,onError:readPage});},onError:readPage});
+    }else readPage();
   };
 
   const handleTogglePlay = () => {
@@ -130,31 +153,33 @@ export const StoryReaderScreen: React.FC = () => {
 
   if(sequencing)return <StorySequence story={story} onComplete={()=>{setSequencing(false);setStoryFinished(true);completeStory(story.id);}} />;
   if (storyFinished) {
+    const continueLesson = () => { if(targetLetter){setSelectedLetter(targetLetter);setRoute('letter-detail');} };
     return (
-      <View style={styles.finishedContainer}>
-        <Text style={styles.finishedEmoji}>🎉 📖</Text>
-        <Text style={styles.finishedTitle}>پیرۆزە! چیرۆکەکەت تەواو کرد!</Text>
-        <Text style={styles.finishedSub}>
-          زۆر باشە! چیرۆکەکەت خوێندەوە و لێی تێگەیشتیت.
-        </Text>
-
-        <View style={styles.starsBox}>
-          <StarRating stars={3} maxStars={3} size="lg" />
+      <ScrollView contentContainerStyle={styles.completionPage}>
+        <View testID="story-completion" style={styles.completionSheet}>
+          <View style={styles.celebrationArt} accessible={false}>
+            <View style={styles.trophyHalo}><View style={styles.trophyMedal}><Trophy size={48} color="#a36b17" fill="#f9d67a" strokeWidth={1.6}/></View></View>
+            <View style={styles.sparkRight}><Sparkles size={27} color={styles.completionBadgeText.color} strokeWidth={1.8}/></View>
+            <View style={styles.sparkLeft}><Star size={21} color="#d79b35" fill="#f9d67a" strokeWidth={1.7}/></View>
+            <View style={styles.successSeal}><Check size={19} color="#ffffff" strokeWidth={3}/></View>
+          </View>
+          <Text style={styles.completionTitle}>پیرۆزە! چیرۆکەکەت تەواو کرد!</Text>
+          <Text style={styles.completionMessage}>{story.quiz?'زۆر باشە! چیرۆکەکەت خوێندەوە و لێی تێگەیشتیت.':'زۆر باشە! وانەکەت خوێندەوە. با پێکەوە مەشق بکەین.'}</Text>
+          <View style={styles.completedBook}>
+            <View style={styles.completedBookIcon}><BookOpen size={25} color={styles.completionBadgeText.color} strokeWidth={1.8}/></View>
+            <View style={styles.completedBookCopy}><Text style={styles.completedBookLabel}>چیرۆکی ئەمڕۆت</Text><Text style={styles.completedBookTitle}>{story.titleKu}</Text></View>
+            <View style={styles.completedBookCheck}><Check size={18} color={styles.completionBadgeText.color}/></View>
+          </View>
+          <View style={styles.completionActions}>
+            {targetLetter&&<TouchableOpacity accessibilityRole="button" accessibilityLabel={`بەردەوام بە لە وانەی پیتی ${targetLetter.glyph}`} onPress={continueLesson} style={styles.completionPrimary}><View style={styles.completionActionIcon}><Shapes size={23} color="#ffffff"/></View><Text style={styles.completionPrimaryText}>بەردەوام بە لە وانەکە</Text><ArrowLeft size={20} color="#ffffff"/></TouchableOpacity>}
+            <TouchableOpacity accessibilityRole="button" onPress={()=>setRoute('stories')} style={targetLetter?styles.completionSecondary:styles.completionPrimary}><BookOpen size={21} color={targetLetter?styles.completionSecondaryText.color:'#ffffff'}/><Text style={targetLetter?styles.completionSecondaryText:styles.completionPrimaryText}>گەڕانەوە بۆ چیرۆکەکان</Text>{!targetLetter&&<ArrowLeft size={20} color="#ffffff"/>}</TouchableOpacity>
+          </View>
         </View>
-
-        <BigButton
-          onPress={() => setRoute('stories')}
-          variant="primary"
-          size="lg"
-          style={styles.actionBtn}
-        >
-          گەڕانەوە بۆ کتێبخانە 📚
-        </BigButton>
-      </View>
+      </ScrollView>
     );
   }
 
-  if (showQuiz) {
+  if (showQuiz && story.quiz) {
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.quizCard}>
@@ -194,7 +219,10 @@ export const StoryReaderScreen: React.FC = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.readerScreen}><ScrollView contentContainerStyle={styles.container}>
+      {targetLetter && <TouchableOpacity accessibilityRole="button" accessibilityLabel={`گەڕانەوە بۆ وانەی پیتی ${targetLetter.glyph}`} onPress={()=>{stopNarration();setSelectedLetter(targetLetter);setRoute('letter-detail');}} style={styles.backToLesson}>
+        <ChevronRight size={18} color={styles.backText.color}/><Text style={styles.backText}>وانەی پیتی «{targetLetter.glyph}»</Text>
+      </TouchableOpacity>}
       {/* Mode Selector & Header */}
       <View style={styles.headerRow}>
         <View style={styles.modeTabs}>
@@ -205,8 +233,9 @@ export const StoryReaderScreen: React.FC = () => {
             }}
             style={[styles.modeTab, readMode === 'read_to_me' && styles.modeTabActive]}
           >
+            <Volume2 size={19} color={readMode==='read_to_me'?styles.modeTabTextActive.color:styles.modeTabText.color}/>
             <Text style={[styles.modeTabText, readMode === 'read_to_me' && styles.modeTabTextActive]}>
-              بۆم بخوێنەوە 🔊
+              بۆم بخوێنەوە
             </Text>
           </TouchableOpacity>
 
@@ -217,8 +246,9 @@ export const StoryReaderScreen: React.FC = () => {
             }}
             style={[styles.modeTab, readMode === 'i_read' && styles.modeTabActive]}
           >
+            <BookOpen size={19} color={readMode==='i_read'?styles.modeTabTextActive.color:styles.modeTabText.color}/>
             <Text style={[styles.modeTabText, readMode === 'i_read' && styles.modeTabTextActive]}>
-              خۆم دەخوێنمەوە 📖
+              خۆم دەخوێنمەوە
             </Text>
           </TouchableOpacity>
         </View>
@@ -230,19 +260,25 @@ export const StoryReaderScreen: React.FC = () => {
 
       {readMode==='i_read' && !readableText(currentPage.textKu,currentProfile) && <Text style={styles.finishedSub}>وشە یان پیتی نوێ تێدایە؛ دەتوانیت بە یارمەتی بخوێنیتەوە یان گوێی لێ بگریت.</Text>}
       {/* Story Illustration Card */}
-      <View style={styles.illustrationCard}>
-        <Text style={styles.illustrationEmoji}>{story.coverEmoji}</Text>
+      <View style={styles.storyArtworkFrame}>
+        {currentPage.illustrationImage !== undefined
+          ? <ResponsiveStoryImage source={currentPage.illustrationImage} label={story.titleKu} />
+          : <Text style={styles.illustrationEmoji}>{story.coverEmoji}</Text>}
       </View>
+      {currentPage.additionalImages?.map((source, index) => <ResponsiveStoryImage key={index} source={source} label={`${story.titleKu}، وێنەی ${index + 2}`} />)}
+
 
       {/* Synchronized Word by Word Karaoke Text */}
-      <View style={styles.karaokeCard}>
+      <View style={styles.readingCard}>
         <Text testID="story-paragraph" accessibilityLabel={currentPage.textKu} style={styles.storyParagraph}>
-          {currentPage.textKu.split(/(\s+)/).map((part, index) => /\s/.test(part)
+          {currentPage.textKu.split(/(\s+)/).map((part, index, parts) => /\s/.test(part)
             ? part
-            : <Text key={index} onPress={() => handleWordTap(part)}>{part}</Text>)}
+            : <Text key={index} style={activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? {backgroundColor:'#fef08a',color:'#166534'} : undefined} onPress={() => handleWordTap(part)}>{targetLetter ? part.split(new RegExp(`(${targetLetter.glyph === 'ھ' ? '[هھ]' : targetLetter.glyph})`, 'g')).map((piece, pieceIndex)=>
+              <Text key={pieceIndex} style={piece.replace(/ھ/g,'ه')===targetLetter.glyph.replace(/ھ/g,'ه') ? styles.targetGlyph : undefined}>{piece}</Text>) : part}</Text>)}
         </Text>
       </View>
 
+    </ScrollView>
       {/* Navigation & Audio Controls */}
       <View style={styles.controlsRow}>
         <TouchableOpacity
@@ -260,6 +296,8 @@ export const StoryReaderScreen: React.FC = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel={isPlaying?'وەستاندنی چیرۆک':'گوێگرتن لە چیرۆک'}
           onPress={handleTogglePlay}
           style={styles.playBtn}
           activeOpacity={0.8}
@@ -278,22 +316,48 @@ export const StoryReaderScreen: React.FC = () => {
             if (pageIndex < story.pages.length - 1) {
               setPageIndex(pageIndex + 1);
             } else {
-              setShowQuiz(true);
+              finishReading();
             }
           }}
           style={styles.navBtn}
         >
           <Text style={styles.navBtnText}>
-            {pageIndex < story.pages.length - 1 ? 'دواتر' : 'تاقیکردنەوە'}
+            {pageIndex < story.pages.length - 1 ? 'دواتر' : story.quiz ? 'تاقیکردنەوە' : 'تەواو بکەم'}
           </Text>
           <ChevronLeft size={18} color="#334155" />
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
+  completionPage:{flexGrow:1,alignItems:'center',justifyContent:'center',padding:18,paddingBottom:28},
+  completionSheet:{width:'100%',maxWidth:560,backgroundColor:'#ffffff',borderRadius:30,borderWidth:1,borderColor:'#dce9e1',padding:18,alignItems:'center',gap:12},
+  celebrationArt:{width:190,height:116,alignItems:'center',justifyContent:'center'},
+  trophyHalo:{width:110,height:110,borderRadius:55,backgroundColor:'#e3f5ec',alignItems:'center',justifyContent:'center'},
+  trophyMedal:{width:88,height:88,borderRadius:44,backgroundColor:'#fff8e3',alignItems:'center',justifyContent:'center',borderWidth:5,borderColor:'#ffffff'},
+  sparkRight:{position:'absolute',right:2,top:23},sparkLeft:{position:'absolute',left:4,top:67},
+  successSeal:{position:'absolute',bottom:0,right:43,width:30,height:30,borderRadius:15,backgroundColor:'#23875f',borderWidth:3,borderColor:'#ffffff',alignItems:'center',justifyContent:'center'},
+  completionBadge:{flexDirection:'row',alignItems:'center',gap:5,backgroundColor:'#e3f5ec',borderRadius:12,paddingHorizontal:10,paddingVertical:5},
+  completionBadgeText:{fontSize:12,color:'#176445',fontFamily:'IBMPlexSansArabic_600SemiBold'},
+  completionTitle:{fontSize:24,lineHeight:38,fontFamily:'IBMPlexSansArabic_700Bold',color:'#243b3a',textAlign:'center'},
+  completionMessage:{fontSize:14,lineHeight:26,color:'#657d79',textAlign:'center'},
+  completedBook:{width:'100%',flexDirection:'row',alignItems:'center',gap:10,padding:12,backgroundColor:'#f4f9f6',borderRadius:18},
+  completedBookIcon:{width:44,height:48,borderRadius:14,backgroundColor:'#ffffff',alignItems:'center',justifyContent:'center'},
+  completedBookCopy:{flex:1,minWidth:0,gap:3},completedBookLabel:{fontSize:11,color:'#657d79'},completedBookTitle:{fontSize:17,lineHeight:28,fontFamily:'IBMPlexSansArabic_600SemiBold',color:'#243b3a'},
+  completedBookCheck:{width:28,height:28,borderRadius:14,backgroundColor:'#e3f5ec',alignItems:'center',justifyContent:'center'},
+  completionStars:{flexDirection:'row',alignItems:'center',justifyContent:'center',gap:12,paddingVertical:2},
+  completionActions:{width:'100%',gap:8,marginTop:2},
+  completionPrimary:{width:'100%',minHeight:58,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:10,padding:12,borderRadius:19,backgroundColor:'#23875f',borderBottomWidth:4,borderBottomColor:'#176445'},
+  completionActionIcon:{width:34,height:34,borderRadius:11,backgroundColor:'rgba(255,255,255,0.14)',alignItems:'center',justifyContent:'center'},
+  completionPrimaryText:{flex:1,flexShrink:1,color:'#ffffff',fontSize:16,lineHeight:27,textAlign:'center',fontFamily:'IBMPlexSansArabic_700Bold'},
+  completionSecondary:{width:'100%',minHeight:54,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:8,padding:12,borderRadius:17,backgroundColor:'#ffffff',borderWidth:1.5,borderColor:'#dce9e1'},
+  completionSecondaryText:{flexShrink:1,color:'#176445',fontSize:15,lineHeight:25,textAlign:'center',fontFamily:'IBMPlexSansArabic_600SemiBold'},
+  readerScreen:{flex:1},
+  backToLesson:{minHeight:44,flexDirection:'row',alignItems:'center',gap:5,paddingHorizontal:4,marginBottom:12},
+  backText:{fontSize:14,color:'#657d79',fontFamily:'IBMPlexSansArabic_600SemiBold'},
+  targetGlyph: { color: '#ea580c' },
   container: {
     padding: 16,
     paddingBottom: 40,
@@ -314,20 +378,23 @@ const styles = StyleSheet.create({
     width: 220,
   },
   headerRow: {
-    flexDirection: 'row',
+    flexDirection: 'column',
+    gap:10,
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
   },
   modeTabs: {
     flexDirection: 'row',
+    width:'100%',maxWidth:620,
     backgroundColor: '#f1f5f9',
     borderRadius: 16,
     padding: 3,
     gap: 4,
   },
   modeTab: {
-    paddingHorizontal: 12,
+    flex:1,minWidth:0,minHeight:48,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:7,
+    paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 12,
   },
@@ -340,7 +407,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   modeTabText: {
-    fontSize: 11,
+    flexShrink:1,
+    fontSize: 13,
     fontWeight: '800',
     color: '#64748b',
   },
@@ -352,30 +420,35 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#64748b',
   },
-  illustrationCard: {
-    height: 180,
-    backgroundColor: '#e0f2fe',
-    borderRadius: 28,
-    borderWidth: 2,
-    borderColor: '#bae6fd',
+  storyArtworkFrame: {
+    width: '100%', maxWidth: 620, alignSelf: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 26,
+    borderWidth: 1,
+    borderColor: '#dce9e1',
+    overflow:'hidden',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
   },
+  storyImage: { width: '100%', aspectRatio: 1, borderRadius: 24 },
+  sourceCredit: { fontSize: 13, color: '#64748b', textAlign: 'right', marginBottom: 12 },
   illustrationEmoji: {
-    fontSize: 72,
+    paddingVertical:44,
+    fontSize: 86,
   },
-  karaokeCard: {
+  readingCard: {
     backgroundColor: '#ffffff',
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: '#fed7aa',
+    borderColor: '#dce9e1',
     padding: 20,
-    marginBottom: 20,
+    marginBottom: 16,
+    width:'100%',maxWidth:620,alignSelf:'center',
   },
   storyParagraph: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 26, lineHeight: 46, textAlign: 'right', writingDirection: 'rtl', direction: 'rtl', width: '100%' },
   wordsWrap: {
-    flexDirection: 'row-reverse',
+    flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 6,
     justifyContent: 'center',
@@ -401,16 +474,18 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   controlsRow: {
+    width:'100%',maxWidth:840,alignSelf:'center',padding:12,backgroundColor:'#f4f9f6',borderTopWidth:1,borderTopColor:'#dce9e1',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 8,
   },
   navBtn: {
-    backgroundColor: '#f8fafc',
+    flex:1,minWidth:0,minHeight:62,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:4,
+    backgroundColor: '#ffffff',
     borderWidth: 1.5,
     borderColor: '#e2e8f0',
-    paddingHorizontal: 14,
+    paddingHorizontal: 8,
     paddingVertical: 10,
     borderRadius: 16,
   },
@@ -418,12 +493,14 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
   navBtnText: {
+    flexShrink:1,textAlign:'center',
     fontSize: 12,
     fontWeight: '800',
     color: '#334155',
   },
   playBtn: {
-    backgroundColor: '#f59e0b',
+    flex:1.2,minWidth:0,minHeight:62,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:7,
+    backgroundColor: '#23875f',
     paddingHorizontal: 18,
     paddingVertical: 10,
     borderRadius: 16,

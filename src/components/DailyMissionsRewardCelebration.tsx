@@ -1,5 +1,8 @@
+import { rtlProps, rtlLayout } from '../theme/rtl';
+import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text } from './RTLText';
 import { useAppStore } from '../store/useAppStore';
 import { soundService } from '../services/soundService';
 
@@ -12,6 +15,7 @@ export const DailyMissionsRewardCelebration: React.FC<CelebrationProps> = ({
   isOpen,
   onClose,
 }) => {
+  const styles = useThemeStyles(baseStyles);
   const { claimAllMissionsBonusReward, hasClaimedAllMissionsBonusToday } = useAppStore();
 
   const handleClaim = () => {
@@ -24,7 +28,7 @@ export const DailyMissionsRewardCelebration: React.FC<CelebrationProps> = ({
 
   return (
     <Modal transparent animationType="slide" visible={isOpen} onRequestClose={onClose}>
-      <View style={styles.backdrop}>
+      <View {...rtlProps} style={[styles.backdrop, rtlLayout]}>
         <View style={styles.card}>
           <Text style={styles.trophy}>🏆</Text>
           <Text style={styles.title}>پیرۆزە! هەموو ئەرکەکانت تەواو کرد!</Text>
@@ -52,7 +56,7 @@ export const DailyMissionsRewardCelebration: React.FC<CelebrationProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(15, 23, 42, 0.75)',
