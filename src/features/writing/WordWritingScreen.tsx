@@ -122,7 +122,7 @@ const baseStyles = StyleSheet.create({
   text: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 15, lineHeight: 26, color: '#475569', textAlign: 'center' },
   hint: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16, color: '#047857', textAlign: 'center' },
   big: { fontSize: 52, textAlign: 'center' },
-  full: { width: '100%' },
+  full: { width: '100%', maxWidth: 480, alignSelf: 'center' },
   row: { width: '100%', flexDirection: 'row', gap: 8 },
   tool: { flex: 1, minHeight: 56, padding: 8, borderRadius: 16, backgroundColor: '#eaf2f8', alignItems: 'center', justifyContent: 'center' },
   toolOn: { backgroundColor: '#bbf7d0' },

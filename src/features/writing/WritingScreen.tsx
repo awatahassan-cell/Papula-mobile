@@ -301,7 +301,7 @@ const baseStyles = StyleSheet.create({
   color: { width: 48, height: 48, borderRadius: 24, borderWidth: 3, borderColor: '#fffdfa' },
   selectedColor: { borderColor: '#0f172a' },
   error: { color: '#b91c1c', fontSize: 16, textAlign: 'center' },
-  fullButton: { width: '100%' },
+  fullButton: { width: '100%', maxWidth: 480, alignSelf: 'center' },
   backdrop: { flex: 1, backgroundColor: 'rgba(15,23,42,0.65)', justifyContent: 'center', padding: 20 },
   modalScroll: { flexGrow: 1, justifyContent: 'center', alignItems: 'center' },
   modalCard: { width: '100%', maxWidth: 440, backgroundColor: '#fffef7', borderRadius: 28, padding: 24, alignItems: 'center', gap: 16 },

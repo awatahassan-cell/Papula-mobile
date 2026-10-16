@@ -2,6 +2,7 @@ import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
 import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { Text } from './RTLText';
+import { useResponsive } from '../theme/responsive';
 import { soundService } from '../services/soundService';
 
 interface BigButtonProps {
@@ -26,6 +27,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
   icon,
 }) => {
   const styles = useThemeStyles(baseStyles);
+  const { tablet } = useResponsive();
   const handlePress = () => {
     if (disabled) return;
     soundService.playPop();
@@ -76,6 +78,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
       activeOpacity={0.8}
       style={[
         styles.buttonBase,
+        tablet && styles.tabletCentered,
         getVariantStyle(),
         getSizeStyle(),
         disabled && styles.disabled,
@@ -92,7 +95,9 @@ export const BigButton: React.FC<BigButtonProps> = ({
   );
 };
 
+// On tablets a full-width button would stretch across the page: keep it a comfortable, centred size.
 const baseStyles = StyleSheet.create({
+  tabletCentered: { maxWidth: 460, alignSelf: 'center' },
   buttonBase: {
     flexDirection: 'row',
     alignItems: 'center',

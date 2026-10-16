@@ -2,6 +2,7 @@ import React from 'react';
 import {View,StyleSheet} from 'react-native';
 import {Text} from '../../components/RTLText';
 import {Layers,Shapes,Link2,AudioLines,WholeWord,PencilLine,BookOpen,TrendingUp,Clock,MessageCircle,EyeOff} from 'lucide-react-native';
+import {useResponsive} from '../../theme/responsive';
 import {useThemeStyles} from '../../theme/useAppearance';
 import {ChildProfile,LearningSkill} from '../../services/types';
 import {hardLetters,reviewPlan} from '../../services/learningEngine';
@@ -11,6 +12,7 @@ const skillIcons={recognition:Shapes,forms:Link2,phonics:AudioLines,syllables:La
 const skillLabels:Record<LearningSkill,string>={recognition:'ناسینەوەی پیت',forms:'شێوەی پیت لە وشەدا',phonics:'دەنگی سەرەتای وشە',syllables:'بڕگەکانی وشە',word:'دروستکردنی وشە',writing:'نووسینی پیت',reading:'خوێندنەوە و تێگەیشتن'};
 export const LearningReport:React.FC<{profile:ChildProfile}>=({profile})=>{
  const s=useThemeStyles(baseStyles);
+ const {tablet}=useResponsive();
  const next=reviewPlan(profile,3);
  const hard=hardLetters(profile);
  const independent=Object.values(profile.writingProgress||{}).filter(writingMastered).length;
@@ -22,12 +24,12 @@ export const LearningReport:React.FC<{profile:ChildProfile}>=({profile})=>{
    <View style={[s.summaryTile,s.timeTile]}><View style={s.summaryTop}><Clock size={20} color={s.secondary.color}/><Text style={s.summaryNumber}>{minutes}</Text></View><Text style={s.summaryLabel}>خولەکی مەشقی نووسین</Text><Text style={s.summaryHint}>کۆی کاتە تۆمارکراوەکان</Text></View>
   </View>
   <View style={s.skillsHeading}><Text style={s.sectionTitle}>تواناکانی فێربوون</Text><Text style={s.subtitle}>تۆماری مەشقەکان</Text></View>
-  <View style={s.skills}>
+  <View style={[s.skills,tablet&&{flexDirection:'row',flexWrap:'wrap'}]}>
    {skillSummary(profile).map(item=>{
     const Icon=skillIcons[item.skill],record=item.record;
     const attempts=record?.attempts||0,correct=record?.correct||0;
     const accuracy=attempts?Math.max(0,Math.min(100,Math.round(correct/attempts*100))):0;
-    return <View key={item.skill} style={s.skillTile}>
+    return <View key={item.skill} style={[s.skillTile,tablet&&{width:'48.8%'}]}>
      <View style={s.skillHeader}><View style={s.skillIcon}><Icon size={21} color={s.accent.color} strokeWidth={1.8}/></View><View style={s.copy}><Text style={s.skillTitle}>{skillLabels[item.skill]}</Text><Text style={s.skillCaption}>{attempts?`${correct} وەڵامی دروست لە ${attempts} هەوڵ`:'هێشتا مەشق تۆمار نەکراوە'}</Text></View>{attempts>0&&<Text style={s.percent}>{accuracy}٪</Text>}</View>
      <View style={s.track} accessibilityRole="progressbar" accessibilityLabel={`ڕێژەی وەڵامی دروست بۆ ${skillLabels[item.skill]}`} accessibilityValue={{min:0,max:100,now:accuracy}}><View style={[s.fill,{width:`${accuracy}%`}]}/></View>
      {attempts>0&&<View style={s.detailRow}><View style={s.detailItem}><View style={s.independentDot}/><Text style={s.detailLabel}>سەرکەوتن بێ یارمەتی</Text><Text style={s.detailValue}>{record?.independentCorrect||0}</Text></View><View style={s.detailItem}><View style={s.helpedDot}/><Text style={s.detailLabel}>هەوڵ بە یارمەتی</Text><Text style={s.detailValue}>{record?.helped||0}</Text></View></View>}

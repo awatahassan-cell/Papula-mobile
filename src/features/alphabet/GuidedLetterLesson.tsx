@@ -257,7 +257,7 @@ const baseStyles = StyleSheet.create({
   sceneLeaf:{fontSize:30,alignSelf:'flex-end',marginBottom:16},
   heroTitle:{fontSize:20,lineHeight:34,fontFamily:'IBMPlexSansArabic_700Bold',color:'#243b3a',textAlign:'center'},
   heroHint:{fontSize:15,color:'#657d79',textAlign:'center'},
-  audioButton:{width:'100%',minHeight:58,borderRadius:19,backgroundColor:'#23875f',borderBottomWidth:4,borderBottomColor:'#176445',flexDirection:'row',alignItems:'center',justifyContent:'center',gap:10,padding:10},
+  audioButton:{width:'100%',maxWidth:460,alignSelf:'center',minHeight:58,borderRadius:19,backgroundColor:'#23875f',borderBottomWidth:4,borderBottomColor:'#176445',flexDirection:'row',alignItems:'center',justifyContent:'center',gap:10,padding:10},
   audioButtonText:{fontSize:18,fontFamily:'IBMPlexSansArabic_700Bold',color:'#ffffff',textAlign:'center',flexShrink:1},
   audioWaves:{fontSize:17,color:'#c8ead8'},
   listenedBadge:{paddingHorizontal:10,paddingVertical:6,borderRadius:12,backgroundColor:'#eff8ed'},
