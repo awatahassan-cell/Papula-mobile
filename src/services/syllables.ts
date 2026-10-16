@@ -37,7 +37,7 @@ export function syllableRounds(profile: ChildProfile, count = 4, random: () => n
   return ordered.map(({ word, syllables }) => {
     const base = syllables.map((text, id) => ({ id, text }));
     let tiles = shuffled(base, random);
-    for (let attempt = 0; attempt < 5 && tiles.every((tile, index) => tile.id === index); attempt++) tiles = shuffled(base, random);
+    if (tiles.every((tile, index) => tile.id === index)) tiles = [...tiles.slice(1), tiles[0]]; // never start solved
     return { word, syllables, tiles };
   });
 }

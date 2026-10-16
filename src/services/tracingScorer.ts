@@ -1,4 +1,5 @@
 import { StrokeGuide, StrokePoint } from './types';
+import type { WritingRubric } from './writingRubric';
 import {
   computePathSimilarity,
   DTWResult,
@@ -16,6 +17,8 @@ export interface TracingScoreResult {
   accuracyRatio: number; // 0 to 1 (points staying on-line)
   lengthRatio: number; // User path length vs Guide path length
   feedbackKu: string;
+  /** Multi-criteria review added by assessWriting. */
+  rubric?: WritingRubric;
   dtw: DTWResult;
   hausdorff: HausdorffResult;
   breakdown: {

@@ -2,7 +2,7 @@ import { mockLetters } from '../data/mockLetters';
 import { ChildProfile, LearningSkill, SkillProgress, StrokeGuide, StrokePoint, WritingMode, WritingProgress } from './types';
 import { LEARNING_WORDS, shuffled, localDay, normalizedWord, reviewPlan, wordUnits } from './learningEngine';
 import { evaluateTracing } from './tracingScorer';
-import { resamplePolyline } from './pathSimilarity';
+import { buildWritingRubric, rubricFeedback } from './writingRubric';
 import { SKILL_LABELS } from './skillLabels';
 
 export { SKILL_LABELS };
@@ -30,20 +30,12 @@ export function normalizeIndependentWriting(guide: StrokeGuide, strokes: StrokeP
 }
 export function assessWriting(guide:StrokeGuide, strokes:StrokePoint[][], mode:WritingMode) {
   const aligned=mode==='trace'?strokes:normalizeIndependentWriting(guide,strokes);
-  const result=evaluateTracing(guide,aligned);
-  if(result.mastered || !aligned.length)return result;
-  const drawn=aligned.flatMap(stroke=>resamplePolyline(stroke,1));
-  const components=Array.from(new Set(guide.componentIds||guide.strokes.map((_,i)=>i)));
-  const missing=components.map(id=>{
-    const points=guide.strokes.filter((_,i)=>(guide.componentIds?.[i]??i)===id).flatMap(stroke=>resamplePolyline(stroke,1));
-    const covered=points.filter(p=>drawn.some(q=>Math.hypot(p.x-q.x,p.y-q.y)<8)).length/Math.max(1,points.length);
-    return {points,covered};
-  }).filter(item=>item.covered<0.45);
-  const dots=missing.filter(item=>Math.max(...item.points.map(p=>p.x))-Math.min(...item.points.map(p=>p.x))<10 && Math.max(...item.points.map(p=>p.y))-Math.min(...item.points.map(p=>p.y))<10);
-  if(dots.length && result.coverageRatio>0.55)result.feedbackKu=`بەشە سەرەکییەکەت نووسیوە؛ ${dots.length} خاڵ یان نیشانەی بچووک ماوە. نموونەکە سەیر بکە و تەواوی بکە ✍️`;
-  else if(result.lengthRatio>1.65)result.feedbackKu='هێڵی زیادە زۆرە؛ جارێکی تر بە هێڵی کەمتر شێوەی پیتەکە بنووسە.';
-  else if(result.coverageRatio<0.65)result.feedbackKu='بەشێکی شێوەی پیتەکە ماوە؛ نموونەکە سەیر بکە و هێڵەکە تەواو بکە.';
-  return result;
+  const traced=evaluateTracing(guide,aligned);
+  if(!aligned.length || aligned.every(stroke=>!stroke.length))return traced;
+  const rubric=buildWritingRubric(guide,strokes,aligned,traced);
+  const stars:1|2|3=rubric.passes?3:rubric.overall>=60&&rubric.criteria.find(c=>c.id==='parts')!.score>=50?2:1;
+  const feedbackKu=rubricFeedback(rubric,stars);
+  return {...traced,score:rubric.overall,stars,mastered:rubric.passes,feedbackKu,rubric};
 }
 export function startingSoundWords(profile:ChildProfile,count=5) {
   const plan=reviewPlan(profile,mockLetters.length);
