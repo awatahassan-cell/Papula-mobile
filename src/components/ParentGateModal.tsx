@@ -36,7 +36,7 @@ const ParentGateContent: React.FC = () => {
     const isCorrect = verifyParentGateAnswer(challenge.answer, userAnswer);
 
     if (isCorrect) {
-      soundService.playCorrect();
+      soundService.playCorrect(false);
       handleParentGateSuccess();
     } else {
       soundService.playEncouragingTryAgain();

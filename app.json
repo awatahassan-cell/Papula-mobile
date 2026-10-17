@@ -27,6 +27,19 @@
     "plugins": [
       "expo-router",
       [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 240,
+          "backgroundColor": "#6a5cf0",
+          "resizeMode": "contain",
+          "dark": {
+            "image": "./assets/splash-icon.png",
+            "backgroundColor": "#120f55"
+          }
+        }
+      ],
+      [
         "expo-audio",
         {
           "microphonePermission": "ڕێگە بدە دەنگت تۆمار بکرێت بۆ مەشقی خوێندنەوە.",

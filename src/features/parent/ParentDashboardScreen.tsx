@@ -2,6 +2,7 @@ import { TactileButton as TouchableOpacity } from '../../components/TactileButto
 import React, {useEffect,useState} from 'react';
 import {View,ScrollView,StyleSheet,Switch} from 'react-native';
 import {Text,TextInput} from '../../components/RTLText';
+import { PapulaMascot } from '../../components/PapulaMascot';
 import {ArrowRight,ShieldCheck,TrendingUp,Palette,SlidersHorizontal,Check,Plus,Clock,Volume2,Moon,BookOpen,Star,Users,Sun,Clock3} from 'lucide-react-native';
 import {useAppStore} from '../../store/useAppStore';
 import {useAppearance,useThemeStyles} from '../../theme/useAppearance';
@@ -45,7 +46,7 @@ export const ParentDashboardScreen:React.FC=()=>{
           <View style={[s.themePreview,{backgroundColor:p.background}]}><View style={s.previewTop}><View style={[s.previewDot,{backgroundColor:p.mint}]}/><View style={[s.previewLine,{backgroundColor:p.edge}]}/><View style={[s.previewDot,{backgroundColor:p.coral}]}/></View><View style={[s.previewCard,{backgroundColor:p.paper}]}><View style={[s.previewGlyph,{backgroundColor:p.leaf}]}><Text style={[s.previewLetter,{color:p.mint}]}>د</Text></View><View style={[s.previewButton,{backgroundColor:p.mint}]}/></View><View style={s.swatches}>{[p.mint,p.coral,p.lavender,p.sky].map((color,i)=><View key={i} style={[s.swatch,{backgroundColor:color}]}/>)}</View><View style={[s.nightStrip,{backgroundColor:theme.night.background}]}>{[theme.night.mint,theme.night.coral,theme.night.paper].map((color,i)=><View key={i} style={[s.swatch,{backgroundColor:color}]}/>)}</View></View>
           <View style={s.optionHeading}><Text style={s.optionTitle}>{theme.label}</Text><View style={[s.radio,active&&{backgroundColor:p.mint,borderColor:p.mint}]}>{active&&<Check size={13} color="#fff"/>}</View></View><Text style={s.themeDescription}>{theme.description}</Text>
         </TouchableOpacity>;})}</View>
-        <View style={s.saved}><Check size={16} color={c.mint}/><Text style={s.savedText}>هەڵبژاردنەکەت خۆکارانە هەڵدەگیرێت</Text></View>
+        <View style={s.saved}><PapulaMascot size={34} mood="happy"/><Text style={s.savedText}>هەڵبژاردنەکەت خۆکارانە هەڵدەگیرێت</Text></View>
       </View>
     </>}
     {tab==='progress'&&<>

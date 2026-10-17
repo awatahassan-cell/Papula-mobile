@@ -73,6 +73,19 @@ class MobileSoundService {
     return this.audioCtx;
   }
 
+  // ================= REACTION CUES =================
+  // Games call playCorrect / playEncouragingTryAgain / playSuccessFanfare at the exact moment an answer is judged.
+  // The same moment drives the full-screen butterfly reaction, even when sound effects are switched off.
+  private cueListeners = new Set<(cue: 'correct' | 'wrong' | 'fanfare') => void>();
+  public onCue(listener: (cue: 'correct' | 'wrong' | 'fanfare') => void) {
+    this.cueListeners.add(listener);
+    return () => { this.cueListeners.delete(listener); };
+  }
+  private emitCue(cue: 'correct' | 'wrong' | 'fanfare') {
+    this.cueListeners.forEach(listener => { try { listener(cue); } catch { /* a broken listener must never stop the game */ } });
+  }
+  public isFxEnabled() { return this.soundFxEnabled; }
+
   public subscribe(callback: (speaking: boolean, activeText: string | null) => void) {
     this.listeners.add(callback);
     return () => {
@@ -595,7 +608,8 @@ class MobileSoundService {
     } catch {}
   }
 
-  public playCorrect() {
+  public playCorrect(reaction = true) {
+    if (reaction) this.emitCue('correct');
     if (!this.soundFxEnabled) return;
     try {
       const ctx = this.getAudioContext();
@@ -622,6 +636,7 @@ class MobileSoundService {
   }
 
   public playSuccessFanfare() {
+    this.emitCue('fanfare');
     if (!this.soundFxEnabled) return;
     try {
       const ctx = this.getAudioContext();
@@ -700,6 +715,7 @@ class MobileSoundService {
   }
 
   public playEncouragingTryAgain() {
+    this.emitCue('wrong');
     if (!this.soundFxEnabled) return;
     try {
       const ctx = this.getAudioContext();

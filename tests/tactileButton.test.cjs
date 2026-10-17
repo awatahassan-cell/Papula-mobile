@@ -8,7 +8,7 @@ const native = { TouchableOpacity: 'Button', StyleSheet: { flatten } };
 const mod = { exports: {} };
 new Function('exports', 'module', 'require', ts.transpileModule(fs.readFileSync(path.resolve(__dirname, '../src/components/TactileButton.tsx'), 'utf8'), {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React },
-}).outputText)(mod.exports, mod, name => name === 'react' ? react : native);
+}).outputText)(mod.exports, mod, name => name === 'react' ? react : name.endsWith('/services/haptics') ? { haptics: { tap() {} } } : native);
 const Button = mod.exports.TactileButton;
 
 test('holding a raised button sinks its face into the lip while its bottom edge and neighbours stay put; release restores it', () => {

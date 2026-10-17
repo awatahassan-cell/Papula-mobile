@@ -3,6 +3,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { ArrowLeft, BookOpen, Flame, PencilLine, Puzzle, Settings, Sprout, Star } from 'lucide-react-native';
 import { Text } from '../../components/RTLText';
+import { RiseIn } from '../../components/Motion';
 import { AdventureMap } from '../../components/AdventureMap';
 import { useAppStore, AppRoute } from '../../store/useAppStore';
 import { dueReviewLetters } from '../../services/learningEngine';
@@ -26,6 +27,9 @@ export const HomeScreen: React.FC = () => {
   const completed = path.filter(node => node.status === 'completed').length;
   const checklist = next ? lessonChecklist(currentProfile, next.id) : [];
   const stepsDone = checklist.filter(item => item.done).length;
+  // A child who has been away for a few days is greeted by a sad butterfly that missed them.
+  const [openedAt] = React.useState(() => Date.now());
+  const daysAway = currentProfile.lastActiveDate ? Math.floor((openedAt - new Date(currentProfile.lastActiveDate).getTime()) / 86400000) : 0;
   const dueCount = dueReviewLetters(currentProfile).length;
   const missions = currentProfile.dailyMissions || [];
   const missionsDone = missions.filter(mission => mission.completed).length;
@@ -65,10 +69,10 @@ export const HomeScreen: React.FC = () => {
     </View>
     <View style={s.greetingRow}><View style={s.flex}><Text testID="home-greeting" style={[s.greeting, ink]}>سڵاو {currentProfile.name}!</Text><Text style={[s.subtitle, muted]}>ئامادەیت بۆ گەشتێکی نوێ؟</Text></View><View style={[s.unit, { backgroundColor: c.paper }]}><Sprout size={19} color={c.mint} /><Text style={[s.unitText, { color: c.mint }]}>بەشی {Math.min(6, Math.floor(completed / 6) + 1)}</Text></View></View>
     <View style={[s.content, wide && s.columns]}>
-      <View style={[s.stack, s.flex]}><AdventureMap nodes={path.slice(start, start + 3)} isNight={isNight} onOpen={openNode} onAll={() => open('alphabet')} />
+      <View style={[s.stack, s.flex]}><RiseIn delay={80}><AdventureMap nodes={path.slice(start, start + 3)} isNight={isNight} mood={daysAway >= 3 ? 'sad' : undefined} onOpen={openNode} onAll={() => open('alphabet')} /></RiseIn>
         <View style={s.summary}><View style={s.summaryItem}><Flame size={17} color={isNight ? '#ffb84d' : '#bd4919'} /><Text style={[s.caption, muted]}>{currentProfile.streakDays} ڕۆژ بەردەوام</Text></View><Text style={[s.caption, muted]}>{completed} لە {path.length} پیت</Text></View>
       </View>
-      <View style={[s.stack, s.flex]}>{lesson}<Text style={[s.sectionTitle, ink]}>با زیاتر فێر بین</Text>{activities}</View>
+      <View style={[s.stack, s.flex]}><RiseIn delay={220}>{lesson}</RiseIn><Text style={[s.sectionTitle, ink]}>با زیاتر فێر بین</Text><RiseIn delay={360}>{activities}</RiseIn></View>
     </View>
     <View style={[s.goal, { backgroundColor: c.paper, borderColor: c.edge }]}>
       <View style={s.summary}><Text style={[s.goalTitle, ink]}>ئەرکەکانی ئەمڕۆ</Text><Text style={[s.caption, muted]}>{missionsDone} لە {missions.length}</Text></View>

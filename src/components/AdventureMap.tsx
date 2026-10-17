@@ -5,14 +5,14 @@ import Svg, { Circle, Ellipse, G, Path } from 'react-native-svg';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Check, Lock, Route } from 'lucide-react-native';
 import { Text } from './RTLText';
-import { PapulaMascot } from './PapulaMascot';
+import { PapulaMascot, Mood } from './PapulaMascot';
 import { lessonPath } from '../services/lessonPath';
 
 type PathNode = ReturnType<typeof lessonPath>[number];
 const anchors = [{ x: 292, y: 103 }, { x: 86, y: 196 }, { x: 288, y: 270 }];
 
-export function AdventureMap({ nodes, isNight, onOpen, onAll }: {
-  nodes: PathNode[]; isNight: boolean; onOpen: (node: PathNode) => void; onAll: () => void;
+export function AdventureMap({ nodes, isNight, mood, onOpen, onAll }: {
+  nodes: PathNode[]; isNight: boolean; mood?: Mood; onOpen: (node: PathNode) => void; onAll: () => void;
 }) {
   const currentIndex = nodes.findIndex(node => node.status === 'current');
   const order = currentIndex === 0 ? [1, 2, 0] : currentIndex === 2 ? [0, 2, 1] : [0, 1, 2];
@@ -32,7 +32,7 @@ export function AdventureMap({ nodes, isNight, onOpen, onAll }: {
         <Ellipse cx={spots[i].x} cy={spots[i].y + 12} rx={node.status === 'current' ? 49 : 36} ry="16" fill="#7cdb45" />
       </G>)}
     </Svg>
-    <View pointerEvents="none" style={s.mascot}><PapulaMascot size={118} mood={isNight ? 'sleepy' : 'happy'} /></View>
+    <View pointerEvents="none" style={s.mascot}><PapulaMascot size={118} mood={mood ?? (isNight ? 'sleepy' : 'happy')} /></View>
     <View style={s.mapLabel}><Route size={17} color="#24416a" /><Text style={s.labelText}>دوورگەی پیتەکان</Text></View>
     {nodes.map((node, i) => {
       const current = node.status === 'current', done = node.status === 'completed', locked = node.status === 'locked';

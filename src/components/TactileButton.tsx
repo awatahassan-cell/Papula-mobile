@@ -1,4 +1,5 @@
 import React, { forwardRef, useState } from 'react';
+import { haptics } from '../services/haptics';
 import { StyleSheet, TouchableOpacity as NativeTouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 /**
@@ -17,7 +18,7 @@ export const TactileButton = forwardRef<React.ElementRef<typeof NativeTouchableO
   const shrink = (value: unknown) => typeof value === 'number' ? { value: value - sink } : null;
   const minHeight = shrink(face.minHeight), height = shrink(face.height);
   return <NativeTouchableOpacity {...props} ref={ref} disabled={disabled} activeOpacity={activeOpacity}
-    onPressIn={event => { if (!disabled) { setHeld(true); onPressIn?.(event); } }}
+    onPressIn={event => { if (!disabled) { setHeld(true); haptics.tap(); onPressIn?.(event); } }}
     onPressOut={event => { setHeld(false); onPressOut?.(event); }}
     style={[style, pressed && {
       transform: [...(Array.isArray(face.transform) ? face.transform : []), { translateY: sink }],

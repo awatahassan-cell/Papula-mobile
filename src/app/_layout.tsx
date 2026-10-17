@@ -3,6 +3,7 @@ import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { AppErrorScreen } from '../components/AppErrorScreen';
 import { rtlProps, rtlLayout } from '../theme/rtl';
 import { PapulaMascot } from '../components/PapulaMascot';
+import { ReactionOverlay } from '../components/ReactionOverlay';
 import { View, StyleSheet, StatusBar, ActivityIndicator, I18nManager } from 'react-native';
 import { Text } from '../components/RTLText';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -88,7 +89,7 @@ const MainRouter: React.FC = () => {
           <GardenPageHeader />
           <View {...rtlProps} style={[styles.screenContainer, rtlLayout, isGarden && { backgroundColor: 'transparent' }]}>
             <ThemeProvider value={TRANSPARENT_THEME}>
-              <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: 'transparent', ...rtlLayout } }} />
+              <Stack screenOptions={{ headerShown: false, animation: 'fade_from_bottom', contentStyle: { backgroundColor: 'transparent', ...rtlLayout } }} />
             </ThemeProvider>
           </View>
           {!tablet && <GardenNavigation />}
@@ -98,6 +99,7 @@ const MainRouter: React.FC = () => {
       {/* Global Modals */}
       <ParentGateModal />
       <PaywallModal />
+      <ReactionOverlay />
       <DailyMissionsRewardCelebration
         isOpen={allMissionsCelebrationOpen}
         onClose={() => setAllMissionsCelebrationOpen(false)}
