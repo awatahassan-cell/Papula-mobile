@@ -2,6 +2,7 @@ import { TactileButton as TouchableOpacity } from '../../components/TactileButto
 import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import { Clock, Heart, PencilLine, ShieldCheck, Volume2 } from 'lucide-react-native';
 import { PapulaMascot } from '../../components/PapulaMascot';
 import { Text, TextInput } from '../../components/RTLText';
 import { BigButton } from '../../components/BigButton';
@@ -17,17 +18,28 @@ const avatars = [
   { emoji: '🐬', label: 'دۆلفین' },
 ];
 
+/** Step 1 for the parent: what the app does and how to use it well. */
+const PARENT_GUIDE = [
+  { Icon: Clock, text: 'ڕۆژانە ١٠ بۆ ١٥ خولەک بەسە. هەنگاو بە هەنگاو، پیتێک لە دوای پیتێک؛ پێویست ناکات پەلە بکرێت.' },
+  { Icon: PencilLine, text: 'لە نووسیندا منداڵەکە بە پەنجە دەنووسێت و ئەپەکە شێوەی پیت، هێڵ و خاڵەکان، قەبارە و ڕێکی دەست هەڵدەسەنگێنێت.' },
+  { Icon: Volume2, text: 'دەنگەکان بێ ئینتەرنێت کار دەکەن. با منداڵەکە گوێ بگرێت و دووبارەی بکاتەوە.' },
+  { Icon: ShieldCheck, text: 'بەشی «دایک و باوک» (ئایکۆنی ڕێکخستن، بە پرسیارێکی کورت دەکرێتەوە) بۆ کاتی ڕۆژانە، قفڵی کاتی خەوتن، ڕەنگ و ڕۆژ/شەو و بینینی پێشکەوتنە.' },
+  { Icon: Heart, text: 'لەگەڵی دانیشن و ئافەرینی لێ بکەن. هەڵە بەشێکە لە فێربوون.' },
+] as const;
+
 const ageGroups: ('3-4' | '5-6' | '7-8')[] = ['3-4', '5-6', '7-8'];
 
 export const OnboardingScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
   const { createProfile, setRoute, strings } = useAppStore();
-  const [name, setName] = useState('ڕۆژین');
+  const [step, setStep] = useState<'parent' | 'child'>('parent');
+  const [name, setName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('🦋');
   const [selectedAge, setSelectedAge] = useState<'3-4' | '5-6' | '7-8'>('5-6');
 
   const handleStart = () => {
-    const trimmedName = name.trim() || 'هاوڕێی زیرەک';
+    const trimmedName = name.trim();
+    if (!trimmedName) return;
     createProfile({
       name: trimmedName,
       avatar: selectedAvatar,
@@ -35,6 +47,27 @@ export const OnboardingScreen: React.FC = () => {
     });
     setRoute('home');
   };
+
+  if (step === 'parent') {
+    return (
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.card}>
+          <PapulaMascot size={130} mood="happy" />
+          <Text style={styles.welcomeTitle}>ڕێنمایی بۆ دایک و باوک</Text>
+          <Text style={styles.welcomeSubtitle}>پەپوولە یارمەتیدەرێکی بچووکە بۆ فێربوونی پیتەکانی کوردی، بە گوێگرتن، یاری و نووسین.</Text>
+          <View style={styles.guideList}>
+            {PARENT_GUIDE.map(({ Icon, text }) => (
+              <View key={text} style={styles.guideRow}>
+                <View style={styles.guideIcon}><Icon size={22} color="#6d4ae8" strokeWidth={2.2} /></View>
+                <Text style={styles.guideText}>{text}</Text>
+              </View>
+            ))}
+          </View>
+          <BigButton onPress={() => setStep('child')} variant="primary" size="lg" style={styles.submitBtn}>بەردەوام بن</BigButton>
+        </View>
+      </ScrollView>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -119,18 +152,25 @@ export const OnboardingScreen: React.FC = () => {
         {/* Submit */}
         <BigButton
           onPress={handleStart}
+          disabled={!name.trim()}
           variant="primary"
           size="lg"
           style={styles.submitBtn}
         >
           {strings.onboarding.letsGo}
         </BigButton>
+        <BigButton onPress={() => setStep('parent')} variant="outline" size="sm" style={styles.backBtn}>گەڕانەوە بۆ ڕێنمایی</BigButton>
       </View>
     </ScrollView>
   );
 };
 
 const baseStyles = StyleSheet.create({
+  guideList: { width: '100%', gap: 10, marginBottom: 18 },
+  guideRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, backgroundColor: '#f8f4ff', borderRadius: 20, padding: 12 },
+  guideIcon: { width: 40, height: 40, borderRadius: 16, backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center' },
+  guideText: { flex: 1, fontSize: 14, lineHeight: 24, color: '#3b2f63' },
+  backBtn: { marginTop: 10, alignSelf: 'center' },
   container: {
     flexGrow: 1,
     backgroundColor: '#fffbeb',

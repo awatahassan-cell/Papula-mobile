@@ -115,7 +115,8 @@ export class MobileProgressRepository implements ProgressRepository {
     } catch {
       // Storage fallback
     }
-    cachedProfiles = [defaultChildProfile];
+    // A fresh install has no child yet: the app then starts with the parent guide and the child's name (onboarding).
+    cachedProfiles = [];
     return cachedProfiles;
   }
 
