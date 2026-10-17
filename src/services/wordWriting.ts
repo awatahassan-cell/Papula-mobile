@@ -50,6 +50,42 @@ export function sentenceWritingTasks(profile: ChildProfile): WritingTask[] {
   });
 }
 
+/** Always returns playable word writing tasks, prioritizing words with known letters and shorter words first. */
+export function availableWordWritingTasks(profile: ChildProfile, count = 10): WritingTask[] {
+  const all = LEARNING_WORDS.flatMap(word => {
+    const slots = slotsFor([word.word]);
+    return slots ? [{ id: word.id, kind: 'word' as const, title: word.word, emoji: word.imageEmoji, words: [word.word], slots, learningWord: word }] : [];
+  });
+  const written = new Set(profile.learnedWordIds || []);
+  const knownRatio = (task: WritingTask) =>
+    task.slots.filter(s => knowsLetterForWriting(profile, s.letter.id)).length / Math.max(1, task.slots.length);
+  return all
+    .sort((a, b) =>
+      Number(allKnown(profile, b.slots)) - Number(allKnown(profile, a.slots)) ||
+      knownRatio(b) - knownRatio(a) ||
+      Number(written.has(a.id)) - Number(written.has(b.id)) ||
+      a.slots.length - b.slots.length
+    )
+    .slice(0, count);
+}
+
+/** Always returns playable sentence writing tasks, prioritizing sentences with more known letters first. */
+export function availableSentenceWritingTasks(profile: ChildProfile): WritingTask[] {
+  const all = WRITING_SENTENCES.flatMap(sentence => {
+    const words = sentence.text.split(/\s+/);
+    const slots = slotsFor(words);
+    return slots ? [{ id: 'sentence-' + sentence.id, kind: 'sentence' as const, title: sentence.text, emoji: sentence.emoji, words, slots }] : [];
+  });
+  const knownRatio = (task: WritingTask) =>
+    task.slots.filter(s => knowsLetterForWriting(profile, s.letter.id)).length / Math.max(1, task.slots.length);
+  return all.sort((a, b) =>
+    Number(allKnown(profile, b.slots)) - Number(allKnown(profile, a.slots)) ||
+    knownRatio(b) - knownRatio(a) ||
+    a.slots.length - b.slots.length
+  );
+}
+
+
 export interface SlotResult { slot: number; passed: boolean; attempts: number; helped: boolean; score: number; }
 export interface WritingSession { task: WritingTask; index: number; attempts: number; results: SlotResult[]; }
 export const startSession = (task: WritingTask): WritingSession => ({ task, index: 0, attempts: 0, results: [] });

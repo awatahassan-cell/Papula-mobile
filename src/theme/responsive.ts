@@ -21,5 +21,6 @@ export function useResponsive(): ResponsiveInfo {
 /** Side of the square writing board: fits the screen height when the board sits beside the controls. */
 export function writingBoardSide(info: ResponsiveInfo, chrome = 380): number {
   if (info.wide && info.landscape) return Math.max(280, Math.min(560, info.height - chrome));
-  return Math.max(160, Math.min(info.width - 40, info.tablet ? 560 : 460));
+  return Math.max(160, Math.min(info.width - 56, info.height - 350, info.tablet ? 520 : 268));
 }
+

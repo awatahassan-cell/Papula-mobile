@@ -90,23 +90,22 @@ export function LearningPath({ onFocusY }: { preview?: boolean; onFocusY?: (y: n
   const units = useMemo(() => Array.from({ length: Math.ceil(nodes.length / PER_UNIT) }, (_, u) => plan.spots.slice(u * PER_UNIT, u * PER_UNIT + PER_UNIT)), [plan, nodes.length]);
 
   const decor = (i: number) => {
-    const p = plan.spots[i], right = p.x < W / 2, x = right ? W - 62 : 6, y = p.y - 6, kind = i % 4;
+    const p = plan.spots[i], right = p.x < W / 2, xCenter = right ? W - 35 : 33, y = p.y - 6, kind = i % 4;
     const sway = drift.interpolate({ inputRange: [0, 1], outputRange: ['-4deg', '4deg'] });
-    const slide = drift.interpolate({ inputRange: [0, 1], outputRange: [-10, 10] });
     const glow = twinkle.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] });
-    if (kind === 0) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x - 8, top: y - 36, transform: [{ translateX: slide }] }]}>
+    if (kind === 0) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: (W - 78) / 2, top: y - 36, transform: [{ translateX: xCenter - W / 2 }] }]}>
       <Svg width={78} height={44} viewBox="0 0 78 44"><Path d="M12 38 Q2 38 4 28 Q6 20 16 21 Q18 8 32 9 Q40 0 52 8 Q66 6 68 20 Q78 22 74 32 Q72 38 64 38Z" fill={isNight ? '#ffffff' : '#cfe6ff'} opacity={isNight ? 0.22 : 0.9} /></Svg></Animated.View>;
-    if (kind === 1) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x, top: y - 20, transform: [{ rotate: sway }] }]}>
+    if (kind === 1) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: (W - 54) / 2, top: y - 20, transform: [{ translateX: xCenter - W / 2 }, { rotate: sway }] }]}>
       <Svg width={54} height={72} viewBox="0 0 54 72"><Rect x="23" y="40" width="9" height="30" rx="4" fill="#9a6a3a" /><Circle cx="27" cy="26" r="22" fill={isNight ? '#1f8f6b' : '#43c463'} /><Circle cx="15" cy="34" r="13" fill={isNight ? '#2aa57c' : '#63d77f'} /><Circle cx="40" cy="33" r="14" fill={isNight ? '#2aa57c' : '#63d77f'} /><Circle cx="22" cy="20" r="4" fill={GOLD.face} /><Circle cx="36" cy="27" r="4" fill="#ff69a8" /></Svg></Animated.View>;
-    if (kind === 2) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x, top: y + 8, transform: [{ rotate: sway }] }]}>
+    if (kind === 2) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: (W - 52) / 2, top: y + 8, transform: [{ translateX: xCenter - W / 2 }, { rotate: sway }] }]}>
       <Svg width={52} height={50} viewBox="0 0 52 50"><Path d="M14 48 V26 M26 48 V16 M38 48 V28" stroke="#3fae5a" strokeWidth="4" strokeLinecap="round" /><Circle cx="14" cy="22" r="8" fill="#ff69a8" /><Circle cx="14" cy="22" r="3" fill={GOLD.soft} /><Circle cx="26" cy="12" r="9" fill={GOLD.face} /><Circle cx="26" cy="12" r="3.4" fill="#ff9c87" /><Circle cx="38" cy="24" r="8" fill="#a064ff" /><Circle cx="38" cy="24" r="3" fill={GOLD.soft} /></Svg></Animated.View>;
-    return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x + 8, top: y - 30, opacity: glow }]}>
+    return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: (W - 34) / 2, top: y - 30, opacity: glow, transform: [{ translateX: xCenter - W / 2 }] }]}>
       <Svg width={34} height={34} viewBox="0 0 34 34"><Path d="M17 2 L21 13 L32 17 L21 21 L17 32 L13 21 L2 17 L13 13Z" fill={isNight ? GOLD.rim : '#ffc928'} /></Svg></Animated.View>;
   };
 
   const trail = plan.spots.slice(Math.floor(activeIndex / PER_UNIT) * PER_UNIT, activeIndex + 1);
 
-  return <View onLayout={(event: LayoutChangeEvent) => setMeasured(event.nativeEvent.layout.width)} style={[s.path, { height: plan.height }]}>
+  return <View onLayout={(event: LayoutChangeEvent) => setMeasured(event.nativeEvent.layout.width)} style={[s.path, { height: plan.height, direction: 'ltr' }]}>
     <Svg width={W} height={plan.height} style={StyleSheet.absoluteFill} pointerEvents="none">
       {units.map((points, u) => <React.Fragment key={u}>
         <Path d={roadPath(points)} stroke={road.edge} strokeWidth={46} strokeLinecap="round" fill="none" />
@@ -121,7 +120,7 @@ export function LearningPath({ onFocusY }: { preview?: boolean; onFocusY?: (y: n
     {plan.banners.map(({ unit, y }) => {
       const accent = unit % 2 === 0 ? c.mint : c.coralDark;
       const unitColor = [c.sky, c.peach, c.lavender, c.leaf][unit % 4];
-      return <View key={'b' + unit} style={[s.unit, { top: y, backgroundColor: unitColor }]}>
+      return <View key={'b' + unit} style={[s.unit, { top: y, backgroundColor: unitColor, direction: 'rtl' }]}>
         <View style={[s.unitBadge, { backgroundColor: accent === c.mint ? accentFill(c, isNight) : accent }]}><Text style={[s.unitNumber, accent === c.coralDark && isNight && { color: '#2a1b00' }]}>{unit + 1}</Text></View>
         <View style={{ flex: 1 }}><Text style={[s.eyebrow, { color: c.muted }]}>بەشی {unit + 1}</Text><Text style={[s.unitTitle, { color: c.ink }]}>{unitNames[unit]}</Text></View>
         <Star size={22} color={c.mint} fill={c.mint} />
@@ -132,18 +131,22 @@ export function LearningPath({ onFocusY }: { preview?: boolean; onFocusY?: (y: n
       const p = plan.spots[i], current = node.status === 'current', done = node.status === 'completed', locked = node.status === 'locked';
       const size = current ? N + 14 : N;
       const faceColor = done ? DONE.face : current ? GOLD.face : LOCKED.face, lip = done ? DONE.lip : current ? GOLD.lip : LOCKED.lip;
+      const dx = p.x - W / 2;
+      const butterflyCenterX = p.x < W / 2 ? p.x + size / 2 + 34 : p.x - size / 2 - 34;
       return <React.Fragment key={node.letter.id}>
-        {current && <Animated.View pointerEvents="none" style={[s.ring, { left: p.x - size / 2, top: p.y - size / 2, width: size, height: size, borderRadius: size * 0.34, opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.7, 0] }), transform: [{ scale: pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.6] }) }] }]} />}
-        <TouchableOpacity accessibilityRole="button" accessibilityLabel={`وانەی ${node.index + 1}، پیتی ${node.letter.glyph}، ${done ? 'تەواو کراوە، دووبارەی بکەوە' : locked ? 'قفڵە، وانەی پێشوو تەواو بکە' : 'ئامادەی دەستپێکردنە'}`}
-          accessibilityState={{ disabled: locked }} disabled={locked} activeOpacity={0.9}
-          onPress={() => { void soundService.stopSpeaking(); soundService.playPop(); setSelectedLetter(node.letter); setRoute('letter-detail'); }}
-          style={[s.node, { left: p.x - size / 2, top: p.y - size / 2, width: size, height: size, borderRadius: size * 0.34, backgroundColor: faceColor, borderBottomColor: lip }, current && s.nodeCurrent]}>
-          <Text style={[s.glyph, { color: current ? GOLD.ink : '#fff', fontSize: current ? 44 : 36 }]}>{node.letter.glyph}</Text>
-          <View style={[s.status, { backgroundColor: done ? DONE.face : locked ? LOCKED.badge : BRAND.main }]}>{done ? <Check color="#fff" size={15} /> : locked ? <Lock color="#fff" size={13} /> : <Play color="#fff" size={13} fill="#fff" />}</View>
-        </TouchableOpacity>
-        <Text style={[s.nodeLabel, { left: p.x - 60, top: p.y + size / 2 + 8, color: current ? (isNight ? '#ffd66b' : c.mint) : c.muted }]}>{done ? 'دووبارە بکەوە' : locked ? `وانەی ${node.index + 1}` : 'دەست پێ بکە'}</Text>
-        {current && <View pointerEvents="none" style={[s.startBadge, { left: p.x - 70, top: p.y - size / 2 - 34, backgroundColor: isNight ? '#241c80' : '#ffffff', borderColor: isNight ? '#ffd66b' : '#c9b6ff' }]}><Text style={[s.startLabel, { color: isNight ? '#ffd66b' : c.mint }]}>ئێستا نۆرەی تۆیە!</Text></View>}
-        {current && <Animated.View pointerEvents="none" style={[s.butterfly, { left: p.x < W / 2 ? p.x + size / 2 + 4 : p.x - size / 2 - 64, top: p.y - size / 2 - 14, transform: [{ translateY: bob.interpolate({ inputRange: [0, 1], outputRange: [6, -10] }) }, { translateX: drift.interpolate({ inputRange: [0, 1], outputRange: [-5, 7] }) }, { rotate: bob.interpolate({ inputRange: [0, 1], outputRange: ['-8deg', '10deg'] }) }] }]}><PapulaMascot size={60} /></Animated.View>}
+        {current && <Animated.View pointerEvents="none" style={[s.ring, { left: (W - size) / 2, top: p.y - size / 2, width: size, height: size, borderRadius: size * 0.34, opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.7, 0] }), transform: [{ translateX: dx }, { scale: pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.6] }) }] }]} />}
+        <View style={{ position: 'absolute', left: (W - size) / 2, top: p.y - size / 2, width: size, height: size, transform: [{ translateX: dx }] }}>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel={`وانەی ${node.index + 1}، پیتی ${node.letter.glyph}، ${done ? 'تەواو کراوە، دووبارەی بکەوە' : locked ? 'قفڵە، وانەی پێشوو تەواو بکە' : 'ئامادەی دەستپێکردنە'}`}
+            accessibilityState={{ disabled: locked }} disabled={locked} activeOpacity={0.9}
+            onPress={() => { void soundService.stopSpeaking(); soundService.playPop(); setSelectedLetter(node.letter); setRoute('letter-detail'); }}
+            style={[s.node, { width: size, height: size, borderRadius: size * 0.34, backgroundColor: faceColor, borderBottomColor: lip }, current && s.nodeCurrent]}>
+            <Text style={[s.glyph, { color: current ? GOLD.ink : '#fff', fontSize: current ? 44 : 36 }]}>{node.letter.glyph}</Text>
+            <View style={[s.status, { backgroundColor: done ? DONE.face : locked ? LOCKED.badge : BRAND.main }]}>{done ? <Check color="#fff" size={15} /> : locked ? <Lock color="#fff" size={13} /> : <Play color="#fff" size={13} fill="#fff" />}</View>
+          </TouchableOpacity>
+        </View>
+        <Text style={[s.nodeLabel, { left: (W - 120) / 2, top: p.y + size / 2 + 8, transform: [{ translateX: dx }], color: current ? (isNight ? '#ffd66b' : c.mint) : c.muted }]}>{done ? 'دووبارە بکەوە' : locked ? `وانەی ${node.index + 1}` : 'دەست پێ بکە'}</Text>
+        {current && <View pointerEvents="none" style={[s.startBadge, { left: (W - 140) / 2, top: p.y - size / 2 - 34, transform: [{ translateX: dx }], backgroundColor: isNight ? '#241c80' : '#ffffff', borderColor: isNight ? '#ffd66b' : '#c9b6ff', direction: 'rtl' }]}><Text style={[s.startLabel, { color: isNight ? '#ffd66b' : c.mint }]}>ئێستا نۆرەی تۆیە!</Text></View>}
+        {current && <Animated.View pointerEvents="none" style={[s.butterfly, { left: (W - 60) / 2, top: p.y - size / 2 - 14, transform: [{ translateX: butterflyCenterX - W / 2 }, { translateY: bob.interpolate({ inputRange: [0, 1], outputRange: [6, -10] }) }, { rotate: bob.interpolate({ inputRange: [0, 1], outputRange: ['-8deg', '10deg'] }) }] }]}><PapulaMascot size={60} /></Animated.View>}
       </React.Fragment>;
     })}
     <Text style={[s.note, { top: plan.height - 58, color: c.muted }]}>هەر وانەیەک تەواو بکە، پیتی دواتر دەکرێتەوە. هەر کاتێک دەتوانیت وانە فێربووەکان دووبارە بکەیتەوە.</Text>

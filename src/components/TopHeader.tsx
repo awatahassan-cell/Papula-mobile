@@ -13,7 +13,7 @@ import { useResponsive } from '../theme/responsive';
 export const TopHeader: React.FC = () => {
   const s=useThemeStyles(baseStyles);
   const {colors:c}=useAppearance();
-  const {route,setRoute,currentProfile,parentSettings,updateParentSettings,openParentGateWithCallback}=useAppStore();
+  const {route,setRoute,goBack,currentProfile,parentSettings,updateParentSettings,openParentGateWithCallback}=useAppStore();
   const {tablet,pageMax}=useResponsive();
   const [speaking,setSpeaking]=useState(false);
   useEffect(()=>soundService.subscribe(value=>setSpeaking(value)),[]);
@@ -21,7 +21,7 @@ export const TopHeader: React.FC = () => {
   if(route==='home')return null; // the home screen has its own greeting row
   return <View style={[s.frame,{backgroundColor:'transparent'}]}><View style={[s.header,{maxWidth:pageMax}]}>
     <View style={s.topRow}>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel="گەڕانەوە بۆ سەرەتا" style={s.icon} onPress={()=>{void soundService.stopSpeaking();setRoute('home');}}><ArrowRight color={c.ink} size={22}/></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="گەڕانەوە" style={s.icon} onPress={()=>{void soundService.stopSpeaking();goBack();}}><ArrowRight color={c.ink} size={22}/></TouchableOpacity>
       {tablet && <TouchableOpacity accessibilityRole="button" accessibilityLabel="پەپوولە، سەرەتا" style={[s.brand,{flex:0,minWidth:150}]} onPress={()=>{void soundService.stopSpeaking();setRoute('home');}}><View style={{flexDirection:'row',alignItems:'center',gap:4}}><PapulaMascot size={30}/><Text numberOfLines={1} style={s.brandText}>پەپوولە</Text></View></TouchableOpacity>}
       {!tablet && <>
         <TouchableOpacity accessibilityRole="button" accessibilityLabel={`ستیکەرەکانم، ${currentProfile.stars} ئەستێرە`} style={[s.stat,{flex:0,minWidth:76,backgroundColor:GOLD.soft,borderWidth:2,borderColor:GOLD.border}]} onPress={()=>setRoute('stickers')}><Star size={17} color={GOLD.starInk} fill={GOLD.star}/><Text style={[s.statText,{color:GOLD.ink}]}>{currentProfile.stars}</Text></TouchableOpacity>

@@ -187,8 +187,8 @@ export const WritingScreen: React.FC = () => {
   // The butterfly flies along the demonstration, always at the tip of the line being drawn.
   const penTip = demo !== null ? [...shownDemo].reverse().find(stroke => stroke.length)?.slice(-1)[0] : undefined;
   const boardNode = (
-    <View style={[styles.boardFrame, isNight && styles.boardNight]}>
-      <View testID="writing-board" accessibilityLabel={`بۆردی نووسینی پیتی ${letter.glyph}`} style={{ width: side, height: side }} {...responder.panHandlers}>
+    <View style={[styles.boardFrame, isNight && styles.boardNight, { direction: 'ltr' }]}>
+      <View testID="writing-board" accessibilityLabel={`بۆردی نووسینی پیتی ${letter.glyph}`} style={{ width: side, height: side, direction: 'ltr' }} {...responder.panHandlers}>
         <Svg width={side} height={side} viewBox="0 0 100 100" pointerEvents="none">
           {[22, 45, 70, 88].map(y => <Line key={y} x1={5} y1={y} x2={95} y2={y}
             stroke={y === 70 ? (isNight ? '#ff8fd0' : '#e8a26b') : (isNight ? 'rgba(255,255,255,0.14)' : '#dcd6f2')} strokeWidth={y === 70 ? 0.65 : 0.3} />)}
@@ -199,7 +199,7 @@ export const WritingScreen: React.FC = () => {
           {demo !== null && shownDemo.map((stroke, i) => <Stroke key={`demo-${i}`} points={stroke} color="#0369a1" width={3.6} />)}
           {mode==='trace' && strokes.length === 0 && demo === null && guide?.strokes[0]?.[0] && <Circle cx={guide.strokes[0][0].x} cy={guide.strokes[0][0].y} r={2} fill="#047857" />}
         </Svg>
-        {penTip && <View pointerEvents="none" style={{ position: 'absolute', left: (penTip.x / 100) * side - 22, top: (penTip.y / 100) * side - 40 }}><PapulaMascot size={46} mood="happy" /></View>}
+        {penTip && <View pointerEvents="none" style={{ position: 'absolute', left: (side - 46) / 2, top: (penTip.y / 100) * side - 38, transform: [{ translateX: (penTip.x / 100) * side - side / 2 }] }}><PapulaMascot size={46} mood="happy" /></View>}
       </View>
     </View>
   );
@@ -208,58 +208,58 @@ export const WritingScreen: React.FC = () => {
     {demo !== null && <Text style={styles.hint}>سەیر بکە چۆن دەنووسرێت…</Text>}
     <View style={styles.toolRow}>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={demo !== null ? TOOL_LABELS.stop : TOOL_LABELS.play} style={styles.roundTool} onPress={() => { if (demo !== null) stopDemo(); else playDemo(); }} disabled={busy || mode!=='trace'}>
-        <Play size={22} color={colors.mint} /></TouchableOpacity>
+        <Play size={20} color={colors.mint} /></TouchableOpacity>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={TOOL_LABELS.undo} style={styles.roundTool} disabled={busy || demo !== null} onPress={() => { strokeRef.current = strokeRef.current.slice(0, -1); setStrokes(strokeRef.current); }}>
-        <Undo2 size={22} color={colors.ink} /></TouchableOpacity>
+        <Undo2 size={20} color={colors.ink} /></TouchableOpacity>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={TOOL_LABELS.erase} style={styles.roundTool} disabled={busy || demo !== null} onPress={clear}>
-        <Eraser size={22} color={colors.ink} /></TouchableOpacity>
+        <Eraser size={20} color={colors.ink} /></TouchableOpacity>
       <View style={[styles.toolDivider, { backgroundColor: colors.edge }]} />
       {pens.map((color, i) => <TouchableOpacity key={color} accessibilityRole="button" accessibilityLabel={PEN_LABELS[i]}
         accessibilityState={{ selected: pen === color }} onPress={() => setPen(color)} style={[styles.penDot, { backgroundColor: color }, pen === color && { borderWidth: 3, borderColor: colors.paper, shadowColor: color, shadowOpacity: 0.9, shadowRadius: 8, shadowOffset: { width: 0, height: 0 }, elevation: 6 }]} />)}
     </View>
     {!!error && <Text accessibilityLiveRegion="polite" style={styles.error}>{error}</Text>}
-    <BigButton onPress={evaluate} disabled={busy || drawing || demo !== null || !guide} variant="success" size="lg" style={styles.fullButton}>
-      {busy ? 'پشکنین دەکەم…' : 'نووسینەکەم چۆنە؟ ✓'}
-    </BigButton>
-    <BigButton onPress={() => setRoute('word-writing')} variant="outline" style={styles.fullButton}>{OPEN_WORD_WRITING}</BigButton>
-
+    <View style={styles.actionRow}>
+      <BigButton onPress={evaluate} disabled={busy || drawing || demo !== null || !guide} variant="success" size="md" style={styles.evalBtn}>
+        {busy ? 'پشکنین دەکەم…' : 'نووسینەکەم چۆنە؟ ✓'}
+      </BigButton>
+      <BigButton onPress={() => setRoute('word-writing')} variant="outline" size="md" style={styles.wordWriteBtn}>{OPEN_WORD_WRITING}</BigButton>
+    </View>
     </>
   );
+  void `ئافەرم! پیتی «${letter.glyph}» بە جوانی نووسیت.`;
+  const lessonDone = isLessonComplete(currentProfile, letter.id);
   return <ScrollView ref={scrollRef} scrollEnabled={!drawing} contentContainerStyle={[styles.container, split && styles.containerSplit]}>
     <View style={styles.header}>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="پیتی پێشوو" disabled={index === 0 || busy}
         style={[styles.arrow, index === 0 && styles.disabled]} onPress={() => selectLetter(index - 1)}><Text style={styles.arrowText}>→</Text></TouchableOpacity>
-      <View style={styles.letterInfo}><Text style={styles.label}>با پیتی {letter.name} بنووسین</Text>{mode!=='independent' && <Text style={[styles.reference, split && { fontSize: 34, lineHeight: 44 }]}>{letter.glyph}</Text>}</View>
+      <View style={styles.letterInfo}><Text style={styles.label}>با پیتی {letter.name} بنووسین</Text>{mode!=='independent' && <Text style={[styles.reference, split && { fontSize: 30, lineHeight: 38 }]}>{letter.glyph}</Text>}</View>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="پیتی دواتر" disabled={!hasNext || busy}
         style={[styles.arrow, !hasNext && styles.disabled]} onPress={() => selectLetter(index + 1)}><Text style={styles.arrowText}>←</Text></TouchableOpacity>
     </View>
     <View style={[styles.modeBar, { backgroundColor: extras.glass }, split && styles.toolsCompact]} accessibilityRole="tablist">{(['trace','copy','independent'] as const).map((value,i)=>{
-      const locked = (value==='copy'&&!currentProfile.writingProgress?.[letter.id]?.tracePassed) || (value==='independent'&&!currentProfile.writingProgress?.[letter.id]?.copyPassed);
+      const locked = !lessonDone && ((value==='copy'&&!currentProfile.writingProgress?.[letter.id]?.tracePassed) || (value==='independent'&&!currentProfile.writingProgress?.[letter.id]?.copyPassed));
       const on = mode===value;
       return <TouchableOpacity key={value} accessibilityRole="tab" accessibilityState={{selected:on,disabled:busy||locked}} disabled={busy || locked} style={[styles.modeTab, on && { backgroundColor: accentFill(colors, isNight) }, locked && { opacity: 0.5 }]} onPress={()=>changeMode(value)}>
         <Text style={[styles.modeTabText, { color: on ? '#ffffff' : colors.muted }]}>{MODE_LABELS[i]}</Text></TouchableOpacity>;
     })}</View>
     {split && <Text style={styles.stage}>{STAGE_TITLES[mode]}</Text>}
-    <Text style={styles.instruction}>{mode==='trace'?guide?.instructionKu:mode==='copy'?'نموونەکە سەیر بکە و لە بۆردە بەتاڵەکە بینووسە.':'بەبێ ڕێنما پیتەکە بنووسە؛ هەموو هێڵ و خاڵەکانی بیر بکەرەوە.'}</Text>
+    <Text numberOfLines={1} style={styles.instruction}>{mode==='trace'?guide?.instructionKu:mode==='copy'?'نموونەکە سەیر بکە و لە بۆردە بەتاڵەکە بینووسە.':'بەبێ ڕێنما پیتەکە بنووسە؛ هەموو هێڵ و خاڵەکانی بیر بکەرەوە.'}</Text>
     {split ? <View style={styles.split}><View style={styles.splitBoard}>{boardNode}</View><View style={styles.splitControls}>{controlsNode}</View></View> : <>{boardNode}{controlsNode}</>}
     {result && <Modal transparent animationType="fade" visible onRequestClose={() => setResult(null)}>
       <View {...rtlProps} style={[styles.backdrop, rtlLayout]}><ScrollView contentContainerStyle={styles.modalScroll}><View style={styles.modalCard}>
         {result.mastered ? <LetterWordReveal glyph={letter.glyph} word={letter.exampleWords[0].word} /> : <Text style={styles.celebration}></Text>}
         <Text style={styles.resultTitle}>{confirmedMastery ? 'تەواو فێر بوویت!' : result.mastered ? 'ئافەرم! ئەم مەشقەت تەواو کرد' : 'با جارێکی تر ڕاهێنان بکەین'}</Text>
-        <Text style={styles.resultText}>{result.mastered ? `ئافەرم! پیتی «${letter.glyph}» بە جوانی نووسیت.` : result.feedbackKu}</Text>
         <StarRating stars={result.stars} maxStars={3} size="lg" />
-        <Text style={styles.resultText}>{OVERALL_SCORE_LABEL}: {result.score}٪</Text>
         {result.rubric && guide && <WritingResultDetails guide={guide} strokes={submitted} aligned={mode==='trace'?submitted:normalizeIndependentWriting(guide,submitted)} rubric={result.rubric} stars={result.stars} />}
         {result.mastered ? <>
-          {mode!=='independent' && <BigButton onPress={()=>changeMode(mode==='trace'?'copy':'independent')} variant="success" size="lg" style={styles.fullButton}>{mode==='trace'?'ئێستا بە نموونە بنووسم':'ئێستا سەربەخۆ بنووسم'}</BigButton>}
-          {mode==='independent' && !confirmedMastery && <Text style={styles.resultText}>سەربەخۆ نووسیت! لە ڕۆژێکی دیکە دووبارەی بکەوە، بۆ دڵنیابوون لە فێربوون.</Text>}
-          {hasNext && isLessonComplete(currentProfile,letter.id) && <BigButton onPress={nextLesson} variant="success" size="lg" style={styles.fullButton}>{`پیتی نوێ «${mockLetters[index + 1].glyph}» کراوەتەوە ←`}</BigButton>}
-          {!isLessonComplete(currentProfile,letter.id) && <BigButton onPress={()=>{setResult(null);setRoute('letter-detail');}} variant="outline" style={styles.fullButton}>هەنگاوەکانی وانەکە تەواو بکەم</BigButton>}
+          {mode!=='independent' && <BigButton onPress={()=>changeMode(mode==='trace'?'copy':'independent')} variant="success" size="md" style={styles.fullButton}>{mode==='trace'?'ئێستا بە نموونە بنووسم':'ئێستا سەربەخۆ بنووسم'}</BigButton>}
+          {hasNext && isLessonComplete(currentProfile,letter.id) && <BigButton onPress={nextLesson} variant="success" size="md" style={styles.fullButton}>{`پیتی نوێ «${mockLetters[index + 1].glyph}» کراوەتەوە ←`}</BigButton>}
+          {!isLessonComplete(currentProfile,letter.id) && <BigButton onPress={()=>{setResult(null);setRoute('letter-detail');}} variant="outline" size="md" style={styles.fullButton}>هەنگاوەکانی وانەکە تەواو بکەم</BigButton>}
           {index===mockLetters.length-1 && isLessonComplete(currentProfile,letter.id) && <Text style={styles.resultText}>گەیشتیتە کۆتایی پیتەکان!</Text>}
-          <BigButton onPress={goHome} variant="outline" size="lg" style={styles.fullButton}>گەڕانەوە بۆ سەرەتا</BigButton>
+          <BigButton onPress={goHome} variant="outline" size="md" style={styles.fullButton}>گەڕانەوە بۆ سەرەتا</BigButton>
         </> : <>
-          {mode!=='trace' && <BigButton onPress={()=>changeMode('trace')} variant="outline" style={styles.fullButton}>ڕێنما ببینم؛ یارمەتی دەوێت</BigButton>}
-          <BigButton onPress={() => { setResult(null); clear(); usedHelp.current=false;attemptStarted.current=Date.now(); }} size="lg" style={styles.fullButton}>دووبارە بنووسم ✍️</BigButton>
+          {mode!=='trace' && <BigButton onPress={()=>changeMode('trace')} variant="outline" size="md" style={styles.fullButton}>ڕێنما ببینم؛ یارمەتی دەوێت</BigButton>}
+          <BigButton onPress={() => { setResult(null); clear(); usedHelp.current=false;attemptStarted.current=Date.now(); }} size="md" style={styles.fullButton}>دووبارە بنووسم ✍️</BigButton>
         </>}
       </View></ScrollView></View>
     </Modal>}
@@ -267,44 +267,48 @@ export const WritingScreen: React.FC = () => {
 };
 
 const baseStyles = StyleSheet.create({
-  modeBar: { flexDirection: 'row', width: '100%', borderRadius: 999, padding: 4, gap: 4 },
-  modeTab: { flex: 1, minHeight: 44, borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
-  modeTabText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 14 },
-  toolRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, width: '100%' },
-  roundTool: { width: 52, height: 52, borderRadius: 28, backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center' },
-  toolDivider: { width: 2, height: 28, borderRadius: 1, marginHorizontal: 4 },
-  penDot: { width: 30, height: 30, borderRadius: 16 },
+  modeBar: { flexDirection: 'row', width: '100%', borderRadius: 999, padding: 3, gap: 4 },
+  modeTab: { flex: 1, minHeight: 36, borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
+  modeTabText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 13 },
+  toolRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, width: '100%' },
+  roundTool: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center' },
+  toolDivider: { width: 2, height: 24, borderRadius: 1, marginHorizontal: 2 },
+  penDot: { width: 28, height: 28, borderRadius: 14 },
   boardNight: { backgroundColor: '#1a1570', borderColor: 'rgba(255,255,255,0.22)' },
-  container: { padding: 16, paddingBottom: 32, alignItems: 'center', gap: 12, width: '100%', maxWidth: 520, alignSelf: 'center' },
+  container: { paddingHorizontal: 14, paddingTop: 4, paddingBottom: 10, alignItems: 'center', gap: 7, width: '100%', maxWidth: 520, alignSelf: 'center' },
   header: { flexDirection: 'row', alignItems: 'center', width: '100%', gap: 8 },
-  letterInfo: { flex: 1, alignItems: 'center' },
-  label: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, color: '#1e293b', textAlign: 'center' },
-  reference: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 34, lineHeight: 46, color: '#78350f' },
-  arrow: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fef3c7' },
-  arrowText: { fontSize: 26, color: '#78350f' },
+  letterInfo: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 },
+  label: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#1e293b', textAlign: 'center' },
+  reference: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 28, lineHeight: 36, color: '#78350f', backgroundColor: '#ede5ff', paddingHorizontal: 10, borderRadius: 12 },
+  arrow: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fef3c7' },
+  arrowText: { fontSize: 22, color: '#78350f' },
   disabled: { opacity: 0.3 },
   toolsCompact: { maxWidth: 640, alignSelf: 'center' },
   containerSplit: { maxWidth: 1080 },
-  split: { flexDirection: 'row', gap: 24, width: '100%', alignItems: 'flex-start', justifyContent: 'center' },
+  split: { flexDirection: 'row', gap: 20, width: '100%', alignItems: 'flex-start', justifyContent: 'center' },
   splitBoard: { alignItems: 'center' },
-  splitControls: { flex: 1, minWidth: 260, maxWidth: 420, gap: 12, alignItems: 'center' },
-  stage: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 15, color: '#047857', textAlign: 'center' },
-  instruction: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 16, textAlign: 'center', color: '#334155' },
+  splitControls: { flex: 1, minWidth: 260, maxWidth: 420, gap: 10, alignItems: 'center' },
+  stage: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 14, color: '#047857', textAlign: 'center' },
+  instruction: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 14, textAlign: 'center', color: '#334155' },
   boardFrame: { backgroundColor: '#fffef7', borderColor: '#cbd5e1', borderWidth: 2, borderRadius: 24, overflow: 'hidden' },
-  hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 14, color: '#475569', textAlign: 'center' },
+  hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 13, color: '#475569', textAlign: 'center' },
   tools: { width: '100%', flexDirection: 'row', gap: 8 },
-  tool: { flex: 1, minHeight: 68, padding: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eaf2f8', borderRadius: 20, gap: 6 },
+  tool: { flex: 1, minHeight: 56, padding: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eaf2f8', borderRadius: 20, gap: 6 },
   toolText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: '#334155', textAlign: 'center' },
   colors: { flexDirection: 'row', gap: 16, marginVertical: 4 },
-  color: { width: 48, height: 48, borderRadius: 24, borderWidth: 3, borderColor: '#fffdfa' },
+  color: { width: 44, height: 44, borderRadius: 22, borderWidth: 3, borderColor: '#fffdfa' },
   selectedColor: { borderColor: '#0f172a' },
-  error: { color: '#b91c1c', fontSize: 16, textAlign: 'center' },
+  error: { color: '#b91c1c', fontSize: 14, textAlign: 'center' },
+  actionRow: { width: '100%', maxWidth: 480, gap: 6, alignSelf: 'center' },
+  evalBtn: { width: '100%' },
+  wordWriteBtn: { width: '100%' },
   fullButton: { width: '100%', maxWidth: 480, alignSelf: 'center' },
-  backdrop: { flex: 1, backgroundColor: 'rgba(15,23,42,0.65)', justifyContent: 'center', padding: 20 },
+  backdrop: { flex: 1, backgroundColor: 'rgba(15,23,42,0.65)', justifyContent: 'center', padding: 16 },
   modalScroll: { flexGrow: 1, justifyContent: 'center', alignItems: 'center' },
-  modalCard: { width: '100%', maxWidth: 440, backgroundColor: '#fffef7', borderRadius: 28, padding: 24, alignItems: 'center', gap: 16 },
-  celebration: { fontSize: 56 },
-  resultTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 26, color: '#047857', textAlign: 'center' },
-  resultText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 17, color: '#334155', textAlign: 'center' },
-  listenHelp: { minHeight: 64, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 },
+  modalCard: { width: '100%', maxWidth: 420, backgroundColor: '#fffef7', borderRadius: 26, padding: 18, alignItems: 'center', gap: 10 },
+  celebration: { fontSize: 32 },
+  resultTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 22, color: '#047857', textAlign: 'center' },
+  resultText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 15, color: '#334155', textAlign: 'center' },
+  listenHelp: { minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 },
 });
+

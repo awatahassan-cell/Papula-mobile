@@ -50,7 +50,7 @@ export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:
     <Text style={s.title}>{mode==='similar'?'پیتە هاوشێوەکان':mode==='review'?'مەشقی من':'یاریی دەنگ'}</Text>
     <Text style={s.text}>{index+1} / {rounds.length}</Text>
     <View style={s.card}>
-      {mode==='similar' && <><Text style={[s.glyph,{fontSize:68}]}>{round.target.glyph}</Text><Text style={s.text}>شێوە و خاڵەکانی ئەم پیتە سەیر بکە</Text></>}
+      {mode==='similar' && <><Text style={[s.glyph,{fontSize:48}]}>{round.target.glyph}</Text><Text style={s.text}>شێوە و خاڵەکانی ئەم پیتە سەیر بکە</Text></>}
       <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>void soundService.speakWord(`پیتی ${round.target.name}`)}><Text style={s.buttonText}>دەنگەکە ببیستە</Text></TouchableOpacity>
       <Text style={s.text}>{mode==='similar'?'کامەیان هەمان پیتە؟':'کام پیتت بیست؟'}</Text>
       <View style={s.row}>{round.options.map(letter=><TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`پیتی ${letter.glyph}`}

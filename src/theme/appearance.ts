@@ -32,14 +32,14 @@ interface Palette { id: AppearanceTheme; label: string; description: string; col
 // `mint` is the main action colour (white labels sit on it); `coral` is the second accent.
 export const appearanceThemes: Palette[] = [
   { id: 'cloud', label: 'ماکارۆن', description: 'مۆری نەرم و پاستێلی شیرین',
-    colors: { background: '#ffffff', paper: '#ffffff', ink: '#3b2f63', muted: '#5e5586', coral: '#d9532f', coralDark: '#a63d1f', mint: '#6d4ae8', mintDark: '#4f33b8', lavender: '#f1ebff', sky: '#d3ebff', peach: '#ffd9cf', leaf: '#cff3e6', edge: '#e6dcff' },
-    night: { background: '#15102b', paper: '#231b45', ink: '#f6f1ff', muted: '#c9bef0', coral: '#ffb08f', coralDark: '#ffd65a', mint: '#b9a8ff', mintDark: '#5a3fd6', lavender: '#2e2560', sky: '#233e66', peach: '#4a2f58', leaf: '#1f4a4a', edge: '#3a2e70' } },
+    colors: { background: '#ffffff', paper: '#ffffff', ink: '#3b2f63', muted: '#5e5586', coral: '#d9532f', coralDark: '#a63d1f', mint: '#6d4ae8', mintDark: '#4f33b8', lavender: '#f1ebff', sky: '#d3ebff', peach: '#ede5ff', leaf: '#cff3e6', edge: '#e6dcff' },
+    night: { background: '#15102b', paper: '#231b45', ink: '#f6f1ff', muted: '#c9bef0', coral: '#ffb08f', coralDark: '#ffd65a', mint: '#b9a8ff', mintDark: '#5a3fd6', lavender: '#2e2560', sky: '#233e66', peach: '#34296b', leaf: '#1f4a4a', edge: '#3a2e70' } },
   { id: 'lagoon', label: 'دەریا', description: 'شینی ئاو و سەوزی نەرم',
-    colors: { background: '#ffffff', paper: '#ffffff', ink: '#12404a', muted: '#3e6670', coral: '#cf5a2a', coralDark: '#a2441c', mint: '#0a7c93', mintDark: '#075f72', lavender: '#e4eeff', sky: '#ddf3f8', peach: '#ffebdd', leaf: '#ddf6ea', edge: '#cbe6eb' },
-    night: { background: '#062a38', paper: '#0d4257', ink: '#e9fbff', muted: '#bfe6ef', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#6fd3e8', mintDark: '#08657a', lavender: '#123f66', sky: '#0f5568', peach: '#134a57', leaf: '#0f5a55', edge: '#1d6178' } },
+    colors: { background: '#ffffff', paper: '#ffffff', ink: '#12404a', muted: '#3e6670', coral: '#cf5a2a', coralDark: '#a2441c', mint: '#0a7c93', mintDark: '#075f72', lavender: '#e4eeff', sky: '#ddf3f8', peach: '#eae6ff', leaf: '#ddf6ea', edge: '#cbe6eb' },
+    night: { background: '#062a38', paper: '#0d4257', ink: '#e9fbff', muted: '#bfe6ef', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#6fd3e8', mintDark: '#08657a', lavender: '#123f66', sky: '#0f5568', peach: '#1e3a6d', leaf: '#0f5a55', edge: '#1d6178' } },
   { id: 'blossom', label: 'گوڵی ئاڵ', description: 'پەمبە و هەنگوین',
-    colors: { background: '#ffffff', paper: '#ffffff', ink: '#4a2036', muted: '#7a4860', coral: '#c25a14', coralDark: '#964208', mint: '#c23a74', mintDark: '#992b5a', lavender: '#f6e8ff', sky: '#e6f1fa', peach: '#ffe6da', leaf: '#ffe1eb', edge: '#f3d5e1' },
-    night: { background: '#29103f', paper: '#411860', ink: '#ffeff7', muted: '#e3b3cd', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#ff9ac9', mintDark: '#c23a74', lavender: '#4f2279', sky: '#2d3e7a', peach: '#5a2b55', leaf: '#5b1f58', edge: '#6b2d8f' } },
+    colors: { background: '#ffffff', paper: '#ffffff', ink: '#4a2036', muted: '#7a4860', coral: '#c25a14', coralDark: '#964208', mint: '#c23a74', mintDark: '#992b5a', lavender: '#f6e8ff', sky: '#e6f1fa', peach: '#f3e5ff', leaf: '#ffe1eb', edge: '#f3d5e1' },
+    night: { background: '#29103f', paper: '#411860', ink: '#ffeff7', muted: '#e3b3cd', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#ff9ac9', mintDark: '#c23a74', lavender: '#4f2279', sky: '#2d3e7a', peach: '#4f2279', leaf: '#5b1f58', edge: '#6b2d8f' } },
 ];
 export const getAppearanceColors = (value: unknown, mode: ResolvedMode = 'day'): AppearanceColors => {
   const theme = appearanceThemes.find(item => item.id === normalizeAppearanceTheme(value))!;

@@ -1,8 +1,8 @@
 import { useThemeStyles } from '../theme/useAppearance';
 import { TactileButton as TouchableOpacity } from './TactileButton';
 import { rtlProps, rtlLayout } from '../theme/rtl';
-import React, { useState } from 'react';
-import { Modal, View, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Modal, View, StyleSheet, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import { Text, TextInput } from './RTLText';
 import { Check, X } from 'lucide-react-native';
 import { PapulaMascot } from './PapulaMascot';
@@ -25,6 +25,22 @@ const ParentGateContent: React.FC = () => {
   const [challenge, setChallenge] = useState<MathChallenge>(()=>generateParentGateChallenge());
   const [userAnswer, setUserAnswer] = useState('');
   const [errorText, setErrorText] = useState('');
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      setKeyboardHeight(e.endCoordinates?.height ?? 260);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setKeyboardHeight(0);
+    });
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   const handleClose = () => {
     soundService.playPop();
@@ -56,62 +72,70 @@ const ParentGateContent: React.FC = () => {
       onRequestClose={handleClose}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View {...rtlProps} style={[styles.backdrop, rtlLayout]}>
-          <ScrollView style={styles.scroll} contentContainerStyle={styles.gateCard} keyboardShouldPersistTaps="handled">
-            <View style={styles.iconCircle}>
-              <PapulaMascot size={56} mood="calm" />
+        <View
+          {...rtlProps}
+          style={[
+            styles.backdrop,
+            rtlLayout,
+            keyboardHeight > 0 && { paddingBottom: keyboardHeight },
+          ]}
+        >
+          <TouchableWithoutFeedback>
+            <View style={styles.gateCard}>
+              <View style={styles.iconCircle}>
+                <PapulaMascot size={54} mood="calm" />
+              </View>
+              <Text style={styles.title}>ناوچەی دایک و باوک</Text>
+              <Text style={styles.subtitle}>
+                بۆ چوونەژوورەوە وەڵامی ئەم پرسیارە بدەن:
+              </Text>
+
+              <View style={styles.challengeBox}>
+                <Text style={styles.challengeText}>{challenge.questionKu}</Text>
+              </View>
+
+              <TextInput
+                accessibilityLabel="وەڵامی پرسیاری دایک و باوک"
+                value={userAnswer}
+                onChangeText={(txt) => {
+                  setUserAnswer(txt);
+                  setErrorText('');
+                }}
+                placeholder="وەڵامەکەت لێرە بنووسە..."
+                placeholderTextColor="#94a3b8"
+                keyboardType="number-pad"
+                style={styles.input}
+                maxLength={4}
+                onSubmitEditing={handleCheck}
+              />
+
+              {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
+
+              <View style={styles.buttonRow}>
+                <TouchableOpacity
+                  accessibilityRole="button"
+                  onPress={handleClose}
+                  style={[styles.btn, styles.cancelBtn]}
+                  activeOpacity={0.8}
+                >
+                  <X size={16} color="#64748b" style={{ marginEnd: 4 }} />
+                  <Text style={styles.cancelBtnText}>پاشگەزبوونەوە</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  accessibilityRole="button"
+                  accessibilityState={{disabled:!userAnswer.trim()}}
+                  disabled={!userAnswer.trim()}
+                  onPress={handleCheck}
+                  style={[styles.btn, styles.confirmBtn,!userAnswer.trim()&&{opacity:0.5}]}
+                  activeOpacity={0.8}
+                >
+                  <Check size={16} color="#ffffff" style={{ marginEnd: 4 }} />
+                  <Text style={styles.confirmBtnText}>کردنەوە</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <Text style={styles.title}>ناوچەی دایک و باوک</Text>
-            <Text style={styles.subtitle}>
-              با پێکەوە چاودێری گەشتی فێربوونی بکەین. بۆ چوونەژوورەوە وەڵامی ئەم پرسیارە بدەن.
-            </Text>
-
-            <View style={styles.challengeBox}>
-              <Text style={styles.challengeText}>{challenge.questionKu}</Text>
-            </View>
-
-            <TextInput
-              accessibilityLabel="وەڵامی پرسیاری دایک و باوک"
-              value={userAnswer}
-              onChangeText={(txt) => {
-                setUserAnswer(txt);
-                setErrorText('');
-              }}
-              placeholder="وەڵامەکەت لێرە بنووسە..."
-              placeholderTextColor="#94a3b8"
-              keyboardType="number-pad"
-              style={styles.input}
-              maxLength={4}
-              onSubmitEditing={handleCheck}
-              autoFocus
-            />
-
-            {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
-
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                accessibilityRole="button"
-                onPress={handleClose}
-                style={[styles.btn, styles.cancelBtn]}
-                activeOpacity={0.8}
-              >
-                <X size={16} color="#64748b" style={{ marginEnd: 4 }} />
-                <Text style={styles.cancelBtnText}>پاشگەزبوونەوە</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                accessibilityRole="button"
-                accessibilityState={{disabled:!userAnswer.trim()}}
-                disabled={!userAnswer.trim()}
-                onPress={handleCheck}
-                style={[styles.btn, styles.confirmBtn,!userAnswer.trim()&&{opacity:0.5}]}
-                activeOpacity={0.8}
-              >
-                <Check size={16} color="#ffffff" style={{ marginEnd: 4 }} />
-                <Text style={styles.confirmBtnText}>کردنەوە</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+          </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
     </Modal>
@@ -124,15 +148,14 @@ const baseStyles = StyleSheet.create({
     backgroundColor: 'rgba(20, 37, 33, 0.58)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
   },
-  scroll: {width:'100%',maxWidth:420,maxHeight:'100%',flexGrow:0},
   gateCard: {
     width: '100%',
-    maxWidth: 420,
+    maxWidth: 400,
     backgroundColor: '#ffffff',
     borderRadius: 28,
-    padding: 22,
+    padding: 20,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -141,36 +164,37 @@ const baseStyles = StyleSheet.create({
     elevation: 8,
   },
   iconCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 28,
+    width: 64,
+    height: 64,
+    borderRadius: 24,
     backgroundColor: '#e3f5ec',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   title: {
-    fontSize: 23,
+    fontSize: 21,
     fontFamily:'IBMPlexSansArabic_700Bold',
     fontWeight: '900',
     color: '#0f172a',
-    marginBottom: 6,
+    marginBottom: 4,
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 14,
-    lineHeight:25,
+    fontSize: 13,
+    lineHeight: 20,
     color: '#64748b',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   challengeBox: {
     backgroundColor: '#f8fafc',
     borderColor: '#e2e8f0',
     borderWidth: 1.5,
-    borderRadius: 20,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    marginBottom: 16,
+    borderRadius: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    marginBottom: 12,
     width: '100%',
     alignItems: 'center',
   },
@@ -183,7 +207,7 @@ const baseStyles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#f4f9f6',
     borderRadius: 16,
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 16,
     fontSize: 18,
     fontWeight: '800',
@@ -197,19 +221,18 @@ const baseStyles = StyleSheet.create({
     fontSize: 12,
     color: '#ef4444',
     fontWeight: '700',
-    marginBottom: 12,
+    marginBottom: 10,
     textAlign: 'center',
   },
   buttonRow: {
     flexDirection: 'row',
     width: '100%',
     gap: 10,
-    marginTop: 6,
   },
   btn: {
     flex: 1,
-    paddingVertical: 14,
-    minHeight:56,
+    paddingVertical: 12,
+    minHeight: 48,
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
@@ -233,3 +256,4 @@ const baseStyles = StyleSheet.create({
     color: '#ffffff',
   },
 });
+

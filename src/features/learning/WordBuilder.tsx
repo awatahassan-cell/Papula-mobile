@@ -66,7 +66,7 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
     <View style={s.card}>
       <Text style={s.emoji}>{word.imageEmoji}</Text>
       <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>void soundService.speakWord(word.word)}><Text style={s.text}>وشەکە ببیستە</Text></TouchableOpacity>
-      <Text accessibilityLiveRegion="polite" style={[s.glyph,{fontSize:Math.max(26,48-word.units.length*2),minHeight:68,writingDirection:'rtl'}]}>{assembled||'…'}</Text>
+      <Text accessibilityLiveRegion="polite" style={[s.glyph,{fontSize:Math.max(24,40-word.units.length*2),minHeight:44,writingDirection:'rtl'}]}>{assembled||'…'}</Text>
       <Text style={s.text}>پیتەکان بە ڕیز هەڵبژێرە</Text>
       <View style={s.row}>{bank.map(tile=><TouchableOpacity key={tile.id} accessibilityRole="button" accessibilityLabel={`پیتی ${tile.glyph}، دانەی ${tile.id+1}`}
         disabled={selected.includes(tile.id)||!!feedback} style={[s.tile,(selected.includes(tile.id)||!!feedback)&&s.disabled]} onPress={()=>choose(tile.id)}><Text style={s.glyph}>{tile.glyph}</Text></TouchableOpacity>)}</View>

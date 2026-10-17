@@ -69,7 +69,7 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
     <View style={s.card}>
       <Text style={s.emoji}>{round.word.imageEmoji}</Text>
       <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={() => void soundService.speakWord(round.word.word)}><Text style={s.text}>وشەکە ببیستە</Text></TouchableOpacity>
-      <Text accessibilityLiveRegion="polite" style={[s.glyph, { minHeight: 68, writingDirection: 'rtl' }]}>{assembled || '…'}</Text>
+      <Text accessibilityLiveRegion="polite" style={[s.glyph, { minHeight: 44, writingDirection: 'rtl' }]}>{assembled || '…'}</Text>
       <Text style={s.text}>وشەکە {round.syllables.length} بڕگەیە؛ بە ڕیز هەڵیانبژێرە</Text>
       <View style={s.row}>{round.tiles.map(tile => {
         const used = selected.includes(tile.id);

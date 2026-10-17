@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { AppErrorScreen } from '../components/AppErrorScreen';
 import { rtlProps, rtlLayout } from '../theme/rtl';
 import { PapulaMascot } from '../components/PapulaMascot';
 import { ReactionOverlay } from '../components/ReactionOverlay';
 import { AmbientSky } from '../components/AmbientSky';
-import { View, StyleSheet, StatusBar, ActivityIndicator, I18nManager } from 'react-native';
+import { View, StyleSheet, StatusBar, ActivityIndicator, I18nManager, BackHandler, Modal } from 'react-native';
 import { Text } from '../components/RTLText';
+import { TactileButton as TouchableOpacity } from '../components/TactileButton';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts, IBMPlexSansArabic_400Regular, IBMPlexSansArabic_500Medium, IBMPlexSansArabic_600SemiBold, IBMPlexSansArabic_700Bold } from '@expo-google-fonts/ibm-plex-sans-arabic';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -46,12 +47,23 @@ const MainRouter: React.FC = () => {
     parentSettings,
     openParentGateWithCallback,
     setRoute,
+    goBack,
+    exitConfirmOpen,
+    setExitConfirmOpen,
     allMissionsCelebrationOpen,
     setAllMissionsCelebrationOpen,
   } = useAppStore();
 
   const { tablet } = useResponsive();
   const isBedtimeActive = parentSettings.bedtimeLockEnabled;
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      goBack();
+      return true;
+    });
+    return () => sub.remove();
+  }, [goBack]);
 
   const bedtimeOverlay = isBedtimeActive && route !== 'parent-dashboard' ? (
       <View {...rtlProps} style={[styles.bedtimeContainer, styles.overlay, rtlLayout]}>
@@ -106,6 +118,40 @@ const MainRouter: React.FC = () => {
         isOpen={allMissionsCelebrationOpen}
         onClose={() => setAllMissionsCelebrationOpen(false)}
       />
+      {exitConfirmOpen && (
+        <Modal transparent animationType="fade" visible={exitConfirmOpen} onRequestClose={() => setExitConfirmOpen(false)}>
+          <View {...rtlProps} style={[styles.exitBackdrop, rtlLayout]}>
+            <View style={[styles.exitCard, { backgroundColor: appearanceColors.paper, borderColor: appearanceColors.edge }]}>
+              <PapulaMascot size={78} mood="sad" />
+              <Text style={[styles.exitTitle, { color: appearanceColors.ink }]}>بەڕاستی دەتەوێت دەربچیت؟</Text>
+              <Text style={[styles.exitSubtitle, { color: appearanceColors.muted }]}>
+                پەپوولە چاوەڕێی گەڕانەوەت دەکات بۆ فێربوونی زیاتر!
+              </Text>
+              <View style={styles.exitBtnRow}>
+                <TouchableOpacity
+                  accessibilityRole="button"
+                  accessibilityLabel="نەخێر، بمێنەوە"
+                  onPress={() => setExitConfirmOpen(false)}
+                  style={[styles.exitStayBtn, { backgroundColor: appearanceColors.mint, borderBottomColor: appearanceColors.mintDark }]}
+                >
+                  <Text style={styles.exitStayText}>نەخێر، بمێنەوە</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  accessibilityRole="button"
+                  accessibilityLabel="بەڵێ، دەرچوون"
+                  onPress={() => {
+                    setExitConfirmOpen(false);
+                    BackHandler.exitApp();
+                  }}
+                  style={[styles.exitLeaveBtn, { backgroundColor: appearanceColors.lavender, borderColor: appearanceColors.edge }]}
+                >
+                  <Text style={[styles.exitLeaveText, { color: appearanceColors.ink }]}>بەڵێ، دەرچوون</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
       {bedtimeOverlay}
     </SafeAreaView>
   );
@@ -197,5 +243,67 @@ const styles = StyleSheet.create({
   },
   bedtimeBtn: {
     width: '100%',
+  },
+  exitBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(20, 16, 43, 0.58)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  exitCard: {
+    width: '100%',
+    maxWidth: 380,
+    borderRadius: 28,
+    borderWidth: 2,
+    padding: 22,
+    alignItems: 'center',
+    gap: 10,
+    elevation: 10,
+  },
+  exitTitle: {
+    fontFamily: 'IBMPlexSansArabic_700Bold',
+    fontSize: 21,
+    textAlign: 'center',
+  },
+  exitSubtitle: {
+    fontFamily: 'IBMPlexSansArabic_400Regular',
+    fontSize: 14,
+    lineHeight: 22,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  exitBtnRow: {
+    flexDirection: 'row',
+    width: '100%',
+    gap: 10,
+    marginTop: 4,
+  },
+  exitStayBtn: {
+    flex: 1,
+    minHeight: 48,
+    borderRadius: 18,
+    borderBottomWidth: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  exitStayText: {
+    fontFamily: 'IBMPlexSansArabic_700Bold',
+    fontSize: 15,
+    color: '#ffffff',
+  },
+  exitLeaveBtn: {
+    flex: 1,
+    minHeight: 48,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  exitLeaveText: {
+    fontFamily: 'IBMPlexSansArabic_700Bold',
+    fontSize: 15,
   },
 });

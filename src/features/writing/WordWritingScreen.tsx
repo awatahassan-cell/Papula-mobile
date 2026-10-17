@@ -1,15 +1,26 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Play, Eraser, Eye, Volume2 } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
+import { StarRating } from '../../components/StarRating';
 import { Text } from '../../components/RTLText';
 import { normalizeIndependentWriting } from '../../services/foundationalLearning';
 import { soundService } from '../../services/soundService';
 import { TracingScoreResult } from '../../services/tracingScorer';
 import { StrokePoint } from '../../services/types';
-import { sentenceWritingTasks, sessionDone, sessionSummary, startSession, submitSlot, WritingSession, WritingTask, wordWritingTasks } from '../../services/wordWriting';
+import {
+  availableSentenceWritingTasks,
+  availableWordWritingTasks,
+  sessionDone,
+  startSession,
+  submitSlot,
+  WritingSession,
+  WritingTask,
+} from '../../services/wordWriting';
 import { useAppStore } from '../../store/useAppStore';
-import { useThemeStyles } from '../../theme/useAppearance';
+import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
+import { tileSet } from '../../theme/candy';
 import { WritingBoard } from './WritingBoard';
 import { WritingResultDetails } from './WritingResultDetails';
 
@@ -17,123 +28,337 @@ type Tab = 'word' | 'sentence';
 
 export const WordWritingScreen: React.FC = () => {
   const s = useThemeStyles(baseStyles);
-  const { currentProfile, setRoute, recordPracticeResult, finishLearningGame } = useAppStore();
-  const { width } = useWindowDimensions();
-  const side = Math.max(200, Math.min(width - 56, 400));
+  const { isNight, colors } = useAppearance();
+  const tiles = tileSet(isNight);
+  const { currentProfile, setRoute, recordPracticeResult, finishLearningGame, registerBackHandler } = useAppStore();
+  const { width, height } = useWindowDimensions();
+  const side = Math.max(170, Math.min(width - 56, height - 360, 260));
   const [tab, setTab] = useState<Tab>('word');
   const [session, setSession] = useState<WritingSession | null>(null);
   const [strokes, setStrokes] = useState<StrokePoint[][]>([]);
   const [assessment, setAssessment] = useState<TracingScoreResult | null>(null);
   const [submitted, setSubmitted] = useState<StrokePoint[][]>([]);
-  const [showGuide, setShowGuide] = useState(false);
+  const [showGuide, setShowGuide] = useState(true);
   const [retry, setRetry] = useState(0);
   const [reward, setReward] = useState<number | null>(null);
+  const [demo, setDemo] = useState<number | null>(null);
+  const demoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const helped = useRef(false);
   const rewarded = useRef(false);
-  useEffect(() => () => { void soundService.stopSpeaking(); }, []);
 
-  const tasks = tab === 'word' ? wordWritingTasks(currentProfile, 6) : sentenceWritingTasks(currentProfile);
-  const begin = (task: WritingTask) => { helped.current = false; rewarded.current = false; setReward(null); setSession(startSession(task)); setStrokes([]); setAssessment(null); setShowGuide(false); setRetry(r => r + 1); };
-  const leave = () => { void soundService.stopSpeaking(); setSession(null); };
+  const stopDemo = () => {
+    if (demoTimer.current) clearInterval(demoTimer.current);
+    demoTimer.current = null;
+    setDemo(null);
+  };
+
+  useEffect(() => () => {
+    stopDemo();
+    void soundService.stopSpeaking();
+  }, []);
+
+  useEffect(() => {
+    if (!registerBackHandler) return;
+    if (session) {
+      return registerBackHandler(() => {
+        stopDemo();
+        void soundService.stopSpeaking();
+        setSession(null);
+        return true;
+      });
+    }
+    registerBackHandler(null);
+    return () => registerBackHandler(null);
+  }, [session, registerBackHandler]);
+
+  const tasks = tab === 'word' ? availableWordWritingTasks(currentProfile, 12) : availableSentenceWritingTasks(currentProfile);
+  const begin = (task: WritingTask) => {
+    stopDemo();
+    helped.current = false;
+    rewarded.current = false;
+    setReward(null);
+    setSession(startSession(task));
+    setStrokes([]);
+    setAssessment(null);
+    setShowGuide(true);
+    setRetry(r => r + 1);
+    void soundService.speakWord(task.title);
+  };
+  const leave = () => {
+    stopDemo();
+    void soundService.stopSpeaking();
+    setSession(null);
+  };
 
   const slotOf = (current: WritingSession) => current.task.slots[Math.min(current.index, current.task.slots.length - 1)];
+
+  const playDemo = () => {
+    if (!session || demoTimer.current) return;
+    const slot = slotOf(session);
+    helped.current = true;
+    setRetry(r => r + 1);
+    setDemo(0);
+    const started = Date.now();
+    const duration = Math.max(2200, slot.guide.suggestedSpeedMs || 2200);
+    demoTimer.current = setInterval(() => {
+      const progress = Math.min(1, (Date.now() - started) / duration);
+      setDemo(progress);
+      if (progress === 1) {
+        if (demoTimer.current) clearInterval(demoTimer.current);
+        demoTimer.current = null;
+        setDemo(null);
+      }
+    }, 40);
+  };
+
   const check = () => {
-    if (!session || sessionDone(session) || !strokes.length) return;
+    if (!session || sessionDone(session) || !strokes.length || demo !== null) return;
     const slot = slotOf(session);
     const step = submitSlot(session, strokes, helped.current);
     recordPracticeResult([slot.letter.id], step.passed, undefined, 'writing', helped.current);
     setSubmitted(helped.current ? strokes : normalizeIndependentWriting(slot.guide, strokes));
     setAssessment(step.assessment);
     setSession(step.session);
-    if (step.passed) soundService.playCorrect(); else soundService.playEncouragingTryAgain();
+    if (step.passed) {
+      soundService.playCorrect();
+      void soundService.speakWord(`ئافەرم!`);
+    } else {
+      soundService.playEncouragingTryAgain();
+    }
     if (step.passed && sessionDone(step.session) && !rewarded.current) {
       rewarded.current = true;
       const { task } = step.session;
       if (task.learningWord) recordPracticeResult(task.learningWord.letterIds, true, task.learningWord.id, 'word', step.session.results.some(r => r.helped));
       setReward(finishLearningGame('writing'));
-      if (task.learningWord) void soundService.speakWord(task.learningWord.word);
+      void soundService.speakWord(task.title);
     }
   };
-  const nextOrRetry = () => { helped.current = false; setShowGuide(false); setAssessment(null); setStrokes([]); setRetry(r => r + 1); };
+  const nextOrRetry = () => {
+    stopDemo();
+    helped.current = false;
+    setShowGuide(true);
+    setAssessment(null);
+    setStrokes([]);
+    setRetry(r => r + 1);
+  };
 
   if (session && sessionDone(session) && assessment) {
-    const sum = sessionSummary(session);
-    return <ScrollView contentContainerStyle={s.container}>
-      <Text style={s.big}>{session.task.emoji}</Text>
-      <Text style={s.title}>ئافەرم! «{session.task.title}»ت نووسی</Text>
-      <Text style={s.text}>{sum.total} پیت نووسرا؛ تێکڕای نمرە {sum.average}٪{sum.unaided > 0 ? `، ${sum.unaided} پیت لە یەکەم هەوڵدا و بێ یارمەتی` : ''}.</Text>
-      {sum.retried.length > 0 && <Text style={s.text}>ئەمانە زیاتر ڕاهێنانیان دەوێت: {sum.retried.map(l => l.glyph).join('، ')}</Text>}
-      {!!reward && <Text style={s.text}>+{reward} ئەستێرە ⭐</Text>}
-      <BigButton onPress={() => setSession(null)} size="lg" variant="success" style={s.full}>نووسینی دیکە</BigButton>
-      <BigButton onPress={() => setRoute('writing')} variant="outline" style={s.full}>گەڕانەوە بۆ نووسینی پیت</BigButton>
-    </ScrollView>;
+    return (
+      <ScrollView contentContainerStyle={s.container}>
+        <View style={s.doneCard}>
+          <Text style={s.big}>{session.task.emoji}</Text>
+          <Text style={s.title}>ئافەرم! «{session.task.title}»ت نووسی 🌟</Text>
+          <StarRating stars={3} maxStars={3} size="lg" />
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={`گوێ لە ${session.task.title} بگرە`}
+            style={s.speakPill}
+            onPress={() => void soundService.speakWord(session.task.title)}
+          >
+            <Volume2 size={22} color="#78350f" />
+            <Text style={s.speakPillText}>{session.task.title}</Text>
+          </TouchableOpacity>
+          {!!reward && <Text style={s.rewardBadge}>+{reward} ئەستێرە ⭐</Text>}
+        </View>
+        <BigButton onPress={() => setSession(null)} size="md" variant="success" style={s.full}>وشە و ڕستەی دیکە 📝</BigButton>
+        <BigButton onPress={() => setRoute('writing')} size="md" variant="outline" style={s.full}>گەڕانەوە بۆ نووسینی پیت</BigButton>
+      </ScrollView>
+    );
   }
 
   if (session) {
     const slot = slotOf(session);
-    const words = session.task.words.map(word => Array.from(word));
     const failed = !!assessment && !assessment.mastered;
     const passedNow = !!assessment && assessment.mastered;
-    return <ScrollView contentContainerStyle={s.container} scrollEnabled>
-      <Text style={s.title}>{session.task.emoji} {session.task.title}</Text>
-      <View style={s.chips} accessibilityLabel={`پیتی ${session.index + 1} لە ${session.task.slots.length}`}>
-        {session.task.slots.map((item, i) => <View key={i} style={[s.chip, i < session.index && s.chipDone, i === Math.min(session.index, session.task.slots.length - 1) && !passedNow && s.chipNow]}>
-          <Text style={s.chipText}>{i < session.index ? '✓' : item.letter.glyph}</Text></View>)}
-      </View>
-      <Text style={s.hint}>پیتی {slot.letter.name} بنووسە ({Math.min(session.index + 1, session.task.slots.length)} لە {session.task.slots.length})</Text>
-      <View style={s.model}><Text style={s.modelText}>{words.map(chars => chars.join('')).join('   ')}</Text></View>
-      <WritingBoard side={side} guide={slot.guide} showGuide={showGuide} disabled={!!assessment} resetKey={`${session.task.id}-${session.index}-${retry}`} onStrokesChange={setStrokes} />
-      {!assessment && <>
-        <View style={s.row}>
-          <TouchableOpacity accessibilityRole="button" style={s.tool} onPress={() => { helped.current = true; setShowGuide(v => !v); }}><Text style={s.toolText}>{showGuide ? 'شاردنەوەی ڕێنما' : 'ڕێنما ببینم'}</Text></TouchableOpacity>
-          <TouchableOpacity accessibilityRole="button" style={s.tool} onPress={() => void soundService.speakWord(slot.letter.glyph, { letterName: slot.letter.name })}><Text style={s.toolText}>گوێ لە پیتەکە بگرە</Text></TouchableOpacity>
-          <TouchableOpacity accessibilityRole="button" style={s.tool} onPress={() => setRetry(r => r + 1)}><Text style={s.toolText}>سڕینەوە</Text></TouchableOpacity>
+    return (
+      <ScrollView contentContainerStyle={s.container} scrollEnabled>
+        <View style={s.sessionHeader}>
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={`گوێ لە ${session.task.title} بگرە`}
+            style={s.wordBanner}
+            onPress={() => void soundService.speakWord(session.task.title)}
+          >
+            <Text style={s.bannerEmoji}>{session.task.emoji}</Text>
+            <Text style={s.modelText}>{session.task.words.join('   ')}</Text>
+            <Volume2 size={20} color="#78350f" />
+          </TouchableOpacity>
+          <View style={s.chips} accessibilityLabel={`پیتی ${session.index + 1} لە ${session.task.slots.length}`}>
+            {session.task.slots.map((item, i) => (
+              <View
+                key={i}
+                style={[
+                  s.chip,
+                  i < session.index && s.chipDone,
+                  i === Math.min(session.index, session.task.slots.length - 1) && !passedNow && s.chipNow,
+                ]}
+              >
+                <Text style={s.chipText}>{i < session.index ? '✓' : item.letter.glyph}</Text>
+              </View>
+            ))}
+          </View>
         </View>
-        <BigButton onPress={check} disabled={!strokes.length} variant="success" size="lg" style={s.full}>پشکنینی پیتەکەم ✓</BigButton>
-      </>}
-      {assessment?.rubric && <>
-        <Text style={s.title}>{passedNow ? 'ئافەرم! ✓' : 'با باشترى بکەین'}</Text>
-        <Text style={s.text}>{assessment.feedbackKu}</Text>
-        <WritingResultDetails guide={slot.guide} strokes={strokes} aligned={submitted} rubric={assessment.rubric} stars={assessment.stars} />
-        {failed
-          ? <BigButton onPress={nextOrRetry} size="lg" style={s.full}>دووبارە بنووسم ✍️</BigButton>
-          : <BigButton onPress={nextOrRetry} variant="success" size="lg" style={s.full}>پیتی دواتر ←</BigButton>}
-      </>}
-      <BigButton onPress={leave} variant="outline" style={s.full}>گەڕانەوە</BigButton>
-    </ScrollView>;
+        <Text style={s.hint}>پیتی «{slot.letter.glyph}» بنووسە ({Math.min(session.index + 1, session.task.slots.length)} / {session.task.slots.length})</Text>
+        <WritingBoard
+          side={side}
+          guide={slot.guide}
+          showGuide={showGuide}
+          disabled={!!assessment}
+          demoProgress={demo}
+          resetKey={`${session.task.id}-${session.index}-${retry}`}
+          onStrokesChange={setStrokes}
+        />
+        {!assessment && (
+          <>
+            <View style={s.toolBar}>
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel="پیشاندان"
+                style={s.iconTool}
+                onPress={() => { if (demo !== null) stopDemo(); else playDemo(); }}
+              >
+                <Play size={20} color={colors.mint} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel={showGuide ? 'شاردنەوەی ڕێنما' : 'ڕێنما ببینم'}
+                style={[s.iconTool, showGuide && s.toolOn]}
+                onPress={() => { helped.current = true; setShowGuide(v => !v); }}
+              >
+                <Eye size={20} color={colors.ink} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel="گوێ لە پیتەکە بگرە"
+                style={s.iconTool}
+                onPress={() => void soundService.speakWord(slot.letter.glyph, { letterName: slot.letter.name })}
+              >
+                <Volume2 size={20} color={colors.ink} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel="سڕینەوە"
+                style={s.iconTool}
+                onPress={() => { stopDemo(); setRetry(r => r + 1); }}
+              >
+                <Eraser size={20} color={colors.ink} />
+              </TouchableOpacity>
+            </View>
+            <BigButton onPress={check} disabled={!strokes.length || demo !== null} variant="success" size="md" style={s.full}>
+              پشکنینی پیتەکەم ✓
+            </BigButton>
+          </>
+        )}
+        {assessment?.rubric && (
+          <View style={s.evalBox}>
+            <Text style={s.title}>{passedNow ? 'ئافەرم! 🌟' : 'با جارێکی تر بنووسین'}</Text>
+            <StarRating stars={assessment.stars} maxStars={3} size="md" />
+            <WritingResultDetails guide={slot.guide} strokes={strokes} aligned={submitted} rubric={assessment.rubric} stars={assessment.stars} />
+            {failed ? (
+              <BigButton onPress={nextOrRetry} size="md" style={s.full}>دووبارە بنووسم ✍️</BigButton>
+            ) : (
+              <BigButton onPress={nextOrRetry} variant="success" size="md" style={s.full}>پیتی دواتر ←</BigButton>
+            )}
+          </View>
+        )}
+        <BigButton onPress={leave} variant="outline" size="md" style={s.full}>گەڕانەوە بۆ لیست</BigButton>
+      </ScrollView>
+    );
   }
 
-  return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.title}>وشە و ڕستە بنووسە ✍️</Text>
-    <Text style={s.text}>هەر پیتێک بە جیا دەنووسیت و پشکنینی وردی بۆ دەکرێت: شێوە، خاڵەکان، قەبارە و ڕێکی دەست.</Text>
-    <View style={s.row}>{(['word', 'sentence'] as const).map(value => <TouchableOpacity key={value} accessibilityRole="button" accessibilityState={{ selected: tab === value }} style={[s.tool, tab === value && s.toolOn]} onPress={() => setTab(value)}>
-      <Text style={s.toolText}>{value === 'word' ? 'وشە' : 'ڕستە'}</Text></TouchableOpacity>)}</View>
-    {tasks.length === 0
-      ? <View style={s.card}><Text style={s.text}>هێشتا پیتی پێویست فێر نەبووی. چەند پیتێکی زیاتر فێربە، پاشان وشە و ڕستەکان دەکرێنەوە</Text>
-        <BigButton onPress={() => setRoute('alphabet')} style={s.full}>بچینە سەر وانەکان</BigButton></View>
-      : tasks.map(task => <TouchableOpacity key={task.id} accessibilityRole="button" accessibilityLabel={`بنووسە: ${task.title}`} style={s.card} onPress={() => begin(task)}>
-        <Text style={s.big}>{task.emoji}</Text><Text style={s.title}>{task.title}</Text><Text style={s.text}>{task.slots.length} پیت</Text></TouchableOpacity>)}
-    <BigButton onPress={() => setRoute('writing')} variant="outline" style={s.full}>نووسینی پیت</BigButton>
-  </ScrollView>;
+  return (
+    <ScrollView contentContainerStyle={s.container}>
+      <View style={s.tabBar}>
+        {(['word', 'sentence'] as const).map(value => {
+          const active = tab === value;
+          return (
+            <TouchableOpacity
+              key={value}
+              accessibilityRole="button"
+              accessibilityState={{ selected: active }}
+              style={[s.tabBtn, active && s.tabBtnActive]}
+              onPress={() => setTab(value)}
+            >
+              <Text style={[s.tabBtnText, active && s.tabBtnTextActive]}>
+                {value === 'word' ? '📝 نووسینی وشە' : '📖 نووسینی ڕستە'}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+      <View style={s.grid}>
+        {tasks.map((task, idx) => {
+          const candy = tiles[idx % tiles.length];
+          return (
+            <TouchableOpacity
+              key={task.id}
+              accessibilityRole="button"
+              accessibilityLabel={`بنووسە: ${task.title}`}
+              style={[s.taskCard, { backgroundColor: candy.face, borderBottomColor: candy.lip }]}
+              onPress={() => begin(task)}
+            >
+              <View style={[s.taskEmojiBox, { backgroundColor: candy.chip }]}>
+                <Text style={s.taskEmoji}>{task.emoji}</Text>
+              </View>
+              <View style={s.taskBody}>
+                <Text style={[s.taskTitle, { color: candy.ink }]}>{task.title}</Text>
+                <View style={s.slotRow}>
+                  {task.slots.map((slot, sIdx) => (
+                    <View key={sIdx} style={[s.miniChip, { backgroundColor: candy.chip }]}>
+                      <Text style={[s.miniChipText, { color: candy.ink }]}>{slot.letter.glyph}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+              <View style={[s.writeBadge, { backgroundColor: candy.chip }]}>
+                <Text style={{ fontSize: 18 }}>✍️</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+      <BigButton onPress={() => setRoute('writing')} variant="outline" size="md" style={s.full}>گەڕانەوە بۆ نووسینی پیت</BigButton>
+    </ScrollView>
+  );
 };
 
 const baseStyles = StyleSheet.create({
-  container: { padding: 16, paddingBottom: 32, alignItems: 'center', gap: 12, width: '100%', maxWidth: 520, alignSelf: 'center' },
-  title: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 24, color: '#1e293b', textAlign: 'center' },
-  text: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 15, lineHeight: 26, color: '#475569', textAlign: 'center' },
-  hint: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16, color: '#047857', textAlign: 'center' },
-  big: { fontSize: 52, textAlign: 'center' },
+  container: { paddingHorizontal: 14, paddingTop: 6, paddingBottom: 16, alignItems: 'center', gap: 8, width: '100%', maxWidth: 560, alignSelf: 'center' },
+  title: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, color: '#1e293b', textAlign: 'center' },
+  hint: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 15, color: '#047857', textAlign: 'center' },
+  big: { fontSize: 48, textAlign: 'center' },
   full: { width: '100%', maxWidth: 480, alignSelf: 'center' },
-  row: { width: '100%', flexDirection: 'row', gap: 8 },
-  tool: { flex: 1, minHeight: 56, padding: 8, borderRadius: 16, backgroundColor: '#eaf2f8', alignItems: 'center', justifyContent: 'center' },
-  toolOn: { backgroundColor: '#bbf7d0' },
-  toolText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: '#334155', textAlign: 'center' },
-  card: { width: '100%', backgroundColor: '#fffbeb', borderRadius: 24, padding: 18, alignItems: 'center', gap: 6 },
+  tabBar: { width: '100%', flexDirection: 'row', gap: 8, backgroundColor: '#ede5ff', padding: 4, borderRadius: 22 },
+  tabBtn: { flex: 1, minHeight: 44, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  tabBtnActive: { backgroundColor: '#6d4ae8', borderBottomWidth: 3, borderBottomColor: '#4f33b8' },
+  tabBtnText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 15, color: '#3b2f63' },
+  tabBtnTextActive: { color: '#ffffff' },
+  grid: { width: '100%', gap: 10 },
+  taskCard: { width: '100%', minHeight: 74, borderRadius: 22, borderBottomWidth: 4, paddingVertical: 10, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  taskEmojiBox: { width: 48, height: 48, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+  taskEmoji: { fontSize: 28 },
+  taskBody: { flex: 1, gap: 4, alignItems: 'flex-start' },
+  taskTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, textAlign: 'right', alignSelf: 'stretch' },
+  slotRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
+  miniChip: { minWidth: 26, height: 26, borderRadius: 8, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center' },
+  miniChipText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 14 },
+  writeBadge: { width: 38, height: 38, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  sessionHeader: { width: '100%', alignItems: 'center', gap: 6 },
+  wordBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#ede5ff', borderRadius: 20, paddingVertical: 6, paddingHorizontal: 16, borderWidth: 1.5, borderColor: '#cab8f5' },
+  bannerEmoji: { fontSize: 28 },
+  modelText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 28, lineHeight: 40, color: '#3b2f63', textAlign: 'center' },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, justifyContent: 'center' },
-  chip: { minWidth: 44, height: 44, borderRadius: 16, backgroundColor: '#e2e8f0', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8 },
+  chip: { minWidth: 38, height: 38, borderRadius: 12, backgroundColor: '#e2e8f0', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8 },
   chipDone: { backgroundColor: '#bbf7d0' },
   chipNow: { backgroundColor: '#fde68a', borderWidth: 2, borderColor: '#d97706' },
-  chipText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 22, color: '#1e293b' },
-  model: { backgroundColor: '#fffbeb', borderRadius: 20, paddingVertical: 6, paddingHorizontal: 16 },
-  modelText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 40, lineHeight: 64, color: '#78350f', textAlign: 'center' },
+  chipText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 19, color: '#1e293b' },
+  toolBar: { flexDirection: 'row', justifyContent: 'center', gap: 12, width: '100%' },
+  iconTool: { width: 46, height: 46, borderRadius: 18, backgroundColor: '#ffffff', borderWidth: 1.5, borderColor: '#cab8f5', borderBottomWidth: 3, borderBottomColor: '#cab8f5', alignItems: 'center', justifyContent: 'center' },
+  toolOn: { backgroundColor: '#dcfce7', borderColor: '#16a34a', borderBottomColor: '#15803d' },
+  evalBox: { width: '100%', backgroundColor: '#f8f5ff', borderRadius: 24, padding: 12, alignItems: 'center', gap: 8, borderWidth: 1.5, borderColor: '#cab8f5' },
+  doneCard: { width: '100%', backgroundColor: '#f8f5ff', borderRadius: 26, padding: 18, alignItems: 'center', gap: 10, borderWidth: 2, borderColor: '#cab8f5' },
+  speakPill: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#fde68a', paddingHorizontal: 18, paddingVertical: 8, borderRadius: 18, borderBottomWidth: 3, borderBottomColor: '#d97706' },
+  speakPillText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#78350f' },
+  rewardBadge: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#b45309' },
 });
+

@@ -2,7 +2,7 @@ import { TactileButton as TouchableOpacity } from '../../components/TactileButto
 import { useResponsive } from '../../theme/responsive';
 import { useThemeStyles } from '../../theme/useAppearance';
 import { StartingAssessment } from '../learning/StartingAssessment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ScrollView} from 'react-native';
 import { Text } from '../../components/RTLText';
 import { DailyMissionsComponent } from '../../components/DailyMissionsComponent';
@@ -14,11 +14,21 @@ import { learningStyles as baseLearningStyles } from '../learning/learningStyles
 
 export const DailyPracticeScreen: React.FC = () => {
   const s = useThemeStyles(baseLearningStyles);
-  const {currentProfile,setSelectedLetter,setRoute,completeDailyPractice}=useAppStore();
+  const {currentProfile,setSelectedLetter,setRoute,completeDailyPractice,registerBackHandler}=useAppStore();
   const {tablet}=useResponsive();
   const [tab,setTab]=useState<'personal'|'missions'>('personal');
   const [assessing,setAssessing]=useState(false);
   const [practicing,setPracticing]=useState(false);
+
+  useEffect(() => {
+    if (!assessing && !practicing) return;
+    return registerBackHandler(() => {
+      if (assessing) setAssessing(false);
+      else if (practicing) setPracticing(false);
+      return true;
+    });
+  }, [assessing, practicing, registerBackHandler]);
+
   const plan=reviewPlan(currentProfile,34).filter(letter=>isLessonUnlocked(currentProfile,letter.id)).slice(0,3);
   if(assessing)return <StartingAssessment onExit={()=>setAssessing(false)} />;
   if(practicing)return <LetterPractice mode="review" onComplete={()=>{completeDailyPractice();}} onExit={()=>setPracticing(false)} />;

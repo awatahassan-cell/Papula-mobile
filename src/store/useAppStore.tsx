@@ -30,6 +30,10 @@ export type AppRoute =
 export interface AppContextType {
   route: AppRoute;
   setRoute: (route: AppRoute) => void;
+  goBack: () => void;
+  exitConfirmOpen: boolean;
+  setExitConfirmOpen: (open: boolean) => void;
+  registerBackHandler: (handler: (() => boolean) | null) => void;
   selectedLetter: LetterItem | null;
   setSelectedLetter: (letter: LetterItem | null) => void;
   recordLessonStep: (letterId: string, step: LessonStep, exampleId?: string) => void;
@@ -83,14 +87,42 @@ export interface AppContextType {
 
 const AppContext = createContext<AppContextType | null>(null);
 
+const MAIN_TABS: AppRoute[] = ['home', 'alphabet', 'stories', 'match-game'];
+
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
   const route: AppRoute = pathname === '/' ? 'home' : (pathname.slice(1) as AppRoute);
+  const historyRef = useRef<AppRoute[]>(['home']);
+  const customBackRef = useRef<(() => boolean) | null>(null);
+  const [exitConfirmOpen, setExitConfirmOpen] = useState(false);
+
+  const navigateInternal = (target: AppRoute) => {
+    const path = target === 'home' ? '/' : (`/${target}` as never);
+    if (typeof router.replace === 'function') {
+      router.replace(path);
+    } else {
+      router.navigate(path);
+    }
+  };
+
   const setRoute = (next: AppRoute) => {
     if (next === 'paywall') return;
-    router.navigate(next === 'home' ? '/' : (`/${next}` as never));
+    if (next === 'home') {
+      historyRef.current = ['home'];
+    } else if (MAIN_TABS.includes(next)) {
+      historyRef.current = ['home', next];
+    } else {
+      const withoutNext = historyRef.current.filter((r) => r !== next && r !== 'home');
+      historyRef.current = ['home', ...withoutNext.slice(-2), next];
+    }
+    navigateInternal(next);
   };
+
+  const registerBackHandler = (handler: (() => boolean) | null) => {
+    customBackRef.current = handler;
+  };
+
   const [selectedLetter, setSelectedLetterState] = useState<LetterItem | null>(null);
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
 
@@ -588,11 +620,47 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const areAllMissionsCompleted = activeMissions.length > 0 && activeMissions.every((m) => m.completed);
   const hasClaimedAllMissionsBonusToday = currentProfile.dailyMissionsBonusClaimedDate === getTodayDateString();
 
+  const goBack = () => {
+    void soundService.stopSpeaking();
+    if (parentGateOpen) {
+      setParentGateOpen(false);
+      return;
+    }
+    if (paywallOpen) {
+      setPaywallOpen(false);
+      return;
+    }
+    if (exitConfirmOpen) {
+      setExitConfirmOpen(false);
+      return;
+    }
+    if (customBackRef.current && customBackRef.current()) {
+      return;
+    }
+    if (route === 'home') {
+      setExitConfirmOpen(true);
+      return;
+    }
+    const stack = historyRef.current.filter((r) => r !== route);
+    let prev: AppRoute = stack.length > 0 ? stack[stack.length - 1] : 'home';
+    if (stack.length <= 1 && prev === 'home') {
+      if (route === 'writing') prev = selectedLetter ? 'letter-detail' : 'alphabet';
+      else if (route === 'letter-detail') prev = 'alphabet';
+      else if (route === 'story-reader') prev = 'stories';
+    }
+    historyRef.current = prev === 'home' ? ['home'] : [...stack.filter((r) => r !== prev), prev];
+    navigateInternal(prev);
+  };
+
   return (
     <AppContext.Provider
       value={{
         route,
         setRoute,
+        goBack,
+        exitConfirmOpen,
+        setExitConfirmOpen,
+        registerBackHandler,
         selectedLetter,
         setSelectedLetter,
         recordLessonStep,
