@@ -3,6 +3,7 @@ import { BRAND, GOLD } from '../../theme/tokens';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { ArrowLeft, BookOpen, Flame, PencilLine, Puzzle, Settings, Sprout, Star } from 'lucide-react-native';
+import { tileSet } from '../../theme/candy';
 import { Text } from '../../components/RTLText';
 import { RiseIn } from '../../components/Motion';
 import { AdventureMap } from '../../components/AdventureMap';
@@ -13,11 +14,11 @@ import { useResponsive } from '../../theme/responsive';
 import { useAppearance } from '../../theme/useAppearance';
 import { soundService } from '../../services/soundService';
 
-const ACTIVITIES: { route: AppRoute; title: string; hint: string; Icon: typeof BookOpen; color: string; shadow: string }[] = [
-  { route: 'stories', title: 'کاتی چیرۆکە', hint: 'ببینە و ببیستە', Icon: BookOpen, color: '#0878c7', shadow: '#0965ac' },
-  { route: 'match-game', title: 'با یاری بکەین', hint: 'پیت و وشە و بڕگە', Icon: Puzzle, color: BRAND.hero, shadow: BRAND.deep },
-  { route: 'writing', title: 'نووسین', hint: 'پیتەکان بنووسە', Icon: PencilLine, color: '#c93466', shadow: '#a82b53' },
-  { route: 'daily-practice', title: 'مەشق', hint: 'بیریان بکەرەوە', Icon: Sprout, color: '#098467', shadow: '#08604e' },
+const ACTIVITIES: { route: AppRoute; title: string; hint: string; Icon: typeof BookOpen; tile: number }[] = [
+  { route: 'stories', title: 'کاتی چیرۆکە', hint: 'ببینە و ببیستە', Icon: BookOpen, tile: 0 },
+  { route: 'match-game', title: 'با یاری بکەین', hint: 'پیت و وشە و بڕگە', Icon: Puzzle, tile: 1 },
+  { route: 'writing', title: 'نووسین', hint: 'پیتەکان بنووسە', Icon: PencilLine, tile: 2 },
+  { route: 'daily-practice', title: 'مەشق', hint: 'بیریان بکەرەوە', Icon: Sprout, tile: 3 },
 ];
 
 export const HomeScreen: React.FC = () => {
@@ -39,11 +40,12 @@ export const HomeScreen: React.FC = () => {
   const open = (route: AppRoute) => { void soundService.stopSpeaking(); setRoute(route); };
   const openNode = (node: typeof path[number]) => { void soundService.stopSpeaking(); setSelectedLetter(node.letter); setRoute('letter-detail'); };
   const startLesson = () => { void soundService.stopSpeaking(); if (next) { setSelectedLetter(next); setRoute('letter-detail'); } else setRoute('alphabet'); };
+  const tiles = tileSet(isNight);
   const ink = { color: c.ink }, muted = { color: c.muted };
 
   const lesson = <View testID="home-lesson-card" style={[s.lesson, { backgroundColor: c.paper, borderColor: c.edge }]}>
     <View style={s.lessonRow}>
-      <View style={s.letterTile}><Text style={s.letter}>{next?.glyph || '✓'}</Text></View>
+      <View style={[s.letterTile, { backgroundColor: tiles[2].face, borderBottomColor: tiles[2].lip }]}><Text style={[s.letter, { color: tiles[2].ink }]}>{next?.glyph || '✓'}</Text></View>
       <View style={s.flex}><Text style={[s.caption, muted]}>{next ? `وانەی ${activeIndex + 1} · هەنگاوی داهاتوو` : 'گەشتێکی جوانت کرد!'}</Text>
         <Text style={[s.lessonTitle, ink]}>{next ? `با پیتی «${next.glyph}» فێر بین` : 'هەموو پیتەکانت فێر بوو!'}</Text>
       </View>
@@ -57,10 +59,10 @@ export const HomeScreen: React.FC = () => {
       <Text style={s.ctaText}>{next ? (stepsDone > 0 ? 'بەردەوام بین!' : 'با دەست پێ بکەین!') : 'با دووبارە بکەینەوە'}</Text><ArrowLeft color={GOLD.ink} size={23} strokeWidth={3} />
     </TouchableOpacity>
   </View>;
-  const activities = <View style={s.tiles}>{ACTIVITIES.slice(0, tablet ? 4 : 2).map(({ route, title, hint, Icon, color, shadow }) =>
-    <TouchableOpacity key={route} accessibilityRole="button" accessibilityLabel={title} activeOpacity={0.85} onPress={() => open(route)} style={[s.tile, { backgroundColor: color, borderBottomColor: shadow }]}>
-      <View style={s.tileIcon}><Icon size={29} color="#fff" strokeWidth={2.3} /></View><View style={s.flex}><Text style={s.tileTitle}>{title}</Text><Text style={s.tileHint}>{hint}</Text></View>
-    </TouchableOpacity>)}</View>;
+  const activities = <View style={s.tiles}>{ACTIVITIES.slice(0, tablet ? 4 : 2).map(({ route, title, hint, Icon, tile }) => { const t = tiles[tile]; return (
+    <TouchableOpacity key={route} accessibilityRole="button" accessibilityLabel={title} activeOpacity={0.85} onPress={() => open(route)} style={[s.tile, { backgroundColor: t.face, borderBottomColor: t.lip }]}>
+      <View style={[s.tileIcon, { backgroundColor: t.chip }]}><Icon size={29} color={t.icon} strokeWidth={2.3} /></View><View style={s.flex}><Text style={[s.tileTitle, { color: t.ink }]}>{title}</Text><Text style={[s.tileHint, { color: t.ink }]}>{hint}</Text></View>
+    </TouchableOpacity>); })}</View>;
 
   return <ScrollView contentContainerStyle={[s.page, { maxWidth: pageMax }]}>
     <View style={s.header}>

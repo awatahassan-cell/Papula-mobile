@@ -31,9 +31,9 @@ export type AppearanceColors = {[K in keyof typeof gardenColors]: string};
 interface Palette { id: AppearanceTheme; label: string; description: string; colors: AppearanceColors; night: AppearanceColors; }
 // `mint` is the main action colour (white labels sit on it); `coral` is the second accent.
 export const appearanceThemes: Palette[] = [
-  { id: 'cloud', label: 'دوورگەی ڕەنگەکان', description: 'مۆر و شین و زەردی گەش',
-    colors: { background: '#ffffff', paper: '#ffffff', ink: '#24304a', muted: '#555c74', coral: '#d6452a', coralDark: '#a8321b', mint: '#7436d8', mintDark: '#5623aa', lavender: '#eee4ff', sky: '#d7f2ff', peach: '#ffe8d4', leaf: '#dbf7df', edge: '#e9e0d1' },
-    night: { background: '#161062', paper: '#241c80', ink: '#f4f1ff', muted: '#c9c2f5', coral: '#ffb84d', coralDark: '#ffd66b', mint: '#b7a6ff', mintDark: '#5a3fd6', lavender: '#2e2690', sky: '#1d3a86', peach: '#3a2b74', leaf: '#1d4d6b', edge: '#3f3698' } },
+  { id: 'cloud', label: 'ماکارۆن', description: 'مۆری نەرم و پاستێلی شیرین',
+    colors: { background: '#ffffff', paper: '#ffffff', ink: '#3b2f63', muted: '#5e5586', coral: '#d9532f', coralDark: '#a63d1f', mint: '#6d4ae8', mintDark: '#4f33b8', lavender: '#f1ebff', sky: '#d3ebff', peach: '#ffd9cf', leaf: '#cff3e6', edge: '#e6dcff' },
+    night: { background: '#15102b', paper: '#231b45', ink: '#f6f1ff', muted: '#c9bef0', coral: '#ffb08f', coralDark: '#ffd65a', mint: '#b9a8ff', mintDark: '#5a3fd6', lavender: '#2e2560', sky: '#233e66', peach: '#4a2f58', leaf: '#1f4a4a', edge: '#3a2e70' } },
   { id: 'lagoon', label: 'دەریا', description: 'شینی ئاو و سەوزی نەرم',
     colors: { background: '#ffffff', paper: '#ffffff', ink: '#12404a', muted: '#3e6670', coral: '#cf5a2a', coralDark: '#a2441c', mint: '#0a7c93', mintDark: '#075f72', lavender: '#e4eeff', sky: '#ddf3f8', peach: '#ffebdd', leaf: '#ddf6ea', edge: '#cbe6eb' },
     night: { background: '#062a38', paper: '#0d4257', ink: '#e9fbff', muted: '#bfe6ef', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#6fd3e8', mintDark: '#08657a', lavender: '#123f66', sky: '#0f5568', peach: '#134a57', leaf: '#0f5a55', edge: '#1d6178' } },
@@ -80,12 +80,13 @@ export function contrastRatio(a: string, b: string): number {
   return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
 }
 /** Blend `color` towards `target` in small steps until it reaches `min` contrast against `against`. */
-function blendUntil(color: string, target: string, against: string, min: number): string {
+function blendUntil(color: string, target: string, against: string | string[], min: number): string {
+  const grounds = Array.isArray(against) ? against : [against];
   const from = hexRgb(color), to = hexRgb(target);
   if (!from || !to) return color;
   for (let step = 0; step <= 20; step++) {
     const candidate = toHex(from.map((v, i) => v + (to[i] - v) * (step / 20)));
-    if (contrastRatio(candidate, against) >= min) return candidate;
+    if (grounds.every(ground => contrastRatio(candidate, ground) >= min)) return candidate;
   }
   return target;
 }
@@ -186,7 +187,7 @@ export function resolveAppearanceStyles<T extends Record<string, object>>(styles
       // The night accent is one colour for both fills and text; split it so white labels sit on a deep fill and accent text is light.
       if (name === 'disabled' && typeof result.backgroundColor === 'string') result.backgroundColor = palette.lavender;
       else if (typeof result.backgroundColor === 'string' && [palette.mint, palette.coral].includes(result.backgroundColor)) result.backgroundColor = blendUntil(result.backgroundColor, '#000000', '#ffffff', 4.5);
-      if (result.color === palette.mint || result.color === palette.mintDark) result.color = blendUntil(String(result.color), '#ffffff', palette.lavender, 4.5);
+      if (result.color === palette.mint || result.color === palette.mintDark) result.color = blendUntil(String(result.color), '#ffffff', [palette.lavender, palette.peach, palette.leaf, palette.sky], 4.5);
     } else {
       // Day: the accent and coral fills carry white labels, so they must reach 4.5:1 on white.
       if (typeof result.backgroundColor === 'string' && [palette.coral, palette.mint].includes(result.backgroundColor)) result.backgroundColor = blendUntil(result.backgroundColor, '#000000', '#ffffff', 4.5);
@@ -217,7 +218,7 @@ export interface AppearanceExtras {
   glow: string;
 }
 const EXTRAS: Record<AppearanceTheme, { day: Omit<AppearanceExtras, 'cta' | 'ctaText' | 'glass' | 'glassEdge' | 'glow'>; night: Omit<AppearanceExtras, 'cta' | 'ctaText' | 'glass' | 'glassEdge' | 'glow'> }> = {
-  cloud: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#8746df', '#168fe5'] }, night: { gradient: ['#120f55', '#231c80', '#3b2a96'], hero: ['#5a3fd6', '#7c5cff'] } },
+  cloud: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#6d4ae8', '#b06cf0'] }, night: { gradient: ['#15102b', '#1a1436', '#231b45'], hero: ['#5a3fd6', '#8a62f5'] } },
   lagoon: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#0a7c93', '#3fb6a8'] }, night: { gradient: ['#05202c', '#0a3a4d', '#12506a'], hero: ['#08657a', '#0b8aa6'] } },
   blossom: { day: { gradient: ['#ffffff', '#ffffff', '#ffffff'], hero: ['#c23a74', '#f08a5d'] }, night: { gradient: ['#1f0a33', '#35134f', '#53206e'], hero: ['#992b5a', '#c23a74'] } },
 };

@@ -1,8 +1,8 @@
 /**
- * Fixed brand colours that do not change between palettes: the gold of the main button and stars, and the
- * state colours of the lesson road (done, current = gold, locked). One name per colour keeps every screen identical.
+ * Fixed brand colours that do not change between palettes: the butter-yellow of the main button and stars, and the
+ * state colours of the lesson road (done, current = butter, locked). One name per colour keeps every screen identical.
  */
-export const GOLD = { face: '#ffd43b', lip: '#dfaa1d', ink: '#5a3a0a', soft: '#ffe46a', border: '#ffd02d', star: '#ffcc26', starInk: '#9b6000', rim: '#fff4b5' } as const;
-export const DONE = { face: '#187940', lip: '#116330' } as const;
-export const LOCKED = { face: '#a66be5', lip: '#8f52ca', badge: '#6332b2' } as const;
-export const BRAND = { main: '#7436d8', hero: '#8746df', deep: '#6130aa' } as const;
+export const GOLD = { face: '#ffd65a', lip: '#e0b232', ink: '#3b2410', soft: '#ffe69a', border: '#f5c93f', star: '#ffc93c', starInk: '#8a5a00', rim: '#fff1b8' } as const;
+export const DONE = { face: '#23946a', lip: '#1a7552' } as const;
+export const LOCKED = { face: '#9b7df0', lip: '#7f60d8', badge: '#5a3fd6' } as const;
+export const BRAND = { main: '#6d4ae8', hero: '#7a52f4', deep: '#4f33b8' } as const;

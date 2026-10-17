@@ -1,4 +1,5 @@
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
+import { BRAND } from '../theme/tokens';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
@@ -109,12 +110,12 @@ const baseStyles = StyleSheet.create({
     width: '100%',
   },
   banner: {
-    backgroundColor: '#8746df',
+    backgroundColor: BRAND.main,
     borderRadius: 24,
     padding: 16,
     marginBottom: 20,
     borderBottomWidth: 5,
-    borderBottomColor: '#6130aa',
+    borderBottomColor: BRAND.deep,
     alignItems: 'center',
   },
   bannerBadge: {

@@ -87,7 +87,7 @@ export const BigButton: React.FC<BigButtonProps> = ({
         getVariantStyle(),
         getSizeStyle(),
         { borderBottomWidth: 4, borderBottomColor: variant === 'danger' ? '#b91c1c' : colors.mintDark },
-        variant === 'secondary' && { backgroundColor: '#0878c7', borderBottomColor: '#095b95' },
+        variant === 'secondary' && { backgroundColor: '#1f6fd1', borderBottomColor: '#1658a8' },
         gold && { backgroundColor: extras.cta, shadowColor: extras.cta, shadowOpacity: 0.55, shadowRadius: 16, shadowOffset: { width: 0, height: 6 } },
         gold && { borderBottomColor: '#e5a91c' },
         disabled && styles.disabled,
