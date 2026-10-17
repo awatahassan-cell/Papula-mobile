@@ -1,5 +1,5 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
-import { useThemeStyles } from '../../theme/useAppearance';
+import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text } from '../../components/RTLText';
@@ -10,6 +10,7 @@ import { useAppStore } from '../../store/useAppStore';
 
 export const MyWordsScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
+  const { tone } = useAppearance();
   const { currentProfile, updateCurrentProfile, setRoute, strings } = useAppStore();
 
   const handlePlayWord = (word: string) => {
@@ -40,7 +41,7 @@ export const MyWordsScreen: React.FC = () => {
 
       {currentProfile.savedWords.length === 0 ? (
         <View style={styles.emptyCard}>
-          <BookOpen size={48} color="#f59e0b" style={{ marginBottom: 10 }} />
+          <BookOpen size={48} color={tone('#f59e0b')} style={{ marginBottom: 10 }} />
           <Text style={styles.emptyTitle}>هێشتا هیچ وشەیەکت پاشەکەوت نەکردووە</Text>
           <Text style={styles.emptySub}>
             کاتێک چیرۆکێک دەخوێنیتەوە، پەنجە بنێ بە وشەکاندا تاوەکو لێرە خەزن بکرێن!
@@ -64,7 +65,7 @@ export const MyWordsScreen: React.FC = () => {
                 onPress={() => handleRemoveWord(word)}
                 style={styles.trashBtn}
               >
-                <Trash2 size={18} color="#94a3b8" />
+                <Trash2 size={18} color={tone('#94a3b8')} />
               </TouchableOpacity>
 
               <View style={styles.wordContent}>
@@ -75,7 +76,7 @@ export const MyWordsScreen: React.FC = () => {
                   onPress={() => handlePlayWord(word)}
                   style={styles.speakerBtn}
                 >
-                  <Volume2 size={18} color="#92400e" />
+                  <Volume2 size={18} color={tone('#92400e')} />
                 </TouchableOpacity>
               </View>
             </View>

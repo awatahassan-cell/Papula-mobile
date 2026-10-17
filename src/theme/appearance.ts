@@ -32,14 +32,14 @@ interface Palette { id: AppearanceTheme; label: string; description: string; col
 // `mint` is the main action colour (white labels sit on it); `coral` is the second accent.
 export const appearanceThemes: Palette[] = [
   { id: 'cloud', label: 'دوورگەی ڕەنگەکان', description: 'مۆر و شین و زەردی گەش',
-    colors: { background: '#ffffff', paper: '#ffffff', ink: '#24304a', muted: '#626980', coral: '#ff795d', coralDark: '#b64028', mint: '#7436d8', mintDark: '#5623aa', lavender: '#eee4ff', sky: '#d7f2ff', peach: '#ffe8d4', leaf: '#dbf7df', edge: '#e9e0d1' },
-    night: { background: '#161062', paper: '#241c80', ink: '#f4f1ff', muted: '#c9c2f5', coral: '#ffb84d', coralDark: '#ffd66b', mint: '#8a6dff', mintDark: '#5a3fd6', lavender: '#2e2690', sky: '#1d3a86', peach: '#3a2b74', leaf: '#1d4d6b', edge: '#3f3698' } },
+    colors: { background: '#ffffff', paper: '#ffffff', ink: '#24304a', muted: '#555c74', coral: '#d6452a', coralDark: '#a8321b', mint: '#7436d8', mintDark: '#5623aa', lavender: '#eee4ff', sky: '#d7f2ff', peach: '#ffe8d4', leaf: '#dbf7df', edge: '#e9e0d1' },
+    night: { background: '#161062', paper: '#241c80', ink: '#f4f1ff', muted: '#c9c2f5', coral: '#ffb84d', coralDark: '#ffd66b', mint: '#b7a6ff', mintDark: '#5a3fd6', lavender: '#2e2690', sky: '#1d3a86', peach: '#3a2b74', leaf: '#1d4d6b', edge: '#3f3698' } },
   { id: 'lagoon', label: 'دەریا', description: 'شینی ئاو و سەوزی نەرم',
-    colors: { background: '#ffffff', paper: '#ffffff', ink: '#12404a', muted: '#456f79', coral: '#ef8a5d', coralDark: '#b4552d', mint: '#0a7c93', mintDark: '#075f72', lavender: '#e4eeff', sky: '#ddf3f8', peach: '#ffebdd', leaf: '#ddf6ea', edge: '#cbe6eb' },
-    night: { background: '#062a38', paper: '#0d4257', ink: '#e9fbff', muted: '#9ed1dc', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#0b8aa6', mintDark: '#08657a', lavender: '#123f66', sky: '#0f5568', peach: '#134a57', leaf: '#0f5a55', edge: '#1d6178' } },
+    colors: { background: '#ffffff', paper: '#ffffff', ink: '#12404a', muted: '#3e6670', coral: '#cf5a2a', coralDark: '#a2441c', mint: '#0a7c93', mintDark: '#075f72', lavender: '#e4eeff', sky: '#ddf3f8', peach: '#ffebdd', leaf: '#ddf6ea', edge: '#cbe6eb' },
+    night: { background: '#062a38', paper: '#0d4257', ink: '#e9fbff', muted: '#bfe6ef', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#6fd3e8', mintDark: '#08657a', lavender: '#123f66', sky: '#0f5568', peach: '#134a57', leaf: '#0f5a55', edge: '#1d6178' } },
   { id: 'blossom', label: 'گوڵی ئاڵ', description: 'پەمبە و هەنگوین',
-    colors: { background: '#ffffff', paper: '#ffffff', ink: '#4a2036', muted: '#855069', coral: '#e5883a', coralDark: '#a9570f', mint: '#c23a74', mintDark: '#992b5a', lavender: '#f6e8ff', sky: '#e6f1fa', peach: '#ffe6da', leaf: '#ffe1eb', edge: '#f3d5e1' },
-    night: { background: '#29103f', paper: '#411860', ink: '#ffeff7', muted: '#e3b3cd', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#e0509a', mintDark: '#c23a74', lavender: '#4f2279', sky: '#2d3e7a', peach: '#5a2b55', leaf: '#5b1f58', edge: '#6b2d8f' } },
+    colors: { background: '#ffffff', paper: '#ffffff', ink: '#4a2036', muted: '#7a4860', coral: '#c25a14', coralDark: '#964208', mint: '#c23a74', mintDark: '#992b5a', lavender: '#f6e8ff', sky: '#e6f1fa', peach: '#ffe6da', leaf: '#ffe1eb', edge: '#f3d5e1' },
+    night: { background: '#29103f', paper: '#411860', ink: '#ffeff7', muted: '#e3b3cd', coral: '#ffb26b', coralDark: '#ffd08a', mint: '#ff9ac9', mintDark: '#c23a74', lavender: '#4f2279', sky: '#2d3e7a', peach: '#5a2b55', leaf: '#5b1f58', edge: '#6b2d8f' } },
 ];
 export const getAppearanceColors = (value: unknown, mode: ResolvedMode = 'day'): AppearanceColors => {
   const theme = appearanceThemes.find(item => item.id === normalizeAppearanceTheme(value))!;
@@ -61,7 +61,7 @@ const gardenColorMap: Record<string, string> = {
   '#f3f4f6': gardenColors.lavender, '#fef9c3': '#fff0cf',
   '#fbbf24': '#f5b76e', '#fcd34d': '#f5c487', '#ffedd5': '#ffe9d9',
   '#a855f7': '#8358b0', '#7c3aed': '#7950a0', '#dbeafe': gardenColors.sky,
-  '#475569': gardenColors.muted, '#64748b': gardenColors.muted,
+  '#475569': gardenColors.muted, '#64748b': gardenColors.muted, '#94a3b8': gardenColors.muted,
   '#f1f5f9': gardenColors.lavender, '#e2e8f0': '#e4d9ef', '#cbd5e1': gardenColors.edge,
   '#10b981': gardenColors.mint, '#047857': gardenColors.mint, '#059669': gardenColors.mint,
   '#38bdf8': '#3289a5', '#eaf2f8': gardenColors.sky, '#e0f2fe': gardenColors.sky,
@@ -70,6 +70,25 @@ const gardenColorMap: Record<string, string> = {
 
 const hexRgb = (hex: string) => /^#[0-9a-f]{6}$/i.test(hex) ? [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)) : null;
 const relativeLuminance = ([r, g, b]: number[]) => [r, g, b].map(v => v / 255).map(v => v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+
+const toHex = (rgb: number[]) => '#' + rgb.map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+/** WCAG contrast ratio of two #rrggbb colours. */
+export function contrastRatio(a: string, b: string): number {
+  const x = hexRgb(a), y = hexRgb(b);
+  if (!x || !y) return 21;
+  const la = relativeLuminance(x), lb = relativeLuminance(y);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+/** Blend `color` towards `target` in small steps until it reaches `min` contrast against `against`. */
+function blendUntil(color: string, target: string, against: string, min: number): string {
+  const from = hexRgb(color), to = hexRgb(target);
+  if (!from || !to) return color;
+  for (let step = 0; step <= 20; step++) {
+    const candidate = toHex(from.map((v, i) => v + (to[i] - v) * (step / 20)));
+    if (contrastRatio(candidate, against) >= min) return candidate;
+  }
+  return target;
+}
 /**
  * Night-mode safety net for colours no table knows: a pale fill becomes a deep tint of the palette, a pale
  * border becomes the palette edge, and neutral dark text becomes the light ink. Saturated dark text (red errors,
@@ -85,9 +104,14 @@ function nightFallback(key: string, value: string, palette: AppearanceColors): s
   if (key === 'color' && light < 0.22) {
     if (neutral) return palette.ink;
     // Keep the hue (green tick, red error) but lift it so it reads on a dark card.
-    return '#' + rgb.map(v => Math.round(v + (255 - v) * 0.62).toString(16).padStart(2, '0')).join('');
+    return '#' + rgb.map(v => Math.round(v + (255 - v) * 0.74).toString(16).padStart(2, '0')).join('');
   }
   return value;
+}
+
+/** The accent as a *fill* that carries white labels (at night the accent colour itself is the light text tone). */
+export function accentFill(palette: AppearanceColors, night: boolean, color: string = palette.mint): string {
+  return night ? blendUntil(color, '#000000', '#ffffff', 4.5) : color;
 }
 
 export function resolveAppearanceStyles<T extends Record<string, object>>(styles: T, theme: unknown = 'cloud', mode: ResolvedMode = 'day'): T {
@@ -157,6 +181,15 @@ export function resolveAppearanceStyles<T extends Record<string, object>>(styles
     if (typeof result.borderRadius === 'number' && result.borderRadius >= 18 && result.backgroundColor
       && !['disabled', 'backdrop', 'overlay'].includes(name) && !cards.includes(name) && !controls.includes(name)) {
       Object.assign(result, soft(0.08, 10, 4));
+    }
+    if (night) {
+      // The night accent is one colour for both fills and text; split it so white labels sit on a deep fill and accent text is light.
+      if (name === 'disabled' && typeof result.backgroundColor === 'string') result.backgroundColor = palette.lavender;
+      else if (typeof result.backgroundColor === 'string' && [palette.mint, palette.coral].includes(result.backgroundColor)) result.backgroundColor = blendUntil(result.backgroundColor, '#000000', '#ffffff', 4.5);
+      if (result.color === palette.mint || result.color === palette.mintDark) result.color = blendUntil(String(result.color), '#ffffff', palette.lavender, 4.5);
+    } else {
+      // Day: the accent and coral fills carry white labels, so they must reach 4.5:1 on white.
+      if (typeof result.backgroundColor === 'string' && [palette.coral, palette.mint].includes(result.backgroundColor)) result.backgroundColor = blendUntil(result.backgroundColor, '#000000', '#ffffff', 4.5);
     }
     return [name, result];
   })) as T;

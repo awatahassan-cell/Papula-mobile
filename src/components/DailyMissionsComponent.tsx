@@ -1,5 +1,5 @@
 import { TactileButton as TouchableOpacity } from './TactileButton';
-import { useThemeStyles } from '../theme/useAppearance';
+import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
@@ -10,6 +10,7 @@ import { DailyMission } from '../services/types';
 
 export const DailyMissionsComponent: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
+  const { tone } = useAppearance();
   const { currentProfile, dailyMissions, claimMissionReward, setRoute } = useAppStore();
 
   const handleAction = (mission: DailyMission) => {
@@ -29,12 +30,12 @@ export const DailyMissionsComponent: React.FC = () => {
       <View style={styles.banner}>
         <View style={styles.bannerRow}>
           <View style={styles.streakBadge}>
-            <Flame size={18} color="#ea580c" />
+            <Flame size={18} color={tone('#ea580c')} />
             <Text style={styles.streakText}>{currentProfile.streakDays} ڕۆژ</Text>
           </View>
 
           <View style={styles.tagBadge}>
-            <Trophy size={14} color="#78350f" />
+            <Trophy size={14} color={tone('#78350f')} />
             <Text style={styles.tagText}>ئەرکەکانی ئەمڕۆ ({completedCount}/{dailyMissions.length})</Text>
           </View>
         </View>
@@ -90,7 +91,7 @@ export const DailyMissionsComponent: React.FC = () => {
               >
                 {mission.claimed ? (
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <CheckCircle2 size={16} color="#15803d" />
+                    <CheckCircle2 size={16} color={tone('#15803d')} />
                     <Text style={styles.claimedBtnText}>وەرگیراوە</Text>
                   </View>
                 ) : mission.completed ? (

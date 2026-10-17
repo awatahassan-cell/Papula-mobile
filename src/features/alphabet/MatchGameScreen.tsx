@@ -39,5 +39,5 @@ const candyCard = StyleSheet.create({
   icon: { width: 54, height: 54, borderRadius: 18, backgroundColor: '#ffffff25', alignItems: 'center', justifyContent: 'center' },
   body: { flex: 1, minWidth: 0 },
   title: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#ffffff', textAlign: 'right' },
-  hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 13, color: '#ffffffe6', textAlign: 'right', marginTop: 2 },
+  hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 13, color: '#ffffff', textAlign: 'right', marginTop: 2 },
 });

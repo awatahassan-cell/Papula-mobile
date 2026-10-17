@@ -26,7 +26,7 @@ import { useResponsive } from '../../theme/responsive';
 export const StoryReaderScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
   const { selectedStory, setSelectedLetter, setRoute, completeStory, saveWord, triggerConfetti, currentProfile, recordSkillResult } = useAppStore();
-  const { isNight } = useAppearance();
+  const { isNight, tone } = useAppearance();
   // The word being read glows: warm cream by day, gold at night.
   const highlight = isNight ? { backgroundColor: '#ffd66b', color: '#2a1b00' } : { backgroundColor: '#ffe29a', color: '#4b33b3' };
   const info = useResponsive();
@@ -171,9 +171,9 @@ export const StoryReaderScreen: React.FC = () => {
       <ScrollView contentContainerStyle={styles.completionPage}>
         <View testID="story-completion" style={styles.completionSheet}>
           <View style={styles.celebrationArt} accessible={false}>
-            <View style={styles.trophyHalo}><View style={styles.trophyMedal}><Trophy size={48} color="#a36b17" fill="#f9d67a" strokeWidth={1.6}/></View></View>
+            <View style={styles.trophyHalo}><View style={styles.trophyMedal}><Trophy size={48} color={tone('#a36b17')} fill="#f9d67a" strokeWidth={1.6}/></View></View>
             <View style={styles.sparkRight}><Sparkles size={27} color={styles.completionBadgeText.color} strokeWidth={1.8}/></View>
-            <View style={styles.sparkLeft}><Star size={21} color="#d79b35" fill="#f9d67a" strokeWidth={1.7}/></View>
+            <View style={styles.sparkLeft}><Star size={21} color={tone('#d79b35')} fill="#f9d67a" strokeWidth={1.7}/></View>
             <View style={styles.successSeal}><Check size={19} color="#ffffff" strokeWidth={3}/></View>
           </View>
           <Text style={styles.completionTitle}>پیرۆزە! چیرۆکەکەت تەواو کرد!</Text>
@@ -333,7 +333,7 @@ export const StoryReaderScreen: React.FC = () => {
           disabled={pageIndex === 0}
           style={[styles.navBtn, pageIndex === 0 && styles.navBtnDisabled]}
         >
-          <ChevronRight size={18} color="#334155" />
+          <ChevronRight size={18} color={tone('#334155')} />
           <Text style={styles.navBtnText}>پێشوو</Text>
         </TouchableOpacity>
 
@@ -366,7 +366,7 @@ export const StoryReaderScreen: React.FC = () => {
           <Text style={styles.navBtnText}>
             {pageIndex < story.pages.length - 1 ? 'دواتر' : story.quiz ? 'تاقیکردنەوە' : 'تەواو بکەم'}
           </Text>
-          <ChevronLeft size={18} color="#334155" />
+          <ChevronLeft size={18} color={tone('#334155')} />
         </TouchableOpacity>
       </View>
     </View>

@@ -1,5 +1,5 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
-import { useThemeStyles } from '../../theme/useAppearance';
+import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text } from '../../components/RTLText';
@@ -12,6 +12,7 @@ import { useAppStore } from '../../store/useAppStore';
 
 export const StickersAlbumScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
+  const { tone, isNight } = useAppearance();
   const { currentProfile, setRoute, strings } = useAppStore();
   const [activeTab, setActiveTab] = useState<'stickers' | 'badges'>('stickers');
 
@@ -45,7 +46,7 @@ export const StickersAlbumScreen: React.FC = () => {
             style={[styles.tabBtn, activeTab === 'stickers' && styles.tabBtnActive]}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Gift size={16} color={activeTab === 'stickers' ? '#0f172a' : '#64748b'} />
+              <Gift size={16} color={tone(activeTab === 'stickers' ? '#0f172a' : '#64748b')} />
               <Text style={[styles.tabBtnText, activeTab === 'stickers' && styles.tabBtnTextActive]}>
                 ستیکەرەکان
               </Text>
@@ -60,7 +61,7 @@ export const StickersAlbumScreen: React.FC = () => {
             style={[styles.tabBtn, activeTab === 'badges' && styles.tabBtnActive]}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Award size={16} color={activeTab === 'badges' ? '#0f172a' : '#64748b'} />
+              <Award size={16} color={tone(activeTab === 'badges' ? '#0f172a' : '#64748b')} />
               <Text style={[styles.tabBtnText, activeTab === 'badges' && styles.tabBtnTextActive]}>
                 نیشانەکان
               </Text>
@@ -93,7 +94,7 @@ export const StickersAlbumScreen: React.FC = () => {
                   <Text style={styles.stickerEmoji}>{sticker.emoji}</Text>
                 ) : (
                   <View style={{ height: 48, justifyContent: 'center', alignItems: 'center' }}>
-                    <Lock size={28} color="#94a3b8" />
+                    <Lock size={28} color={tone('#94a3b8')} />
                   </View>
                 )}
                 <Text style={styles.stickerName}>{sticker.nameKu}</Text>
@@ -118,8 +119,8 @@ export const StickersAlbumScreen: React.FC = () => {
         style={styles.homeBtn}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <Home size={18} color="#1e293b" />
-          <Text style={{ fontWeight: '900', color: '#1e293b' }}>گەڕانەوە بۆ سەرەتا</Text>
+          <Home size={18} color={isNight ? '#2a1b00' : '#ffffff'} />
+          <Text style={{ fontWeight: '900', color: isNight ? '#2a1b00' : '#ffffff' }}>گەڕانەوە بۆ سەرەتا</Text>
         </View>
       </BigButton>
     </ScrollView>

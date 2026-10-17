@@ -1,6 +1,7 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { rtlProps, rtlLayout } from '../../theme/rtl';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
+import { accentFill } from '../../theme/appearance';
 import { assessWriting, advanceWriting, normalizeIndependentWriting, writingMastered, suggestedWritingMode } from '../../services/foundationalLearning';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, ScrollView, PanResponder, Modal } from 'react-native';
@@ -233,7 +234,7 @@ export const WritingScreen: React.FC = () => {
     <View style={[styles.modeBar, { backgroundColor: extras.glass }, split && styles.toolsCompact]} accessibilityRole="tablist">{(['trace','copy','independent'] as const).map((value,i)=>{
       const locked = (value==='copy'&&!currentProfile.writingProgress?.[letter.id]?.tracePassed) || (value==='independent'&&!currentProfile.writingProgress?.[letter.id]?.copyPassed);
       const on = mode===value;
-      return <TouchableOpacity key={value} accessibilityRole="tab" accessibilityState={{selected:on,disabled:busy||locked}} disabled={busy || locked} style={[styles.modeTab, on && { backgroundColor: colors.mint }, locked && { opacity: 0.5 }]} onPress={()=>changeMode(value)}>
+      return <TouchableOpacity key={value} accessibilityRole="tab" accessibilityState={{selected:on,disabled:busy||locked}} disabled={busy || locked} style={[styles.modeTab, on && { backgroundColor: accentFill(colors, isNight) }, locked && { opacity: 0.5 }]} onPress={()=>changeMode(value)}>
         <Text style={[styles.modeTabText, { color: on ? '#ffffff' : colors.muted }]}>{MODE_LABELS[i]}</Text></TouchableOpacity>;
     })}</View>
     {split && <Text style={styles.stage}>{STAGE_TITLES[mode]}</Text>}

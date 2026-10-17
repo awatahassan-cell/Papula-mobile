@@ -8,14 +8,14 @@ import { lessonPath } from '../services/lessonPath';
 import { learningLayout } from '../theme/layout';
 import { useResponsive } from '../theme/responsive';
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
-import { gardenColors as c } from '../theme/appearance';
+import { gardenColors as c, accentFill } from '../theme/appearance';
 import { soundService } from '../services/soundService';
 
 const unitNames = ['یەکەم هەنگاوەکان', 'دنیای وشەکان', 'پیتە هاوڕێکان', 'با پێکەوە بخوێنینەوە', 'هەنگاوێک بەرەو پێش', 'باخچەی پیتەکان'];
 const offsets = [0, 0.65, 1, 0.4, -0.65, -1];
 export function LearningPath({ preview = false }: { preview?: boolean }) {
   const s=useThemeStyles(baseStyles);
-  const {colors:c}=useAppearance();
+  const {colors:c,isNight}=useAppearance();
   const { currentProfile, setSelectedLetter, setRoute } = useAppStore();
   const { width } = useWindowDimensions();
   const layout = learningLayout(width), nodes = lessonPath(currentProfile);
@@ -41,7 +41,7 @@ export function LearningPath({ preview = false }: { preview?: boolean }) {
   const banner = (unit: number) => {
     const accent=unit%2===0?c.mint:c.coralDark;
     const unitColor=[c.sky,c.peach,c.lavender,c.leaf][unit%4];
-    return <View style={[s.unit,{backgroundColor:unitColor}]}><View style={[s.unitBadge,{backgroundColor:accent}]}><Text style={s.unitNumber}>{unit + 1}</Text></View><View style={{ flex: 1 }}><Text style={s.eyebrow}>بەشی {unit + 1}</Text><Text style={s.unitTitle}>{unitNames[unit]}</Text></View><Star size={22} color={c.mint} /></View>;
+    return <View style={[s.unit,{backgroundColor:unitColor}]}><View style={[s.unitBadge,{backgroundColor:accent===c.mint?accentFill(c, isNight):accent}]}><Text style={[s.unitNumber, accent === c.coralDark && isNight && { color: '#2a1b00' }]}>{unit + 1}</Text></View><View style={{ flex: 1 }}><Text style={s.eyebrow}>بەشی {unit + 1}</Text><Text style={s.unitTitle}>{unitNames[unit]}</Text></View><Star size={22} color={c.mint} /></View>;
   };
   return <View style={[s.path, grid && { maxWidth: 1000 }]}>{visible.map(node => {
     const unit = Math.floor(node.index / 6);

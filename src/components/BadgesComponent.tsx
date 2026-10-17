@@ -1,4 +1,4 @@
-import { useThemeStyles } from '../theme/useAppearance';
+import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
@@ -8,6 +8,7 @@ import { useAppStore } from '../store/useAppStore';
 
 export const BadgesComponent: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
+  const { tone } = useAppearance();
   const { currentProfile } = useAppStore();
 
   const isBadgeUnlocked = (badgeId: string) => {
@@ -37,15 +38,15 @@ export const BadgesComponent: React.FC = () => {
       {/* Banner */}
       <View style={styles.banner}>
         <View style={styles.bannerBadge}>
-          <Award size={14} color="#f59e0b" />
+          <Award size={14} color={tone('#f59e0b')} />
           <Text style={styles.bannerBadgeText}>دەستکەوت و نیشانەکان</Text>
         </View>
         <Text style={[styles.title, { color: '#ffffff' }]}>کۆکراوەی میدالیا زێڕینەکانت ✨</Text>
-        <Text style={[styles.subtitle, { color: '#ffffffe6' }]}>
+        <Text style={[styles.subtitle, { color: '#ffffff' }]}>
           مەشق بکە، چیرۆک بخوێنەوە و پیتەکان فێربە بۆ کردنەوەی نیشانەکان!
         </Text>
         <View style={styles.progressCounter}>
-          <Trophy size={16} color="#d97706" />
+          <Trophy size={16} color={tone('#d97706')} />
           <Text style={styles.progressText}>
             {unlockedCount} لە {mockBadges.length} بەدەستهاتووە
           </Text>
@@ -73,7 +74,7 @@ export const BadgesComponent: React.FC = () => {
                 {unlocked ? (
                   <Text style={styles.icon}>{badge.icon}</Text>
                 ) : (
-                  <Lock size={22} color="#94a3b8" />
+                  <Lock size={22} color={tone('#94a3b8')} />
                 )}
               </View>
 
@@ -88,7 +89,7 @@ export const BadgesComponent: React.FC = () => {
               >
                 {unlocked ? (
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <CheckCircle2 size={12} color="#166534" />
+                    <CheckCircle2 size={12} color={tone('#166534')} />
                     <Text style={styles.statusPillTextUnlocked}>بەدەستهاتووە</Text>
                   </View>
                 ) : (

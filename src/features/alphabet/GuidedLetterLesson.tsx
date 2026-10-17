@@ -254,7 +254,7 @@ const baseStyles = StyleSheet.create({
   lessonHeading:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingHorizontal:4,gap:12},
   letterScene:{width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center',gap:18,paddingVertical:4},
   glyphCircle:{width:152,height:152,borderRadius:76,backgroundColor:'#e3f5ec',alignItems:'center',justifyContent:'center',borderWidth:6,borderColor:'#f2faf6'},
-  sceneSpark:{fontSize:28,color:'#eeb259'},
+  sceneSpark:{fontSize:28,color:'#c98a1b'},
   sceneLeaf:{fontSize:30,alignSelf:'flex-end',marginBottom:16},
   heroTitle:{fontSize:20,lineHeight:34,fontFamily:'IBMPlexSansArabic_700Bold',color:'#243b3a',textAlign:'center'},
   heroHint:{fontSize:15,color:'#657d79',textAlign:'center'},

@@ -30,7 +30,8 @@ function loader(){
  const {resolveAppearanceStyles,appearanceThemes,normalizeAppearanceTheme,getAppearanceColors}=load(root+'/src/theme/appearance.ts');
  assert.equal(appearanceThemes.length,3,'parents choose between three palettes');
  const luminance=color=>{const rgb=color.match(/[a-f0-9]{2}/gi).map(value=>parseInt(value,16)/255).map(value=>value<=.04045?value/12.92:((value+.055)/1.055)**2.4);return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2];};
- for(const theme of appearanceThemes){assert.ok(1.05/(luminance(theme.colors.mint)+.05)>=4.5,'white control labels remain readable in '+theme.id+' day');assert.ok(1.05/(luminance(theme.night.mint)+.05)>=3,'white labels on large night buttons stay readable in '+theme.id);assert.ok(luminance(theme.night.background)<.05&&luminance(theme.night.ink)>.7,theme.id+' night is dark with light text');assert.ok(luminance(theme.colors.background)>.7&&luminance(theme.colors.ink)<.1,theme.id+' day is light with dark text');}
+ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);};
+ for(const theme of appearanceThemes){assert.ok(1.05/(luminance(theme.colors.mint)+.05)>=4.5,'white control labels remain readable in '+theme.id+' day');assert.ok(contrast(theme.night.mint,theme.night.lavender)>=4.5,'the night accent reads as text on night cards in '+theme.id);assert.ok(luminance(theme.night.background)<.05&&luminance(theme.night.ink)>.7,theme.id+' night is dark with light text');assert.ok(luminance(theme.colors.background)>.7&&luminance(theme.colors.ink)<.1,theme.id+' day is light with dark text');}
  assert.equal(normalizeAppearanceTheme({toString:()=> 'sky'}),'cloud','malformed saved themes fall back safely');
  const {normalizeAppearanceMode,resolveAppearanceMode}=load(root+'/src/theme/appearance.ts');
  assert.equal(normalizeAppearanceMode('night'),'night');assert.equal(normalizeAppearanceMode(7),'auto');
@@ -46,7 +47,7 @@ function loader(){
   for(const mode of ['day','night']){
    const colors=getAppearanceColors(theme.id,mode);
    const styled=resolveAppearanceStyles({primary:{backgroundColor:'#23875f'},label:{color:'#ffffff'},text:{color:'#243b3a'},glyph:{fontSize:104,writingDirection:'rtl',color:'#243b3a'},card:{backgroundColor:'#ffffff',borderRadius:20},boardFrame:{backgroundColor:'#fffef7'}},theme.id,mode);
-   assert.equal(styled.primary.backgroundColor,colors.mint);assert.equal(styled.label.color,'#ffffff');
+   assert.ok(contrast(styled.primary.backgroundColor,'#ffffff')>=4.5,'filled actions carry white labels at 4.5:1 in '+theme.id+' '+mode);assert.equal(styled.label.color,'#ffffff');
    assert.equal(styled.text.color,colors.ink,'text follows the palette ink in '+mode);assert.equal(styled.card.backgroundColor,colors.paper,'cards follow the palette paper in '+mode);
    assert.equal(styled.card.borderRadius,30,'cards are large and soft');assert.equal(styled.card.borderBottomWidth,1.5,'no chunky card edge');
    assert.equal(styled.boardFrame.backgroundColor,mode==='night'?'#1a1570':'#ffffff','the writing board is paper by day and navy at night');
