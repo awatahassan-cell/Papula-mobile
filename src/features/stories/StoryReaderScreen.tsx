@@ -196,7 +196,7 @@ export const StoryReaderScreen: React.FC = () => {
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.quizCard}>
-          <Text style={styles.quizHeader}>تاقیکردنەوەی تێگەیشتن 🎯</Text>
+          <Text style={styles.quizHeader}>تاقیکردنەوەی تێگەیشتن</Text>
           <Text style={styles.quizQuestion}>{story.quiz.questionKu}</Text>
 
           <View style={styles.quizOptionsList}>
@@ -380,21 +380,21 @@ const baseStyles = StyleSheet.create({
   trophyHalo:{width:110,height:110,borderRadius:55,backgroundColor:'#e3f5ec',alignItems:'center',justifyContent:'center'},
   trophyMedal:{width:88,height:88,borderRadius:44,backgroundColor:'#fff8e3',alignItems:'center',justifyContent:'center',borderWidth:5,borderColor:'#ffffff'},
   sparkRight:{position:'absolute',right:2,top:23},sparkLeft:{position:'absolute',left:4,top:67},
-  successSeal:{position:'absolute',bottom:0,right:43,width:30,height:30,borderRadius:15,backgroundColor:'#23875f',borderWidth:3,borderColor:'#ffffff',alignItems:'center',justifyContent:'center'},
+  successSeal:{position:'absolute',bottom:0,right:43,width:30,height:30,borderRadius:16,backgroundColor:'#23875f',borderWidth:3,borderColor:'#ffffff',alignItems:'center',justifyContent:'center'},
   completionBadge:{flexDirection:'row',alignItems:'center',gap:5,backgroundColor:'#e3f5ec',borderRadius:12,paddingHorizontal:10,paddingVertical:5},
   completionBadgeText:{fontSize:12,color:'#176445',fontFamily:'IBMPlexSansArabic_600SemiBold'},
   completionTitle:{fontSize:24,lineHeight:38,fontFamily:'IBMPlexSansArabic_700Bold',color:'#243b3a',textAlign:'center'},
   completionMessage:{fontSize:14,lineHeight:26,color:'#657d79',textAlign:'center'},
-  completedBook:{width:'100%',flexDirection:'row',alignItems:'center',gap:10,padding:12,backgroundColor:'#f4f9f6',borderRadius:18},
-  completedBookIcon:{width:44,height:48,borderRadius:14,backgroundColor:'#ffffff',alignItems:'center',justifyContent:'center'},
+  completedBook:{width:'100%',flexDirection:'row',alignItems:'center',gap:10,padding:12,backgroundColor:'#f4f9f6',borderRadius:20},
+  completedBookIcon:{width:44,height:48,borderRadius:16,backgroundColor:'#ffffff',alignItems:'center',justifyContent:'center'},
   completedBookCopy:{flex:1,minWidth:0,gap:3},completedBookLabel:{fontSize:11,color:'#657d79'},completedBookTitle:{fontSize:17,lineHeight:28,fontFamily:'IBMPlexSansArabic_600SemiBold',color:'#243b3a'},
-  completedBookCheck:{width:28,height:28,borderRadius:14,backgroundColor:'#e3f5ec',alignItems:'center',justifyContent:'center'},
+  completedBookCheck:{width:28,height:28,borderRadius:16,backgroundColor:'#e3f5ec',alignItems:'center',justifyContent:'center'},
   completionStars:{flexDirection:'row',alignItems:'center',justifyContent:'center',gap:12,paddingVertical:2},
   completionActions:{width:'100%',gap:8,marginTop:2},
-  completionPrimary:{width:'100%',minHeight:58,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:10,padding:12,borderRadius:19,backgroundColor:'#23875f',borderBottomWidth:4,borderBottomColor:'#176445'},
+  completionPrimary:{width:'100%',minHeight:58,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:10,padding:12,borderRadius:20,backgroundColor:'#23875f',borderBottomWidth:4,borderBottomColor:'#176445'},
   completionActionIcon:{width:34,height:34,borderRadius:11,backgroundColor:'rgba(255,255,255,0.14)',alignItems:'center',justifyContent:'center'},
   completionPrimaryText:{flex:1,flexShrink:1,color:'#ffffff',fontSize:16,lineHeight:27,textAlign:'center',fontFamily:'IBMPlexSansArabic_700Bold'},
-  completionSecondary:{width:'100%',minHeight:54,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:8,padding:12,borderRadius:17,backgroundColor:'#ffffff',borderWidth:1.5,borderColor:'#dce9e1'},
+  completionSecondary:{width:'100%',minHeight:54,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:8,padding:12,borderRadius:20,backgroundColor:'#ffffff',borderWidth:1.5,borderColor:'#dce9e1'},
   completionSecondaryText:{flexShrink:1,color:'#176445',fontSize:15,lineHeight:25,textAlign:'center',fontFamily:'IBMPlexSansArabic_600SemiBold'},
   readerScreen:{flex:1},
   storyTitle:{fontFamily:'IBMPlexSansArabic_700Bold',fontSize:24,color:'#1e293b',textAlign:'center',marginBottom:10},
@@ -469,7 +469,7 @@ const baseStyles = StyleSheet.create({
   storyArtworkFrame: {
     width: '100%', maxWidth: 620, alignSelf: 'center',
     backgroundColor: '#ffffff',
-    borderRadius: 26,
+    borderRadius: 28,
     borderWidth: 1,
     borderColor: '#dce9e1',
     overflow:'hidden',

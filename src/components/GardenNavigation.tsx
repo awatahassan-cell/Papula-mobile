@@ -28,7 +28,7 @@ export function GardenNavigation() {
   </TouchableOpacity>)}</View>;
 }
 const baseStyles = StyleSheet.create({
-  iconFrame: { width: 40, height: 36, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
+  iconFrame: { width: 40, height: 36, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
   nav: { flexDirection: 'row', backgroundColor: c.paper, borderTopLeftRadius: 30, borderTopRightRadius: 30, shadowColor: c.mintDark, shadowOpacity: 0.14, shadowRadius: 18, shadowOffset: { width: 0, height: -8 }, elevation: 12, padding: 8, paddingBottom: 12, gap: 6, width: '100%', maxWidth: 840, alignSelf: 'center' },
   tab: { flex: 1, minHeight: 62, alignItems: 'center', justifyContent: 'center', borderRadius: 20, gap: 4 },
   // Tablets: a vertical rail on the reading-start (right) edge.

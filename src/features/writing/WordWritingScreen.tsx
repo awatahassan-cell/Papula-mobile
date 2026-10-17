@@ -59,7 +59,7 @@ export const WordWritingScreen: React.FC = () => {
   if (session && sessionDone(session) && assessment) {
     const sum = sessionSummary(session);
     return <ScrollView contentContainerStyle={s.container}>
-      <Text style={s.big}>{session.task.emoji} 🌟</Text>
+      <Text style={s.big}>{session.task.emoji}</Text>
       <Text style={s.title}>ئافەرم! «{session.task.title}»ت نووسی</Text>
       <Text style={s.text}>{sum.total} پیت نووسرا؛ تێکڕای نمرە {sum.average}٪{sum.unaided > 0 ? `، ${sum.unaided} پیت لە یەکەم هەوڵدا و بێ یارمەتی` : ''}.</Text>
       {sum.retried.length > 0 && <Text style={s.text}>ئەمانە زیاتر ڕاهێنانیان دەوێت: {sum.retried.map(l => l.glyph).join('، ')}</Text>}
@@ -86,13 +86,13 @@ export const WordWritingScreen: React.FC = () => {
       {!assessment && <>
         <View style={s.row}>
           <TouchableOpacity accessibilityRole="button" style={s.tool} onPress={() => { helped.current = true; setShowGuide(v => !v); }}><Text style={s.toolText}>{showGuide ? 'شاردنەوەی ڕێنما' : 'ڕێنما ببینم'}</Text></TouchableOpacity>
-          <TouchableOpacity accessibilityRole="button" style={s.tool} onPress={() => void soundService.speakWord(slot.letter.glyph, { letterName: slot.letter.name })}><Text style={s.toolText}>گوێ لە پیتەکە بگرە 🔊</Text></TouchableOpacity>
+          <TouchableOpacity accessibilityRole="button" style={s.tool} onPress={() => void soundService.speakWord(slot.letter.glyph, { letterName: slot.letter.name })}><Text style={s.toolText}>گوێ لە پیتەکە بگرە</Text></TouchableOpacity>
           <TouchableOpacity accessibilityRole="button" style={s.tool} onPress={() => setRetry(r => r + 1)}><Text style={s.toolText}>سڕینەوە</Text></TouchableOpacity>
         </View>
         <BigButton onPress={check} disabled={!strokes.length} variant="success" size="lg" style={s.full}>پشکنینی پیتەکەم ✓</BigButton>
       </>}
       {assessment?.rubric && <>
-        <Text style={s.title}>{passedNow ? 'ئافەرم! ✓' : 'با باشترى بکەین 🌱'}</Text>
+        <Text style={s.title}>{passedNow ? 'ئافەرم! ✓' : 'با باشترى بکەین'}</Text>
         <Text style={s.text}>{assessment.feedbackKu}</Text>
         <WritingResultDetails guide={slot.guide} strokes={strokes} aligned={submitted} rubric={assessment.rubric} stars={assessment.stars} />
         {failed
@@ -109,7 +109,7 @@ export const WordWritingScreen: React.FC = () => {
     <View style={s.row}>{(['word', 'sentence'] as const).map(value => <TouchableOpacity key={value} accessibilityRole="button" accessibilityState={{ selected: tab === value }} style={[s.tool, tab === value && s.toolOn]} onPress={() => setTab(value)}>
       <Text style={s.toolText}>{value === 'word' ? 'وشە' : 'ڕستە'}</Text></TouchableOpacity>)}</View>
     {tasks.length === 0
-      ? <View style={s.card}><Text style={s.text}>هێشتا پیتی پێویست فێر نەبووی. چەند پیتێکی زیاتر فێربە، پاشان وشە و ڕستەکان دەکرێنەوە 🌱</Text>
+      ? <View style={s.card}><Text style={s.text}>هێشتا پیتی پێویست فێر نەبووی. چەند پیتێکی زیاتر فێربە، پاشان وشە و ڕستەکان دەکرێنەوە</Text>
         <BigButton onPress={() => setRoute('alphabet')} style={s.full}>بچینە سەر وانەکان</BigButton></View>
       : tasks.map(task => <TouchableOpacity key={task.id} accessibilityRole="button" accessibilityLabel={`بنووسە: ${task.title}`} style={s.card} onPress={() => begin(task)}>
         <Text style={s.big}>{task.emoji}</Text><Text style={s.title}>{task.title}</Text><Text style={s.text}>{task.slots.length} پیت</Text></TouchableOpacity>)}
@@ -130,10 +130,10 @@ const baseStyles = StyleSheet.create({
   toolText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: '#334155', textAlign: 'center' },
   card: { width: '100%', backgroundColor: '#fffbeb', borderRadius: 24, padding: 18, alignItems: 'center', gap: 6 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, justifyContent: 'center' },
-  chip: { minWidth: 44, height: 44, borderRadius: 14, backgroundColor: '#e2e8f0', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8 },
+  chip: { minWidth: 44, height: 44, borderRadius: 16, backgroundColor: '#e2e8f0', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8 },
   chipDone: { backgroundColor: '#bbf7d0' },
   chipNow: { backgroundColor: '#fde68a', borderWidth: 2, borderColor: '#d97706' },
   chipText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 22, color: '#1e293b' },
-  model: { backgroundColor: '#fffbeb', borderRadius: 18, paddingVertical: 6, paddingHorizontal: 16 },
+  model: { backgroundColor: '#fffbeb', borderRadius: 20, paddingVertical: 6, paddingHorizontal: 16 },
   modelText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 40, lineHeight: 64, color: '#78350f', textAlign: 'center' },
 });

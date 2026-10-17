@@ -40,7 +40,7 @@ export const WritingResultDetails: React.FC<{ guide: StrokeGuide; strokes: Strok
         <Text style={styles.caption}>نووسینی تۆ</Text>
       </View>
     </View>
-    {canHear && <TouchableOpacity accessibilityRole="button" accessibilityLabel="ڕێنماییەکە ببیستە" style={styles.listen} onPress={() => void soundService.speakPhrases(narration)}><Text style={styles.listenText}>ڕێنماییەکە ببیستە 🔊</Text></TouchableOpacity>}
+    {canHear && <TouchableOpacity accessibilityRole="button" accessibilityLabel="ڕێنماییەکە ببیستە" style={styles.listen} onPress={() => void soundService.speakPhrases(narration)}><Text style={styles.listenText}>ڕێنماییەکە ببیستە</Text></TouchableOpacity>}
     {missing.size > 0 && <Text style={styles.legend}>هێڵی سووری پچڕپچڕ: ئەو بەشانەی نەنووسراون</Text>}
     {rubric.criteria.map(c => {
       const look = STATUS[c.status];

@@ -31,12 +31,12 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
     setCorrect(passed);
     recordPracticeResult(round.word.letterIds, passed, passed ? round.word.id : undefined, 'syllables', helped.current);
     if (passed) {
-      setFeedback(`ئافەرم! «${round.word.word}» ${round.syllables.length} بڕگەیە 🌟`);
+      setFeedback(`ئافەرم! «${round.word.word}» ${round.syllables.length} بڕگەیە`);
       soundService.playCorrect();
       void soundService.speakWord(round.word.word);
     } else {
       helped.current = true;
-      setFeedback('نزیک بوویت! وشەکە جارێکی تر ببیستە و بڕگەکان بە ڕیز دابنێ 💛');
+      setFeedback('نزیک بوویت! وشەکە جارێکی تر ببیستە و بڕگەکان بە ڕیز دابنێ');
       soundService.playEncouragingTryAgain();
     }
   };
@@ -54,7 +54,7 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   }
   if (finished) {
     return <ScrollView contentContainerStyle={s.container}>
-      <Text style={s.emoji}>🧱 🌟</Text><Text style={s.title}>ئافەرم! بڕگەکانت پێکەوە بەست</Text>
+      <Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! بڕگەکانت پێکەوە بەست</Text>
       <Text style={s.text}>{rounds.map(item => item.syllables.join(' - ')).join('، ')}</Text>
       <TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>گەڕانەوە بۆ یارییەکان</Text></TouchableOpacity>
     </ScrollView>;
@@ -63,10 +63,10 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   const canHearSyllables = round.syllables.every(text => soundService.canSpeak(text));
   const full = selected.length === round.syllables.length;
   return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.title}>بڕگەکان پێکەوە ببەستە 🧱</Text><Text style={s.text}>{index + 1} / {rounds.length}</Text>
+    <Text style={s.title}>بڕگەکان پێکەوە ببەستە</Text><Text style={s.text}>{index + 1} / {rounds.length}</Text>
     <View style={s.card}>
       <Text style={s.emoji}>{round.word.imageEmoji}</Text>
-      <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={() => void soundService.speakWord(round.word.word)}><Text style={s.text}>وشەکە ببیستە 🔊</Text></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={() => void soundService.speakWord(round.word.word)}><Text style={s.text}>وشەکە ببیستە</Text></TouchableOpacity>
       <Text accessibilityLiveRegion="polite" style={[s.glyph, { minHeight: 68, writingDirection: 'rtl' }]}>{assembled || '…'}</Text>
       <Text style={s.text}>وشەکە {round.syllables.length} بڕگەیە؛ بە ڕیز هەڵیانبژێرە</Text>
       <View style={s.row}>{round.tiles.map(tile => {
@@ -76,7 +76,7 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
           <Text style={s.glyph}>{tile.text}</Text></TouchableOpacity>;
       })}</View>
       {!!feedback && <Text accessibilityLiveRegion="polite" style={s.text}>{feedback}</Text>}
-      {canHearSyllables && <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={() => void soundService.speakPhrases(round.syllables)}><Text style={s.text}>گوێ لە بڕگەکان بگرە 🔊</Text></TouchableOpacity>}
+      {canHearSyllables && <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={() => void soundService.speakPhrases(round.syllables)}><Text style={s.text}>گوێ لە بڕگەکان بگرە</Text></TouchableOpacity>}
     </View>
     {correct
       ? <TouchableOpacity accessibilityRole="button" style={s.button} onPress={next}><Text style={s.buttonText}>{index + 1 === rounds.length ? 'تەواو بکەم ✓' : 'وشەی دواتر ←'}</Text></TouchableOpacity>

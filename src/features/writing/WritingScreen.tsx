@@ -244,7 +244,7 @@ export const WritingScreen: React.FC = () => {
     {split ? <View style={styles.split}><View style={styles.splitBoard}>{boardNode}</View><View style={styles.splitControls}>{controlsNode}</View></View> : <>{boardNode}{controlsNode}</>}
     {result && <Modal transparent animationType="fade" visible onRequestClose={() => setResult(null)}>
       <View {...rtlProps} style={[styles.backdrop, rtlLayout]}><ScrollView contentContainerStyle={styles.modalScroll}><View style={styles.modalCard}>
-        {result.mastered ? <LetterWordReveal glyph={letter.glyph} word={letter.exampleWords[0].word} /> : <Text style={styles.celebration}>🌱</Text>}
+        {result.mastered ? <LetterWordReveal glyph={letter.glyph} word={letter.exampleWords[0].word} /> : <Text style={styles.celebration}></Text>}
         <Text style={styles.resultTitle}>{confirmedMastery ? 'تەواو فێر بوویت!' : result.mastered ? 'ئافەرم! ئەم مەشقەت تەواو کرد' : 'با جارێکی تر ڕاهێنان بکەین'}</Text>
         <Text style={styles.resultText}>{result.mastered ? `ئافەرم! پیتی «${letter.glyph}» بە جوانی نووسیت.` : result.feedbackKu}</Text>
         <StarRating stars={result.stars} maxStars={3} size="lg" />
@@ -255,8 +255,8 @@ export const WritingScreen: React.FC = () => {
           {mode==='independent' && !confirmedMastery && <Text style={styles.resultText}>سەربەخۆ نووسیت! لە ڕۆژێکی دیکە دووبارەی بکەوە، بۆ دڵنیابوون لە فێربوون.</Text>}
           {hasNext && isLessonComplete(currentProfile,letter.id) && <BigButton onPress={nextLesson} variant="success" size="lg" style={styles.fullButton}>{`پیتی نوێ «${mockLetters[index + 1].glyph}» کراوەتەوە ←`}</BigButton>}
           {!isLessonComplete(currentProfile,letter.id) && <BigButton onPress={()=>{setResult(null);setRoute('letter-detail');}} variant="outline" style={styles.fullButton}>هەنگاوەکانی وانەکە تەواو بکەم</BigButton>}
-          {index===mockLetters.length-1 && isLessonComplete(currentProfile,letter.id) && <Text style={styles.resultText}>گەیشتیتە کۆتایی پیتەکان! 🎉</Text>}
-          <BigButton onPress={goHome} variant="outline" size="lg" style={styles.fullButton}>گەڕانەوە بۆ سەرەتا 🏠</BigButton>
+          {index===mockLetters.length-1 && isLessonComplete(currentProfile,letter.id) && <Text style={styles.resultText}>گەیشتیتە کۆتایی پیتەکان!</Text>}
+          <BigButton onPress={goHome} variant="outline" size="lg" style={styles.fullButton}>گەڕانەوە بۆ سەرەتا</BigButton>
         </> : <>
           {mode!=='trace' && <BigButton onPress={()=>changeMode('trace')} variant="outline" style={styles.fullButton}>ڕێنما ببینم؛ یارمەتی دەوێت</BigButton>}
           <BigButton onPress={() => { setResult(null); clear(); usedHelp.current=false;attemptStarted.current=Date.now(); }} size="lg" style={styles.fullButton}>دووبارە بنووسم ✍️</BigButton>
@@ -271,9 +271,9 @@ const baseStyles = StyleSheet.create({
   modeTab: { flex: 1, minHeight: 44, borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
   modeTabText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 14 },
   toolRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, width: '100%' },
-  roundTool: { width: 52, height: 52, borderRadius: 26, backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center' },
+  roundTool: { width: 52, height: 52, borderRadius: 28, backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center' },
   toolDivider: { width: 2, height: 28, borderRadius: 1, marginHorizontal: 4 },
-  penDot: { width: 30, height: 30, borderRadius: 15 },
+  penDot: { width: 30, height: 30, borderRadius: 16 },
   boardNight: { backgroundColor: '#1a1570', borderColor: 'rgba(255,255,255,0.22)' },
   container: { padding: 16, paddingBottom: 32, alignItems: 'center', gap: 12, width: '100%', maxWidth: 520, alignSelf: 'center' },
   header: { flexDirection: 'row', alignItems: 'center', width: '100%', gap: 8 },
@@ -290,10 +290,10 @@ const baseStyles = StyleSheet.create({
   splitControls: { flex: 1, minWidth: 260, maxWidth: 420, gap: 12, alignItems: 'center' },
   stage: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 15, color: '#047857', textAlign: 'center' },
   instruction: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 16, textAlign: 'center', color: '#334155' },
-  boardFrame: { backgroundColor: '#fffef7', borderColor: '#cbd5e1', borderWidth: 2, borderRadius: 22, overflow: 'hidden' },
+  boardFrame: { backgroundColor: '#fffef7', borderColor: '#cbd5e1', borderWidth: 2, borderRadius: 24, overflow: 'hidden' },
   hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 14, color: '#475569', textAlign: 'center' },
   tools: { width: '100%', flexDirection: 'row', gap: 8 },
-  tool: { flex: 1, minHeight: 68, padding: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eaf2f8', borderRadius: 18, gap: 6 },
+  tool: { flex: 1, minHeight: 68, padding: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eaf2f8', borderRadius: 20, gap: 6 },
   toolText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13, color: '#334155', textAlign: 'center' },
   colors: { flexDirection: 'row', gap: 16, marginVertical: 4 },
   color: { width: 48, height: 48, borderRadius: 24, borderWidth: 3, borderColor: '#fffdfa' },

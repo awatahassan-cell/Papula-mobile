@@ -21,12 +21,12 @@ export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
   const locked=useRef(false),advanced=useRef(-1),token=useRef(0);
   const round=rounds[index];const correct=answer===round?.target.id;
   useEffect(()=>()=>{token.current++;void soundService.stopSpeaking();},[]);
-  if(finished)return <View style={s.container}><Text style={s.emoji}>👂 🌟</Text><Text style={s.title}>دەنگی سەرەتای وشەکانت دۆزییەوە</Text><TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>گەڕانەوە</Text></TouchableOpacity></View>;
+  if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>دەنگی سەرەتای وشەکانت دۆزییەوە</Text><TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>گەڕانەوە</Text></TouchableOpacity></View>;
   if(!round)return null;
   return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.title}>وشەکە بە چ دەنگێک دەست پێ دەکات؟ 👂</Text><Text style={s.text}>{index+1} / {rounds.length}</Text>
+    <Text style={s.title}>وشەکە بە چ دەنگێک دەست پێ دەکات؟</Text><Text style={s.text}>{index+1} / {rounds.length}</Text>
     <View style={s.card}><Text style={s.emoji}>{round.word.imageEmoji}</Text>
-      <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>{const active=++token.current;void soundService.speakWord(round.word.word,{onEnd:()=>{if(active===token.current)setHeard(true);}});}}><Text style={s.buttonText}>وشەکە ببیستە 🔊</Text></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>{const active=++token.current;void soundService.speakWord(round.word.word,{onEnd:()=>{if(active===token.current)setHeard(true);}});}}><Text style={s.buttonText}>وشەکە ببیستە</Text></TouchableOpacity>
       {help && <Text style={s.glyph}>{round.word.word}</Text>}
       <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>{setHelp(true);setHeard(true);}}><Text style={s.text}>وشەکە ببینم؛ یارمەتی دەوێت</Text></TouchableOpacity>
       <View style={s.row}>{round.options.map(letter=><TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`دەنگی سەرەتای پیتی ${letter.glyph}`} disabled={!heard||answer!==null} style={[s.tile,!heard&&s.disabled,answer===letter.id&&(correct?s.correct:s.retry)]} onPress={()=>{if(locked.current)return;locked.current=true;setAnswer(letter.id);recordPracticeResult([round.target.id],letter.id===round.target.id,undefined,'phonics',help);}}><Text style={s.glyph}>{letter.glyph}</Text></TouchableOpacity>)}</View>

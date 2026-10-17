@@ -83,5 +83,5 @@ export const WritingBoard: React.FC<WritingBoardProps> = ({ side, guide, showGui
 };
 
 const styles = StyleSheet.create({
-  frame: { backgroundColor: '#fffef7', borderColor: '#cbd5e1', borderWidth: 2, borderRadius: 22, overflow: 'hidden' },
+  frame: { backgroundColor: '#fffef7', borderColor: '#cbd5e1', borderWidth: 2, borderRadius: 24, overflow: 'hidden' },
 });

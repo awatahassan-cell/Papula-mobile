@@ -72,7 +72,7 @@ const MainRouter: React.FC = () => {
             size="md"
             style={styles.bedtimeBtn}
           >
-            کردنەوە لەلایەن دایک و باوک 🔒
+            کردنەوە لەلایەن دایک و باوک
           </BigButton>
         </View>
       </View>

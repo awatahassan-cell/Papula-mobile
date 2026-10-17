@@ -1,4 +1,5 @@
 import { TactileButton as TouchableOpacity } from './TactileButton';
+import { BRAND, DONE, GOLD, LOCKED } from '../theme/tokens';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Ellipse, G, Path } from 'react-native-svg';
@@ -39,8 +40,8 @@ export function AdventureMap({ nodes, isNight, mood, onOpen, onAll }: {
       return <TouchableOpacity key={node.letter.id} accessibilityRole="button" disabled={locked} accessibilityState={{ disabled: locked }}
         accessibilityLabel={`پیتی ${node.letter.glyph}، ${locked ? 'قفڵە' : done ? 'دووبارە بکەوە' : 'وانەی ئێستا'}`}
         onPress={() => onOpen(node)} activeOpacity={0.85}
-        style={[s.node, current && s.currentNode, { left: `${spots[i].x / 3.6}%`, top: spots[i].y - (current ? 42 : 28), backgroundColor: current ? '#ffd43b' : done ? '#187940' : '#a66be5', borderBottomColor: current ? '#dfaa1d' : done ? '#116330' : '#8f52ca' }]}>
-        {done ? <Check size={30} strokeWidth={3.5} color="#fff" /> : <Text style={[s.glyph, { color: current ? '#5a3a0a' : '#fff' }]}>{node.letter.glyph}</Text>}
+        style={[s.node, current && s.currentNode, { left: `${spots[i].x / 3.6}%`, top: spots[i].y - (current ? 42 : 28), backgroundColor: current ? GOLD.face : done ? DONE.face : LOCKED.face, borderBottomColor: current ? GOLD.lip : done ? DONE.lip : LOCKED.lip }]}>
+        {done ? <Check size={30} strokeWidth={3.5} color="#fff" /> : <Text style={[s.glyph, { color: current ? GOLD.ink : '#fff' }]}>{node.letter.glyph}</Text>}
         {locked && <View style={s.lock}><Lock size={11} color="#fff" /></View>}
       </TouchableOpacity>;
     })}
@@ -49,16 +50,16 @@ export function AdventureMap({ nodes, isNight, mood, onOpen, onAll }: {
   </LinearGradient>;
 }
 const s = StyleSheet.create({
-  scene: { height: 310, borderRadius: 27, borderWidth: 3, borderColor: '#b9efff', overflow: 'hidden', position: 'relative' },
+  scene: { height: 310, borderRadius: 28, borderWidth: 3, borderColor: '#b9efff', overflow: 'hidden', position: 'relative' },
   mascot: { position: 'absolute', right: 12, top: 128, transform: [{ rotate: '7deg' }] },
   mapLabel: { position: 'absolute', right: 14, top: 14, flexDirection: 'row', alignItems: 'center', gap: 6, borderRadius: 16, backgroundColor: '#ffffffdf', paddingHorizontal: 12, paddingVertical: 6 },
   labelText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 12, color: '#24416a' },
   node: { position: 'absolute', width: 55, height: 55, marginLeft: -27.5, borderRadius: 20, borderWidth: 3, borderColor: '#fff', borderBottomWidth: 6, alignItems: 'center', justifyContent: 'center' },
-  currentNode: { width: 76, height: 76, marginLeft: -38, borderRadius: 25, borderWidth: 4, borderColor: '#fff4b5', borderBottomWidth: 7 },
-  currentLabel: { position: 'absolute', top: 117, marginLeft: -43, backgroundColor: '#7436d8', borderRadius: 11, paddingHorizontal: 9, paddingVertical: 4, transform: [{ rotate: '-6deg' }] },
+  currentNode: { width: 76, height: 76, marginLeft: -38, borderRadius: 28, borderWidth: 4, borderColor: GOLD.rim, borderBottomWidth: 7 },
+  currentLabel: { position: 'absolute', top: 117, marginLeft: -43, backgroundColor: BRAND.main, borderRadius: 11, paddingHorizontal: 9, paddingVertical: 4, transform: [{ rotate: '-6deg' }] },
   currentLabelText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 11, color: '#fff' },
   glyph: { fontSize: 30, fontFamily: 'IBMPlexSansArabic_700Bold', textAlign: 'center' },
-  lock: { position: 'absolute', right: -3, bottom: -1, backgroundColor: '#6332b2', borderRadius: 10, padding: 4 },
-  all: { position: 'absolute', left: 8, bottom: 4, minHeight: 44, borderRadius: 15, backgroundColor: '#245f58', flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10 },
+  lock: { position: 'absolute', right: -3, bottom: -1, backgroundColor: LOCKED.badge, borderRadius: 10, padding: 4 },
+  all: { position: 'absolute', left: 8, bottom: 4, minHeight: 44, borderRadius: 16, backgroundColor: '#245f58', flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10 },
   allText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 12, color: '#fff' },
 });

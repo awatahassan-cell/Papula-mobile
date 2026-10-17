@@ -83,7 +83,7 @@ const baseStyles = StyleSheet.create({
   avatarContainer: {
     width: 42,
     height: 42,
-    borderRadius: 21,
+    borderRadius: 24,
     backgroundColor: '#fef08a',
     alignItems: 'center',
     justifyContent: 'center',

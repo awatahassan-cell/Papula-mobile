@@ -143,7 +143,7 @@ const baseStyles = StyleSheet.create({
   iconCircle: {
     width: 72,
     height: 72,
-    borderRadius: 25,
+    borderRadius: 28,
     backgroundColor: '#e3f5ec',
     alignItems: 'center',
     justifyContent: 'center',
@@ -167,7 +167,7 @@ const baseStyles = StyleSheet.create({
     backgroundColor: '#f8fafc',
     borderColor: '#e2e8f0',
     borderWidth: 1.5,
-    borderRadius: 18,
+    borderRadius: 20,
     paddingVertical: 12,
     paddingHorizontal: 20,
     marginBottom: 16,

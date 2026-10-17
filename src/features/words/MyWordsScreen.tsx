@@ -32,7 +32,7 @@ export const MyWordsScreen: React.FC = () => {
         </View>
 
         <View style={styles.titleCol}>
-          <Text style={styles.title}>{strings.home.myWordsTitle} 📖</Text>
+          <Text style={styles.title}>{strings.home.myWordsTitle}</Text>
           <Text style={styles.subtitle}>
             ئەو وشە خۆشانەی کە لە چیرۆک و پیتەکانەوە فێریان بوویت
           </Text>
@@ -90,7 +90,7 @@ export const MyWordsScreen: React.FC = () => {
         size="lg"
         style={styles.homeBtn}
       >
-        گەڕانەوە بۆ سەرەتا 🏠
+        گەڕانەوە بۆ سەرەتا
       </BigButton>
     </ScrollView>
   );
@@ -112,7 +112,7 @@ const baseStyles = StyleSheet.create({
     backgroundColor: '#fef3c7',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 14,
+    borderRadius: 16,
   },
   badgeText: {
     fontSize: 12,
@@ -135,7 +135,7 @@ const baseStyles = StyleSheet.create({
   },
   emptyCard: {
     backgroundColor: '#ffffff',
-    borderRadius: 26,
+    borderRadius: 28,
     padding: 24,
     borderWidth: 2,
     borderColor: '#e2e8f0',
@@ -196,7 +196,7 @@ const baseStyles = StyleSheet.create({
   speakerBtn: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: 20,
     backgroundColor: '#fef3c7',
     alignItems: 'center',
     justifyContent: 'center',

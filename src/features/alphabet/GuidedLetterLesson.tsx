@@ -165,7 +165,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
         <TouchableOpacity accessibilityRole="button" accessibilityLabel="دەنگەکە ببیستە" style={styles.audioButton} onPress={listen}><Volume2 color="#ffffff" size={24} /><Text style={styles.audioButtonText}>{step===0?'گوێ لە پیتەکە بگرە':'ڕێنماییەکە ببیستە'}</Text><Text accessible={false} style={styles.audioWaves}>▂ ▅ ▃</Text></TouchableOpacity>
         {step===0&&<>
           {listened&&<View style={styles.listenedBadge}><Text style={styles.listenedText}>✓ ئافەرم! ئامادەیت بۆ هەنگاوی دواتر</Text></View>}
-          {letter.phonemeAudioUri&&<TouchableOpacity accessibilityRole="button" style={styles.secondary} onPress={()=>void soundService.playReviewedSound(letter.phonemeAudioUri!)}><Text style={styles.secondaryText}>دەنگی پیتەکە ببیستە 🔊</Text></TouchableOpacity>}
+          {letter.phonemeAudioUri&&<TouchableOpacity accessibilityRole="button" style={styles.secondary} onPress={()=>void soundService.playReviewedSound(letter.phonemeAudioUri!)}><Text style={styles.secondaryText}>دەنگی پیتەکە ببیستە</Text></TouchableOpacity>}
         </>}
         {step === 1 && <LetterFormsLesson key={letter.id} letter={letter} onPass={()=>{setFormsPassed(true);recordLessonStep(letter.id,'forms');}} />}
         {step === 2 && <>
@@ -200,7 +200,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
             </TouchableOpacity>)}
           </View>
           <Text accessibilityLiveRegion="polite" style={styles.feedback}>
-            {answer === null ? `سەیری شێوەی «${letter.glyph}» بکە` : correct ? `ئافەرم! پیتی «${letter.glyph}» دۆزییەوە 🌟` : `باشە، جارێکی تر! پیتی «${letter.glyph}» بدۆزەوە 💛`}
+            {answer === null ? `سەیری شێوەی «${letter.glyph}» بکە` : correct ? `ئافەرم! پیتی «${letter.glyph}» دۆزییەوە` : `باشە، جارێکی تر! پیتی «${letter.glyph}» بدۆزەوە`}
           </Text>
           {answer!==null && !correct && <TouchableOpacity accessibilityRole="button" style={styles.secondary} onPress={()=>{answerLocked.current=false;setAnswer(null);}}><Text style={styles.secondaryText}>جارێکی تر هەوڵ بدەم</Text></TouchableOpacity>}
         </>}
@@ -219,7 +219,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
             <LetterVoicePractice />
       <TouchableOpacity accessibilityRole="button" accessibilityState={{expanded:showMore}} style={styles.more} onPress={()=>setShowMore(!showMore)}><Text style={styles.secondaryText}>{showMore?'کەمتر ⌃':'زیاتر ⌄'}</Text></TouchableOpacity>
       {showMore && <><TouchableOpacity accessibilityRole="button" style={styles.secondary} onPress={() => { void soundService.stopSpeaking(); setRoute('alphabet'); }}>
-        <Text style={styles.secondaryText}>هەموو پیتەکان 🔤</Text>
+        <Text style={styles.secondaryText}>هەموو پیتەکان</Text>
       </TouchableOpacity><View style={styles.choices}>
         {letterIndex > 0 && <TouchableOpacity accessibilityRole="button" style={styles.letterNav} onPress={() => openLetter(letterIndex - 1)}>
           <Text style={styles.secondaryText}>پیتی پێشوو «{mockLetters[letterIndex - 1].glyph}»</Text>
@@ -258,7 +258,7 @@ const baseStyles = StyleSheet.create({
   sceneLeaf:{fontSize:30,alignSelf:'flex-end',marginBottom:16},
   heroTitle:{fontSize:20,lineHeight:34,fontFamily:'IBMPlexSansArabic_700Bold',color:'#243b3a',textAlign:'center'},
   heroHint:{fontSize:15,color:'#657d79',textAlign:'center'},
-  audioButton:{width:'100%',maxWidth:460,alignSelf:'center',minHeight:58,borderRadius:19,backgroundColor:'#23875f',borderBottomWidth:4,borderBottomColor:'#176445',flexDirection:'row',alignItems:'center',justifyContent:'center',gap:10,padding:10},
+  audioButton:{width:'100%',maxWidth:460,alignSelf:'center',minHeight:58,borderRadius:20,backgroundColor:'#23875f',borderBottomWidth:4,borderBottomColor:'#176445',flexDirection:'row',alignItems:'center',justifyContent:'center',gap:10,padding:10},
   audioButtonText:{fontSize:18,fontFamily:'IBMPlexSansArabic_700Bold',color:'#ffffff',textAlign:'center',flexShrink:1},
   audioWaves:{fontSize:17,color:'#c8ead8'},
   listenedBadge:{paddingHorizontal:10,paddingVertical:6,borderRadius:12,backgroundColor:'#eff8ed'},
@@ -297,7 +297,7 @@ const baseStyles = StyleSheet.create({
   rain: { fontSize: 64, marginVertical: 4 },
   word: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 50, color: '#1e293b', writingDirection: 'rtl' },
   highlight: { color: '#b45309' },
-  listen: { minHeight: 64, minWidth: 160, padding: 16, borderRadius: 22, flexDirection: 'row', gap: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fde68a' },
+  listen: { minHeight: 64, minWidth: 160, padding: 16, borderRadius: 24, flexDirection: 'row', gap: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fde68a' },
   listenText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, color: '#78350f' },
   choices: { flexDirection: 'row', gap: 16, width: '100%' },
   choice: { flex: 1, minHeight: 145, backgroundColor: '#ffffff', borderRadius: 24, alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#e2e8f0' },
@@ -306,14 +306,14 @@ const baseStyles = StyleSheet.create({
   correct: { borderColor: '#16a34a', backgroundColor: '#dcfce7' },
   retry: { borderColor: '#d97706', backgroundColor: '#fef3c7' },
   feedback: { minHeight: 64, fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 18, textAlign: 'center', color: '#334155' },
-  next: { minHeight: 60, padding: 12, borderRadius: 22, backgroundColor: '#047857', alignItems: 'center', justifyContent: 'center' },
+  next: { minHeight: 60, padding: 12, borderRadius: 24, backgroundColor: '#047857', alignItems: 'center', justifyContent: 'center' },
   nextText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 22, color: '#ffffff' },
   disabled: { backgroundColor: '#64748b' },
   secondary: { minHeight: 64, justifyContent: 'center', alignItems: 'center' },
   secondaryText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 17, color: '#475569', textAlign: 'center' },
-  detailsButton: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 22, backgroundColor: '#f1f5f9', borderWidth: 2, borderColor: '#e2e8f0' },
+  detailsButton: { minHeight: 64, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 24, backgroundColor: '#f1f5f9', borderWidth: 2, borderColor: '#e2e8f0' },
   detailsText: { flex: 1, fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 17, lineHeight: 28, color: '#334155', writingDirection: 'rtl', textAlign: 'right' },
-  detailsBadge: { width: 44, minHeight: 46, borderRadius: 14, backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center' },
+  detailsBadge: { width: 44, minHeight: 46, borderRadius: 16, backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center' },
   detailsGlyph: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 30, lineHeight: 42, color: '#78350f', textAlign: 'center' },
 });
 

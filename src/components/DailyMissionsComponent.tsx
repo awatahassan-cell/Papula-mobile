@@ -212,7 +212,7 @@ const baseStyles = StyleSheet.create({
   iconContainer: {
     width: 44,
     height: 44,
-    borderRadius: 14,
+    borderRadius: 16,
     backgroundColor: '#fff7ed',
     alignItems: 'center',
     justifyContent: 'center',
@@ -261,7 +261,7 @@ const baseStyles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 8,
     paddingHorizontal: 14,
-    borderRadius: 14,
+    borderRadius: 16,
     alignItems: 'center',
   },
   actionButtonText: {

@@ -48,7 +48,7 @@ console.log('PASS: no-pressure starting assessment and story ordering retry/comp
 
 const {StartingSoundGame}=load(path.join(__dirname,'../src/features/learning/StartingSoundGame.tsx'));
 states=[];refs=[];const phonicsProps={onExit(){}};tree=render(StartingSoundGame,phonicsProps);
-for(let i=0;i<5;i++){button(tree,'وشەکە ببیستە 🔊').props.onPress();tree=render(StartingSoundGame,phonicsProps);const target=states[0][i].target;button(tree,'دەنگی سەرەتای پیتی '+target.glyph).props.onPress();tree=render(StartingSoundGame,phonicsProps);const next=button(tree,'دواتر ←');next.props.onPress();next.props.onPress();tree=render(StartingSoundGame,phonicsProps);}
+for(let i=0;i<5;i++){button(tree,'وشەکە ببیستە').props.onPress();tree=render(StartingSoundGame,phonicsProps);const target=states[0][i].target;button(tree,'دەنگی سەرەتای پیتی '+target.glyph).props.onPress();tree=render(StartingSoundGame,phonicsProps);const next=button(tree,'دواتر ←');next.props.onPress();next.props.onPress();tree=render(StartingSoundGame,phonicsProps);}
 assert.equal(games.filter(kind=>kind==='sound').length,1);
 const {LetterFormsLesson}=load(path.join(__dirname,'../src/features/learning/LetterFormsLesson.tsx'));
 states=[];refs=[];let formsPassed=0;const formsProps={letter:load(path.join(__dirname,'../src/data/mockLetters.ts')).mockLetters[7],onPass(){formsPassed++;}};

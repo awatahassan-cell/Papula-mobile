@@ -146,7 +146,7 @@ export const PaywallModal: React.FC = () => {
           {successToast && (
             <View style={styles.successToast}>
               <Text style={styles.successToastText}>
-                پیرۆزە! بەشداریکردنی نمایشی کارا کرا 🎉
+                پیرۆزە! بەشداریکردنی نمایشی کارا کرا
               </Text>
             </View>
           )}
@@ -226,7 +226,7 @@ const baseStyles = StyleSheet.create({
   },
   planBox: {
     flex: 1,
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 12,
     borderWidth: 2,
     borderColor: '#e2e8f0',

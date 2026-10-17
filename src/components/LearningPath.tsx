@@ -1,4 +1,5 @@
 import { TactileButton as TouchableOpacity } from './TactileButton';
+import { BRAND, DONE, GOLD, LOCKED } from '../theme/tokens';
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Animated, Easing, LayoutChangeEvent, Platform, useWindowDimensions } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
@@ -96,11 +97,11 @@ export function LearningPath({ onFocusY }: { preview?: boolean; onFocusY?: (y: n
     if (kind === 0) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x - 8, top: y - 36, transform: [{ translateX: slide }] }]}>
       <Svg width={78} height={44} viewBox="0 0 78 44"><Path d="M12 38 Q2 38 4 28 Q6 20 16 21 Q18 8 32 9 Q40 0 52 8 Q66 6 68 20 Q78 22 74 32 Q72 38 64 38Z" fill={isNight ? '#ffffff' : '#cfe6ff'} opacity={isNight ? 0.22 : 0.9} /></Svg></Animated.View>;
     if (kind === 1) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x, top: y - 20, transform: [{ rotate: sway }] }]}>
-      <Svg width={54} height={72} viewBox="0 0 54 72"><Rect x="23" y="40" width="9" height="30" rx="4" fill="#9a6a3a" /><Circle cx="27" cy="26" r="22" fill={isNight ? '#1f8f6b' : '#43c463'} /><Circle cx="15" cy="34" r="13" fill={isNight ? '#2aa57c' : '#63d77f'} /><Circle cx="40" cy="33" r="14" fill={isNight ? '#2aa57c' : '#63d77f'} /><Circle cx="22" cy="20" r="4" fill="#ffd43b" /><Circle cx="36" cy="27" r="4" fill="#ff69a8" /></Svg></Animated.View>;
+      <Svg width={54} height={72} viewBox="0 0 54 72"><Rect x="23" y="40" width="9" height="30" rx="4" fill="#9a6a3a" /><Circle cx="27" cy="26" r="22" fill={isNight ? '#1f8f6b' : '#43c463'} /><Circle cx="15" cy="34" r="13" fill={isNight ? '#2aa57c' : '#63d77f'} /><Circle cx="40" cy="33" r="14" fill={isNight ? '#2aa57c' : '#63d77f'} /><Circle cx="22" cy="20" r="4" fill={GOLD.face} /><Circle cx="36" cy="27" r="4" fill="#ff69a8" /></Svg></Animated.View>;
     if (kind === 2) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x, top: y + 8, transform: [{ rotate: sway }] }]}>
-      <Svg width={52} height={50} viewBox="0 0 52 50"><Path d="M14 48 V26 M26 48 V16 M38 48 V28" stroke="#3fae5a" strokeWidth="4" strokeLinecap="round" /><Circle cx="14" cy="22" r="8" fill="#ff69a8" /><Circle cx="14" cy="22" r="3" fill="#ffe46a" /><Circle cx="26" cy="12" r="9" fill="#ffd43b" /><Circle cx="26" cy="12" r="3.4" fill="#ff9c87" /><Circle cx="38" cy="24" r="8" fill="#a064ff" /><Circle cx="38" cy="24" r="3" fill="#ffe46a" /></Svg></Animated.View>;
+      <Svg width={52} height={50} viewBox="0 0 52 50"><Path d="M14 48 V26 M26 48 V16 M38 48 V28" stroke="#3fae5a" strokeWidth="4" strokeLinecap="round" /><Circle cx="14" cy="22" r="8" fill="#ff69a8" /><Circle cx="14" cy="22" r="3" fill={GOLD.soft} /><Circle cx="26" cy="12" r="9" fill={GOLD.face} /><Circle cx="26" cy="12" r="3.4" fill="#ff9c87" /><Circle cx="38" cy="24" r="8" fill="#a064ff" /><Circle cx="38" cy="24" r="3" fill={GOLD.soft} /></Svg></Animated.View>;
     return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x + 8, top: y - 30, opacity: glow }]}>
-      <Svg width={34} height={34} viewBox="0 0 34 34"><Path d="M17 2 L21 13 L32 17 L21 21 L17 32 L13 21 L2 17 L13 13Z" fill={isNight ? '#fff4b5' : '#ffc928'} /></Svg></Animated.View>;
+      <Svg width={34} height={34} viewBox="0 0 34 34"><Path d="M17 2 L21 13 L32 17 L21 21 L17 32 L13 21 L2 17 L13 13Z" fill={isNight ? GOLD.rim : '#ffc928'} /></Svg></Animated.View>;
   };
 
   const trail = plan.spots.slice(Math.floor(activeIndex / PER_UNIT) * PER_UNIT, activeIndex + 1);
@@ -130,15 +131,15 @@ export function LearningPath({ onFocusY }: { preview?: boolean; onFocusY?: (y: n
     {nodes.map((node, i) => {
       const p = plan.spots[i], current = node.status === 'current', done = node.status === 'completed', locked = node.status === 'locked';
       const size = current ? N + 14 : N;
-      const faceColor = done ? '#187940' : current ? '#ffd43b' : '#a66be5', lip = done ? '#116330' : current ? '#dfaa1d' : '#8f52ca';
+      const faceColor = done ? DONE.face : current ? GOLD.face : LOCKED.face, lip = done ? DONE.lip : current ? GOLD.lip : LOCKED.lip;
       return <React.Fragment key={node.letter.id}>
         {current && <Animated.View pointerEvents="none" style={[s.ring, { left: p.x - size / 2, top: p.y - size / 2, width: size, height: size, borderRadius: size * 0.34, opacity: pulse.interpolate({ inputRange: [0, 1], outputRange: [0.7, 0] }), transform: [{ scale: pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.6] }) }] }]} />}
         <TouchableOpacity accessibilityRole="button" accessibilityLabel={`وانەی ${node.index + 1}، پیتی ${node.letter.glyph}، ${done ? 'تەواو کراوە، دووبارەی بکەوە' : locked ? 'قفڵە، وانەی پێشوو تەواو بکە' : 'ئامادەی دەستپێکردنە'}`}
           accessibilityState={{ disabled: locked }} disabled={locked} activeOpacity={0.9}
           onPress={() => { void soundService.stopSpeaking(); soundService.playPop(); setSelectedLetter(node.letter); setRoute('letter-detail'); }}
           style={[s.node, { left: p.x - size / 2, top: p.y - size / 2, width: size, height: size, borderRadius: size * 0.34, backgroundColor: faceColor, borderBottomColor: lip }, current && s.nodeCurrent]}>
-          <Text style={[s.glyph, { color: current ? '#5a3a0a' : '#fff', fontSize: current ? 44 : 36 }]}>{node.letter.glyph}</Text>
-          <View style={[s.status, { backgroundColor: done ? '#187940' : locked ? '#6332b2' : '#7436d8' }]}>{done ? <Check color="#fff" size={15} /> : locked ? <Lock color="#fff" size={13} /> : <Play color="#fff" size={13} fill="#fff" />}</View>
+          <Text style={[s.glyph, { color: current ? GOLD.ink : '#fff', fontSize: current ? 44 : 36 }]}>{node.letter.glyph}</Text>
+          <View style={[s.status, { backgroundColor: done ? DONE.face : locked ? LOCKED.badge : BRAND.main }]}>{done ? <Check color="#fff" size={15} /> : locked ? <Lock color="#fff" size={13} /> : <Play color="#fff" size={13} fill="#fff" />}</View>
         </TouchableOpacity>
         <Text style={[s.nodeLabel, { left: p.x - 60, top: p.y + size / 2 + 8, color: current ? (isNight ? '#ffd66b' : c.mint) : c.muted }]}>{done ? 'دووبارە بکەوە' : locked ? `وانەی ${node.index + 1}` : 'دەست پێ بکە'}</Text>
         {current && <View pointerEvents="none" style={[s.startBadge, { left: p.x - 70, top: p.y - size / 2 - 34, backgroundColor: isNight ? '#241c80' : '#ffffff', borderColor: isNight ? '#ffd66b' : '#c9b6ff' }]}><Text style={[s.startLabel, { color: isNight ? '#ffd66b' : c.mint }]}>ئێستا نۆرەی تۆیە!</Text></View>}
@@ -152,18 +153,18 @@ export function LearningPath({ onFocusY }: { preview?: boolean; onFocusY?: (y: n
 const s = StyleSheet.create({
   path: { width: '100%', maxWidth: 720, alignSelf: 'center', position: 'relative' },
   decor: { position: 'absolute' },
-  unit: { position: 'absolute', left: 0, right: 0, height: BANNER - 12, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, borderRadius: 26, borderBottomWidth: 4, borderBottomColor: 'rgba(0,0,0,0.12)' },
+  unit: { position: 'absolute', left: 0, right: 0, height: BANNER - 12, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, borderRadius: 28, borderBottomWidth: 4, borderBottomColor: 'rgba(0,0,0,0.12)' },
   unitBadge: { width: 44, height: 44, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
   unitNumber: { color: '#fff', fontSize: 22, fontFamily: 'IBMPlexSansArabic_700Bold' },
   eyebrow: { fontFamily: 'IBMPlexSansArabic_500Medium', fontSize: 12 },
   unitTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 19 },
   node: { position: 'absolute', borderWidth: 3, borderColor: '#ffffff', borderBottomWidth: 7, alignItems: 'center', justifyContent: 'center' },
-  nodeCurrent: { borderColor: '#fff4b5', shadowColor: '#ffd43b', shadowOpacity: 0.7, shadowRadius: 18, shadowOffset: { width: 0, height: 4 }, elevation: 8 },
-  ring: { position: 'absolute', borderWidth: 4, borderColor: '#ffd43b' },
+  nodeCurrent: { borderColor: GOLD.rim, shadowColor: GOLD.face, shadowOpacity: 0.7, shadowRadius: 18, shadowOffset: { width: 0, height: 4 }, elevation: 8 },
+  ring: { position: 'absolute', borderWidth: 4, borderColor: GOLD.face },
   glyph: { fontFamily: 'IBMPlexSansArabic_700Bold', textAlign: 'center' },
-  status: { position: 'absolute', bottom: -6, right: -6, width: 27, height: 27, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#ffffff' },
+  status: { position: 'absolute', bottom: -6, right: -6, width: 27, height: 27, borderRadius: 16, alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#ffffff' },
   nodeLabel: { position: 'absolute', width: 120, textAlign: 'center', fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 13 },
-  startBadge: { position: 'absolute', width: 140, alignItems: 'center', borderWidth: 1.5, borderRadius: 14, paddingVertical: 4 },
+  startBadge: { position: 'absolute', width: 140, alignItems: 'center', borderWidth: 1.5, borderRadius: 16, paddingVertical: 4 },
   startLabel: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 12, textAlign: 'center' },
   butterfly: { position: 'absolute' },
   note: { position: 'absolute', left: 10, right: 10, fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 14, lineHeight: 25, textAlign: 'center' },

@@ -1,3 +1,4 @@
+import { BRAND, GOLD } from '../theme/tokens';
 import React, { useEffect, useState } from 'react';
 import { Animated, Easing, Platform, StyleSheet, View } from 'react-native';
 import { Text } from './RTLText';
@@ -24,7 +25,7 @@ export function LetterWordReveal({ glyph, word }: { glyph: string; word: string 
 
 const s = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 14, paddingVertical: 4 },
-  tile: { width: 76, height: 84, borderRadius: 26, backgroundColor: '#ffd43b', borderBottomWidth: 6, borderBottomColor: '#dfaa1d', alignItems: 'center', justifyContent: 'center' },
-  glyph: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 48, color: '#5a3a0a', textAlign: 'center' },
-  word: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 34, color: '#7436d8', textAlign: 'center' },
+  tile: { width: 76, height: 84, borderRadius: 28, backgroundColor: GOLD.face, borderBottomWidth: 6, borderBottomColor: GOLD.lip, alignItems: 'center', justifyContent: 'center' },
+  glyph: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 48, color: GOLD.ink, textAlign: 'center' },
+  word: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 34, color: BRAND.main, textAlign: 'center' },
 });

@@ -41,7 +41,7 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
     const ids=passed?word.letterIds:word.letterIds.filter((_,index)=>word.units[index]!==Array.from(selected.map(id=>bank.find(tile=>tile.id===id)!.glyph))[index]);
     recordPracticeResult(ids,passed,passed?word.id:undefined,'word',helped.current);
     const mismatches=word.units.map((unit,index)=>unit!==selected.map(id=>bank.find(tile=>tile.id===id)!.glyph)[index]?index+1:0).filter(Boolean);
-    setFeedback(passed?`ئافەرم! وشەی «${word.word}»ت دروست کرد 🌟`:`نزیک بوویت! شوێنی ${mismatches.join('، ')} بپشکنە؛ پیتەکانی بە ڕیزێکی تر دابنێ 💛`);
+    setFeedback(passed?`ئافەرم! وشەی «${word.word}»ت دروست کرد`:`نزیک بوویت! شوێنی ${mismatches.join('، ')} بپشکنە؛ پیتەکانی بە ڕیزێکی تر دابنێ`);
     if(passed){soundService.playCorrect();void soundService.speakWord(word.word);}
     else {helped.current=true;soundService.playEncouragingTryAgain();}
   };
@@ -55,15 +55,15 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
   };
   if(!word)return <View style={s.container}><Text style={s.text}>وشەکان ئامادە نین</Text><TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={onExit}><Text style={s.text}>گەڕانەوە</Text></TouchableOpacity></View>;
   if(finished)return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.emoji}>🧩 🌟</Text><Text style={s.title}>ئافەرم! وشەکانت دروست کرد</Text>
+    <Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! وشەکانت دروست کرد</Text>
     <Text style={s.text}>{queue.map(item=>item.word).join('، ')}</Text>
-    <TouchableOpacity accessibilityRole="button" style={s.button} onPress={onComplete||onExit}><Text style={s.buttonText}>{onComplete?'چیرۆکەکەم ببینم 📖':'گەڕانەوە بۆ یارییەکان'}</Text></TouchableOpacity>
+    <TouchableOpacity accessibilityRole="button" style={s.button} onPress={onComplete||onExit}><Text style={s.buttonText}>{onComplete?'چیرۆکەکەم ببینم':'گەڕانەوە بۆ یارییەکان'}</Text></TouchableOpacity>
   </ScrollView>;
   return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.title}>وشە دروست بکەم 🧩</Text><Text style={s.text}>{round+1} / {queue.length}</Text>
+    <Text style={s.title}>وشە دروست بکەم</Text><Text style={s.text}>{round+1} / {queue.length}</Text>
     <View style={s.card}>
       <Text style={s.emoji}>{word.imageEmoji}</Text>
-      <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>void soundService.speakWord(word.word)}><Text style={s.text}>وشەکە ببیستە 🔊</Text></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>void soundService.speakWord(word.word)}><Text style={s.text}>وشەکە ببیستە</Text></TouchableOpacity>
       <Text accessibilityLiveRegion="polite" style={[s.glyph,{fontSize:Math.max(26,48-word.units.length*2),minHeight:68,writingDirection:'rtl'}]}>{assembled||'…'}</Text>
       <Text style={s.text}>پیتەکان بە ڕیز هەڵبژێرە</Text>
       <View style={s.row}>{bank.map(tile=><TouchableOpacity key={tile.id} accessibilityRole="button" accessibilityLabel={`پیتی ${tile.glyph}، دانەی ${tile.id+1}`}

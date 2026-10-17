@@ -185,7 +185,7 @@ const baseStyles = StyleSheet.create({
   nameInput: {
     width: '100%',
     backgroundColor: '#f8fafc',
-    borderRadius: 18,
+    borderRadius: 20,
     borderWidth: 1.5,
     borderColor: '#fed7aa',
     paddingVertical: 12,
@@ -203,7 +203,7 @@ const baseStyles = StyleSheet.create({
   },
   avatarCard: {
     width: '31%',
-    borderRadius: 18,
+    borderRadius: 20,
     paddingVertical: 10,
     alignItems: 'center',
     borderWidth: 2,

@@ -26,7 +26,7 @@ assert.equal(jobs.size,0,'zero duration must not auto-skip the page');assert.equ
 tree=render();const abandoned=speech.at(-1).opts;button(tree,'وەستان').props.onPress();tree=render();abandoned.onEnd();runTimers();assert.equal(values[0],0,'stopped narration cannot turn pages');
 button(tree,'دەنگ').props.onPress();tree=render();speech.at(-1).opts.onError();tree=render();assert.equal(values[5],false,'audio failure must not start quiz');
 button(tree,'دەنگ').props.onPress();tree=render();speech.at(-1).opts.onEnd();assert.equal(values[0],0);runTimers();tree=render();assert.equal(values[0],1,'only actual audio completion advances');
-speech.at(-1).opts.onEnd();runTimers();tree=render();assert.ok(texts(tree).includes('تاقیکردنەوەی تێگەیشتن 🎯'));
+speech.at(-1).opts.onEnd();runTimers();tree=render();assert.ok(texts(tree).includes('تاقیکردنەوەی تێگەیشتن'));
 button(tree,'دار').props.onPress();tree=render();assert.equal(completed.length,0);runTimers();tree=render();
 const correct=button(tree,'باران');correct.props.onPress();correct.props.onPress();runTimers();tree=render();assert.equal(completed.length,0,'multi-page story includes an ordering exercise');assert.equal(tree.type,'Sequence');tree.props.onComplete();tree=render();assert.deepEqual(completed,['personal-test']);
 assert.ok(texts(tree).includes('پیرۆزە! چیرۆکەکەت تەواو کرد!'));

@@ -154,14 +154,14 @@ const baseStyles = StyleSheet.create({
   tabRow: {
     flexDirection: 'row',
     backgroundColor: '#f1f5f9',
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 4,
     gap: 6,
   },
   tabBtn: {
     flex: 1,
     paddingVertical: 8,
-    borderRadius: 14,
+    borderRadius: 16,
     alignItems: 'center',
   },
   tabBtnActive: {

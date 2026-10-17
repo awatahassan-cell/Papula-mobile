@@ -41,7 +41,7 @@ export const BadgesComponent: React.FC = () => {
           <Award size={14} color={tone('#f59e0b')} />
           <Text style={styles.bannerBadgeText}>دەستکەوت و نیشانەکان</Text>
         </View>
-        <Text style={[styles.title, { color: '#ffffff' }]}>کۆکراوەی میدالیا زێڕینەکانت ✨</Text>
+        <Text style={[styles.title, { color: '#ffffff' }]}>کۆکراوەی میدالیا زێڕینەکانت</Text>
         <Text style={[styles.subtitle, { color: '#ffffff' }]}>
           مەشق بکە، چیرۆک بخوێنەوە و پیتەکان فێربە بۆ کردنەوەی نیشانەکان!
         </Text>
@@ -140,7 +140,7 @@ const baseStyles = StyleSheet.create({
     backgroundColor: '#ffffff',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 14,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: '#fde68a',
   },
@@ -171,7 +171,7 @@ const baseStyles = StyleSheet.create({
   },
   badgeCard: {
     width: '48%',
-    borderRadius: 22,
+    borderRadius: 24,
     padding: 14,
     alignItems: 'center',
     borderWidth: 1.5,
@@ -193,7 +193,7 @@ const baseStyles = StyleSheet.create({
   iconWrap: {
     width: 52,
     height: 52,
-    borderRadius: 26,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
