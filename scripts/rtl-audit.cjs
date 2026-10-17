@@ -20,6 +20,7 @@ const SIZES = [['phone', 390, 844], ['tablet', 1024, 768]];
         const out = [], vw = innerWidth, arabic = /[؀-ۿ]/;
         const scrolls = el => { for (let e = el; e; e = e.parentElement) { const o = getComputedStyle(e).overflowX; if ((o === 'auto' || o === 'scroll') && e.scrollWidth > e.clientWidth) return true; } return false; };
         document.querySelectorAll('div,span,input,textarea').forEach(el => {
+          if (el.closest('[aria-hidden="true"]')) return; // decoration clipped by its own frame
           const cs = getComputedStyle(el), r = el.getBoundingClientRect();
           if (!r.width || !r.height || cs.visibility === 'hidden' || cs.display === 'none') return;
           const own = [...el.childNodes].some(n => n.nodeType === 3 && arabic.test(n.textContent));

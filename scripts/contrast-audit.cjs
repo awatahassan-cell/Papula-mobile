@@ -30,8 +30,9 @@ const ROUTES = ['', 'alphabet', 'stories', 'story-reader', 'match-game', 'writin
           if (c < (big ? 3 : 4.5)) { const key = el.textContent.trim().slice(0, 20) + c.toFixed(1); if (!seen.has(key)) { seen.add(key); out.push(`text "${el.textContent.trim().slice(0, 22)}" ${c.toFixed(1)}:1 fg=${cs.color} bg=rgb(${Math.round(bg.r)},${Math.round(bg.g)},${Math.round(bg.b)})`); } }
         });
         document.querySelectorAll('svg').forEach(svg => {
+          if (svg.closest('[aria-hidden="true"]')) return; // decoration
           const r = svg.getBoundingClientRect(); if (!r.width || r.width > 60 || !svg.querySelector('path,circle,rect,line,polyline') || svg.querySelectorAll('path,circle,ellipse').length > 3) return;
-          const cs = getComputedStyle(svg), stroke = parse(cs.stroke) || parse(cs.fill) || parse(cs.color); if (!stroke) return;
+          const cs = getComputedStyle(svg), shape = svg.querySelector('path,circle,rect,line,polyline'), shapeStyle = shape ? getComputedStyle(shape) : cs, stroke = parse(cs.stroke) || parse(shapeStyle.stroke) || parse(shapeStyle.fill) || parse(cs.color); if (!stroke) return;
           const bg = bgOf(svg.parentElement), c = ratio(over(stroke, bg), bg);
           if (c < 3) { const key = 'svg' + cs.stroke + c.toFixed(1); if (!seen.has(key)) { seen.add(key); out.push(`icon ${c.toFixed(1)}:1 stroke=${cs.stroke} bg=rgb(${Math.round(bg.r)},${Math.round(bg.g)},${Math.round(bg.b)}) near "${(svg.parentElement.textContent || '').trim().slice(0, 18)}"`); } }
         });

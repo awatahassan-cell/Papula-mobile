@@ -4,6 +4,7 @@ import { AppErrorScreen } from '../components/AppErrorScreen';
 import { rtlProps, rtlLayout } from '../theme/rtl';
 import { PapulaMascot } from '../components/PapulaMascot';
 import { ReactionOverlay } from '../components/ReactionOverlay';
+import { AmbientSky } from '../components/AmbientSky';
 import { View, StyleSheet, StatusBar, ActivityIndicator, I18nManager } from 'react-native';
 import { Text } from '../components/RTLText';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -80,6 +81,7 @@ const MainRouter: React.FC = () => {
   return (
     <SafeAreaView {...rtlProps} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={isGarden ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}>
       <LinearGradient pointerEvents="none" colors={extras.gradient} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={StyleSheet.absoluteFill} />
+      <AmbientSky />
       <StatusBar barStyle={isNight ? 'light-content' : 'dark-content'} backgroundColor={isGarden ? appearanceColors.background : '#ffffff'} />
       {route !== 'onboarding' && <TopHeader />}
       {/* Phones: tab bar under the content. Tablets: a rail on the right (first child of an RTL row). */}

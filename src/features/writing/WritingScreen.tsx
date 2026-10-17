@@ -5,6 +5,7 @@ import { accentFill } from '../../theme/appearance';
 import { assessWriting, advanceWriting, normalizeIndependentWriting, writingMastered, suggestedWritingMode } from '../../services/foundationalLearning';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, ScrollView, PanResponder, Modal } from 'react-native';
+import { PapulaMascot } from '../../components/PapulaMascot';
 import { Text } from '../../components/RTLText';
 import Svg, { Path, Line, Circle } from 'react-native-svg';
 import { Play, Eraser, Undo2 } from 'lucide-react-native';
@@ -144,12 +145,9 @@ export const WritingScreen: React.FC = () => {
     }, 40);
   };
   const demoStrokes = guide?.strokes.map(stroke => resamplePolyline(stroke, 1)) || [];
-  let remainingDemoPoints = Math.floor((demo || 0) * demoStrokes.reduce((sum, stroke) => sum + stroke.length, 0));
-  const shownDemo = demoStrokes.map(stroke => {
-    const shown = stroke.slice(0, Math.max(0, remainingDemoPoints));
-    remainingDemoPoints -= stroke.length;
-    return shown;
-  });
+  const demoBudget = Math.floor((demo || 0) * demoStrokes.reduce((sum, stroke) => sum + stroke.length, 0));
+  const shownDemo = demoStrokes.map((stroke, i) => stroke.slice(0, Math.max(0, demoBudget - demoStrokes.slice(0, i).reduce((sum, earlier) => sum + earlier.length, 0))));
+
 
   const evaluate = async () => {
     if (!guide || checkingRef.current || demo !== null) return;
@@ -185,6 +183,8 @@ export const WritingScreen: React.FC = () => {
     setResult(null); setRoute('letter-detail');
   };
 
+  // The butterfly flies along the demonstration, always at the tip of the line being drawn.
+  const penTip = demo !== null ? [...shownDemo].reverse().find(stroke => stroke.length)?.slice(-1)[0] : undefined;
   const boardNode = (
     <View style={[styles.boardFrame, isNight && styles.boardNight]}>
       <View testID="writing-board" accessibilityLabel={`بۆردی نووسینی پیتی ${letter.glyph}`} style={{ width: side, height: side }} {...responder.panHandlers}>
@@ -198,6 +198,7 @@ export const WritingScreen: React.FC = () => {
           {demo !== null && shownDemo.map((stroke, i) => <Stroke key={`demo-${i}`} points={stroke} color="#0369a1" width={3.6} />)}
           {mode==='trace' && strokes.length === 0 && demo === null && guide?.strokes[0]?.[0] && <Circle cx={guide.strokes[0][0].x} cy={guide.strokes[0][0].y} r={2} fill="#047857" />}
         </Svg>
+        {penTip && <View pointerEvents="none" style={{ position: 'absolute', left: (penTip.x / 100) * side - 22, top: (penTip.y / 100) * side - 40 }}><PapulaMascot size={46} mood="happy" /></View>}
       </View>
     </View>
   );

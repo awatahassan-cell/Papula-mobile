@@ -94,7 +94,7 @@ export function LearningPath({ onFocusY }: { preview?: boolean; onFocusY?: (y: n
     const slide = drift.interpolate({ inputRange: [0, 1], outputRange: [-10, 10] });
     const glow = twinkle.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] });
     if (kind === 0) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x - 8, top: y - 36, transform: [{ translateX: slide }] }]}>
-      <Svg width={78} height={44} viewBox="0 0 78 44"><Path d="M12 38 Q2 38 4 28 Q6 20 16 21 Q18 8 32 9 Q40 0 52 8 Q66 6 68 20 Q78 22 74 32 Q72 38 64 38Z" fill={isNight ? '#ffffff' : '#ffffff'} opacity={isNight ? 0.22 : 0.95} /></Svg></Animated.View>;
+      <Svg width={78} height={44} viewBox="0 0 78 44"><Path d="M12 38 Q2 38 4 28 Q6 20 16 21 Q18 8 32 9 Q40 0 52 8 Q66 6 68 20 Q78 22 74 32 Q72 38 64 38Z" fill={isNight ? '#ffffff' : '#cfe6ff'} opacity={isNight ? 0.22 : 0.9} /></Svg></Animated.View>;
     if (kind === 1) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x, top: y - 20, transform: [{ rotate: sway }] }]}>
       <Svg width={54} height={72} viewBox="0 0 54 72"><Rect x="23" y="40" width="9" height="30" rx="4" fill="#9a6a3a" /><Circle cx="27" cy="26" r="22" fill={isNight ? '#1f8f6b' : '#43c463'} /><Circle cx="15" cy="34" r="13" fill={isNight ? '#2aa57c' : '#63d77f'} /><Circle cx="40" cy="33" r="14" fill={isNight ? '#2aa57c' : '#63d77f'} /><Circle cx="22" cy="20" r="4" fill="#ffd43b" /><Circle cx="36" cy="27" r="4" fill="#ff69a8" /></Svg></Animated.View>;
     if (kind === 2) return <Animated.View key={'d' + i} pointerEvents="none" style={[s.decor, { left: x, top: y + 8, transform: [{ rotate: sway }] }]}>
