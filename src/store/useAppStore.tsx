@@ -2,7 +2,7 @@ import { advanceWriting, writingMastered, skillAttempt } from '../services/found
 import { applyLessonStep, isLessonUnlocked, nextLessonLetter, reconcileLessons } from '../services/lessonPath';
 import { usePathname, useRouter } from 'expo-router';
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
-import { LEARNING_WORDS, learningActivity, localDay, updateReview } from '../services/learningEngine';
+import { LEARNING_WORDS, learningActivity, localDay, logDay, updateReview } from '../services/learningEngine';
 import { mockLetters } from '../data/mockLetters';
 import { authRepo, lettersRepo, progressRepo, storiesRepo, writingRepo } from '../services/repositories';
 import { soundService } from '../services/soundService';
@@ -275,6 +275,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     for(const [threshold,sticker] of [[6,'stk-fox'],[10,'stk-bear'],[15,'stk-deer'],[20,'stk-mountain']] as const) {
       if(updated.stars>=threshold && !updated.unlockedStickerIds.includes(sticker)) updated.unlockedStickerIds.push(sticker);
     }
+    // Weekly report: whatever this update earned is added to today's entry.
+    const before = profileRef.current;
+    const gain = { seconds: Math.max(0, (updated.practiceSeconds || 0) - (before.practiceSeconds || 0)), lessons: Math.max(0, updated.masteredLetterIds.length - before.masteredLetterIds.length), stars: Math.max(0, updated.stars - before.stars) };
+    if (gain.seconds || gain.lessons || gain.stars) updated.dailyLog = logDay(before.dailyLog, localDay(), gain);
     profileRef.current = updated;
     setCurrentProfile(updated);
     setProfiles((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));

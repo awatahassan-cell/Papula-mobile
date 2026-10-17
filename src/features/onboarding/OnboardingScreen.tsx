@@ -2,6 +2,7 @@ import { TactileButton as TouchableOpacity } from '../../components/TactileButto
 import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import { PapulaMascot } from '../../components/PapulaMascot';
 import { Text, TextInput } from '../../components/RTLText';
 import { BigButton } from '../../components/BigButton';
 import { soundService } from '../../services/soundService';
@@ -38,7 +39,7 @@ export const OnboardingScreen: React.FC = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.logoEmoji}>🦋</Text>
+        <PapulaMascot size={150} mood="happy" />
         <Text style={styles.welcomeTitle}>{strings.onboarding.welcomeTitle}</Text>
         <Text style={styles.welcomeSubtitle}>{strings.onboarding.welcomeSubtitle}</Text>
 

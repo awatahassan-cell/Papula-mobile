@@ -6,6 +6,7 @@ import { assessWriting, advanceWriting, normalizeIndependentWriting, writingMast
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, ScrollView, PanResponder, Modal } from 'react-native';
 import { PapulaMascot } from '../../components/PapulaMascot';
+import { LetterWordReveal } from '../../components/LetterWordReveal';
 import { Text } from '../../components/RTLText';
 import Svg, { Path, Line, Circle } from 'react-native-svg';
 import { Play, Eraser, Undo2 } from 'lucide-react-native';
@@ -243,7 +244,7 @@ export const WritingScreen: React.FC = () => {
     {split ? <View style={styles.split}><View style={styles.splitBoard}>{boardNode}</View><View style={styles.splitControls}>{controlsNode}</View></View> : <>{boardNode}{controlsNode}</>}
     {result && <Modal transparent animationType="fade" visible onRequestClose={() => setResult(null)}>
       <View {...rtlProps} style={[styles.backdrop, rtlLayout]}><ScrollView contentContainerStyle={styles.modalScroll}><View style={styles.modalCard}>
-        <Text style={styles.celebration}>{result.mastered ? '🌟' : '🌱'}</Text>
+        {result.mastered ? <LetterWordReveal glyph={letter.glyph} word={letter.exampleWords[0].word} /> : <Text style={styles.celebration}>🌱</Text>}
         <Text style={styles.resultTitle}>{confirmedMastery ? 'تەواو فێر بوویت!' : result.mastered ? 'ئافەرم! ئەم مەشقەت تەواو کرد' : 'با جارێکی تر ڕاهێنان بکەین'}</Text>
         <Text style={styles.resultText}>{result.mastered ? `ئافەرم! پیتی «${letter.glyph}» بە جوانی نووسیت.` : result.feedbackKu}</Text>
         <StarRating stars={result.stars} maxStars={3} size="lg" />

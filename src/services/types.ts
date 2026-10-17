@@ -140,12 +140,15 @@ export interface LessonProgress {
   completedAt?: string;
 }
 
+export interface DayLog { seconds: number; lessons: number; stars: number; }
 export interface ChildProfile {
   lessonProgress?: Record<string, LessonProgress>;
   skillProgress?: Partial<Record<LearningSkill, SkillProgress>>;
   writingProgress?: Record<string, WritingProgress>;
   placement?: { completedAt: string; correct: number; total: number; recommendedLevel: 1 | 2 | 3; letterIds: string[] };
   practiceSeconds?: number;
+  /** Per local day (YYYY-MM-DD): practice seconds, newly mastered letters and stars earned. Kept for 28 days. */
+  dailyLog?: Record<string, DayLog>;
   letterReviews?: Record<string, LetterReview>;
   learnedWordIds?: string[];
   dailyPracticeRewardDate?: string;

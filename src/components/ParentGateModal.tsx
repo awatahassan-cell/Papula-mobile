@@ -1,10 +1,11 @@
+import { useThemeStyles } from '../theme/useAppearance';
 import { TactileButton as TouchableOpacity } from './TactileButton';
 import { rtlProps, rtlLayout } from '../theme/rtl';
-import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import React, { useState } from 'react';
 import { Modal, View, StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
 import { Text, TextInput } from './RTLText';
-import { ShieldCheck, Check, X } from 'lucide-react-native';
+import { Check, X } from 'lucide-react-native';
+import { PapulaMascot } from './PapulaMascot';
 import {
   generateParentGateChallenge,
   verifyParentGateAnswer,
@@ -20,7 +21,6 @@ export const ParentGateModal: React.FC = () => {
 
 const ParentGateContent: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
-  const {colors}=useAppearance();
   const { parentGateOpen, setParentGateOpen, handleParentGateSuccess } = useAppStore();
   const [challenge, setChallenge] = useState<MathChallenge>(()=>generateParentGateChallenge());
   const [userAnswer, setUserAnswer] = useState('');
@@ -59,7 +59,7 @@ const ParentGateContent: React.FC = () => {
         <View {...rtlProps} style={[styles.backdrop, rtlLayout]}>
           <ScrollView style={styles.scroll} contentContainerStyle={styles.gateCard} keyboardShouldPersistTaps="handled">
             <View style={styles.iconCircle}>
-              <ShieldCheck size={31} color={colors.mint} strokeWidth={1.8} />
+              <PapulaMascot size={56} mood="calm" />
             </View>
             <Text style={styles.title}>ناوچەی دایک و باوک</Text>
             <Text style={styles.subtitle}>

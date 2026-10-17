@@ -1,5 +1,5 @@
 import { mockLetters } from '../data/mockLetters';
-import { ChildProfile, ExampleWord, LetterItem, LetterReview, StoryItem } from './types';
+import { DayLog, ChildProfile, ExampleWord, LetterItem, LetterReview, StoryItem } from './types';
 
 export const CONFUSABLE_GROUPS = [
   ['ba', 'pa', 'ta'], ['ra', 'rra_heavy', 'za'], ['lam', 'lla_heavy'],
@@ -124,4 +124,22 @@ export function hardLetters(profile: ChildProfile, count = 3): HardLetter[] {
       confusedWith: mockLetters.filter(other => other.id !== letter.id && group.includes(other.id)),
     }];
   }).sort((a, b) => a.accuracy - b.accuracy || b.errors - a.errors).slice(0, count);
+}
+
+const KEEP_DAYS = 28;
+/** Adds today's gain to the per-day log and forgets days older than four weeks. */
+export function logDay(log: Record<string, DayLog> | undefined, day: string, gain: DayLog): Record<string, DayLog> {
+  const before = log?.[day] || { seconds: 0, lessons: 0, stars: 0 };
+  const next = { ...(log || {}), [day]: { seconds: before.seconds + gain.seconds, lessons: before.lessons + gain.lessons, stars: before.stars + gain.stars } };
+  const cutoff = localDay(new Date(Date.parse(day + 'T12:00:00') - (KEEP_DAYS - 1) * 86400000));
+  return Object.fromEntries(Object.entries(next).filter(([key]) => key >= cutoff));
+}
+/** The last seven days, oldest first, with totals for the parent's weekly report. */
+export function weeklySummary(profile: ChildProfile, now = new Date()) {
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (6 - i), 12);
+    const key = localDay(date), entry = profile.dailyLog?.[key] || { seconds: 0, lessons: 0, stars: 0 };
+    return { key, weekday: date.getDay(), minutes: Math.round(entry.seconds / 60), seconds: entry.seconds, lessons: entry.lessons, stars: entry.stars };
+  });
+  return { days, minutes: Math.round(days.reduce((sum, d) => sum + d.seconds, 0) / 60), lessons: days.reduce((sum, d) => sum + d.lessons, 0), stars: days.reduce((sum, d) => sum + d.stars, 0), activeDays: days.filter(d => d.seconds > 0 || d.lessons > 0 || d.stars > 0).length };
 }
