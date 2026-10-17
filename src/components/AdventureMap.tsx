@@ -32,7 +32,7 @@ export function AdventureMap({ nodes, isNight, onOpen, onAll }: {
         <Ellipse cx={spots[i].x} cy={spots[i].y + 12} rx={node.status === 'current' ? 49 : 36} ry="16" fill="#7cdb45" />
       </G>)}
     </Svg>
-    <View pointerEvents="none" style={s.mascot}><PapulaMascot size={112} /></View>
+    <View pointerEvents="none" style={s.mascot}><PapulaMascot size={118} mood={isNight ? 'sleepy' : 'happy'} /></View>
     <View style={s.mapLabel}><Route size={17} color="#24416a" /><Text style={s.labelText}>دوورگەی پیتەکان</Text></View>
     {nodes.map((node, i) => {
       const current = node.status === 'current', done = node.status === 'completed', locked = node.status === 'locked';

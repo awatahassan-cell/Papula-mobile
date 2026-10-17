@@ -2,6 +2,7 @@ import React from 'react';
 import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { AppErrorScreen } from '../components/AppErrorScreen';
 import { rtlProps, rtlLayout } from '../theme/rtl';
+import { PapulaMascot } from '../components/PapulaMascot';
 import { View, StyleSheet, StatusBar, ActivityIndicator, I18nManager } from 'react-native';
 import { Text } from '../components/RTLText';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -53,7 +54,7 @@ const MainRouter: React.FC = () => {
   const bedtimeOverlay = isBedtimeActive && route !== 'parent-dashboard' ? (
       <View {...rtlProps} style={[styles.bedtimeContainer, styles.overlay, rtlLayout]}>
         <View style={styles.bedtimeCard}>
-          <Text style={styles.moonEmoji}>🌙</Text>
+          <PapulaMascot size={140} mood="sleepy" />
           <Text style={styles.bedtimeTitle}>کاتی خەوتنی منداڵانە</Text>
           <Text style={styles.bedtimeSub}>
             ئەپڵیکەیشن بەهۆی قفڵی کاتی خەوتنەوە داخراوە. خەوێکی ئاسوودە بۆ تۆی شیرین!

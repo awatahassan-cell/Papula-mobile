@@ -4,6 +4,7 @@ import { useThemeStyles } from '../theme/useAppearance';
 import React from 'react';
 import { Modal, View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
+import { PapulaMascot } from './PapulaMascot';
 import { useAppStore } from '../store/useAppStore';
 import { soundService } from '../services/soundService';
 
@@ -31,7 +32,7 @@ export const DailyMissionsRewardCelebration: React.FC<CelebrationProps> = ({
     <Modal transparent animationType="slide" visible={isOpen} onRequestClose={onClose}>
       <View {...rtlProps} style={[styles.backdrop, rtlLayout]}>
         <View style={styles.card}>
-          <Text style={styles.trophy}>🏆</Text>
+          <PapulaMascot size={150} mood="surprised" />
           <Text style={styles.title}>پیرۆزە! هەموو ئەرکەکانت تەواو کرد!</Text>
           <Text style={styles.desc}>
             تۆ ئەمڕۆ پاڵەوانێکی زۆر زیرەک بوویت. ١٠ ئەستێرەی زێڕین وەربگرە وەک خەڵات!

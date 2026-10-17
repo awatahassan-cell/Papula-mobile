@@ -1,22 +1,31 @@
-import React from 'react';
-import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
+import React, { useEffect, useState } from 'react';
+import { Animated, Easing, Platform, StyleSheet, View } from 'react-native';
+import { SvgXml } from 'react-native-svg';
+import { BUTTERFLY_MOODS, Mood } from './butterflyMoods';
+import { useReducedMotion } from './Motion';
 
-/** Local vector artwork: crisp at every screen size and available offline. */
-export function PapulaMascot({ size = 120 }: { size?: number }) {
-  return <Svg width={size} height={size} viewBox="0 0 160 160">
-    <Ellipse cx="80" cy="145" rx="42" ry="7" fill="#24304a" opacity={0.12} />
-    <Ellipse cx="43" cy="64" rx="33" ry="43" transform="rotate(-30 43 64)" fill="#8b42ec" />
-    <Ellipse cx="117" cy="64" rx="33" ry="43" transform="rotate(30 117 64)" fill="#8b42ec" />
-    <Ellipse cx="45" cy="108" rx="27" ry="29" fill="#ff69a8" />
-    <Ellipse cx="115" cy="108" rx="27" ry="29" fill="#ff69a8" />
-    <Ellipse cx="37" cy="55" rx="12" ry="16" transform="rotate(-30 37 55)" fill="#ffd43b" />
-    <Ellipse cx="123" cy="55" rx="12" ry="16" transform="rotate(30 123 55)" fill="#ffd43b" />
-    <Circle cx="43" cy="110" r="9" fill="#ffc1db" /><Circle cx="117" cy="110" r="9" fill="#ffc1db" />
-    <Path d="M73 42 Q61 15 55 23 M87 42 Q99 15 105 23" fill="none" stroke="#562797" strokeWidth="5" strokeLinecap="round" />
-    <Ellipse cx="80" cy="103" rx="13" ry="33" fill="#6331b4" />
-    <Circle cx="80" cy="62" r="27" fill="#ffdb55" />
-    <Ellipse cx="62" cy="68" rx="6" ry="4" fill="#ff9c87" /><Ellipse cx="98" cy="68" rx="6" ry="4" fill="#ff9c87" />
-    <Circle cx="70" cy="59" r="3" fill="#24304a" /><Circle cx="90" cy="59" r="3" fill="#24304a" />
-    <Path d="M72 72 Q80 81 88 72" fill="none" stroke="#743440" strokeWidth="3" strokeLinecap="round" />
-  </Svg>;
+export type { Mood } from './butterflyMoods';
+const native = Platform.OS !== 'web';
+
+/**
+ * The Papula butterfly in six moods (happy, angry, sad, surprised, sleepy, calm). Local vector artwork: crisp at any
+ * size and offline. `size` is the width; the wings flap gently unless the device asks for reduced motion.
+ */
+export function PapulaMascot({ size = 120, mood = 'happy', flap = true }: { size?: number; mood?: Mood; flap?: boolean }) {
+  const reduced = useReducedMotion();
+  const [wing] = useState(() => new Animated.Value(0));
+  const still = reduced || !flap;
+  const slow = mood === 'sleepy' || mood === 'sad';
+  useEffect(() => {
+    if (still) { wing.setValue(0); return; }
+    const config = { duration: slow ? 1500 : 650, easing: Easing.inOut(Easing.sin), useNativeDriver: native, isInteraction: false };
+    const loop = Animated.loop(Animated.sequence([Animated.timing(wing, { ...config, toValue: 1 }), Animated.timing(wing, { ...config, toValue: 0 })]));
+    loop.start();
+    return () => loop.stop();
+  }, [still, slow, wing]);
+  const art = BUTTERFLY_MOODS[mood], height = (size * 290) / 320;
+  return <View accessible accessibilityRole="image" accessibilityLabel={art.label} style={{ width: size, height }}>
+    <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { transform: [{ scaleX: wing.interpolate({ inputRange: [0, 1], outputRange: [1, slow ? 0.94 : 0.84] }) }] }]}><SvgXml xml={art.wings} width={size} height={height} /></Animated.View>
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}><SvgXml xml={art.body} width={size} height={height} /></View>
+  </View>;
 }
