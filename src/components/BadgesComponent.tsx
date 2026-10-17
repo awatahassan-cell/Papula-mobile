@@ -40,8 +40,8 @@ export const BadgesComponent: React.FC = () => {
           <Award size={14} color="#f59e0b" />
           <Text style={styles.bannerBadgeText}>دەستکەوت و نیشانەکان</Text>
         </View>
-        <Text style={styles.title}>کۆکراوەی میدالیا زێڕینەکانت ✨</Text>
-        <Text style={styles.subtitle}>
+        <Text style={[styles.title, { color: '#ffffff' }]}>کۆکراوەی میدالیا زێڕینەکانت ✨</Text>
+        <Text style={[styles.subtitle, { color: '#ffffffe6' }]}>
           مەشق بکە، چیرۆک بخوێنەوە و پیتەکان فێربە بۆ کردنەوەی نیشانەکان!
         </Text>
         <View style={styles.progressCounter}>
@@ -108,12 +108,12 @@ const baseStyles = StyleSheet.create({
     width: '100%',
   },
   banner: {
-    backgroundColor: '#fffbeb',
+    backgroundColor: '#8746df',
     borderRadius: 24,
     padding: 16,
     marginBottom: 20,
-    borderWidth: 1.5,
-    borderColor: '#fef3c7',
+    borderBottomWidth: 5,
+    borderBottomColor: '#6130aa',
     alignItems: 'center',
   },
   bannerBadge: {

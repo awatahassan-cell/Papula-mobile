@@ -10,7 +10,7 @@ export const learningStyles = StyleSheet.create({
   glyph:{fontFamily:'IBMPlexSansArabic_700Bold',fontSize:38,color:'#1e293b',textAlign:'center'},
   button:{minHeight:64,padding:16,borderRadius:20,backgroundColor:'#047857',alignItems:'center',justifyContent:'center',width:'100%',maxWidth:480,alignSelf:'center'},
   buttonText:{fontFamily:'IBMPlexSansArabic_700Bold',fontSize:20,color:'#ffffff',textAlign:'center'},
-  secondary:{minHeight:64,padding:14,borderRadius:20,backgroundColor:'#e2e8f0',alignItems:'center',justifyContent:'center',maxWidth:480,alignSelf:'center'},
+  secondary:{minHeight:64,padding:14,borderRadius:20,backgroundColor:'#dbeafe',alignItems:'center',justifyContent:'center',maxWidth:480,alignSelf:'center'},
   correct:{backgroundColor:'#dcfce7',borderColor:'#16a34a'},
   retry:{backgroundColor:'#fef3c7',borderColor:'#d97706'},
   disabled:{opacity:0.4},
