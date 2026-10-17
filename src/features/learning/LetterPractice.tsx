@@ -1,5 +1,6 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
+import { useGameScroll } from './useGameScroll';
 import React, { useEffect, useRef, useState } from 'react';
 import { View, ScrollView} from 'react-native';
 import { Text } from '../../components/RTLText';
@@ -23,6 +24,7 @@ export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:
   });
   const [index,setIndex]=useState(0);
   const [selected,setSelected]=useState<string|null>(null);
+  const scroll=useGameScroll(index,selected!==null);
   const [finished,setFinished]=useState(false);
   const locked=useRef(false);
   const round=rounds[index];
@@ -44,7 +46,7 @@ export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:
   };
   if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! مەشقەکەت تەواو کرد</Text><Text style={s.text}>پیتەکانت بە دروستی ناسینەوە</Text><TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>گەڕانەوە</Text></TouchableOpacity></View>;
   if(!round)return <View style={s.container}><Text style={s.text}>مەشقێک ئامادە نییە</Text></View>;
-  return <ScrollView contentContainerStyle={s.container}>
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}>
     <Text style={s.title}>{mode==='similar'?'پیتە هاوشێوەکان':mode==='review'?'مەشقی من':'یاریی دەنگ'}</Text>
     <Text style={s.text}>{index+1} / {rounds.length}</Text>
     <View style={s.card}>

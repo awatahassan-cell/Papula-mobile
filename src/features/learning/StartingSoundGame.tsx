@@ -1,5 +1,6 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
+import { useGameScroll } from './useGameScroll';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, View} from 'react-native';
 import { Text } from '../../components/RTLText';
@@ -18,12 +19,13 @@ export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
     return {word,target,options:shuffled([target,...shuffled(mockLetters.filter(letter=>letter.id!==target.id)).slice(0,2)])};
   }));
   const [index,setIndex]=useState(0),[answer,setAnswer]=useState<string|null>(null),[heard,setHeard]=useState(false),[help,setHelp]=useState(false),[finished,setFinished]=useState(false);
+  const scroll=useGameScroll(index,answer!==null);
   const locked=useRef(false),advanced=useRef(-1),token=useRef(0);
   const round=rounds[index];const correct=answer===round?.target.id;
   useEffect(()=>()=>{token.current++;void soundService.stopSpeaking();},[]);
   if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>دەنگی سەرەتای وشەکانت دۆزییەوە</Text><TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>گەڕانەوە</Text></TouchableOpacity></View>;
   if(!round)return null;
-  return <ScrollView contentContainerStyle={s.container}>
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}>
     <Text style={s.title}>وشەکە بە چ دەنگێک دەست پێ دەکات؟</Text><Text style={s.text}>{index+1} / {rounds.length}</Text>
     <View style={s.card}><Text style={s.emoji}>{round.word.imageEmoji}</Text>
       <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>{const active=++token.current;void soundService.speakWord(round.word.word,{onEnd:()=>{if(active===token.current)setHeard(true);}});}}><Text style={s.buttonText}>وشەکە ببیستە</Text></TouchableOpacity>

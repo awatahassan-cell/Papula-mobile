@@ -1,4 +1,5 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
+import { useGameScroll } from './useGameScroll';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Text } from '../../components/RTLText';
@@ -16,6 +17,7 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   const [selected, setSelected] = useState<number[]>([]);
   const [feedback, setFeedback] = useState('');
   const [correct, setCorrect] = useState(false);
+  const scroll=useGameScroll(index,correct||feedback!=='');
   const [finished, setFinished] = useState(false);
   const helped = useRef(false);
   const advanced = useRef(-1);
@@ -62,7 +64,7 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   const assembled = assembleSyllables(round, selected);
   const canHearSyllables = round.syllables.every(text => soundService.canSpeak(text));
   const full = selected.length === round.syllables.length;
-  return <ScrollView contentContainerStyle={s.container}>
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}>
     <Text style={s.title}>بڕگەکان پێکەوە ببەستە</Text><Text style={s.text}>{index + 1} / {rounds.length}</Text>
     <View style={s.card}>
       <Text style={s.emoji}>{round.word.imageEmoji}</Text>

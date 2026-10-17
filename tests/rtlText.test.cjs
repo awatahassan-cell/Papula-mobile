@@ -11,7 +11,7 @@ const react = { forwardRef: render => render,
   createContext: value => fontContext = { value, Provider: 'FontProvider' }, useContext: context => context.value,
   createElement: (type, props, ...children) => ({ type, props: { ...props, ...(children.length ? { children: children[0] } : {}) } }) };
 react.default = react;
-const native = { Text: 'Text', TextInput: 'TextInput', StyleSheet: { create: value => {
+const native = { Platform: { OS: 'web' }, Text: 'Text', TextInput: 'TextInput', StyleSheet: { create: value => {
   // RN Web removes this property and logs a development error when registered.
   for (const style of Object.values(value)) assert.ok(!('direction' in style), 'keep layout direction outside StyleSheet.create');
   return value;
@@ -81,4 +81,15 @@ test('all screens and shared components use RTL text primitives', () => {
     }
   }
   walk(path.join(__dirname, '../src'));
+});
+
+test('on phones right-aligned Kurdish text follows its own direction; centred text stays centred', () => {
+  native.Platform.OS = 'android';
+  try {
+    const unwrap = element => element.type === 'FontProvider' ? element.props.children : element;
+    const flat = style => Object.assign({}, ...(Array.isArray(style) ? style : [style]).filter(Boolean));
+    assert.equal(flat(unwrap(mod.exports.Text({ style: { textAlign: 'right' } }, null)).props.style).textAlign, 'auto');
+    assert.equal(flat(unwrap(mod.exports.Text({ style: { textAlign: 'center' } }, null)).props.style).textAlign, 'center');
+    assert.equal(flat(unwrap(mod.exports.Text({}, null)).props.style).textAlign, 'auto');
+  } finally { native.Platform.OS = 'web'; }
 });

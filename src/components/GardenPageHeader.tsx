@@ -20,12 +20,12 @@ const headings: Partial<Record<AppRoute, [string, string]>> = {
 export function GardenPageHeader() {
   const { route, selectedLetter } = useAppStore();
   const { isGarden } = useAppearance();
-  const { pageMax } = useResponsive();
+  const { pageMax, tablet } = useResponsive();
   if (!isGarden || route === 'home' || route === 'story-reader') return null; // the reader shows its own title
   const heading = route === 'letter-detail' ? [`پیتی ${selectedLetter?.glyph ?? ''}`, 'ببینە، بیبیستە و فێر ببە']
     : headings[route];
   if (!heading) return null;
-  return <View style={[styles.frame, { maxWidth: pageMax }]}><GardenSection title={heading[0]} subtitle={['letter-detail'].includes(route)?undefined:heading[1]} /></View>;
+  return <View style={[styles.frame, { maxWidth: pageMax }]}><GardenSection title={heading[0]} subtitle={!tablet||route==='letter-detail'?undefined:heading[1]} /></View>;
 }
 const styles = StyleSheet.create({
   frame: { width: '100%', maxWidth: 840, alignSelf: 'center', paddingHorizontal: 18, paddingTop: 2, paddingBottom: 4 },

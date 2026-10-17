@@ -1,5 +1,6 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
+import { useGameScroll } from './useGameScroll';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, ScrollView} from 'react-native';
 import { Text } from '../../components/RTLText';
@@ -17,6 +18,7 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
   const [selected,setSelected]=useState<number[]>([]);
   const [feedback,setFeedback]=useState('');
   const [correct,setCorrect]=useState(false);
+  const scroll=useGameScroll(round,correct||feedback!=='');
   const [finished,setFinished]=useState(false);
   const [showWords,setShowWords]=useState(false);
   const locked=useRef(false);
@@ -59,7 +61,7 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
     <Text style={s.text}>{queue.map(item=>item.word).join('، ')}</Text>
     <TouchableOpacity accessibilityRole="button" style={s.button} onPress={onComplete||onExit}><Text style={s.buttonText}>{onComplete?'چیرۆکەکەم ببینم':'گەڕانەوە بۆ یارییەکان'}</Text></TouchableOpacity>
   </ScrollView>;
-  return <ScrollView contentContainerStyle={s.container}>
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}>
     <Text style={s.title}>وشە دروست بکەم</Text><Text style={s.text}>{round+1} / {queue.length}</Text>
     <View style={s.card}>
       <Text style={s.emoji}>{word.imageEmoji}</Text>

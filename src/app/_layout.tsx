@@ -81,7 +81,6 @@ const MainRouter: React.FC = () => {
   return (
     <SafeAreaView {...rtlProps} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={isGarden ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}>
       <LinearGradient pointerEvents="none" colors={extras.gradient} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={StyleSheet.absoluteFill} />
-      <AmbientSky />
       <StatusBar barStyle={isNight ? 'light-content' : 'dark-content'} backgroundColor={isGarden ? appearanceColors.background : '#ffffff'} />
       {route !== 'onboarding' && <TopHeader />}
       {/* Phones: tab bar under the content. Tablets: a rail on the right (first child of an RTL row). */}
@@ -91,10 +90,11 @@ const MainRouter: React.FC = () => {
           <GardenPageHeader />
           <View {...rtlProps} style={[styles.screenContainer, rtlLayout, isGarden && { backgroundColor: 'transparent' }]}>
             <ThemeProvider value={TRANSPARENT_THEME}>
-              <Stack screenOptions={{ headerShown: false, animation: 'fade_from_bottom', contentStyle: { backgroundColor: 'transparent', ...rtlLayout } }} />
+              <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: appearanceColors.background, ...rtlLayout } }} />
             </ThemeProvider>
           </View>
           {!tablet && <GardenNavigation />}
+          <AmbientSky />
         </View>
       </View>
 
