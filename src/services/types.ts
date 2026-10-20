@@ -142,6 +142,9 @@ export interface LessonProgress {
 
 export interface DayLog { seconds: number; lessons: number; stars: number; }
 export interface ChildProfile {
+  checkpoint?: LearningCheckpoint;
+  /** Actual foreground learning time, independent of writing-attempt estimates. */
+  screenTimeLog?: Record<string, number>;
   lessonProgress?: Record<string, LessonProgress>;
   skillProgress?: Partial<Record<LearningSkill, SkillProgress>>;
   writingProgress?: Record<string, WritingProgress>;
@@ -190,6 +193,9 @@ export interface LetterReview {
 }
 
 export interface ParentSettings {
+  activeProfileId?: string;
+  bedtimeStart?: string;
+  bedtimeEnd?: string;
   /** Colour palette chosen by a parent: cloud, lagoon or blossom (older saved names are migrated). */
   appearanceTheme?: 'cloud' | 'lagoon' | 'blossom' | 'classic' | 'garden' | 'sky' | 'lavender' | 'rose' | 'sunset';
   /** Day, night, or follow the clock (night from 19:00 to 06:00). */
@@ -202,6 +208,18 @@ export interface ParentSettings {
   activePlan: 'none' | 'monthly' | 'yearly';
   trialEndDate?: string;
   language: 'sorani' | 'kurmanji';
+}
+
+export interface LearningCheckpoint {
+  kind: 'lesson' | 'story' | 'writing';
+  contentId: string;
+  step?: number;
+  wordIndex?: number;
+  round?: number;
+  listenCount?: number;
+  pageIndex?: number;
+  readMode?: 'read_to_me' | 'i_read';
+  writingMode?: WritingMode;
 }
 
 export interface WeeklyStats {

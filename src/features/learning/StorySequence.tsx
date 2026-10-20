@@ -1,3 +1,5 @@
+import { HelpButton } from '../../components/HelpButton';
+import { exerciseHelp } from '../../services/exerciseHelp';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useEffect, useRef, useState } from 'react';
@@ -17,7 +19,7 @@ export const StorySequence:React.FC<{story:StoryItem;onComplete:()=>void}>=({sto
   const helped=useRef(false),locked=useRef(false),[done,setDone]=useState(false);
   useEffect(()=>()=>{void soundService.stopSpeaking();},[]);
   const scenes:Record<string,string>={morning_sun:'☀️ ⛰️',butterfly_waking:'🦋 🛏️',garden_flying:'🦋 🌳 🌷',forest_bear:'🌲 🐻',fox_pointing:'🦊 👉',honey_harvest:'🐻 🍯',starry_night:'🌌 ✨',deer_moon:'🦌 🌙',moon_speaking:'🌙 💬',rabbit_boasting:'🐇 💬',turtle_challenge:'🐢 🏁',rabbit_sleeping:'🐇 💤',cloud_sitting:'☁️',rain_falling:'🌧️',sun_shining:'☀️',ant_summer:'🐜 ☀️',grasshopper_play:'🦗 🎵',ant_working:'🐜 🌾',lion_sleeping:'🦁 💤',mouse_running:'🐭 🏃',mouse_spared:'🦁 🐭 💛'};
-  return <ScrollView contentContainerStyle={s.container}><Text style={s.title}>سەرەتا چی ڕوویدا؟ 📖</Text><Text style={s.text}>بە ڕیزی ڕوودان کرتە لە بەشەکانی چیرۆک بکە.</Text>
+  return <ScrollView contentContainerStyle={s.container}><HelpButton text={exerciseHelp.sequence} /><Text style={s.title}>سەرەتا چی ڕوویدا؟ 📖</Text><Text style={s.text}>بە ڕیزی ڕوودان کرتە لە بەشەکانی چیرۆک بکە.</Text>
     {cards.map(({page,id})=><View key={id} style={s.card}>
       <Text style={s.emoji}>{scenes[page.illustrationTheme]||(/[\u{1F300}-\u{1FAFF}]/u.test(page.illustrationTheme)?page.illustrationTheme:story.coverEmoji)}</Text>
       <TouchableOpacity accessibilityRole="button" disabled={selected.includes(id)||done} style={[s.secondary,{width:'100%'},selected.includes(id)&&s.correct]} onPress={()=>setSelected(previous=>previous.includes(id)?previous:[...previous,id])}><Text style={[s.text,{writingDirection:'rtl',textAlign:'right'}]}>{selected.includes(id)?`${selected.indexOf(id)+1}. `:''}{page.textKu}</Text></TouchableOpacity>

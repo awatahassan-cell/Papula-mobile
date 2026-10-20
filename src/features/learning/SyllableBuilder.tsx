@@ -1,3 +1,5 @@
+import { HelpButton } from '../../components/HelpButton';
+import { exerciseHelp } from '../../services/exerciseHelp';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useGameScroll } from './useGameScroll';
 import React, { useEffect, useRef, useState } from 'react';
@@ -64,7 +66,7 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   const assembled = assembleSyllables(round, selected);
   const canHearSyllables = round.syllables.every(text => soundService.canSpeak(text));
   const full = selected.length === round.syllables.length;
-  return <ScrollView ref={scroll} contentContainerStyle={s.container}>
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpButton text={exerciseHelp.syllables} />
     <Text style={s.title}>بڕگەکان پێکەوە ببەستە</Text><Text style={s.text}>{index + 1} / {rounds.length}</Text>
     <View style={s.card}>
       <Text style={s.emoji}>{round.word.imageEmoji}</Text>

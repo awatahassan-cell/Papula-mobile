@@ -12,7 +12,7 @@ import Svg, { Path, Line, Circle } from 'react-native-svg';
 import { Play, Eraser, Undo2 } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
 import { useResponsive, writingBoardSide } from '../../theme/responsive';
-import { MODE_LABELS, OPEN_WORD_WRITING, PEN_LABELS, TOOL_LABELS, OVERALL_SCORE_LABEL, STAGE_TITLES } from './writingText';
+import { MODE_LABELS, OPEN_WORD_WRITING, PEN_LABELS, TOOL_LABELS, STAGE_TITLES } from './writingText';
 import { WritingResultDetails } from './WritingResultDetails';
 import { StarRating } from '../../components/StarRating';
 import { mockLetters } from '../../data/mockLetters';
@@ -36,9 +36,12 @@ const Stroke: React.FC<{ points: StrokePoint[]; color: string; width: number }> 
 export const WritingScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
   const { colors, extras } = useAppearance();
-  const { selectedLetter, setSelectedLetter, setRoute, saveWritingScore, currentProfile } = useAppStore();
+  const { selectedLetter, setSelectedLetter, setRoute, saveWritingScore, currentProfile, saveCheckpoint, clearCheckpoint } = useAppStore();
   const [letter, setLetter] = useState(selectedLetter || mockLetters[0]);
-  const [mode,setMode]=useState<WritingMode>(()=>suggestedWritingMode(currentProfile.writingProgress?.[(selectedLetter||mockLetters[0]).id]));
+  const writingProgress = currentProfile.writingProgress?.[letter.id];
+  const savedMode = currentProfile.checkpoint?.kind === 'writing' && currentProfile.checkpoint.contentId === letter.id ? currentProfile.checkpoint.writingMode : undefined;
+  const resumeMode: WritingMode = savedMode && (savedMode === 'trace' || (savedMode === 'copy' && writingProgress?.tracePassed) || (savedMode === 'independent' && writingProgress?.copyPassed)) ? savedMode : suggestedWritingMode(writingProgress);
+  const [mode,setMode]=useState<WritingMode>(resumeMode);
   const [confirmedMastery,setConfirmedMastery]=useState(false);
   const attemptStarted=useRef(0);
   const usedHelp=useRef(false);
@@ -69,6 +72,10 @@ export const WritingScreen: React.FC = () => {
   const demoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const scrollRef = useRef<ScrollView>(null);
   const guide = getKurdishStrokeGuide(letter.id) || getKurdishStrokeGuide(letter.glyph) || letter.strokeGuide;
+  useEffect(() => {
+    saveCheckpoint?.({ kind: 'writing', contentId: letter.id, writingMode: mode });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [letter.id, mode]);
   const index = mockLetters.findIndex(item => item.id === letter.id);
   const hasNext = index < mockLetters.length - 1 && isLessonUnlocked(currentProfile, mockLetters[index + 1].id);
 
@@ -87,7 +94,7 @@ export const WritingScreen: React.FC = () => {
   useEffect(() => {
     // Reset the whole attempt whenever the letter changes.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    clear(); stopDemo(); setResult(null); setDrawing(false);setMode(suggestedWritingMode(currentProfile.writingProgress?.[letter.id]));usedHelp.current=false;attemptStarted.current=Date.now();
+    clear(); stopDemo(); setResult(null); setDrawing(false);setMode(resumeMode);usedHelp.current=false;attemptStarted.current=Date.now();
     scrollRef.current?.scrollTo({ y: 0, animated: false });
     return () => { if (demoTimer.current) clearInterval(demoTimer.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only reset when the letter (or its guide) changes
@@ -163,7 +170,9 @@ export const WritingScreen: React.FC = () => {
       setResult(evaluated);
       if (evaluated.mastered) {
         soundService.playCorrect();
-        void soundService.speakWord(confirmed?`ئافەرم! تەواو فێری نووسینی پیتی ${letter.name} بوویت.`:'ئافەرم! ئەم مەشقەت بە باشی تەواو کرد.');
+        void soundService.speakWord(confirmed?`ئافەرم! تەواو فێری نووسینی پیتی ${letter.name} بوویت.`:'ئافەرم! ئەم مەشقەت بە باشی تەواو کرد.', {
+          onEnd: () => { void soundService.speakWord('با بگەڕێینەوە بۆ ڕێڕەوی فێربوون.'); },
+        });
       } else soundService.playEncouragingTryAgain();
     } catch {
       setError('ئەنجامەکە هەڵنەگیرا. جارێکی تر تاقی بکەرەوە.');
@@ -178,10 +187,9 @@ export const WritingScreen: React.FC = () => {
   const changeMode=(next:WritingMode)=>{stopDemo();void soundService.stopSpeaking();setMode(next);setResult(null);clear();usedHelp.current=false;attemptStarted.current=Date.now();};
   const goHome = () => { void soundService.stopSpeaking(); setResult(null); setRoute('home'); };
   const nextLesson = () => {
-    if (!hasNext || !result?.mastered || !isLessonComplete(currentProfile, letter.id)) return;
+    clearCheckpoint?.();
     void soundService.stopSpeaking();
-    setSelectedLetter(mockLetters[index + 1]);
-    setResult(null); setRoute('letter-detail');
+    setResult(null); setRoute('alphabet');
   };
 
   // The butterfly flies along the demonstration, always at the tip of the line being drawn.
@@ -253,7 +261,7 @@ export const WritingScreen: React.FC = () => {
         {result.rubric && guide && <WritingResultDetails guide={guide} strokes={submitted} aligned={mode==='trace'?submitted:normalizeIndependentWriting(guide,submitted)} rubric={result.rubric} stars={result.stars} />}
         {result.mastered ? <>
           {mode!=='independent' && <BigButton onPress={()=>changeMode(mode==='trace'?'copy':'independent')} variant="success" size="md" style={styles.fullButton}>{mode==='trace'?'ئێستا بە نموونە بنووسم':'ئێستا سەربەخۆ بنووسم'}</BigButton>}
-          {hasNext && isLessonComplete(currentProfile,letter.id) && <BigButton onPress={nextLesson} variant="success" size="md" style={styles.fullButton}>{`پیتی نوێ «${mockLetters[index + 1].glyph}» کراوەتەوە ←`}</BigButton>}
+          <BigButton onPress={nextLesson} variant="success" size="md" style={styles.fullButton}>با بگەڕێینەوە بۆ ڕێڕەوی فێربوون</BigButton>
           {!isLessonComplete(currentProfile,letter.id) && <BigButton onPress={()=>{setResult(null);setRoute('letter-detail');}} variant="outline" size="md" style={styles.fullButton}>هەنگاوەکانی وانەکە تەواو بکەم</BigButton>}
           {index===mockLetters.length-1 && isLessonComplete(currentProfile,letter.id) && <Text style={styles.resultText}>گەیشتیتە کۆتایی پیتەکان!</Text>}
           <BigButton onPress={goHome} variant="outline" size="md" style={styles.fullButton}>گەڕانەوە بۆ سەرەتا</BigButton>

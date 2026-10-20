@@ -17,7 +17,7 @@ const headings: Partial<Record<AppRoute, [string, string]>> = {
   'parent-dashboard': ['دایک و باوک', 'پێشکەوتن و ڕێکخستنەکانی منداڵەکەت'],
 };
 export function GardenPageHeader() {
-  const { route, selectedLetter } = useAppStore();
+  const { route } = useAppStore();
   const { isGarden } = useAppearance();
   const { pageMax, tablet } = useResponsive();
   if (!isGarden || route === 'home' || route === 'story-reader' || route === 'match-game' || route === 'letter-detail' || route === 'writing' || route === 'word-writing') return null;

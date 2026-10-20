@@ -5,8 +5,10 @@ import {Layers,Shapes,Link2,AudioLines,WholeWord,PencilLine,BookOpen,TrendingUp,
 import {useResponsive} from '../../theme/responsive';
 import {useThemeStyles} from '../../theme/useAppearance';
 import {ChildProfile,LearningSkill} from '../../services/types';
-import {hardLetters,reviewPlan,weeklySummary} from '../../services/learningEngine';
+import {hardLetters,weeklySummary} from '../../services/learningEngine';
 import {skillSummary,writingMastered} from '../../services/foundationalLearning';
+import { personalPractice } from '../../services/personalPractice';
+import { ParentLearningAdvice } from '../../components/ParentLearningAdvice';
 
 const WEEKDAY_SHORT=['ی','د','س','چ','پ','ھ','ش'];// getDay(): Sunday first
 const skillIcons={recognition:Shapes,forms:Link2,phonics:AudioLines,syllables:Layers,word:WholeWord,writing:PencilLine,reading:BookOpen};
@@ -14,13 +16,14 @@ const skillLabels:Record<LearningSkill,string>={recognition:'ناسینەوەی 
 export const LearningReport:React.FC<{profile:ChildProfile}>=({profile})=>{
  const s=useThemeStyles(baseStyles);
  const {tablet}=useResponsive();
- const next=reviewPlan(profile,3);
+ const next=personalPractice(profile).map(task=>task.letter);
  const hard=hardLetters(profile);
  const independent=Object.values(profile.writingProgress||{}).filter(writingMastered).length;
  const minutes=Math.round((profile.practiceSeconds||0)/60);
  const week=weeklySummary(profile);
  const peak=Math.max(1,...week.days.map(day=>day.minutes));
  return <View testID="learning-report" style={s.report}>
+  <ParentLearningAdvice profile={profile} />
   <View style={s.reportHeading}><View style={s.headingIcon}><TrendingUp size={22} color={s.accent.color}/></View><View style={s.copy}><Text style={s.title}>هەنگاوەکانی {profile.name}</Text><Text style={s.subtitle}>هەر هەوڵێک، هەنگاوێکە بەرەو فێربوون</Text></View></View>
   <View testID="weekly-report" style={s.weekCard}>
   <View style={s.weekHeading}><Text style={s.sectionTitle}>ئەم هەفتەیە</Text><Text style={s.subtitle}>{week.activeDays} لە ٧ ڕۆژ مەشقی کرد</Text></View>

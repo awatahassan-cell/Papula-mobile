@@ -139,7 +139,8 @@ export function weeklySummary(profile: ChildProfile, now = new Date()) {
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (6 - i), 12);
     const key = localDay(date), entry = profile.dailyLog?.[key] || { seconds: 0, lessons: 0, stars: 0 };
-    return { key, weekday: date.getDay(), minutes: Math.round(entry.seconds / 60), seconds: entry.seconds, lessons: entry.lessons, stars: entry.stars };
+    const seconds = profile.screenTimeLog?.[key] ?? entry.seconds;
+    return { key, weekday: date.getDay(), minutes: Math.round(seconds / 60), seconds, lessons: entry.lessons, stars: entry.stars };
   });
   return { days, minutes: Math.round(days.reduce((sum, d) => sum + d.seconds, 0) / 60), lessons: days.reduce((sum, d) => sum + d.lessons, 0), stars: days.reduce((sum, d) => sum + d.stars, 0), activeDays: days.filter(d => d.seconds > 0 || d.lessons > 0 || d.stars > 0).length };
 }

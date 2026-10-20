@@ -13,9 +13,11 @@ import { getLetterStories } from '../../data/letterStories';
 import { getKurdishStrokeGuide } from '../../data/kurdishLetterGuides';
 import { isLessonComplete, isLessonUnlocked, lessonChecklist, lessonResumeStep } from '../../services/lessonPath';
 import { useAppStore } from '../../store/useAppStore';
+import { HelpButton } from '../../components/HelpButton';
 
 const stepIcons = [Headphones, Shapes, Images, Target, PencilLine];
 const titles = ['گوێ بگرە', 'شێوەکانی پیت', 'وشەکان ببینە', 'پیتەکە بدۆزەوە', 'با بینووسین'];
+const REQUIRED_LISTENS = 5;
 const kurdishNumber = (value: number) => String(value).replace(/[0-9]/g, (digit) => '٠١٢٣٤٥٦٧٨٩'[Number(digit)]);
 
 // The data uses both Kurdish heh forms. Highlight either without changing the word.
@@ -24,31 +26,32 @@ const WordWithLetter: React.FC<{ word: string; glyph: string }> = ({ word, glyph
   const matchWord = word.replace(/ھ/g, 'ه');
   const matchGlyph = glyph.replace(/ھ/g, 'ه');
   const index = matchWord.indexOf(matchGlyph);
-  return <Text style={styles.word} accessibilityLabel={word}>
-    {index < 0 ? word : <>{word.slice(0, index)}<Text style={styles.highlight}>{word.slice(index, index + glyph.length)}</Text>{word.slice(index + glyph.length)}</>}
-  </Text>;
+  return <Text style={[styles.word, index >= 0 && styles.highlight]} accessibilityLabel={word}>{word}</Text>;
 };
 
 export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter }) => {
   const styles = useThemeStyles(baseStyles);
-  const { currentProfile, setRoute, setSelectedLetter, setSelectedStory, saveWord, recordPracticeResult, recordLessonStep } = useAppStore();
+  const { currentProfile, setRoute, setSelectedLetter, setSelectedStory, saveWord, recordPracticeResult, recordLessonStep, saveCheckpoint } = useAppStore();
+  const bookmark = currentProfile.checkpoint?.kind === 'lesson' && currentProfile.checkpoint.contentId === letter.id ? currentProfile.checkpoint : undefined;
   const progress = currentProfile.lessonProgress?.[letter.id];
-  const passedLetter = isLessonComplete(currentProfile, letter.id) || !!currentProfile.writingProgress?.[letter.id]?.tracePassed;
+  const passedLetter = isLessonComplete(currentProfile, letter.id);
   const checklist = lessonChecklist(currentProfile, letter.id);
   const [formsPassed, setFormsPassed] = useState(passedLetter || !!progress?.formsPassed);
   const [listened, setListened] = useState(passedLetter || !!progress?.listened || currentProfile.masteredLetterIds.includes(letter.id));
-  const completedListens = useRef(0);
+  const [listenCount, setListenCount] = useState(listened ? REQUIRED_LISTENS : Math.max(0, Math.min(4, bookmark?.listenCount || 0)));
+  const completedListens = useRef(listenCount);
+  const [reviewing] = useState(passedLetter || !!currentProfile.writingProgress?.[letter.id]?.tracePassed || !!progress?.listened || !!progress?.formsPassed || !!progress?.seenExampleIds.length);
   const listeningAttempt = useRef(0);
   const resumeStep = lessonResumeStep(currentProfile, letter.id);
-  const initialWord = Math.max(0, letter.exampleWords.findIndex(word => !progress?.seenExampleIds.includes(word.id)));
+  const initialWord = Math.max(0, Math.min(letter.exampleWords.length - 1, bookmark?.wordIndex ?? letter.exampleWords.findIndex(word => !progress?.seenExampleIds.includes(word.id))));
   const [seenExamples, setSeenExamples] = useState<string[]>(
     passedLetter
       ? letter.exampleWords.map(w => w.id)
       : [...new Set([...(progress?.seenExampleIds || []), ...(resumeStep === 2 ? [letter.exampleWords[initialWord].id] : [])])]
   );
-  const [step, setStep] = useState(resumeStep);
+  const [step, setStep] = useState(bookmark ? Math.max(0, Math.min(passedLetter ? 4 : resumeStep, bookmark.step || 0)) : resumeStep);
   const [wordIndex, setWordIndex] = useState(initialWord);
-  const [round, setRound] = useState(0);
+  const [round, setRound] = useState(Math.max(0, Math.min(letter.exampleWords.length - 1, bookmark?.round || 0)));
   const [answer, setAnswer] = useState<string | null>(null);
   const [savedWords, setSavedWords] = useState<string[]>([]);
   const [showMore, setShowMore] = useState(false);
@@ -63,12 +66,19 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
   const practiceWord = letter.exampleWords[round];
   const guide = getKurdishStrokeGuide(letter.id) || getKurdishStrokeGuide(letter.glyph) || letter.strokeGuide;
   const writingInstruction = guide?.instructionKu || 'دەست لە پیشاندان بدە، پاشان بە پەنجە بنووسە';
+  useEffect(() => {
+    saveCheckpoint?.({ kind: 'lesson', contentId: letter.id, step, wordIndex, round, listenCount });
+    // Store callbacks change with profile updates; only actual screen progress should checkpoint.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [letter.id, step, wordIndex, round, listenCount]);
 
   useEffect(() => {
-    if(step===0) {void soundService.speakWord('پەپوولە ئەمڕۆ پیتێکی تازەی بۆ هێناون و ئەویش بریتییە لە', {onEnd:()=>{void soundService.speakWord(`پیتی ${letter.name}`, {onEnd:()=>{void soundService.speakWord('تۆش بە جوانی گوێ بگرە و چەند جارێک بیڵێرەوە.');}});}});}
+    const attemptRef = listeningAttempt;
+    let active = true;
+    if(step===0) {void soundService.speakWord(reviewing ? 'با دەست بکەین بە پێداچوونەوەی پیتەکە.' : 'پەپوولە ئەمڕۆ پیتێکی تازەی بۆ هێناون و ئەویش بریتییە لە', {onEnd:()=>{if (!active) return; void soundService.speakWord(`پیتی ${letter.name}`, {onEnd:()=>{if (active) void soundService.speakWord('تۆش بە جوانی پێنج جار گوێ بگرە و بیڵێرەوە.');}});}});}
     else void soundService.speakWord(titles[step]);
-    return ()=>{void soundService.stopSpeaking();};
-  }, [step,letter.name]);
+    return ()=>{active = false; attemptRef.current++; void soundService.stopSpeaking();};
+  }, [step,letter.name,reviewing]);
   useEffect(() => () => { void soundService.stopSpeaking(); }, []);
   useEffect(() => {
     if (step === 2) {
@@ -126,24 +136,18 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
   };
   const listen = () => {
     if (step === 0) {
-      if (!passedLetter) setListened(false);
       const attempt = ++listeningAttempt.current;
-      const praise = () => {
-        let finished = false;
-        void soundService.speakWord('ئافەرم! ئامادەیت بۆ هەنگاوی دواتر.', {onEnd:()=>{
-          if (finished || attempt !== listeningAttempt.current) return;
-          finished = true;
-          setListened(true);
-          recordLessonStep(letter.id, 'listening');
-        }});
-      };
-      if (completedListens.current >= 3) { praise(); return; }
       let finished = false;
       void soundService.speakWord(`پیتی ${letter.name}`, {onEnd:()=>{
         if (finished || attempt !== listeningAttempt.current) return;
         finished = true;
-        completedListens.current++;
-        if (completedListens.current === 3) praise();
+        completedListens.current = Math.min(REQUIRED_LISTENS, completedListens.current + 1);
+        setListenCount(completedListens.current);
+        if (completedListens.current === REQUIRED_LISTENS) {
+          setListened(true);
+          recordLessonStep(letter.id, 'listening');
+          void soundService.speakWord('ئافەرم! ئامادەیت بۆ هەنگاوی دواتر.');
+        }
       }});
       return;
     }
@@ -162,6 +166,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
   return (
     <View style={styles.screen}>
     <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
+      <HelpButton key={step} text={step===0?'تۆش بە جوانی پێنج جار گوێ بگرە و بیڵێرەوە.':step===1?'شێوە و خاڵەکانی پیتەکە لە وشەدا سەیر بکە.':step===3?`وشەی ${practiceWord.word}. پیتی ${letter.name} بدۆزەوە.`:step===4?writingInstruction:titles[step]} />
       <View style={styles.journey} accessibilityRole="progressbar" accessibilityLabel="هەنگاوەکانی وانە" accessibilityValue={{min:1,max:5,now:step+1}}>
         {titles.map((title,index)=>{
           const stepDone = passedLetter || index < step || !!checklist[index]?.done;
@@ -225,6 +230,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
           <LetterVoicePractice />
         </View>
         {step === 0 && <>
+          <Text testID="letter-listening-count" accessibilityLiveRegion="polite" style={styles.listenedText}>{`${listenCount}/${REQUIRED_LISTENS}`} — پێنج جار گوێ لە پیتەکە بگرە</Text>
           <View style={styles.letterScene}><View accessible={false}><Sparkles size={24} color={styles.sceneSpark.color} strokeWidth={1.8} /></View><View style={styles.glyphCircle}><Text style={styles.glyph}>{letter.glyph}</Text></View><View accessible={false} style={{alignSelf:'flex-end',marginBottom:12}}><Sprout size={28} color={styles.journeyLabelCurrent.color} strokeWidth={1.8} /></View></View>
           {listened&&<View style={styles.listenedBadge}><Text style={styles.listenedText}>✓ ئافەرم! ئامادەیت بۆ هەنگاوی دواتر</Text></View>}
           {letter.phonemeAudioUri&&<TouchableOpacity accessibilityRole="button" style={styles.secondary} onPress={()=>void soundService.playReviewedSound(letter.phonemeAudioUri!)}><Text style={styles.secondaryText}>دەنگی پیتەکە ببیستە</Text></TouchableOpacity>}

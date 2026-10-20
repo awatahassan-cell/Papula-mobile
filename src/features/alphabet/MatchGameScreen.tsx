@@ -1,3 +1,5 @@
+import { HelpButton } from '../../components/HelpButton';
+import { sectionIntroductions } from '../../services/sectionIntroductions';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import { Ear, Eye, Layers, Puzzle, Volume2 } from 'lucide-react-native';
@@ -40,7 +42,7 @@ export const MatchGameScreen: React.FC = () => {
   if (mode === 'sound' || mode === 'similar') return <LetterPractice mode={mode} onExit={() => setMode('menu')} />;
 
   return (
-    <ScrollView contentContainerStyle={[s.container, { paddingTop: 8, paddingBottom: 12 }, tablet && { maxWidth: pageMax }]}>
+    <ScrollView contentContainerStyle={[s.container, { paddingTop: 8, paddingBottom: 12 }, tablet && { maxWidth: pageMax }]}><HelpButton text={sectionIntroductions['match-game']} />
       <View style={tablet ? { flexDirection: 'row', flexWrap: 'wrap', gap: 12 } : { gap: 10 }}>
         {([
           { mode: 'word', title: 'وشە دروست بکەم', hint: 'پیتەکان پێکەوە ببەستە', Icon: Puzzle },

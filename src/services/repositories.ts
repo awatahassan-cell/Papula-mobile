@@ -1,5 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { normalizeAppearanceMode, normalizeAppearanceTheme } from '../theme/appearance';
+import { PersistentWriter } from './persistentWriter';
+import { validClock } from './sessionPolicy';
+import { weeklySummary } from './learningEngine';
+import { normalizeCheckpoint } from './learningContinuation';
 import { mockLetters } from '../data/mockLetters';
 import { mockStories } from '../data/mockStories';
 import { letterStories } from '../data/letterStories';
@@ -22,6 +26,7 @@ import {
 } from './types';
 
 const PROFILES_STORAGE_KEY = 'papoole_child_profiles_v1';
+export const persistentWrites = new PersistentWriter(AsyncStorage);
 const PARENT_SETTINGS_KEY = 'papoole_parent_settings_v1';
 
 export const defaultChildProfile: ChildProfile = {
@@ -41,6 +46,8 @@ export const defaultChildProfile: ChildProfile = {
 };
 
 export const defaultParentSettings: ParentSettings = {
+  bedtimeStart: '20:00',
+  bedtimeEnd: '07:00',
   appearanceTheme: 'cloud',
   appearanceMode: 'auto',
   dailyLimitMinutes: 30,
@@ -109,12 +116,12 @@ export class MobileProgressRepository implements ProgressRepository {
     try {
       const data = await AsyncStorage.getItem(PROFILES_STORAGE_KEY);
       if (data) {
-        cachedProfiles = JSON.parse(data);
+        const parsed = JSON.parse(data);
+        if (!Array.isArray(parsed) || parsed.some(profile => !profile || typeof profile.id !== 'string' || !Array.isArray(profile.masteredLetterIds))) throw new Error('Invalid profiles');
+        cachedProfiles = parsed.map(profile => ({ ...profile, checkpoint: normalizeCheckpoint(profile.checkpoint) }));
         return cachedProfiles!;
       }
-    } catch {
-      // Storage fallback
-    }
+    } catch { throw new Error('Unable to load saved child profiles'); }
     // A fresh install has no child yet: the app then starts with the parent guide and the child's name (onboarding).
     cachedProfiles = [];
     return cachedProfiles;
@@ -122,11 +129,7 @@ export class MobileProgressRepository implements ProgressRepository {
 
   private async saveProfilesToStorage(profiles: ChildProfile[]): Promise<void> {
     cachedProfiles = profiles;
-    try {
-      await AsyncStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
-    } catch (e) {
-      console.error('Failed to save child profiles to AsyncStorage:', e);
-    }
+    await persistentWrites.write(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
   }
 
   async getAllProfiles(): Promise<ChildProfile[]> {
@@ -181,7 +184,7 @@ export class MobileProgressRepository implements ProgressRepository {
     const unmastered = allLetterIds.filter((id) => !profile.masteredLetterIds.includes(id));
 
     return {
-      minutesSpent: Math.round((profile.practiceSeconds||0)/60),
+      minutesSpent: weeklySummary(profile).minutes,
       lettersMasteredCount: profile.masteredLetterIds.length,
       storiesReadCount: profile.readStoryIds.length,
       accuracyAverage: (()=>{const records=Object.values(profile.skillProgress||{}).filter(Boolean);const total=records.reduce((n,r)=>n+r.attempts,0);return total?Math.round(records.reduce((n,r)=>n+r.correct,0)/total*100):0;})(),
@@ -198,23 +201,17 @@ export class MobileAuthRepository implements AuthRepository {
       const data = await AsyncStorage.getItem(PARENT_SETTINGS_KEY);
       if (data) {
         const stored = JSON.parse(data);
-        cachedSettings = { ...defaultParentSettings, ...stored, appearanceTheme: normalizeAppearanceTheme(stored.appearanceTheme), appearanceMode: normalizeAppearanceMode(stored.appearanceMode) };
+        cachedSettings = { ...defaultParentSettings, ...stored, appearanceTheme: normalizeAppearanceTheme(stored.appearanceTheme), appearanceMode: normalizeAppearanceMode(stored.appearanceMode), bedtimeStart: validClock(stored.bedtimeStart) ? stored.bedtimeStart : '20:00', bedtimeEnd: validClock(stored.bedtimeEnd) ? stored.bedtimeEnd : '07:00' };
         return cachedSettings!;
       }
-    } catch {
-      // fallback
-    }
+    } catch { throw new Error('Unable to load parent settings'); }
     cachedSettings = defaultParentSettings;
     return cachedSettings;
   }
 
   async saveParentSettings(settings: ParentSettings): Promise<void> {
     cachedSettings = settings;
-    try {
-      await AsyncStorage.setItem(PARENT_SETTINGS_KEY, JSON.stringify(settings));
-    } catch (e) {
-      console.error('Failed to save parent settings to AsyncStorage:', e);
-    }
+    await persistentWrites.write(PARENT_SETTINGS_KEY, JSON.stringify(settings));
   }
 
   async verifyParentGate(questionAnswer: number, userAnswer: number): Promise<boolean> {
@@ -258,11 +255,7 @@ export class MobileWritingRepository implements WritingRepository {
 
   private async saveProfilesToStorage(profiles: ChildProfile[]): Promise<void> {
     cachedProfiles = profiles;
-    try {
-      await AsyncStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
-    } catch (e) {
-      console.error('Failed to save child profiles to AsyncStorage:', e);
-    }
+    await persistentWrites.write(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
   }
 
   async saveBestScore(

@@ -24,6 +24,7 @@ const check=button(tree,'پشکنینی وشەکەم ✓');check.props.onPress()
 assert.equal(results.filter(r=>r.correct).length,1,'rapid check does not duplicate attempts');assert.equal(results.at(-1).word,nan.id);
 const finish=button(tree,'تەواو بکەم ✓');finish.props.onPress();finish.props.onPress();tree=render(WordBuilder,props);assert.deepEqual(games,['word']);assert.ok(button(tree,'گەڕانەوە بۆ یارییەکان'));
 states=[];refs=[];let completed=0;const practice={mode:'review',onExit(){},onComplete(){completed++;}};
+store.currentProfile={...profile,masteredLetterIds:load(path.join(__dirname,'../src/data/mockLetters.ts')).mockLetters.slice(0,3).map(letter=>letter.id)};
 tree=render(LetterPractice,practice);
 for(let index=0;index<3;index++){
  const target=states[0][index].target;
@@ -31,6 +32,7 @@ for(let index=0;index<3;index++){
  button(tree,`پیتی ${target.glyph}`).props.onPress();tree=render(LetterPractice,practice);const next=button(tree,index===2?'تەواو بکەم ✓':'پیتی دواتر ←');next.props.onPress();next.props.onPress();tree=render(LetterPractice,practice);
 }
 assert.equal(completed,1);assert.ok(button(tree,'گەڕانەوە'));
+store.currentProfile=profile;
 console.log('PASS: real word-builder and review handlers, duplicate tiles, wrong/retry/success, partial-word checks and rapid double-click guards. Audio mocked.');
 
 const {StartingAssessment}=load(path.join(__dirname,'../src/features/learning/StartingAssessment.tsx'));
@@ -68,19 +70,20 @@ nodes(tree).find(n=>n.props?.accessibilityLabel?.startsWith('چیرۆکی پیت
 assert.equal(openedLetterStory.targetLetterId,lessonLetter.id);assert.equal(lessonDestination,'story-reader');
 assert.ok(button(tree,'دەنگەکە ببیستە'),'audio guidance remains directly accessible');
 assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,true,'listening cannot be skipped');
-const speechBeforeThree=spoken.length;
+const speechBeforeFive=spoken.length;
 speechEndCallbacks=[];
-for(let listen=0;listen<3;listen++){
+for(let listen=0;listen<5;listen++){
   button(tree,'دەنگەکە ببیستە').props.onPress();tree=render(GuidedLetterLesson,lessonProps);
   assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,true,'next stays locked while listening');
   assert.equal(spoken.at(-1),`پیتی ${lessonLetter.name}`,'each tap plays the letter once');
   speechEndCallbacks.shift()();tree=render(GuidedLetterLesson,lessonProps);
-  assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,true,'next stays locked until praise finishes');
-  if(listen<2)assert.equal(speechEndCallbacks.length,0,'another repetition needs another tap');
+  assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,listen<4,'five completed plays unlock the next step');
+  assert.ok(text(tree).includes((listen+1)+'/5'),'visible listening counter');
+  if(listen<4)assert.equal(speechEndCallbacks.length,0,'another repetition needs another tap');
 }
-assert.deepEqual(spoken.slice(speechBeforeThree),[...Array(3).fill(`پیتی ${lessonLetter.name}`),'ئافەرم! ئامادەیت بۆ هەنگاوی دواتر.']);
-speechEndCallbacks.shift()();speechEndCallbacks=null;tree=render(GuidedLetterLesson,lessonProps);
-assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,false,'next unlocks only after the praise audio ends');
+assert.deepEqual(spoken.slice(speechBeforeFive),[...Array(5).fill(`پیتی ${lessonLetter.name}`),'ئافەرم! ئامادەیت بۆ هەنگاوی دواتر.']);
+speechEndCallbacks=null;tree=render(GuidedLetterLesson,lessonProps);
+assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,false,'next unlocks after five complete letter plays');
 button(tree,'هەنگاوی دواتر ←').props.onPress();tree=render(GuidedLetterLesson,lessonProps);
 assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,true,'compact footer keeps the forms prerequisite');
 nodes(tree).find(n=>n.type===LetterFormsLesson).props.onPass();tree=render(GuidedLetterLesson,lessonProps);
@@ -97,3 +100,33 @@ for(let i=0;i<lessonLetter.exampleWords.length;i++){
 button(tree,'بنووسم ✍️').props.onPress();assert.equal(lessonDestination,'writing');
 assert.ok(!button(tree,'زانیاری زیاتر دەربارەی پیتی '+lessonLetter.glyph),'details no longer open a separate screen');
 console.log('PASS: compact guided lesson retains audio, all examples, forms/recognition gates, details and writing navigation.');
+
+// A superseded/interrupted playback must not count as a completed listen.
+states=[];refs=[];speechEndCallbacks=[];
+tree=render(GuidedLetterLesson,lessonProps);
+button(tree,'دەنگەکە ببیستە').props.onPress();
+button(tree,'دەنگەکە ببیستە').props.onPress();
+speechEndCallbacks.shift()();tree=render(GuidedLetterLesson,lessonProps);
+assert.ok(text(tree).includes('0/5'),'cancelled playback does not increment the counter');
+speechEndCallbacks.shift()();tree=render(GuidedLetterLesson,lessonProps);
+assert.ok(text(tree).includes('1/5'),'only the current completed audio counts');
+assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,true);
+speechEndCallbacks=null;
+
+// Revisiting a completed letter announces review instead of a new letter.
+states=[];refs=[];
+store.currentProfile={...profile,masteredLetterIds:[lessonLetter.id]};
+const introductionEffects=[],originalEffect=react.useEffect;
+react.useEffect=fn=>introductionEffects.push(fn);
+tree=render(GuidedLetterLesson,lessonProps);
+const beforeIntro=spoken.length;
+const stopIntro=introductionEffects.map(effect=>effect()).filter(cleanup=>typeof cleanup==='function');
+assert.equal(spoken[beforeIntro],'با دەست بکەین بە پێداچوونەوەی پیتەکە.');
+assert.ok(!spoken.slice(beforeIntro).some(line=>line.includes('پیتێکی تازە')));
+stopIntro.forEach(stop=>stop());react.useEffect=originalEffect;store.currentProfile=profile;
+states=[];refs=[];
+store.currentProfile={...profile,writingProgress:{[lessonLetter.id]:{tracePassed:true}}};
+tree=render(GuidedLetterLesson,lessonProps);
+assert.equal(button(tree,'هەنگاوی دواتر ←').props.disabled,true,'passing tracing alone must not bypass listening and the other lesson requirements');
+store.currentProfile=profile;
+console.log('PASS: five-play counter ignores cancelled playback and revisited letters introduce review.');

@@ -7,7 +7,11 @@ import { readableText } from '../../services/foundationalLearning';
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { ResponsiveStoryImage } from '../../components/ResponsiveStoryImage';
-import { Text } from '../../components/RTLText';
+import { Text, InlineText } from '../../components/RTLText';
+import { StoryVoiceRecorder } from './StoryVoiceRecorder';
+import { HelpButton } from '../../components/HelpButton';
+import { exerciseHelp } from '../../services/exerciseHelp';
+import { letterHighlightRuns } from '../../services/letterHighlight';
 import {
   Play,
   Pause,
@@ -25,16 +29,17 @@ import { useResponsive } from '../../theme/responsive';
 
 export const StoryReaderScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
-  const { selectedStory, setSelectedLetter, setRoute, completeStory, saveWord, triggerConfetti, currentProfile, recordSkillResult } = useAppStore();
+  const { selectedStory, setSelectedLetter, setRoute, completeStory, saveWord, triggerConfetti, currentProfile, recordSkillResult, saveCheckpoint, clearCheckpoint, learningPaused } = useAppStore();
+  const bookmark = currentProfile.checkpoint?.kind === 'story' && currentProfile.checkpoint.contentId === selectedStory?.id ? currentProfile.checkpoint : undefined;
   const { isNight, tone } = useAppearance();
   // The word being read glows: warm cream by day, gold at night.
-  const highlight = isNight ? { backgroundColor: '#ffd66b', color: '#2a1b00' } : { backgroundColor: '#ffe29a', color: '#4b33b3' };
+  const highlight = { backgroundColor: isNight ? '#473366' : '#ffe29a' };
   const info = useResponsive();
   const { tablet, pageMax } = info;
   const split = info.wide && info.landscape;
   const artSize = Math.max(300, Math.min(560, info.height - 330));
-  const [pageIndex, setPageIndex] = useState(0);
-  const [readMode, setReadMode] = useState<'read_to_me' | 'i_read'>(selectedStory?.practiceMode==='read'?'i_read':'read_to_me');
+  const [pageIndex, setPageIndex] = useState(Math.max(0, Math.min((selectedStory?.pages.length || 1) - 1, bookmark?.pageIndex || 0)));
+  const [readMode, setReadMode] = useState<'read_to_me' | 'i_read'>(bookmark?.readMode || (selectedStory?.practiceMode==='read'?'i_read':'read_to_me'));
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeWord,setActiveWord]=useState<{start:number;end:number}|null>(null);
   const introduced=useRef(false);
@@ -44,6 +49,12 @@ export const StoryReaderScreen: React.FC = () => {
   const [quizSelectedOption, setQuizSelectedOption] = useState<string | null>(null);
   const [quizSuccess, setQuizSuccess] = useState<boolean | null>(null);
   const [storyFinished, setStoryFinished] = useState(false);
+  const [familyRecording, setFamilyRecording] = useState(false);
+  useEffect(() => {
+    if (storyFinished) clearCheckpoint?.();
+    else if (selectedStory) saveCheckpoint?.({ kind: 'story', contentId: selectedStory.id, pageIndex, readMode });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStory?.id, pageIndex, readMode, storyFinished]);
 
   const playbackTimerRef = useRef<any>(null);
   const narrationRef = useRef(0);
@@ -66,13 +77,13 @@ export const StoryReaderScreen: React.FC = () => {
     // Narration is restarted whenever the page or mode changes; the starter is defined below the early return.
     /* eslint-disable react-hooks/set-state-in-effect, react-hooks/immutability */
     stopNarration();
-    if (readMode === 'read_to_me' && story && !showQuiz && !storyFinished && !sequencing) {
+    if (!learningPaused && readMode === 'read_to_me' && story && !showQuiz && !storyFinished && !sequencing) {
       startKaraokeNarration(pageIndex);
     }
     return () => stopNarration();
     /* eslint-enable react-hooks/set-state-in-effect, react-hooks/immutability */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, readMode, showQuiz, storyFinished, sequencing]);
+  }, [pageIndex, readMode, showQuiz, storyFinished, sequencing, learningPaused]);
 
   useEffect(() => () => { if (quizTimerRef.current) clearTimeout(quizTimerRef.current); }, []);
 
@@ -135,6 +146,7 @@ export const StoryReaderScreen: React.FC = () => {
   };
 
   const handleWordTap = (word: string) => {
+    if (familyRecording) return;
     readingHelp.current=true;stopNarration();
     soundService.playPop();
     soundService.speakWord(word);
@@ -237,10 +249,12 @@ export const StoryReaderScreen: React.FC = () => {
         <ChevronRight size={18} color={styles.backText.color}/><Text style={styles.backText}>وانەی پیتی «{targetLetter.glyph}»</Text>
       </TouchableOpacity>}
       {/* Mode Selector & Header */}
+      <HelpButton text={exerciseHelp.story} disabled={familyRecording} />
       <Text style={styles.storyTitle}>{story.titleKu}</Text>
       <View style={styles.headerRow}>
         <View style={styles.modeTabs}>
           <TouchableOpacity
+            disabled={familyRecording}
             onPress={() => {
               soundService.playPop();
               setReadMode('read_to_me');
@@ -254,6 +268,7 @@ export const StoryReaderScreen: React.FC = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
+            disabled={familyRecording}
             onPress={() => {
               soundService.playPop();
               setReadMode('i_read');
@@ -271,6 +286,9 @@ export const StoryReaderScreen: React.FC = () => {
           لاپەڕە {pageIndex + 1} / {story.pages.length}
         </Text>
       </View>
+
+      <StoryVoiceRecorder key={`${currentProfile.id}:${story.id}`} storyId={story.id} profileId={currentProfile.id}
+        paused={learningPaused} narrationPlaying={isPlaying} onBegin={() => { stopNarration(); setReadMode('i_read'); }} onRecordingChange={setFamilyRecording} />
 
     {split ? <View style={styles.readerSplit}>
       <View style={{ width: artSize }}>
@@ -291,8 +309,7 @@ export const StoryReaderScreen: React.FC = () => {
         <Text testID="story-paragraph" accessibilityLabel={currentPage.textKu} style={[styles.storyParagraph, split && styles.storyParagraphSplit]}>
           {currentPage.textKu.split(/(\s+)/).map((part, index, parts) => /\s/.test(part)
             ? part
-            : <Text key={index} style={activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? highlight : undefined} onPress={() => handleWordTap(part)}>{targetLetter ? part.split(new RegExp(`(${targetLetter.glyph === 'ھ' ? '[هھ]' : targetLetter.glyph})`, 'g')).map((piece, pieceIndex)=>
-              <Text key={pieceIndex} style={piece.replace(/ھ/g,'ه')===targetLetter.glyph.replace(/ھ/g,'ه') ? styles.targetGlyph : undefined}>{piece}</Text>) : part}</Text>)}
+            : <InlineText key={index} style={[activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? highlight : undefined]} onPress={() => handleWordTap(part)}>{letterHighlightRuns(part, targetLetter?.glyph).map((run, runIndex) => run.target ? <InlineText key={runIndex} style={styles.targetGlyph}>{run.text}</InlineText> : run.text)}</InlineText>)}
         </Text>
       </View>
 
@@ -314,8 +331,7 @@ export const StoryReaderScreen: React.FC = () => {
         <Text testID="story-paragraph" accessibilityLabel={currentPage.textKu} style={styles.storyParagraph}>
           {currentPage.textKu.split(/(\s+)/).map((part, index, parts) => /\s/.test(part)
             ? part
-            : <Text key={index} style={activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? highlight : undefined} onPress={() => handleWordTap(part)}>{targetLetter ? part.split(new RegExp(`(${targetLetter.glyph === 'ھ' ? '[هھ]' : targetLetter.glyph})`, 'g')).map((piece, pieceIndex)=>
-              <Text key={pieceIndex} style={piece.replace(/ھ/g,'ه')===targetLetter.glyph.replace(/ھ/g,'ه') ? styles.targetGlyph : undefined}>{piece}</Text>) : part}</Text>)}
+            : <InlineText key={index} style={[activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? highlight : undefined]} onPress={() => handleWordTap(part)}>{letterHighlightRuns(part, targetLetter?.glyph).map((run, runIndex) => run.target ? <InlineText key={runIndex} style={styles.targetGlyph}>{run.text}</InlineText> : run.text)}</InlineText>)}
         </Text>
       </View>
 
@@ -340,6 +356,7 @@ export const StoryReaderScreen: React.FC = () => {
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel={isPlaying?'وەستاندنی چیرۆک':'گوێگرتن لە چیرۆک'}
+          disabled={familyRecording}
           onPress={handleTogglePlay}
           style={styles.playBtn}
           activeOpacity={0.8}
@@ -353,6 +370,7 @@ export const StoryReaderScreen: React.FC = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          disabled={familyRecording && pageIndex === story.pages.length - 1}
           onPress={() => {
             soundService.playPop();
             if (pageIndex < story.pages.length - 1) {

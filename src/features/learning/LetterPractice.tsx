@@ -1,3 +1,5 @@
+import { HelpButton } from '../../components/HelpButton';
+import { exerciseHelp } from '../../services/exerciseHelp';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
 import { useGameScroll } from './useGameScroll';
@@ -9,12 +11,13 @@ import { CONFUSABLE_GROUPS, reviewPlan, shuffled } from '../../services/learning
 import { soundService } from '../../services/soundService';
 import { useAppStore } from '../../store/useAppStore';
 import { learningStyles as baseLearningStyles } from './learningStyles';
+import { personalPractice } from '../../services/personalPractice';
 
 export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:()=>void; onComplete?:()=>void }> = ({mode,onExit,onComplete}) => {
   const s = useThemeStyles(baseLearningStyles);
   const {currentProfile,recordPracticeResult,finishLearningGame}=useAppStore();
   const [rounds]=useState(()=>{
-    const candidates=reviewPlan(currentProfile,mockLetters.length).filter(letter=>mode!=='similar'||CONFUSABLE_GROUPS.some(group=>group.includes(letter.id)));
+    const candidates=(mode==='review' ? personalPractice(currentProfile).map(task => task.letter) : reviewPlan(currentProfile,mockLetters.length)).filter(letter=>mode!=='similar'||CONFUSABLE_GROUPS.some(group=>group.includes(letter.id)));
     return candidates.slice(0,mode==='review'?3:5).map((target,index)=>{
       const family=CONFUSABLE_GROUPS.find(group=>group.includes(target.id));
       const alternatives=mode==='similar' && family?mockLetters.filter(letter=>family.includes(letter.id)&&letter.id!==target.id):mockLetters.filter(letter=>letter.id!==target.id);
@@ -46,7 +49,7 @@ export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:
   };
   if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! مەشقەکەت تەواو کرد</Text><Text style={s.text}>پیتەکانت بە دروستی ناسینەوە</Text><TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>گەڕانەوە</Text></TouchableOpacity></View>;
   if(!round)return <View style={s.container}><Text style={s.text}>مەشقێک ئامادە نییە</Text></View>;
-  return <ScrollView ref={scroll} contentContainerStyle={s.container}>
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpButton text={exerciseHelp.letter} />
     <Text style={s.title}>{mode==='similar'?'پیتە هاوشێوەکان':mode==='review'?'مەشقی من':'یاریی دەنگ'}</Text>
     <Text style={s.text}>{index+1} / {rounds.length}</Text>
     <View style={s.card}>

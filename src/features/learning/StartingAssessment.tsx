@@ -1,3 +1,5 @@
+import { HelpButton } from '../../components/HelpButton';
+import { exerciseHelp } from '../../services/exerciseHelp';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
 import { useGameScroll } from './useGameScroll';
@@ -24,7 +26,7 @@ export const StartingAssessment:React.FC<{onExit:()=>void}>=({onExit})=>{
   const question=questions[index];
   const choose=(id:string)=>{if(locked.current)return;locked.current=true;setAnswered(true);const correct=id===question.id;answers.current.push({correct,letterId:question.letterId});if(question.letterId)recordPracticeResult([question.letterId],correct);else recordSkillResult('word',correct);};
   if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>دەستپێکی گونجاومان بۆت دۆزییەوە</Text><Text style={s.text}>ئەم یارییە بۆ هەڵبژاردنی مەشق بوو؛ هەموو پیتەکان هەر بەردەستن.</Text><TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>مەشقی من ببینم</Text></TouchableOpacity></View>;
-  return <ScrollView ref={scroll} contentContainerStyle={s.container}>
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpButton text={exerciseHelp.assessment} />
     <Text style={s.title}>با بزانین چی دەزانیت</Text><Text style={s.text}>ئەمە تاقیکردنەوەی نمرە نییە؛ «هێشتا نازانم»یش وەڵامێکی باشە.</Text><Text style={s.text}>{index+1} / {questions.length}</Text>
     <View style={s.card}><Text style={s.emoji}>{question.emoji}</Text><Text style={s.text}>گوێ بگرە و هەڵبژێرە</Text>
       <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>{const active=++token.current;void soundService.speakWord(question.prompt,{onEnd:()=>{if(token.current===active)setHeard(true);}});}}><Text style={s.buttonText}>پرسیارەکە ببیستە</Text></TouchableOpacity>

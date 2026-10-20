@@ -68,7 +68,8 @@ function writeModule(records) {
 }
 
 async function main() {
-  const entries = catalog();
+  // A focused UI update need not buy unrelated optional syllables/feedback.
+  const entries = catalog().filter(entry => !process.argv.includes('--required-only') || !entry.optional);
   const { batches, derived } = plan(entries);
   fs.mkdirSync(directory, { recursive: true });
   const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : { voiceId: DEFAULT_VOICE, model: MODEL, createdAt: new Date().toISOString(), batches: {}, records: {} };
@@ -132,6 +133,7 @@ async function main() {
     console.log(JSON.stringify({ completed: index + 1, total: batches.length, tracks: Object.keys(manifest.records).length, bytes: saved.bytes }));
   }
   for (const { entry, parent } of derived) {
+    if (manifest.records[entry.key]) continue; // preserve reviewed clips when adding new prompts
     const row = manifest.records[parent.key];
     const timing = row.timings.find(item => item.start <= parent.start && item.end >= parent.end);
     if (!timing) throw Error('Missing source timing for ' + entry.text);

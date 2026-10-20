@@ -1,12 +1,13 @@
-import { advanceWriting, writingMastered, skillAttempt } from '../services/foundationalLearning';
+import { advanceWriting, writingMastered, skillAttempt, readingPracticeStories } from '../services/foundationalLearning';
 import { applyLessonStep, isLessonUnlocked, nextLessonLetter, reconcileLessons } from '../services/lessonPath';
 import { usePathname, useRouter } from 'expo-router';
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
-import { LEARNING_WORDS, learningActivity, localDay, logDay, updateReview } from '../services/learningEngine';
+import { LEARNING_WORDS, learningActivity, localDay, logDay, updateReview, personalStories } from '../services/learningEngine';
+import { normalizeCheckpoint } from '../services/learningContinuation';
 import { mockLetters } from '../data/mockLetters';
 import { authRepo, lettersRepo, progressRepo, storiesRepo, writingRepo } from '../services/repositories';
 import { soundService } from '../services/soundService';
-import { ChildProfile, DailyMission, LetterItem, LetterScoreRecord, ParentSettings, StoryItem, WritingMode, LearningSkill, LessonStep } from '../services/types';
+import { ChildProfile, DailyMission, LetterItem, LetterScoreRecord, ParentSettings, StoryItem, WritingMode, LearningSkill, LessonStep, LearningCheckpoint } from '../services/types';
 import { generateDailyMissions, getTodayDateString } from '../data/mockMissions';
 import { defaultStrings, LocaleStrings } from '../theme/strings';
 
@@ -28,6 +29,14 @@ export type AppRoute =
   | 'paywall';
 
 export interface AppContextType {
+  isHydrated: boolean;
+  learningPaused: boolean;
+  setLearningPaused: (paused: boolean) => void;
+  loadError: boolean;
+  retryLoad: () => void;
+  saveCheckpoint: (checkpoint: LearningCheckpoint) => void;
+  clearCheckpoint: () => void;
+  recordScreenTime: (log: Record<string, number>, profileId?: string) => void;
   route: AppRoute;
   setRoute: (route: AppRoute) => void;
   goBack: () => void;
@@ -127,6 +136,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
 
   const [profiles, setProfiles] = useState<ChildProfile[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [learningPaused, setLearningPaused] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+  const retryLoad = () => { setLoadError(false); setLoadAttempt(value => value + 1); };
   const [currentProfile, setCurrentProfile] = useState<ChildProfile>({
     id: 'child-1',
     name: 'ڕۆژین',
@@ -217,36 +231,61 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   useEffect(() => {
+    let active = true;
+    const safetyTimer = setTimeout(() => {
+      if (active) {
+        setIsHydrated(true);
+      }
+    }, 1500);
+
     async function loadInitialData() {
-      const allProfiles = await progressRepo.getAllProfiles();
-      const settings = await authRepo.getParentSettings();
+      try {
+        const allProfiles = await progressRepo.getAllProfiles();
+        const settings = await authRepo.getParentSettings();
 
-      if (allProfiles.length > 0) {
-        const checked = evaluateStreak(allProfiles[0]);
-        profileRef.current = checked;
-        setCurrentProfile(checked);
-        setProfiles(allProfiles.map((p) => (p.id === checked.id ? checked : p)));
-      } else {
-        router.replace('/onboarding');
-      }
+        if (!active) return;
 
-      setParentSettings(settings);
-      soundService.setSoundFxEnabled(settings.soundFxEnabled);
-      soundService.setVolume(settings.narrationVolume);
+        if (allProfiles.length > 0) {
+          const checked = evaluateStreak(allProfiles.find(profile => profile.id === settings.activeProfileId) || allProfiles[0]);
+          profileRef.current = checked;
+          setCurrentProfile(checked);
+          setProfiles(allProfiles.map((p) => (p.id === checked.id ? checked : p)));
+        }
 
-      const letters = await lettersRepo.getAllLetters();
-      if (letters.length > 0 && !selectedLetter) {
-        setSelectedLetter(letters[0]);
-      }
-      const stories = await storiesRepo.getAllStories();
-      if (stories.length > 0 && !selectedStory) {
-        setSelectedStory(stories[0]);
+        setParentSettings(settings);
+        soundService.setSoundFxEnabled(settings.soundFxEnabled);
+        soundService.setVolume(settings.narrationVolume);
+
+        const chosen = profileRef.current;
+        const checkpoint = chosen.checkpoint;
+        const letters = await lettersRepo.getAllLetters();
+        const resumeLetter = checkpoint?.kind !== 'story' ? letters.find(letter => letter.id === checkpoint?.contentId && isLessonUnlocked(chosen, letter.id)) : undefined;
+        setSelectedLetter(resumeLetter || nextLessonLetter(chosen) || letters[0]);
+        const stories = await storiesRepo.getAllStories();
+        const resumeStory = checkpoint?.kind === 'story' ? [...stories, ...personalStories(chosen), ...readingPracticeStories(chosen)].find(story => story.id === checkpoint.contentId && (!story.isPremium || settings.isSubscribed)) : undefined;
+        if (stories.length) setSelectedStory(resumeStory || stories[0]);
+        if (allProfiles.length && route === 'home') {
+          if (resumeLetter) navigateInternal(checkpoint?.kind === 'writing' ? 'writing' : 'letter-detail');
+          else if (resumeStory) navigateInternal('story-reader');
+        }
+      } catch (err) {
+        console.warn('loadInitialData failed:', err);
+        setLoadError(true);
+      } finally {
+        if (active) {
+          clearTimeout(safetyTimer);
+          setIsHydrated(true);
+        }
       }
     }
 
-    loadInitialData();
+    void loadInitialData();
+    return () => {
+      active = false;
+      clearTimeout(safetyTimer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- load persisted data once on mount
-  }, []);
+  }, [loadAttempt]);
 
   const triggerConfetti = () => {
     soundService.playSuccessFanfare();
@@ -258,6 +297,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const checked = evaluateStreak(found);
       profileRef.current = checked;
       setCurrentProfile(checked);
+      setSelectedLetterState(nextLessonLetter(checked) || mockLetters[0]);
+      setSelectedStory(null);
+      updateParentSettings({ activeProfileId: checked.id });
+      setRoute('home');
       soundService.playPop();
     }
   };
@@ -278,6 +321,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     >
   ) => {
     const profile: ChildProfile = {
+      // Invoked by the parent's submit action, never during rendering.
+      // eslint-disable-next-line react-hooks/purity
       id: `child-${Date.now()}`,
       ...newChild,
       stars: 5,
@@ -295,6 +340,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setProfiles(updated);
     profileRef.current = profile;
     setCurrentProfile(profile);
+    updateParentSettings({ activeProfileId: profile.id });
     setIsStreakActiveToday(true);
     setStreakStatus('completed_today');
     progressRepo.saveChildProfile(profile);
@@ -327,6 +373,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       soundService.setVolume(updates.narrationVolume);
     }
     authRepo.saveParentSettings(updated);
+  };
+
+  const saveCheckpoint = (checkpoint: LearningCheckpoint) => {
+    const safe = normalizeCheckpoint(checkpoint);
+    if (JSON.stringify(profileRef.current.checkpoint) !== JSON.stringify(safe)) updateCurrentProfile({ checkpoint: safe });
+  };
+  const clearCheckpoint = () => { if (profileRef.current.checkpoint) updateCurrentProfile({ checkpoint: undefined }); };
+  const recordScreenTime = (log: Record<string, number>, profileId = profileRef.current.id) => {
+    const target = profileId === profileRef.current.id ? profileRef.current : profiles.find(profile => profile.id === profileId);
+    if (!target) return;
+    const previous = target.screenTimeLog || {};
+    const merged = { ...previous };
+    for (const [date, seconds] of Object.entries(log)) if (/^\d{4}-\d{2}-\d{2}$/.test(date) && Number.isFinite(seconds)) merged[date] = Math.max(previous[date] || 0, Math.floor(seconds));
+    const bounded = Object.fromEntries(Object.keys(merged).sort().slice(-28).map(date => [date, merged[date]]));
+    if (JSON.stringify(previous) !== JSON.stringify(bounded)) {
+      if (profileId === profileRef.current.id) updateCurrentProfile({ screenTimeLog: bounded });
+      else { const updated = { ...target, screenTimeLog: bounded }; setProfiles(items => items.map(profile => profile.id === profileId ? updated : profile)); void progressRepo.saveChildProfile(updated); }
+    }
   };
 
   const openParentGateWithCallback = (onSuccess: () => void) => {
@@ -655,6 +719,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   return (
     <AppContext.Provider
       value={{
+        isHydrated, learningPaused, setLearningPaused, loadError, retryLoad, saveCheckpoint, clearCheckpoint, recordScreenTime,
         route,
         setRoute,
         goBack,

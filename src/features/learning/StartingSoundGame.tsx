@@ -1,3 +1,5 @@
+import { HelpButton } from '../../components/HelpButton';
+import { exerciseHelp } from '../../services/exerciseHelp';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
 import { useGameScroll } from './useGameScroll';
@@ -25,7 +27,7 @@ export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
   useEffect(()=>()=>{token.current++;void soundService.stopSpeaking();},[]);
   if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>دەنگی سەرەتای وشەکانت دۆزییەوە</Text><TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>گەڕانەوە</Text></TouchableOpacity></View>;
   if(!round)return null;
-  return <ScrollView ref={scroll} contentContainerStyle={s.container}>
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpButton text={exerciseHelp.sound} />
     <Text style={s.title}>وشەکە بە چ دەنگێک دەست پێ دەکات؟</Text><Text style={s.text}>{index+1} / {rounds.length}</Text>
     <View style={s.card}><Text style={s.emoji}>{round.word.imageEmoji}</Text>
       <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>{const active=++token.current;void soundService.speakWord(round.word.word,{onEnd:()=>{if(active===token.current)setHeard(true);}});}}><Text style={s.buttonText}>وشەکە ببیستە</Text></TouchableOpacity>

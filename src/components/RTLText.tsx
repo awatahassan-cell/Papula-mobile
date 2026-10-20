@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
 // RN Web rejects direction inside StyleSheet.create; keep layout direction inline.
 const layoutDirection = { direction: 'rtl' as const };
 const FontContext = createContext<TextStyle>({});
+// Inline color/press spans inherit their paragraph's font and bidi attributes.
+// Do not create a new styled paragraph for every word or letter.
+export const InlineText = NativeText;
 /** Standard: body text is never smaller than 12 px. */
 export const MIN_TEXT = 12;
 /**

@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { LaunchScreen } from '../components/LaunchScreen';
 import { AppErrorScreen } from '../components/AppErrorScreen';
 import { rtlProps, rtlLayout } from '../theme/rtl';
 import { PapulaMascot } from '../components/PapulaMascot';
 import { ReactionOverlay } from '../components/ReactionOverlay';
 import { AmbientSky } from '../components/AmbientSky';
-import { View, StyleSheet, StatusBar, ActivityIndicator, I18nManager, BackHandler, Modal } from 'react-native';
+import { View, StyleSheet, StatusBar, I18nManager, BackHandler, Modal } from 'react-native';
 import { Text } from '../components/RTLText';
 import { TactileButton as TouchableOpacity } from '../components/TactileButton';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -26,9 +28,18 @@ import { GardenNavigation } from '../components/GardenNavigation';
 import { GardenPageHeader } from '../components/GardenPageHeader';
 import { useAppearance } from '../theme/useAppearance';
 import { useResponsive } from '../theme/responsive';
+import { soundService } from '../services/soundService';
+import { sectionIntroductions } from '../services/sectionIntroductions';
+import { useSessionGuard } from '../components/useSessionGuard';
+import { SaveStatusBanner } from '../components/SaveStatusBanner';
+import { HelpButton } from '../components/HelpButton';
 
 /** Any screen error lands here instead of a blank screen. */
 export const ErrorBoundary = AppErrorScreen;
+
+void SplashScreen.preventAutoHideAsync().catch(() => {});
+SplashScreen.setOptions({ duration: 350, fade: true });
+const hideNativeSplash = () => { void SplashScreen.hideAsync().catch(() => {}); };
 
 try {
   I18nManager.allowRTL(true);
@@ -44,7 +55,7 @@ const MainRouter: React.FC = () => {
   const { isGarden, isNight, colors: appearanceColors, extras } = useAppearance();
   const {
     route,
-    parentSettings,
+    isHydrated, loadError, retryLoad,
     openParentGateWithCallback,
     setRoute,
     goBack,
@@ -52,10 +63,26 @@ const MainRouter: React.FC = () => {
     setExitConfirmOpen,
     allMissionsCelebrationOpen,
     setAllMissionsCelebrationOpen,
+    profiles,
   } = useAppStore();
 
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (profiles.length === 0 && route !== 'onboarding') {
+      setRoute('onboarding');
+    }
+  }, [isHydrated, profiles.length, route, setRoute]);
+
   const { tablet } = useResponsive();
-  const isBedtimeActive = parentSettings.bedtimeLockEnabled;
+  const session = useSessionGuard();
+  const isBedtimeActive = session.bedtime;
+
+  useEffect(() => {
+    const text = sectionIntroductions[route];
+    if (!isHydrated || !text || session.blocked || exitConfirmOpen) return;
+    const timer = setTimeout(() => { void soundService.speakWord(text); }, 200);
+    return () => clearTimeout(timer);
+  }, [route, isHydrated, session.blocked, exitConfirmOpen]);
 
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -65,13 +92,15 @@ const MainRouter: React.FC = () => {
     return () => sub.remove();
   }, [goBack]);
 
-  const bedtimeOverlay = isBedtimeActive && route !== 'parent-dashboard' ? (
+  if (!isHydrated) return <LaunchScreen error={loadError} onRetry={retryLoad} onLayout={hideNativeSplash} />;
+
+  const bedtimeOverlay = session.blocked ? (
       <View {...rtlProps} style={[styles.bedtimeContainer, styles.overlay, rtlLayout]}>
         <View style={styles.bedtimeCard}>
           <PapulaMascot size={140} mood="sleepy" />
-          <Text style={styles.bedtimeTitle}>کاتی خەوتنی منداڵانە</Text>
+          <Text style={styles.bedtimeTitle}>{isBedtimeActive ? 'کاتی خەوتنی منداڵانە' : session.exhausted ? 'ئەمڕۆ زۆر باش مەشقت کرد!' : 'کاتی پشووە'}</Text>
           <Text style={styles.bedtimeSub}>
-            ئەپڵیکەیشن بەهۆی قفڵی کاتی خەوتنەوە داخراوە. خەوێکی ئاسوودە بۆ تۆی شیرین!
+            {isBedtimeActive ? 'خەوێکی ئاسوودە بۆ تۆی شیرین! لە کاتی دیاریکراودا پێکەوە بەردەوام دەبین.' : session.exhausted ? 'کاتی فێربوونی ئەمڕۆ تەواو بوو. ئێستا پشوو بدە؛ سبەی لە شوێنی خۆت بەردەوام دەبین.' : 'چاو و دەستەکانت پشوو بدە. هەر کاتێک ئامادە بوویت، بەردەوام دەبین.'}
           </Text>
 
           <BigButton
@@ -86,15 +115,19 @@ const MainRouter: React.FC = () => {
           >
             کردنەوە لەلایەن دایک و باوک
           </BigButton>
+          {!isBedtimeActive && !session.exhausted && <BigButton onPress={session.continueLearning} style={styles.bedtimeBtn}>ئامادەم، بەردەوام بین</BigButton>}
         </View>
       </View>
   ) : null;
 
   return (
-    <SafeAreaView {...rtlProps} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={isGarden ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}>
+    <SafeAreaView {...rtlProps} onTouchStart={session.touch} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={isGarden ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}>
       <LinearGradient pointerEvents="none" colors={extras.gradient} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle={isNight ? 'light-content' : 'dark-content'} backgroundColor={isGarden ? appearanceColors.background : '#ffffff'} />
       {route !== 'onboarding' && <TopHeader />}
+      <SaveStatusBanner />
+      {!!sectionIntroductions[route] && !['letter-detail','story-reader','match-game'].includes(route) && <HelpButton key={route} text={sectionIntroductions[route]} />}
+      {session.warning && <TouchableOpacity accessibilityRole="button" onPress={session.takeBreak} style={{ padding: 10, backgroundColor: appearanceColors.peach }}><Text style={{ color: appearanceColors.ink, textAlign: 'center' }}>دوو خولەک یان کەمتر ماوە؛ با پاشان پشوو بدەین. پشوو بدەم</Text></TouchableOpacity>}
       {/* Phones: tab bar under the content. Tablets: a rail on the right (first child of an RTL row). */}
       <View style={[styles.body, tablet && styles.bodyRow]}>
         {tablet && <GardenNavigation />}
@@ -158,7 +191,7 @@ const MainRouter: React.FC = () => {
 };
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     IBMPlexSansArabic_400Regular,
     IBMPlexSansArabic_500Medium,
     IBMPlexSansArabic_600SemiBold,
@@ -168,13 +201,16 @@ export default function RootLayout() {
     IBMPlexSans_700Bold,
   });
 
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#7c3aed" />
-      </View>
-    );
-  }
+  const [fontTimeout, setFontTimeout] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setFontTimeout(true);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!fontsLoaded && !fontError && !fontTimeout) return <LaunchScreen fontsReady={false} onLayout={hideNativeSplash} />;
 
   return (
     <SafeAreaProvider>

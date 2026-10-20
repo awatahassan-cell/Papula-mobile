@@ -14,6 +14,7 @@ import {WeeklyStats} from '../../services/types';
 import {soundService} from '../../services/soundService';
 
 import {lessonPath} from '../../services/lessonPath';
+import { BedtimeSettings } from '../../components/BedtimeSettings';
 
 const tabs=[{id:'progress',label:'پێشکەوتن',Icon:TrendingUp},{id:'colors',label:'ڕەنگەکان',Icon:Palette},{id:'settings',label:'ڕێکخستن',Icon:SlidersHorizontal}] as const;
 const voices=[{id:'Papula',voiceId:'tkI70vi7ETrk5NakcLUP',label:'دەنگی پەپوولە'}];
@@ -26,7 +27,7 @@ export const ParentDashboardScreen:React.FC=()=>{
   const [adding,setAdding]=useState(false),[name,setName]=useState(''),[avatar,setAvatar]=useState('🦋');
   const [voice,setVoice]=useState(soundService.getVoice());
   const bundledCount=soundService.getBundledAudioCount();
-  useEffect(()=>{let active=true;void progressRepo.getWeeklyStats(currentProfile.id).then(value=>{if(active)setWeekly(value);});return()=>{active=false;};},[currentProfile.id]);
+  useEffect(()=>{let active=true;void progressRepo.getWeeklyStats(currentProfile.id).then(value=>{if(active)setWeekly(value);}).catch(()=>{});return()=>{active=false;};},[currentProfile.id,currentProfile.screenTimeLog]);
   useEffect(()=>()=>{void soundService.stopSpeaking();},[]);
   const finished=lessonPath(currentProfile).filter(item=>item.status==='completed').length;
   const selected=normalizeAppearanceTheme(parentSettings.appearanceTheme);
@@ -60,7 +61,7 @@ export const ParentDashboardScreen:React.FC=()=>{
     </>}
     {tab==='settings'&&<>
       <View style={s.sheet}>{heading(Clock,'کاتی فێربوون','کاتێکی گونجاو بۆ فێربوون و پشوو.')}<Text style={s.settingTitle}>کاتی ڕۆژانە بە خولەک</Text><View style={s.pills}>{[15,30,45,60,90].map(minutes=><TouchableOpacity key={minutes} accessibilityRole="radio" accessibilityLabel={`${minutes} خولەک`} accessibilityState={{checked:parentSettings.dailyLimitMinutes===minutes}} aria-checked={parentSettings.dailyLimitMinutes===minutes} onPress={()=>updateParentSettings({dailyLimitMinutes:minutes})} style={[s.pill,parentSettings.dailyLimitMinutes===minutes&&s.pillActive]}><Text style={[s.pillText,parentSettings.dailyLimitMinutes===minutes&&s.pillTextActive]}>{minutes}</Text></TouchableOpacity>)}</View>
-        <View style={s.toggle}><Moon size={21} color={c.mint}/><View style={s.copy}><Text style={s.settingTitle}>قفڵی کاتی خەوتن</Text><Text style={s.hint}>شەوانە کات بۆ پشووی منداڵەکەت</Text></View><Switch accessibilityLabel="قفڵی کاتی خەوتن" value={parentSettings.bedtimeLockEnabled} onValueChange={value=>updateParentSettings({bedtimeLockEnabled:value})} trackColor={{false:c.edge,true:c.mint}}/></View>
+        <View style={s.toggle}><Moon size={21} color={c.mint}/><View style={s.copy}><Text style={s.settingTitle}>قفڵی کاتی خەوتن</Text><Text style={s.hint}>شەوانە کات بۆ پشووی منداڵەکەت</Text></View><Switch accessibilityLabel="قفڵی کاتی خەوتن" value={parentSettings.bedtimeLockEnabled} onValueChange={value=>updateParentSettings({bedtimeLockEnabled:value})} trackColor={{false:c.edge,true:c.mint}}/></View><BedtimeSettings />
       </View>
       <View style={s.sheet}>{heading(Volume2,'دەنگ و گوێگرتن','دەنگەکان بۆ منداڵەکەت ڕێک بخەن.')}<View style={s.toggle}><View style={s.copy}><Text style={s.settingTitle}>دەنگەکانی یاری</Text><Text style={s.hint}>دەنگی ئافەرم و چالاکییەکان</Text></View><Switch accessibilityLabel="دەنگەکانی یاری" value={parentSettings.soundFxEnabled} onValueChange={value=>updateParentSettings({soundFxEnabled:value})} trackColor={{false:c.edge,true:c.mint}}/></View><Text style={s.settingTitle}>بەرزی دەنگی خوێندنەوە</Text><View style={s.pills}>{[0,.25,.5,.75,1].map(value=><TouchableOpacity accessibilityRole="radio" accessibilityLabel={`بەرزی دەنگ ${value*100}٪`} accessibilityState={{checked:parentSettings.narrationVolume===value}} aria-checked={parentSettings.narrationVolume===value} key={value} onPress={()=>updateParentSettings({narrationVolume:value})} style={[s.pill,parentSettings.narrationVolume===value&&s.pillActive]}><Text style={[s.pillText,parentSettings.narrationVolume===value&&s.pillTextActive]}>{value*100}٪</Text></TouchableOpacity>)}</View><Text style={s.settingTitle}>دەنگی خوێنەر</Text><View style={s.voiceList}>{voices.map(item=><TouchableOpacity key={item.id} accessibilityRole="button" accessibilityState={{selected:voice===item.id}} onPress={()=>{setVoice(item.id);soundService.setVoice(item.id,item.voiceId);void soundService.speakWord('سڵاو هاوڕێی شیرینم، بەخێربێیت بۆ پەپوولە.',{voiceId:item.voiceId});}} style={[s.voiceOption,voice===item.id&&s.profileActive]}><Volume2 size={19} color={c.mint}/><Text style={s.profileName}>{item.label}</Text>{voice===item.id&&<Check size={17} color={c.mint}/>}</TouchableOpacity>)}</View>
         <Text style={s.hint}>{bundledCount} دەنگی پەپوولە لە ناو ئەپەکەدان؛ بەبێ ئینتەرنێت گوێیان لێ بگرە.</Text>

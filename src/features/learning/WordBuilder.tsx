@@ -1,3 +1,5 @@
+import { HelpButton } from '../../components/HelpButton';
+import { exerciseHelp } from '../../services/exerciseHelp';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
 import { useGameScroll } from './useGameScroll';
@@ -61,7 +63,7 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
     <Text style={s.text}>{queue.map(item=>item.word).join('، ')}</Text>
     <TouchableOpacity accessibilityRole="button" style={s.button} onPress={onComplete||onExit}><Text style={s.buttonText}>{onComplete?'چیرۆکەکەم ببینم':'گەڕانەوە بۆ یارییەکان'}</Text></TouchableOpacity>
   </ScrollView>;
-  return <ScrollView ref={scroll} contentContainerStyle={s.container}>
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpButton text={exerciseHelp.word} />
     <Text style={s.title}>وشە دروست بکەم</Text><Text style={s.text}>{round+1} / {queue.length}</Text>
     <View style={s.card}>
       <Text style={s.emoji}>{word.imageEmoji}</Text>

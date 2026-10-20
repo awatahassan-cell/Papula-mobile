@@ -44,7 +44,7 @@ function catalog() {
   }
   // Extract static spoken prompts and writing feedback from their actual source.
   const files = ['features/alphabet/GuidedLetterLesson.tsx', 'services/tracingScorer.ts',
-    'services/foundationalLearning.ts', 'features/writing/WritingScreen.tsx'];
+    'services/foundationalLearning.ts', 'features/writing/WritingScreen.tsx', 'services/sectionIntroductions.ts', 'services/exerciseHelp.ts'];
   for (const file of files) {
     const ast = ts.createSourceFile(file, fs.readFileSync(path.join(root, 'src', file), 'utf8'), ts.ScriptTarget.Latest, true);
     function visit(node) {

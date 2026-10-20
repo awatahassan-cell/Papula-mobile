@@ -27,6 +27,11 @@ class MobileSoundService {
   private soundFxEnabled: boolean = true;
   private volume: number = 0.9;
   private isSpeaking: boolean = false;
+  private learningPaused = false;
+  public setLearningPaused(paused: boolean) {
+    this.learningPaused = paused;
+    if (paused) void this.stopSpeaking();
+  }
   private activeSpeakingText: string | null = null;
   private listeners: Set<(speaking: boolean, activeText: string | null) => void> = new Set();
   private currentSound: AudioPlayer | null = null;
@@ -174,6 +179,7 @@ class MobileSoundService {
     // Old recordings are intentionally excluded from the fresh offline pack.
   }
   public async playReviewedSound(uri: string, options: SpeechOptions = {}) {
+    if (this.learningPaused) { options.onError?.(); return; }
     const stopping=this.stopSpeaking();const generation=this.speechGeneration;await stopping;
     if(generation!==this.speechGeneration)return;
     this.isSpeaking=true;this.activeSpeakingText=null;this.notify();options.onStart?.();
@@ -206,6 +212,7 @@ class MobileSoundService {
   }
 
   private async speakSequence(chunks: NarrationChunk[], options: SpeechOptions, pauseMs: number, rate: number) {
+    if (this.learningPaused) { options.onError?.(); return; }
     const stopping = this.stopSpeaking();
     const token = this.storyGeneration;
     await stopping;
@@ -261,6 +268,7 @@ class MobileSoundService {
   }
 
   private async speakChunk(text: string, options?: SpeechOptions | (() => void), preserveStory = false) {
+    if (this.learningPaused) { if (typeof options !== 'function') options?.onError?.(); return; }
     let opts: SpeechOptions = {};
     if (typeof options === 'function') {
       opts = { onEnd: options };

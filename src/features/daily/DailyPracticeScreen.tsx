@@ -1,4 +1,5 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
+import { personalPractice } from '../../services/personalPractice';
 import { useResponsive } from '../../theme/responsive';
 import { useThemeStyles } from '../../theme/useAppearance';
 import { StartingAssessment } from '../learning/StartingAssessment';
@@ -6,15 +7,13 @@ import React, { useEffect, useState } from 'react';
 import { View, ScrollView} from 'react-native';
 import { Text } from '../../components/RTLText';
 import { DailyMissionsComponent } from '../../components/DailyMissionsComponent';
-import { reviewPlan } from '../../services/learningEngine';
-import { isLessonUnlocked } from '../../services/lessonPath';
 import { useAppStore } from '../../store/useAppStore';
 import { LetterPractice } from '../learning/LetterPractice';
 import { learningStyles as baseLearningStyles } from '../learning/learningStyles';
 
 export const DailyPracticeScreen: React.FC = () => {
   const s = useThemeStyles(baseLearningStyles);
-  const {currentProfile,setSelectedLetter,setRoute,completeDailyPractice,registerBackHandler}=useAppStore();
+  const {currentProfile,setSelectedLetter,setRoute,completeDailyPractice,registerBackHandler,saveCheckpoint}=useAppStore();
   const {tablet}=useResponsive();
   const [tab,setTab]=useState<'personal'|'missions'>('personal');
   const [assessing,setAssessing]=useState(false);
@@ -29,7 +28,12 @@ export const DailyPracticeScreen: React.FC = () => {
     });
   }, [assessing, practicing, registerBackHandler]);
 
-  const plan=reviewPlan(currentProfile,34).filter(letter=>isLessonUnlocked(currentProfile,letter.id)).slice(0,3);
+  const plan=personalPractice(currentProfile);
+  const openTask=(task:typeof plan[number])=>{
+    setSelectedLetter(task.letter);
+    saveCheckpoint({kind:task.kind,contentId:task.letter.id,step:task.step});
+    setRoute(task.kind==='writing'?'writing':'letter-detail');
+  };
   if(assessing)return <StartingAssessment onExit={()=>setAssessing(false)} />;
   if(practicing)return <LetterPractice mode="review" onComplete={()=>{completeDailyPractice();}} onExit={()=>setPracticing(false)} />;
   return <ScrollView contentContainerStyle={s.container}>
@@ -42,14 +46,14 @@ export const DailyPracticeScreen: React.FC = () => {
       {currentProfile.placement && <Text style={s.text}>{currentProfile.placement.recommendedLevel===1?'دەستپێک: ناسینەوەی پیت و گوێگرتن':currentProfile.placement.recommendedLevel===2?'دەستپێک: شێوەی پیت و وشەسازی':'دەستپێک: خوێندنەوە و نووسینی سەربەخۆ'}</Text>}
       <Text style={s.title}>با ئەم پیتانە دووبارە بکەینەوە</Text>
       <Text style={s.text}>مەشقەکە بەپێی هەوڵ و پێشکەوتنی تۆیە</Text>
-      <View style={tablet?{flexDirection:'row',gap:14,width:'100%'}:{gap:16,width:'100%'}}>{plan.map(letter=>{
-        const review=currentProfile.letterReviews?.[letter.id];
-        const reason=review?.level===0?'با زیاتر مەشقی بکەین':review?'کاتی دووبارەکردنەوەیە':currentProfile.masteredLetterIds.includes(letter.id)?'پیتی فێربووت بیر بکەرەوە':'با ئەم پیتە فێر بین';
-        return <TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`وانەی پیتی ${letter.glyph}`} style={[s.card,tablet&&{flex:1}]} onPress={()=>{setSelectedLetter(letter);setRoute('letter-detail');}}>
-          <Text style={[s.glyph,{fontSize:54}]}>{letter.glyph}</Text><Text style={s.text}>{reason}</Text>
+      {!plan.length&&<TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>setRoute('alphabet')}><Text style={s.buttonText}>سەرەتا پیتێک لە ڕێڕەوی فێربوون هەڵبژێرە</Text></TouchableOpacity>}
+      <View style={tablet?{flexDirection:'row',gap:14,width:'100%'}:{gap:16,width:'100%'}}>{plan.map(task=>{
+        const {letter,reason}=task;
+        return <TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`وانەی پیتی ${letter.glyph}`} style={[s.card,tablet&&{flex:1}]} onPress={()=>openTask(task)}>
+          <Text style={[s.glyph,{fontSize:54}]}>{letter.glyph}</Text><Text style={s.text}>{reason}</Text><Text style={s.text}>٢ خولەک</Text>
         </TouchableOpacity>;
       })}</View>
-      <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>setPracticing(true)}><Text style={s.buttonText}>دەست بە مەشق بکەم</Text></TouchableOpacity>
+      {!!plan.length&&<><TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>openTask(plan[0])}><Text style={s.buttonText}>دەست بە مەشقی ئەمڕۆ بکەم</Text></TouchableOpacity><TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>setPracticing(true)}><Text style={s.text}>یاریی پێداچوونەوە</Text></TouchableOpacity></>}
     </>}
   </ScrollView>;
 };
