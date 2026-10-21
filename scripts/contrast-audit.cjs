@@ -8,7 +8,7 @@ const ROUTES = ['', 'alphabet', 'stories', 'story-reader', 'match-game', 'writin
   let total = 0;
   for (const mode of ['day', 'night']) {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
-    await ctx.addInitScript(([m, theme]) => { try { localStorage.setItem('papoole_parent_settings_v1', JSON.stringify({ appearanceTheme: theme, appearanceMode: m, dailyLimitMinutes: 30, bedtimeLockEnabled: false, soundFxEnabled: false, narrationVolume: 0.9, isSubscribed: false, activePlan: 'none', language: 'sorani' })); } catch (e) { /* storage unavailable */ } }, [mode, process.env.THEME || 'cloud']);
+    await ctx.addInitScript(([m, theme]) => { try { localStorage.setItem('papoole_parent_settings_v1', JSON.stringify({ appearanceTheme: theme, appearanceMode: m, dailyLimitMinutes: 30, bedtimeLockEnabled: false, soundFxEnabled: false, narrationVolume: 0.9, isSubscribed: false, activePlan: 'none', language: 'sorani' })); } catch { /* storage unavailable */ } }, [mode, process.env.THEME || 'cloud']);
     for (const route of ROUTES) {
       const page = await ctx.newPage();
       await page.goto(`http://localhost:${PORT}/${route}`);

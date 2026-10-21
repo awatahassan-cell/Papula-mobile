@@ -112,7 +112,7 @@ const s = StyleSheet.create({
   iconBtn: {
     width: 54,
     height: 54,
-    borderRadius: 18,
+    borderRadius: 20,
     borderBottomWidth: 4,
     alignItems: 'center',
     justifyContent: 'center',

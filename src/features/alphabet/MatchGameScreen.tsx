@@ -81,7 +81,7 @@ export const MatchGameScreen: React.FC = () => {
 
 // Macaron tiles shared with the home screen: soft colour, dark ink, a darker lip that sinks when pressed.
 const candyCard = StyleSheet.create({
-  tile: { minHeight: 72, borderRadius: 22, borderBottomWidth: 4, paddingVertical: 10, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  tile: { minHeight: 72, borderRadius: 24, borderBottomWidth: 4, paddingVertical: 10, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 12 },
   icon: { width: 44, height: 44, borderRadius: 16, backgroundColor: '#ffffff25', alignItems: 'center', justifyContent: 'center' },
   body: { flex: 1, minWidth: 0 },
   title: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 17, color: '#ffffff', textAlign: 'right' },

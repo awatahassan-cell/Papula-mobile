@@ -5,7 +5,7 @@ const ROUTES = ['', 'alphabet', 'stories', 'story-reader', 'match-game', 'writin
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH, args: ['--no-sandbox'] });
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
-  await ctx.addInitScript(() => { try { localStorage.setItem('papoole_parent_settings_v1', JSON.stringify({ appearanceTheme: 'cloud', appearanceMode: 'day', soundFxEnabled: false, language: 'sorani' })); } catch (e) { /* storage unavailable */ } });
+  await ctx.addInitScript(() => { try { localStorage.setItem('papoole_parent_settings_v1', JSON.stringify({ appearanceTheme: 'cloud', appearanceMode: 'day', soundFxEnabled: false, language: 'sorani' })); } catch { /* storage unavailable */ } });
   const radii = {}; let total = 0;
   for (const route of ROUTES) {
     const page = await ctx.newPage();

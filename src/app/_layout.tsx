@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
   exitStayBtn: {
     flex: 1,
     minHeight: 48,
-    borderRadius: 18,
+    borderRadius: 20,
     borderBottomWidth: 4,
     alignItems: 'center',
     justifyContent: 'center',
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   exitLeaveBtn: {
     flex: 1,
     minHeight: 48,
-    borderRadius: 18,
+    borderRadius: 20,
     borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',

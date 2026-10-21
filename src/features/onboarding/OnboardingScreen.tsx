@@ -1,6 +1,6 @@
 import { BackButton } from '../../components/BackButton';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
-import { useThemeStyles } from '../../theme/useAppearance';
+import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Clock, Heart, PencilLine, ShieldCheck, Volume2 } from 'lucide-react-native';
@@ -32,6 +32,7 @@ const ageGroups: ('3-4' | '5-6' | '7-8')[] = ['3-4', '5-6', '7-8'];
 
 export const OnboardingScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
+  const { colors } = useAppearance();
   const { createProfile, setRoute, strings } = useAppStore();
   const [step, setStep] = useState<'parent' | 'child'>('parent');
   const [name, setName] = useState('');
@@ -59,7 +60,7 @@ export const OnboardingScreen: React.FC = () => {
           <View style={styles.guideList}>
             {PARENT_GUIDE.map(({ Icon, text }) => (
               <View key={text} style={styles.guideRow}>
-                <View style={styles.guideIcon}><Icon size={22} color="#6d4ae8" strokeWidth={2.2} /></View>
+                <View style={styles.guideIcon}><Icon size={22} color={colors.mint} strokeWidth={2.2} /></View>
                 <Text style={styles.guideText}>{text}</Text>
               </View>
             ))}

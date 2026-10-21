@@ -67,7 +67,7 @@ export const WritingResultDetails: React.FC<{ guide: StrokeGuide; strokes: Strok
 const baseStyles = StyleSheet.create({
   wrap: { width: '100%', gap: 10, alignItems: 'center' },
   previews: { flexDirection: 'row', justifyContent: 'center', gap: 14 },
-  previewBox: { alignItems: 'center', gap: 4, backgroundColor: '#ffffff', borderRadius: 18, borderWidth: 1.5, borderColor: '#e2e8f0', padding: 6 },
+  previewBox: { alignItems: 'center', gap: 4, backgroundColor: '#ffffff', borderRadius: 20, borderWidth: 1.5, borderColor: '#e2e8f0', padding: 6 },
   caption: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 13, color: '#475569' },
   listen: { width: '100%', minHeight: 50, paddingHorizontal: 18, borderRadius: 20, backgroundColor: '#fde68a', borderBottomWidth: 4, borderBottomColor: '#d97706', flexDirection: 'row', gap: 8, alignItems: 'center', justifyContent: 'center' },
   listenText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16, color: '#78350f' },

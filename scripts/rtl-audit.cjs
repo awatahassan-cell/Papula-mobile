@@ -11,7 +11,7 @@ const SIZES = [['phone', 390, 844], ['tablet', 1024, 768]];
   let problems = 0;
   for (const [label, width, height] of SIZES) for (const mode of ['day', 'night']) {
     const ctx = await browser.newContext({ viewport: { width, height } });
-    await ctx.addInitScript(m => { try { localStorage.setItem('papoole_parent_settings_v1', JSON.stringify({ appearanceTheme: 'cloud', appearanceMode: m, dailyLimitMinutes: 30, bedtimeLockEnabled: false, soundFxEnabled: false, narrationVolume: 0.9, isSubscribed: false, activePlan: 'none', language: 'sorani' })); } catch (e) { /* storage unavailable */ } }, mode);
+    await ctx.addInitScript(m => { try { localStorage.setItem('papoole_parent_settings_v1', JSON.stringify({ appearanceTheme: 'cloud', appearanceMode: m, dailyLimitMinutes: 30, bedtimeLockEnabled: false, soundFxEnabled: false, narrationVolume: 0.9, isSubscribed: false, activePlan: 'none', language: 'sorani' })); } catch { /* storage unavailable */ } }, mode);
     for (const route of ROUTES) {
       const page = await ctx.newPage();
       await page.goto(`http://localhost:${PORT}/${route}`);
