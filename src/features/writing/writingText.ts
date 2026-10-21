@@ -11,3 +11,4 @@ export const OVERALL_SCORE_LABEL = 'نمرەی گشتی';
 export const TOOL_LABELS = { play: 'پیشاندان', stop: 'وەستاندن', undo: 'هێڵی پێشوو', erase: 'سڕینەوە' } as const;
 export const PEN_LABELS = ['قەڵەمی یەکەم', 'قەڵەمی دووەم', 'قەڵەمی سێیەم'] as const;
 export const MODE_LABELS = ['١ ڕێنما', '٢ نموونە', '٣ سەربەخۆ'] as const;
+export const INK_TOOL_LABELS = { thin: 'قەڵەمی باریک', thick: 'قەڵەمی ئەستوور', expand: 'تەختە گەورە بکە', collapse: 'تەختە بچووک بکەرەوە' } as const;

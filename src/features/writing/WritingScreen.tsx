@@ -1,3 +1,4 @@
+import { inkPath, inkFrames } from '../../services/inkPath';
 import { BackButton } from '../../components/BackButton';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { rtlProps, rtlLayout } from '../../theme/rtl';
@@ -5,15 +6,15 @@ import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import { accentFill } from '../../theme/appearance';
 import { assessWriting, advanceWriting, normalizeIndependentWriting, writingMastered, suggestedWritingMode } from '../../services/foundationalLearning';
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, ScrollView, PanResponder, Modal } from 'react-native';
+import { View, StyleSheet, ScrollView, PanResponder, Modal, GestureResponderEvent } from 'react-native';
 import { PapulaMascot } from '../../components/PapulaMascot';
 import { LetterWordReveal } from '../../components/LetterWordReveal';
 import { Text } from '../../components/RTLText';
 import Svg, { Path, Line, Circle } from 'react-native-svg';
-import { Play, Eraser, Undo2 } from 'lucide-react-native';
+import { Play, Eraser, Undo2, Maximize2, Minimize2 } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
 import { useResponsive, writingBoardSide } from '../../theme/responsive';
-import { MODE_LABELS, OPEN_WORD_WRITING, PEN_LABELS, TOOL_LABELS, STAGE_TITLES } from './writingText';
+import { INK_TOOL_LABELS, MODE_LABELS, OPEN_WORD_WRITING, PEN_LABELS, TOOL_LABELS, STAGE_TITLES } from './writingText';
 import { WritingResultDetails } from './WritingResultDetails';
 import { StarRating } from '../../components/StarRating';
 import { mockLetters } from '../../data/mockLetters';
@@ -27,11 +28,10 @@ import { isLessonUnlocked, isLessonComplete } from '../../services/lessonPath';
 
 const DAY_PENS = ['#7c5cff', '#38a8e8', '#2fbf94'];
 const NIGHT_PENS = ['#5eead4', '#ff8fd0', '#ffd66b'];
-const pathFor = (points: StrokePoint[]) => points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
 const Stroke: React.FC<{ points: StrokePoint[]; color: string; width: number }> = ({ points, color, width }) => {
   if (!points.length) return null;
   if (points.length === 1) return <Circle cx={points[0].x} cy={points[0].y} r={width / 2} fill={color} />;
-  return <Path d={pathFor(points)} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" />;
+  return <Path d={inkPath(points)} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" />;
 };
 
 export const WritingScreen: React.FC = () => {
@@ -53,6 +53,12 @@ export const WritingScreen: React.FC = () => {
   const [penIndex, setPenIndex] = useState(0);
   const pen = pens[penIndex];
   const setPen = (color: string) => setPenIndex(Math.max(0, pens.indexOf(color)));
+  const [penWidth, setPenWidth] = useState(4);
+  const [focused, setFocused] = useState(false);
+  const [strokeInk, setStrokeInk] = useState<{color: string; width: number}[]>([]);
+  const inkRef = useRef({color: pen, width: penWidth});
+  const currentInk = useRef({color: pen, width: penWidth});
+  useLayoutEffect(() => { inkRef.current = {color: pen, width: penWidth}; }, [pen, penWidth]);
   const [drawing, setDrawing] = useState(false);
   const [result, setResult] = useState<TracingScoreResult | null>(null);
   const [submitted, setSubmitted] = useState<StrokePoint[][]>([]);
@@ -61,11 +67,14 @@ export const WritingScreen: React.FC = () => {
   const [demo, setDemo] = useState<number | null>(null);
   const info = useResponsive();
   const split = info.wide && info.landscape;
-  const side = writingBoardSide(info);
+  const side = focused ? Math.max(160, Math.min(info.width - 40, info.height - 250, 480)) : writingBoardSide(info);
   const sideRef = useRef(side);
   useLayoutEffect(() => { sideRef.current = side; }, [side]);
   const strokeRef = useRef<StrokePoint[][]>([]);
   const activeRef = useRef<StrokePoint[]>([]);
+  // eslint-disable-next-line react-hooks/refs -- the initializer stores this callback; only a future animation frame reads the ref.
+  const [frames] = useState(() => inkFrames(() => setActive([...activeRef.current]), requestAnimationFrame, cancelAnimationFrame));
+  useEffect(() => () => frames.cancel(), [frames]);
   const lockedRef = useRef(false);
   const isLocked = busy || result !== null || demo !== null;
   useLayoutEffect(() => { lockedRef.current = isLocked; }, [isLocked]);
@@ -86,9 +95,11 @@ export const WritingScreen: React.FC = () => {
     setDemo(null);
   };
   const clear = () => {
+    frames.cancel();
     strokeRef.current = [];
     activeRef.current = [];
     setStrokes([]);
+    setStrokeInk([]);
     setActive([]);
     setError('');
   };
@@ -107,10 +118,18 @@ export const WritingScreen: React.FC = () => {
       x: Math.max(0, Math.min(100, x / sideRef.current * 100)),
       y: Math.max(0, Math.min(100, y / sideRef.current * 100)),
     });
-    const finish = () => {
+    const finish = (event?: GestureResponderEvent) => {
+      frames.cancel();
+      if (activeRef.current.length && event && Number.isFinite(event.nativeEvent.locationX) && Number.isFinite(event.nativeEvent.locationY)) {
+        const end = point(event.nativeEvent.locationX, event.nativeEvent.locationY);
+        const last = activeRef.current[activeRef.current.length - 1];
+        if (Math.hypot(last.x - end.x, last.y - end.y) > 0.01) activeRef.current.push(end);
+      }
       if (activeRef.current.length) {
         strokeRef.current = [...strokeRef.current, activeRef.current];
         setStrokes(strokeRef.current);
+        const ink = {...currentInk.current};
+        setStrokeInk(previous => [...previous, ink]);
       }
       activeRef.current = [];
       setActive([]); setDrawing(false);
@@ -122,21 +141,22 @@ export const WritingScreen: React.FC = () => {
       onMoveShouldSetPanResponder: () => !lockedRef.current,
       onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: event => {
+        currentInk.current = {...inkRef.current};
         activeRef.current = [point(event.nativeEvent.locationX, event.nativeEvent.locationY)];
-        setActive(activeRef.current); setDrawing(true); setError('');
+        setActive([...activeRef.current]); setDrawing(true); setError('');
       },
       onPanResponderMove: event => {
         const next = point(event.nativeEvent.locationX, event.nativeEvent.locationY);
         const last = activeRef.current[activeRef.current.length - 1];
-        if (!last || Math.hypot(last.x - next.x, last.y - next.y) >= 0.35) {
-          activeRef.current = [...activeRef.current, next];
-          setActive(activeRef.current);
+        if (!last || Math.hypot(last.x - next.x, last.y - next.y) >= 0.15) {
+          activeRef.current.push(next);
+          frames.schedule();
         }
       },
       onPanResponderRelease: finish,
-      onPanResponderTerminate: finish,
+      onPanResponderTerminate: () => finish(),
     });
-  }, []);
+  }, [frames]);
 
   const playDemo = () => {
     if (!guide || demoTimer.current || busy) return;
@@ -203,8 +223,8 @@ export const WritingScreen: React.FC = () => {
             stroke={y === 70 ? (isNight ? '#ff8fd0' : '#e8a26b') : (isNight ? 'rgba(255,255,255,0.14)' : '#dcd6f2')} strokeWidth={y === 70 ? 0.65 : 0.3} />)}
           {mode==='trace' && guide?.outlinePath && <Path d={guide.outlinePath} fill={isNight ? 'rgba(255,255,255,0.16)' : '#cfc8ee'} fillRule="evenodd" />}
           {mode==='trace' && !guide?.outlinePath && guide?.strokes.map((stroke, i) => <Stroke key={`guide-${i}`} points={stroke} color={isNight ? 'rgba(255,255,255,0.16)' : '#cfc8ee'} width={6} />)}
-          {strokes.map((stroke, i) => <Stroke key={`draw-${i}`} points={stroke} color={pen} width={3.6} />)}
-          <Stroke points={active} color={pen} width={3.6} />
+          {strokes.map((stroke, i) => <Stroke key={`draw-${i}`} points={stroke} color={strokeInk[i]?.color || pen} width={(strokeInk[i]?.width || penWidth) * 100 / side} />)}
+          <Stroke points={active} color={pen} width={penWidth * 100 / side} />
           {demo !== null && shownDemo.map((stroke, i) => <Stroke key={`demo-${i}`} points={stroke} color="#0369a1" width={3.6} />)}
           {mode==='trace' && strokes.length === 0 && demo === null && guide?.strokes[0]?.[0] && <Circle cx={guide.strokes[0][0].x} cy={guide.strokes[0][0].y} r={2} fill="#047857" />}
         </Svg>
@@ -216,22 +236,26 @@ export const WritingScreen: React.FC = () => {
     <>
     {demo !== null && <Text style={styles.hint}>سەیر بکە چۆن دەنووسرێت…</Text>}
     <View style={styles.toolRow}>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel={demo !== null ? TOOL_LABELS.stop : TOOL_LABELS.play} style={styles.roundTool} onPress={() => { if (demo !== null) stopDemo(); else playDemo(); }} disabled={busy || mode!=='trace'}>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel={demo !== null ? TOOL_LABELS.stop : TOOL_LABELS.play} style={styles.roundTool} onPress={() => { if (demo !== null) stopDemo(); else playDemo(); }} disabled={busy || drawing || mode!=='trace'}>
         <Play size={20} color={colors.mint} /></TouchableOpacity>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel={TOOL_LABELS.undo} style={styles.roundTool} disabled={busy || demo !== null} onPress={() => { strokeRef.current = strokeRef.current.slice(0, -1); setStrokes(strokeRef.current); }}>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel={TOOL_LABELS.undo} style={styles.roundTool} disabled={busy || drawing || demo !== null} onPress={() => { strokeRef.current = strokeRef.current.slice(0, -1); setStrokes(strokeRef.current); setStrokeInk(previous => previous.slice(0, -1)); }}>
         <Undo2 size={20} color={colors.ink} /></TouchableOpacity>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel={TOOL_LABELS.erase} style={styles.roundTool} disabled={busy || demo !== null} onPress={clear}>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel={TOOL_LABELS.erase} style={styles.roundTool} disabled={busy || drawing || demo !== null} onPress={clear}>
         <Eraser size={20} color={colors.ink} /></TouchableOpacity>
       <View style={[styles.toolDivider, { backgroundColor: colors.edge }]} />
       {pens.map((color, i) => <TouchableOpacity key={color} accessibilityRole="button" accessibilityLabel={PEN_LABELS[i]}
-        accessibilityState={{ selected: pen === color }} onPress={() => setPen(color)} style={[styles.penDot, { backgroundColor: color }, pen === color && { borderWidth: 3, borderColor: colors.paper, shadowColor: color, shadowOpacity: 0.9, shadowRadius: 8, shadowOffset: { width: 0, height: 0 }, elevation: 6 }]} />)}
+        disabled={drawing || busy || demo !== null} accessibilityState={{ selected: pen === color }} onPress={() => setPen(color)} style={[styles.penDot, { backgroundColor: color }, pen === color && { borderWidth: 3, borderColor: colors.paper, shadowColor: color, shadowOpacity: 0.9, shadowRadius: 8, shadowOffset: { width: 0, height: 0 }, elevation: 6 }]} />)}
+    </View>
+    <View style={styles.toolRow}>
+      {[4, 7].map(width => <TouchableOpacity key={width} accessibilityRole="button" accessibilityLabel={width === 4 ? INK_TOOL_LABELS.thin : INK_TOOL_LABELS.thick} accessibilityState={{selected: penWidth === width}} disabled={drawing || busy || demo !== null} onPress={() => setPenWidth(width)} style={[styles.roundTool, {borderWidth: 2, borderColor: penWidth === width ? colors.mint : colors.edge}]}><View style={{width: 22, height: width, borderRadius: width, backgroundColor: colors.ink}} /></TouchableOpacity>)}
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel={focused ? INK_TOOL_LABELS.collapse : INK_TOOL_LABELS.expand} accessibilityState={{selected: focused}} disabled={drawing} onPress={() => setFocused(value => !value)} style={styles.roundTool}>{focused ? <Minimize2 size={21} color={colors.mint} /> : <Maximize2 size={21} color={colors.mint} />}</TouchableOpacity>
     </View>
     {!!error && <Text accessibilityLiveRegion="polite" style={styles.error}>{error}</Text>}
     <View style={styles.actionRow}>
       <BigButton onPress={evaluate} disabled={busy || drawing || demo !== null || !guide} variant="success" size="md" style={styles.evalBtn}>
         {busy ? 'پشکنین دەکەم…' : 'نووسینەکەم چۆنە؟ ✓'}
       </BigButton>
-      <BigButton onPress={() => setRoute('word-writing')} variant="outline" size="md" style={styles.wordWriteBtn}>{OPEN_WORD_WRITING}</BigButton>
+      {!focused && <BigButton onPress={() => setRoute('word-writing')} variant="outline" size="md" style={styles.wordWriteBtn}>{OPEN_WORD_WRITING}</BigButton>}
     </View>
     </>
   );
@@ -245,14 +269,14 @@ export const WritingScreen: React.FC = () => {
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="پیتی دواتر" disabled={!hasNext || busy}
         style={[styles.arrow, !hasNext && styles.disabled]} onPress={() => selectLetter(index + 1)}><Text style={styles.arrowText}>←</Text></TouchableOpacity>
     </View>
-    <View style={[styles.modeBar, { backgroundColor: extras.glass }, split && styles.toolsCompact]} accessibilityRole="tablist">{(['trace','copy','independent'] as const).map((value,i)=>{
+    {!focused && <View style={[styles.modeBar, { backgroundColor: extras.glass }, split && styles.toolsCompact]} accessibilityRole="tablist">{(['trace','copy','independent'] as const).map((value,i)=>{
       const locked = !lessonDone && ((value==='copy'&&!currentProfile.writingProgress?.[letter.id]?.tracePassed) || (value==='independent'&&!currentProfile.writingProgress?.[letter.id]?.copyPassed));
       const on = mode===value;
       return <TouchableOpacity key={value} accessibilityRole="tab" accessibilityState={{selected:on,disabled:busy||locked}} disabled={busy || locked} style={[styles.modeTab, on && { backgroundColor: accentFill(colors, isNight) }, locked && { opacity: 0.5 }]} onPress={()=>changeMode(value)}>
         <Text style={[styles.modeTabText, { color: on ? '#ffffff' : colors.muted }]}>{MODE_LABELS[i]}</Text></TouchableOpacity>;
-    })}</View>
+    })}</View>}
     {split && <Text style={styles.stage}>{STAGE_TITLES[mode]}</Text>}
-    <Text numberOfLines={1} style={styles.instruction}>{mode==='trace'?guide?.instructionKu:mode==='copy'?'نموونەکە سەیر بکە و لە بۆردە بەتاڵەکە بینووسە.':'بەبێ ڕێنما پیتەکە بنووسە؛ هەموو هێڵ و خاڵەکانی بیر بکەرەوە.'}</Text>
+    {!focused && <Text style={styles.instruction}>{mode==='trace'?guide?.instructionKu:mode==='copy'?'نموونەکە سەیر بکە و لە بۆردە بەتاڵەکە بینووسە.':'بەبێ ڕێنما پیتەکە بنووسە؛ هەموو هێڵ و خاڵەکانی بیر بکەرەوە.'}</Text>}
     {split ? <View style={styles.split}><View style={styles.splitBoard}>{boardNode}</View><View style={styles.splitControls}>{controlsNode}</View></View> : <>{boardNode}{controlsNode}</>}
     {result && <Modal transparent animationType="fade" visible onRequestClose={() => setResult(null)}>
       <View {...rtlProps} style={[styles.backdrop, rtlLayout]}><ScrollView contentContainerStyle={styles.modalScroll}><View style={styles.modalCard}>
@@ -279,12 +303,12 @@ const baseStyles = StyleSheet.create({
   modeBar: { flexDirection: 'row', width: '100%', borderRadius: 999, padding: 3, gap: 4 },
   modeTab: { flex: 1, minHeight: 36, borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
   modeTabText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 13 },
-  toolRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, width: '100%' },
+  toolRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: 8, width: '100%' },
   roundTool: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center' },
   toolDivider: { width: 2, height: 24, borderRadius: 1, marginHorizontal: 2 },
   penDot: { width: 28, height: 28, borderRadius: 14 },
   boardNight: { backgroundColor: '#1a1570', borderColor: 'rgba(255,255,255,0.22)' },
-  container: { paddingHorizontal: 14, paddingTop: 4, paddingBottom: 10, alignItems: 'center', gap: 7, width: '100%', maxWidth: 520, alignSelf: 'center' },
+  container: { paddingHorizontal: 14, paddingTop: 4, paddingBottom: 92, alignItems: 'center', gap: 7, width: '100%', maxWidth: 520, alignSelf: 'center' },
   header: { flexDirection: 'row', alignItems: 'center', width: '100%', gap: 8 },
   letterInfo: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 },
   label: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#1e293b', textAlign: 'center' },

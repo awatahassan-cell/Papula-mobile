@@ -33,10 +33,11 @@ export const WordWritingScreen: React.FC = () => {
   const tiles = tileSet(isNight);
   const { currentProfile, setRoute, recordPracticeResult, finishLearningGame, registerBackHandler } = useAppStore();
   const { width, height } = useWindowDimensions();
-  const side = Math.max(170, Math.min(width - 56, height - 360, 260));
+  const side = Math.max(170, Math.min(width - 40, height - 320, 380));
   const [tab, setTab] = useState<Tab>('word');
   const [session, setSession] = useState<WritingSession | null>(null);
   const [strokes, setStrokes] = useState<StrokePoint[][]>([]);
+  const [drawing, setDrawing] = useState(false);
   const [assessment, setAssessment] = useState<TracingScoreResult | null>(null);
   const [submitted, setSubmitted] = useState<StrokePoint[][]>([]);
   const [showGuide, setShowGuide] = useState(true);
@@ -172,7 +173,7 @@ export const WordWritingScreen: React.FC = () => {
     const failed = !!assessment && !assessment.mastered;
     const passedNow = !!assessment && assessment.mastered;
     return (
-      <ScrollView contentContainerStyle={s.container} scrollEnabled>
+      <ScrollView contentContainerStyle={s.container} scrollEnabled={!drawing}>
         <View style={s.sessionHeader}>
           <TouchableOpacity
             accessibilityRole="button"
@@ -201,6 +202,7 @@ export const WordWritingScreen: React.FC = () => {
         </View>
         <Text style={s.hint}>پیتی «{slot.letter.glyph}» بنووسە ({Math.min(session.index + 1, session.task.slots.length)} / {session.task.slots.length})</Text>
         <WritingBoard
+          onDrawingChange={setDrawing}
           side={side}
           guide={slot.guide}
           showGuide={showGuide}
