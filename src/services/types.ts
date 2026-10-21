@@ -154,6 +154,8 @@ export interface ChildProfile {
   dailyLog?: Record<string, DayLog>;
   letterReviews?: Record<string, LetterReview>;
   learnedWordIds?: string[];
+  /** Spaced review of picture words and short sentences, keyed by word id. */
+  wordReviews?: Record<string, LetterReview>;
   dailyPracticeRewardDate?: string;
   gameRewardDates?: Record<string, string>;
   storyPracticeDates?: Record<string, string>;

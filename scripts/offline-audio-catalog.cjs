@@ -66,7 +66,7 @@ function catalog() {
   const welcome = 'سڵاو هاوڕێی شیرینم، بەخێربێیت بۆ پەپوولە.';
   add(welcome, welcome, 'preview');
   // Optional narration is appended last and flagged, so existing recordings and batches are never reshuffled.
-  const { SYLLABLE_TEXTS, TIP_TEXTS } = data('data/narratedExtras.ts');
+  const { SYLLABLE_TEXTS, TIP_TEXTS, VOCAB_TEXTS } = data('data/narratedExtras.ts');
   const required = new Set(entries.keys());
   const addExtra = (text, category) => {
     const key = keyFor(text);
@@ -74,6 +74,7 @@ function catalog() {
   };
   for (const text of SYLLABLE_TEXTS) addExtra(text, 'syllable');
   for (const text of TIP_TEXTS) addExtra(text, 'tip');
+  for (const text of VOCAB_TEXTS) addExtra(text, 'vocabulary');
   return [...entries.values()];
 }
 

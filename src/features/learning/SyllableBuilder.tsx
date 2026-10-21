@@ -34,7 +34,7 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
     if (!round || selected.length !== round.syllables.length || correct) return;
     const passed = checkSyllableOrder(round, selected);
     setCorrect(passed);
-    recordPracticeResult(round.word.letterIds, passed, passed ? round.word.id : undefined, 'syllables', helped.current);
+    recordPracticeResult(round.word.letterIds, passed, round.word.id, 'syllables', helped.current);
     if (passed) {
       setFeedback(`ئافەرم! «${round.word.word}» ${round.syllables.length} بڕگەیە`);
       soundService.playCorrect();

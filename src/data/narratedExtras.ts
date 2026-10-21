@@ -1,4 +1,5 @@
 import { RUBRIC_SENTENCES } from '../services/writingRubric';
+import { VOCAB, VOCAB_SENTENCES } from './vocabulary';
 import { SYLLABLE_WORDS } from './syllableWords';
 
 /**
@@ -8,3 +9,6 @@ import { SYLLABLE_WORDS } from './syllableWords';
  */
 export const SYLLABLE_TEXTS: string[] = Array.from(new Set(SYLLABLE_WORDS.flatMap(item => item.syllables)));
 export const TIP_TEXTS: string[] = Array.from(new Set(Object.values(RUBRIC_SENTENCES)));
+
+/** Picture words and short sentences of the vocabulary game; the game hides 🔊 until these are recorded. */
+export const VOCAB_TEXTS: string[] = [...VOCAB.map(item => item.word), ...VOCAB_SENTENCES.map(item => item.text)];

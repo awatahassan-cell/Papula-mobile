@@ -3,6 +3,7 @@ import { applyLessonStep, isLessonUnlocked, nextLessonLetter, reconcileLessons }
 import { usePathname, useRouter } from 'expo-router';
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { LEARNING_WORDS, learningActivity, localDay, logDay, updateReview, personalStories } from '../services/learningEngine';
+import { knownWordId, isVocabId } from '../data/vocabulary';
 import { normalizeCheckpoint } from '../services/learningContinuation';
 import { mockLetters } from '../data/mockLetters';
 import { authRepo, lettersRepo, progressRepo, storiesRepo, writingRepo } from '../services/repositories';
@@ -587,10 +588,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const validWord=correct && wordId && LEARNING_WORDS.some(word=>word.id===wordId);
     const first=!!validWord && !base.learnedWordIds?.includes(wordId!);
     const domain=skill || (wordId?'word':'recognition');
+    const reviewable=!!wordId && knownWordId(wordId);
+    const firstPicture=correct && reviewable && isVocabId(wordId) && !base.wordReviews?.[wordId!];
     updateCurrentProfile(evaluateStreak({...base,letterReviews:reviews,
+      wordReviews:reviewable?{...base.wordReviews,[wordId!]:updateReview(base.wordReviews?.[wordId!],correct)}:base.wordReviews,
       skillProgress:{...base.skillProgress,[domain]:skillAttempt(base.skillProgress?.[domain],correct,helped)},
       learnedWordIds:first?[...(base.learnedWordIds||[]),wordId!]:base.learnedWordIds,
-      stars:base.stars+(first?1:0),
+      stars:base.stars+(first||firstPicture?1:0),
     }));
   };
 

@@ -44,7 +44,7 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
     const passed=normalizedWord(assembled)===normalizedWord(word.word);
     setCorrect(passed);
     const ids=passed?word.letterIds:word.letterIds.filter((_,index)=>word.units[index]!==Array.from(selected.map(id=>bank.find(tile=>tile.id===id)!.glyph))[index]);
-    recordPracticeResult(ids,passed,passed?word.id:undefined,'word',helped.current);
+    recordPracticeResult(ids,passed,word.id,'word',helped.current);
     const mismatches=word.units.map((unit,index)=>unit!==selected.map(id=>bank.find(tile=>tile.id===id)!.glyph)[index]?index+1:0).filter(Boolean);
     setFeedback(passed?`ئافەرم! وشەی «${word.word}»ت دروست کرد`:`نزیک بوویت! شوێنی ${mismatches.join('، ')} بپشکنە؛ پیتەکانی بە ڕیزێکی تر دابنێ`);
     if(passed){soundService.playCorrect();void soundService.speakWord(word.word);}

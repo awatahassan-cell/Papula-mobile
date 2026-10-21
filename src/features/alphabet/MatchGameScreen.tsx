@@ -2,8 +2,10 @@ import { HelpHint } from '../../components/HelpButton';
 import { sectionIntroductions } from '../../services/sectionIntroductions';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
-import { Ear, Eye, Layers, PencilLine, Puzzle, Volume2 } from 'lucide-react-native';
+import { Ear, Eye, Layers, PencilLine, Shapes, Puzzle, Volume2 } from 'lucide-react-native';
 import { WORD_WRITING_TILE } from '../writing/writingText';
+import { VocabularyGame } from '../vocabulary/VocabularyGame';
+import { VOCAB_TILE } from '../vocabulary/vocabText';
 import { tileSet } from '../../theme/candy';
 import { StartingSoundGame } from '../learning/StartingSoundGame';
 import React, { useEffect, useState } from 'react';
@@ -22,7 +24,7 @@ export const MatchGameScreen: React.FC = () => {
   const { registerBackHandler, setRoute } = useAppStore();
   const tiles = tileSet(isNight);
   const { tablet, pageMax } = useResponsive();
-  const [mode, setMode] = useState<'menu' | 'word' | 'sound' | 'similar' | 'phonics' | 'syllables'>('menu');
+  const [mode, setMode] = useState<'menu' | 'word' | 'sound' | 'similar' | 'phonics' | 'syllables' | 'vocab'>('menu');
 
   useEffect(() => {
     if (!registerBackHandler) return;
@@ -39,6 +41,7 @@ export const MatchGameScreen: React.FC = () => {
 
   if (mode === 'phonics') return <StartingSoundGame onExit={() => setMode('menu')} />;
   if (mode === 'syllables') return <SyllableBuilder onExit={() => setMode('menu')} />;
+  if (mode === 'vocab') return <VocabularyGame onExit={() => setMode('menu')} />;
   if (mode === 'word') return <WordBuilder onExit={() => setMode('menu')} />;
   if (mode === 'sound' || mode === 'similar') return <LetterPractice mode={mode} onExit={() => setMode('menu')} />;
 
@@ -51,6 +54,7 @@ export const MatchGameScreen: React.FC = () => {
           { mode: 'syllables', title: 'بڕگەکان', hint: 'وشەکە بە بڕگە پێکەوە ببەستە', Icon: Layers },
           { mode: 'phonics', title: 'دەنگی سەرەتای وشە', hint: 'وشەکە ببیستە و دەنگی یەکەم بدۆزەوە', Icon: Ear },
           { mode: 'sound', title: 'یاریی دەنگ', hint: 'گوێ بگرە و پیتەکە بدۆزەوە', Icon: Volume2 },
+          { mode: 'vocab', title: VOCAB_TILE.title, hint: VOCAB_TILE.hint, Icon: Shapes },
         ] as const).map((item, index) => {
           const candy = tiles[index % tiles.length];
           return (
@@ -76,7 +80,7 @@ export const MatchGameScreen: React.FC = () => {
           );
         })}
         {(() => {
-          const candy = tiles[5 % tiles.length];
+          const candy = tiles[6 % tiles.length];
           return (
             <TouchableOpacity
               accessibilityRole="button"

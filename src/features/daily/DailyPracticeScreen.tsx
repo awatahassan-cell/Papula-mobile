@@ -9,6 +9,9 @@ import { Text } from '../../components/RTLText';
 import { DailyMissionsComponent } from '../../components/DailyMissionsComponent';
 import { useAppStore } from '../../store/useAppStore';
 import { LetterPractice } from '../learning/LetterPractice';
+import { VocabularyGame } from '../vocabulary/VocabularyGame';
+import { VOCAB_TEXT } from '../vocabulary/vocabText';
+import { dueWordCount } from '../../data/vocabulary';
 import { learningStyles as baseLearningStyles } from '../learning/learningStyles';
 
 export const DailyPracticeScreen: React.FC = () => {
@@ -18,15 +21,17 @@ export const DailyPracticeScreen: React.FC = () => {
   const [tab,setTab]=useState<'personal'|'missions'>('personal');
   const [assessing,setAssessing]=useState(false);
   const [practicing,setPracticing]=useState(false);
+  const [reviewingWords,setReviewingWords]=useState(false);
 
   useEffect(() => {
-    if (!assessing && !practicing) return;
+    if (!assessing && !practicing && !reviewingWords) return;
     return registerBackHandler(() => {
       if (assessing) setAssessing(false);
       else if (practicing) setPracticing(false);
+      else setReviewingWords(false);
       return true;
     });
-  }, [assessing, practicing, registerBackHandler]);
+  }, [assessing, practicing, reviewingWords, registerBackHandler]);
 
   const plan=personalPractice(currentProfile);
   const openTask=(task:typeof plan[number])=>{
@@ -34,6 +39,8 @@ export const DailyPracticeScreen: React.FC = () => {
     saveCheckpoint({kind:task.kind,contentId:task.letter.id,step:task.step});
     setRoute(task.kind==='writing'?'writing':'letter-detail');
   };
+  const dueWordsNow=dueWordCount(currentProfile);
+  if(reviewingWords)return <VocabularyGame start="review" onExit={()=>setReviewingWords(false)} />;
   if(assessing)return <StartingAssessment onExit={()=>setAssessing(false)} />;
   if(practicing)return <LetterPractice mode="review" onComplete={()=>{completeDailyPractice();}} onExit={()=>setPracticing(false)} />;
   return <ScrollView contentContainerStyle={s.container}>
@@ -54,6 +61,7 @@ export const DailyPracticeScreen: React.FC = () => {
         </TouchableOpacity>;
       })}</View>
       {!!plan.length&&<><TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>openTask(plan[0])}><Text style={s.buttonText}>دەست بە مەشقی ئەمڕۆ بکەم</Text></TouchableOpacity><TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>setPracticing(true)}><Text style={s.text}>یاریی پێداچوونەوە</Text></TouchableOpacity></>}
+      {dueWordsNow>0&&<TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>setReviewingWords(true)}><Text style={s.text}>{VOCAB_TEXT.review} · {VOCAB_TEXT.reviewHint(dueWordsNow)}</Text></TouchableOpacity>}
     </>}
   </ScrollView>;
 };
