@@ -32,7 +32,8 @@ import { soundService } from '../services/soundService';
 import { sectionIntroductions } from '../services/sectionIntroductions';
 import { useSessionGuard } from '../components/useSessionGuard';
 import { SaveStatusBanner } from '../components/SaveStatusBanner';
-import { HelpButton } from '../components/HelpButton';
+import { HelpDock, HelpProvider } from '../components/HelpButton';
+import { exerciseHelp } from '../services/exerciseHelp';
 
 /** Any screen error lands here instead of a blank screen. */
 export const ErrorBoundary = AppErrorScreen;
@@ -121,12 +122,11 @@ const MainRouter: React.FC = () => {
   ) : null;
 
   return (
-    <SafeAreaView {...rtlProps} onTouchStart={session.touch} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={isGarden ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}>
+    <SafeAreaView {...rtlProps} onTouchStart={session.touch} style={[styles.safeArea, rtlLayout, isGarden && { backgroundColor: appearanceColors.background }]} edges={['top', 'left', 'right', 'bottom']}>
       <LinearGradient pointerEvents="none" colors={extras.gradient} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle={isNight ? 'light-content' : 'dark-content'} backgroundColor={isGarden ? appearanceColors.background : '#ffffff'} />
       {route !== 'onboarding' && <TopHeader />}
       <SaveStatusBanner />
-      {!!sectionIntroductions[route] && !['letter-detail','story-reader','match-game'].includes(route) && <HelpButton key={route} text={sectionIntroductions[route]} />}
       {session.warning && <TouchableOpacity accessibilityRole="button" onPress={session.takeBreak} style={{ padding: 10, backgroundColor: appearanceColors.peach }}><Text style={{ color: appearanceColors.ink, textAlign: 'center' }}>دوو خولەک یان کەمتر ماوە؛ با پاشان پشوو بدەین. پشوو بدەم</Text></TouchableOpacity>}
       {/* Phones: tab bar under the content. Tablets: a rail on the right (first child of an RTL row). */}
       <View style={[styles.body, tablet && styles.bodyRow]}>
@@ -137,11 +137,13 @@ const MainRouter: React.FC = () => {
             <ThemeProvider value={TRANSPARENT_THEME}>
               <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: appearanceColors.background, ...rtlLayout } }} />
             </ThemeProvider>
+            <HelpDock disabled={session.blocked} fallbackText={route === 'story-reader' ? exerciseHelp.story : route === 'letter-detail' ? exerciseHelp.letter : sectionIntroductions[route] || sectionIntroductions.home} />
           </View>
           {!tablet && <GardenNavigation />}
           <AmbientSky />
         </View>
       </View>
+
 
       {/* Global Modals */}
       <ParentGateModal />
@@ -215,7 +217,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <AppProvider>
-        <MainRouter />
+        <HelpProvider><MainRouter /></HelpProvider>
       </AppProvider>
     </SafeAreaProvider>
   );

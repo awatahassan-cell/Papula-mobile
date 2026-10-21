@@ -2,7 +2,8 @@ import { TactileButton as TouchableOpacity } from './TactileButton';
 import { GOLD } from '../theme/tokens';
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { ArrowRight, Settings, Volume2, VolumeX, Square, Star, Flame } from 'lucide-react-native';
+import { Settings, Volume2, VolumeX, Square, Star, Flame } from 'lucide-react-native';
+import { BackButton } from './BackButton';
 import { Text } from './RTLText';
 import { PapulaMascot } from './PapulaMascot';
 import { useAppStore } from '../store/useAppStore';
@@ -14,21 +15,21 @@ export const TopHeader: React.FC = () => {
   const s=useThemeStyles(baseStyles);
   const {colors:c}=useAppearance();
   const {route,setRoute,goBack,currentProfile,parentSettings,updateParentSettings,openParentGateWithCallback}=useAppStore();
-  const {tablet,pageMax}=useResponsive();
+  const {tablet,pageMax,width}=useResponsive();
   const [speaking,setSpeaking]=useState(false);
   useEffect(()=>soundService.subscribe(value=>setSpeaking(value)),[]);
   const toggle=()=>{const enabled=!parentSettings.soundFxEnabled;updateParentSettings({soundFxEnabled:enabled});soundService.setSoundFxEnabled(enabled);};
   if(route==='home')return null; // the home screen has its own greeting row
   return <View style={[s.frame,{backgroundColor:'transparent'}]}><View style={[s.header,{maxWidth:pageMax}]}>
     <View style={s.topRow}>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel="گەڕانەوە" style={s.icon} onPress={()=>{void soundService.stopSpeaking();goBack();}}><ArrowRight color={c.ink} size={22}/></TouchableOpacity>
-      {tablet && <TouchableOpacity accessibilityRole="button" accessibilityLabel="پەپوولە، سەرەتا" style={[s.brand,{flex:0,minWidth:150}]} onPress={()=>{void soundService.stopSpeaking();setRoute('home');}}><View style={{flexDirection:'row',alignItems:'center',gap:4}}><PapulaMascot size={30}/><Text numberOfLines={1} style={s.brandText}>پەپوولە</Text></View></TouchableOpacity>}
+      <BackButton onPress={goBack} />
+      {tablet && <TouchableOpacity accessibilityRole="button" accessibilityLabel="پەپوولە، سەرەتا" style={[s.brand,{flex:0,minWidth:width<900?130:150}]} onPress={()=>{void soundService.stopSpeaking();setRoute('home');}}><View style={{flexDirection:'row',alignItems:'center',gap:4}}><PapulaMascot size={30}/><Text numberOfLines={1} style={s.brandText}>پەپوولە</Text></View></TouchableOpacity>}
       {!tablet && <>
-        <TouchableOpacity accessibilityRole="button" accessibilityLabel={`ستیکەرەکانم، ${currentProfile.stars} ئەستێرە`} style={[s.stat,{flex:0,minWidth:76,backgroundColor:GOLD.soft,borderWidth:2,borderColor:GOLD.border}]} onPress={()=>setRoute('stickers')}><Star size={17} color={GOLD.starInk} fill={GOLD.star}/><Text style={[s.statText,{color:GOLD.ink}]}>{currentProfile.stars}</Text></TouchableOpacity>
-        <View accessible accessibilityLabel={`${currentProfile.streakDays} ڕۆژ لە دوای یەک`} style={[s.stat,{flex:0,minWidth:64}]}><Flame size={17} color={c.coral}/><Text style={s.statText}>{currentProfile.streakDays}</Text></View>
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel={`ستیکەرەکانم، ${currentProfile.stars} ئەستێرە`} style={[s.stat,{flex:0,minWidth:width<360?64:76,backgroundColor:GOLD.soft,borderWidth:2,borderColor:GOLD.border}]} onPress={()=>setRoute('stickers')}><Star size={17} color={GOLD.starInk} fill={GOLD.star}/><Text style={[s.statText,{color:GOLD.ink}]}>{currentProfile.stars}</Text></TouchableOpacity>
+        <View accessible accessibilityLabel={`${currentProfile.streakDays} ڕۆژ لە دوای یەک`} style={[s.stat,{flex:0,minWidth:width<360?48:64}]}><Flame size={17} color={c.coral}/><Text style={s.statText}>{currentProfile.streakDays}</Text></View>
         <View style={{flex:1}}/>
       </>}
-      {tablet && <View style={[s.stats,s.statsInline]}><TouchableOpacity accessibilityRole="button" accessibilityLabel="ستیکەرەکانم" style={s.profile} onPress={()=>setRoute('stickers')}><Text style={s.avatar}>{currentProfile.avatar}</Text><Text numberOfLines={1} style={s.name}>{currentProfile.name}</Text></TouchableOpacity><View style={s.stat}><Flame size={17} color={c.coral}/><Text style={s.statText}>{currentProfile.streakDays} ڕۆژ</Text></View><View style={[s.stat,{backgroundColor:GOLD.soft,borderWidth:2,borderColor:GOLD.border}]}><Star size={17} color={GOLD.starInk} fill={GOLD.star}/><Text style={[s.statText,{color:GOLD.ink}]}>{currentProfile.stars}</Text></View></View>}
+      {tablet && <View style={[s.stats,s.statsInline,width<900&&{minWidth:280}]}><TouchableOpacity accessibilityRole="button" accessibilityLabel="ستیکەرەکانم" style={s.profile} onPress={()=>setRoute('stickers')}><Text style={s.avatar}>{currentProfile.avatar}</Text><Text numberOfLines={1} style={s.name}>{currentProfile.name}</Text></TouchableOpacity><View style={s.stat}><Flame size={17} color={c.coral}/><Text style={s.statText}>{currentProfile.streakDays} ڕۆژ</Text></View><View style={[s.stat,{backgroundColor:GOLD.soft,borderWidth:2,borderColor:GOLD.border}]}><Star size={17} color={GOLD.starInk} fill={GOLD.star}/><Text style={[s.statText,{color:GOLD.ink}]}>{currentProfile.stars}</Text></View></View>}
       {tablet && <View style={{flex:1}}/>}
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={speaking?'وەستاندنی دەنگ':'دەنگی ئەپ'} style={s.icon} onPress={()=>speaking?void soundService.stopSpeaking():toggle()}>{speaking?<Square size={19} color={c.coral}/>:parentSettings.soundFxEnabled?<Volume2 size={21} color={c.ink}/>:<VolumeX size={21} color={c.muted}/>}</TouchableOpacity>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="ڕێکخستنەکانی دایک و باوک" style={s.icon} onPress={()=>openParentGateWithCallback(()=>setRoute('parent-dashboard'))}><Settings size={21} color={c.muted}/></TouchableOpacity>

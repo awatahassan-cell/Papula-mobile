@@ -1,10 +1,11 @@
+import { BackButton } from '../../components/BackButton';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import React, {useEffect,useState} from 'react';
 import {View,ScrollView,StyleSheet,Switch} from 'react-native';
 import {Text,TextInput} from '../../components/RTLText';
 import { BRAND } from '../../theme/tokens';
 import { PapulaMascot } from '../../components/PapulaMascot';
-import {ArrowRight,ShieldCheck,TrendingUp,Palette,SlidersHorizontal,Check,Plus,Clock,Volume2,Moon,BookOpen,Star,Users,Sun,Clock3} from 'lucide-react-native';
+import {ShieldCheck,TrendingUp,Palette,SlidersHorizontal,Check,Plus,Clock,Volume2,Moon,BookOpen,Star,Users,Sun,Clock3} from 'lucide-react-native';
 import {useAppStore} from '../../store/useAppStore';
 import {useAppearance,useThemeStyles} from '../../theme/useAppearance';
 import {appearanceThemes,normalizeAppearanceMode,normalizeAppearanceTheme} from '../../theme/appearance';
@@ -35,7 +36,7 @@ export const ParentDashboardScreen:React.FC=()=>{
   const heading=(Icon:typeof Palette,title:string,subtitle:string)=><View style={s.sectionIntro}><View style={s.sectionIcon}><Icon size={23} color={c.mint}/></View><View style={s.copy}><Text style={s.sectionTitle}>{title}</Text><Text style={s.hint}>{subtitle}</Text></View></View>;
   return <ScrollView contentContainerStyle={s.page} keyboardShouldPersistTaps="handled">
     <View style={s.parentHero}>
-      <View style={s.heroTop}><View style={s.heroBadge}><ShieldCheck size={17} color="#ffffff"/><Text style={[s.badgeText,{color:'#ffffff'}]}>بۆ دایک و باوک</Text></View><TouchableOpacity accessibilityRole="button" accessibilityLabel="گەڕانەوە بۆ ناو ئەپ" onPress={()=>setRoute('home')} style={s.back}><ArrowRight size={21} color={c.ink}/></TouchableOpacity></View>
+      <View style={s.heroTop}><View style={s.heroBadge}><ShieldCheck size={17} color="#ffffff"/><Text style={[s.badgeText,{color:'#ffffff'}]}>بۆ دایک و باوک</Text></View><BackButton accessibilityLabel="گەڕانەوە بۆ ناو ئەپ" onPress={()=>setRoute('home')} /></View>
       <Text style={s.heroTitle}>پێکەوە، فێربوون جوانترە</Text>{tab==='progress'&&<Text style={s.heroSubtitle}>هەنگاوەکانی {currentProfile.name} ببینن و دنیای فێربوونی ڕێک بخەن.</Text>}
       {tab==='progress'&&<View style={s.childSummary}><Text style={s.childAvatar}>{currentProfile.avatar}</Text><View style={s.copy}><Text style={s.childName}>{currentProfile.name}</Text><Text style={s.hint}>{finished} وانەی تەواو کردووە</Text></View><View style={s.starBadge}><Star size={16} color={c.coralDark}/><Text style={s.badgeText}>{currentProfile.stars}</Text></View></View>}
     </View>

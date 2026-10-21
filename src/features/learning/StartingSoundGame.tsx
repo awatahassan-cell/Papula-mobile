@@ -1,4 +1,5 @@
-import { HelpButton } from '../../components/HelpButton';
+import { BackButton } from '../../components/BackButton';
+import { HelpHint } from '../../components/HelpButton';
 import { exerciseHelp } from '../../services/exerciseHelp';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
@@ -25,9 +26,9 @@ export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
   const locked=useRef(false),advanced=useRef(-1),token=useRef(0);
   const round=rounds[index];const correct=answer===round?.target.id;
   useEffect(()=>()=>{token.current++;void soundService.stopSpeaking();},[]);
-  if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>دەنگی سەرەتای وشەکانت دۆزییەوە</Text><TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>گەڕانەوە</Text></TouchableOpacity></View>;
+  if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>دەنگی سەرەتای وشەکانت دۆزییەوە</Text><BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton></View>;
   if(!round)return null;
-  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpButton text={exerciseHelp.sound} />
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpHint text={exerciseHelp.sound} />
     <Text style={s.title}>وشەکە بە چ دەنگێک دەست پێ دەکات؟</Text><Text style={s.text}>{index+1} / {rounds.length}</Text>
     <View style={s.card}><Text style={s.emoji}>{round.word.imageEmoji}</Text>
       <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>{const active=++token.current;void soundService.speakWord(round.word.word,{onEnd:()=>{if(active===token.current)setHeard(true);}});}}><Text style={s.buttonText}>وشەکە ببیستە</Text></TouchableOpacity>
@@ -37,6 +38,6 @@ export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
       {answer && <Text style={s.text}>{correct?'ئافەرم! دەنگی سەرەتاکەت دۆزییەوە':'وشەکە جارێکی تر ببیستە؛ تەنها سەرەتاکەی گوێ بگرە.'}</Text>}
     </View>
     {correct?<TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>{if(advanced.current===index)return;advanced.current=index;token.current++;void soundService.stopSpeaking();if(index+1===rounds.length){finishLearningGame('sound');setFinished(true);}else{setIndex(index+1);setAnswer(null);setHeard(false);setHelp(false);locked.current=false;}}}><Text style={s.buttonText}>دواتر ←</Text></TouchableOpacity>:answer?<TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>{setAnswer(null);setHelp(true);locked.current=false;}}><Text style={s.text}>دووبارە هەوڵ بدەم</Text></TouchableOpacity>:null}
-    <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={onExit}><Text style={s.text}>گەڕانەوە</Text></TouchableOpacity>
+    <BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton>
   </ScrollView>;
 };

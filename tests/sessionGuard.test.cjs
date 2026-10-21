@@ -1,6 +1,6 @@
 const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), ts = require('typescript');
-test('session clock excludes background, parent screens and idle time, and flushes to the owning child', () => {
+for (const platform of ['android','web']) test(platform + ': session clock excludes background, parent screens and idle time, and flushes to the owning child', () => {
   let clock = new Date('2026-10-20T12:00:00').getTime(), interval, states=[], refs=[], effects=[], cursor=0, rc=0, ec=0;
   const events={}, saved=[], pauses=[];
   const react={
@@ -16,7 +16,7 @@ test('session clock excludes background, parent screens and idle time, and flush
   class ClockDate extends Date {constructor(...args){super(...(args.length?args:[clock]));}static now(){return clock;}}
   new Function('exports','require','Date','setInterval','clearInterval',source)(mod.exports,name=>{
     if(name==='react')return react;
-    if(name==='react-native')return{AppState:{currentState:'active',addEventListener:(key,fn)=>{events[key]=fn;return{remove(){delete events[key];}};}}};
+    if(name==='react-native')return{Platform:{OS:platform},AppState:{currentState:'active',addEventListener:(key,fn)=>{if(platform==='web'&&key!=='change')throw Error('Unsupported web AppState event');events[key]=fn;return{remove(){delete events[key];}};}}};
     if(name.endsWith('useAppStore'))return{useAppStore:()=>store};
     if(name.endsWith('sessionPolicy'))return policy;
     if(name.endsWith('soundService'))return{soundService:{subscribe:()=>()=>{},setLearningPaused:v=>pauses.push(v)}};

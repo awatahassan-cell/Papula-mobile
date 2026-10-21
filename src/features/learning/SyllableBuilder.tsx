@@ -1,4 +1,5 @@
-import { HelpButton } from '../../components/HelpButton';
+import { BackButton } from '../../components/BackButton';
+import { HelpHint } from '../../components/HelpButton';
 import { exerciseHelp } from '../../services/exerciseHelp';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useGameScroll } from './useGameScroll';
@@ -54,19 +55,19 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
 
   if (!round) {
     return <View style={s.container}><Text style={s.text}>وشەی گونجاو ئامادە نییە</Text>
-      <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={onExit}><Text style={s.text}>گەڕانەوە</Text></TouchableOpacity></View>;
+      <BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton></View>;
   }
   if (finished) {
     return <ScrollView contentContainerStyle={s.container}>
       <Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! بڕگەکانت پێکەوە بەست</Text>
       <Text style={s.text}>{rounds.map(item => item.syllables.join(' - ')).join('، ')}</Text>
-      <TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>گەڕانەوە بۆ یارییەکان</Text></TouchableOpacity>
+      <BackButton fullWidth onPress={onExit}>گەڕانەوە بۆ یارییەکان</BackButton>
     </ScrollView>;
   }
   const assembled = assembleSyllables(round, selected);
   const canHearSyllables = round.syllables.every(text => soundService.canSpeak(text));
   const full = selected.length === round.syllables.length;
-  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpButton text={exerciseHelp.syllables} />
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpHint text={exerciseHelp.syllables} />
     <Text style={s.title}>بڕگەکان پێکەوە ببەستە</Text><Text style={s.text}>{index + 1} / {rounds.length}</Text>
     <View style={s.card}>
       <Text style={s.emoji}>{round.word.imageEmoji}</Text>
@@ -89,6 +90,6 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
       <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={undo}><Text style={s.text}>بڕگەی پێشوو ↶</Text></TouchableOpacity>
       <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={reset}><Text style={s.text}>دووبارە دایبنێم</Text></TouchableOpacity>
     </View>}
-    <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={onExit}><Text style={s.text}>گەڕانەوە</Text></TouchableOpacity>
+    <BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton>
   </ScrollView>;
 };

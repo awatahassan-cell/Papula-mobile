@@ -1,3 +1,4 @@
+import { BackButton } from '../../components/BackButton';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
@@ -159,7 +160,7 @@ export const OnboardingScreen: React.FC = () => {
         >
           {strings.onboarding.letsGo}
         </BigButton>
-        <BigButton onPress={() => setStep('parent')} variant="outline" size="sm" style={styles.backBtn}>گەڕانەوە بۆ ڕێنمایی</BigButton>
+        <BackButton onPress={() => setStep('parent')} fullWidth style={styles.backBtn}>گەڕانەوە بۆ ڕێنمایی</BackButton>
       </View>
     </ScrollView>
   );

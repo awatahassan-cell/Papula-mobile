@@ -1,4 +1,5 @@
-import { HelpButton } from '../../components/HelpButton';
+import { BackButton } from '../../components/BackButton';
+import { HelpHint } from '../../components/HelpButton';
 import { exerciseHelp } from '../../services/exerciseHelp';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
@@ -47,9 +48,9 @@ export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:
     if(index+1===rounds.length){if(mode==='review')onComplete?.();else finishLearningGame(mode);setFinished(true);}
     else {setIndex(index+1);setSelected(null);locked.current=false;}
   };
-  if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! مەشقەکەت تەواو کرد</Text><Text style={s.text}>پیتەکانت بە دروستی ناسینەوە</Text><TouchableOpacity accessibilityRole="button" style={s.button} onPress={onExit}><Text style={s.buttonText}>گەڕانەوە</Text></TouchableOpacity></View>;
+  if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! مەشقەکەت تەواو کرد</Text><Text style={s.text}>پیتەکانت بە دروستی ناسینەوە</Text><BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton></View>;
   if(!round)return <View style={s.container}><Text style={s.text}>مەشقێک ئامادە نییە</Text></View>;
-  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpButton text={exerciseHelp.letter} />
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpHint text={exerciseHelp.letter} />
     <Text style={s.title}>{mode==='similar'?'پیتە هاوشێوەکان':mode==='review'?'مەشقی من':'یاریی دەنگ'}</Text>
     <Text style={s.text}>{index+1} / {rounds.length}</Text>
     <View style={s.card}>
@@ -62,6 +63,6 @@ export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:
     </View>
     {correct?<TouchableOpacity accessibilityRole="button" style={s.button} onPress={next}><Text style={s.buttonText}>{index+1===rounds.length?'تەواو بکەم ✓':'پیتی دواتر ←'}</Text></TouchableOpacity>
       :selected?<TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>{setSelected(null);locked.current=false;}}><Text style={s.text}>جارێکی تر هەوڵ بدەم</Text></TouchableOpacity>:null}
-    <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={onExit}><Text style={s.text}>گەڕانەوە</Text></TouchableOpacity>
+    <BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton>
   </ScrollView>;
 };

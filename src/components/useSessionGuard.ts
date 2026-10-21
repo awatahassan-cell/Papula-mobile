@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import { useAppStore } from '../store/useAppStore';
 import { addScreenTime, bedtimeActive, dailyLimitSeconds, dayKey } from '../services/sessionPolicy';
 import { soundService } from '../services/soundService';
@@ -38,10 +38,10 @@ export function useSessionGuard() {
     const change = AppState.addEventListener('change', state => {
       tick(); foreground = state === 'active'; previous = Date.now(); flush();
     });
-    const blur = AppState.addEventListener('blur', () => { tick(); foreground = false; flush(); });
-    const focus = AppState.addEventListener('focus', () => { foreground = AppState.currentState === 'active'; previous = Date.now(); });
+    const blur = Platform.OS === 'android' ? AppState.addEventListener('blur', () => { tick(); foreground = false; flush(); }) : undefined;
+    const focus = Platform.OS === 'android' ? AppState.addEventListener('focus', () => { foreground = AppState.currentState === 'active'; previous = Date.now(); }) : undefined;
     const timer = setInterval(tick, 1000);
-    return () => { clearInterval(timer); change.remove(); blur.remove(); focus.remove(); flush(); };
+    return () => { clearInterval(timer); change?.remove(); blur?.remove(); focus?.remove(); flush(); };
     // The clock belongs to a child; latest.current supplies changing screen/settings without resetting it.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.currentProfile.id, store.isHydrated]);

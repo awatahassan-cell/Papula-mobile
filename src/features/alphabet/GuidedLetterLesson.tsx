@@ -13,7 +13,7 @@ import { getLetterStories } from '../../data/letterStories';
 import { getKurdishStrokeGuide } from '../../data/kurdishLetterGuides';
 import { isLessonComplete, isLessonUnlocked, lessonChecklist, lessonResumeStep } from '../../services/lessonPath';
 import { useAppStore } from '../../store/useAppStore';
-import { HelpButton } from '../../components/HelpButton';
+import { HelpHint } from '../../components/HelpButton';
 
 const stepIcons = [Headphones, Shapes, Images, Target, PencilLine];
 const titles = ['گوێ بگرە', 'شێوەکانی پیت', 'وشەکان ببینە', 'پیتەکە بدۆزەوە', 'با بینووسین'];
@@ -166,7 +166,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
   return (
     <View style={styles.screen}>
     <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
-      <HelpButton key={step} text={step===0?'تۆش بە جوانی پێنج جار گوێ بگرە و بیڵێرەوە.':step===1?'شێوە و خاڵەکانی پیتەکە لە وشەدا سەیر بکە.':step===3?`وشەی ${practiceWord.word}. پیتی ${letter.name} بدۆزەوە.`:step===4?writingInstruction:titles[step]} />
+      <HelpHint key={step} text={step===0?'تۆش بە جوانی پێنج جار گوێ بگرە و بیڵێرەوە.':step===1?'شێوە و خاڵەکانی پیتەکە لە وشەدا سەیر بکە.':step===3?`وشەی ${practiceWord.word}. پیتی ${letter.name} بدۆزەوە.`:step===4?writingInstruction:titles[step]} />
       <View style={styles.journey} accessibilityRole="progressbar" accessibilityLabel="هەنگاوەکانی وانە" accessibilityValue={{min:1,max:5,now:step+1}}>
         {titles.map((title,index)=>{
           const stepDone = passedLetter || index < step || !!checklist[index]?.done;

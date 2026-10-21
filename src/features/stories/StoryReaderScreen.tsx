@@ -1,3 +1,4 @@
+import { BackButton } from '../../components/BackButton';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import { mockLetters } from '../../data/mockLetters';
@@ -9,7 +10,7 @@ import { View, StyleSheet, ScrollView, Platform } from 'react-native';
 import { ResponsiveStoryImage } from '../../components/ResponsiveStoryImage';
 import { Text, InlineText } from '../../components/RTLText';
 import { StoryVoiceRecorder } from './StoryVoiceRecorder';
-import { HelpButton } from '../../components/HelpButton';
+import { HelpHint } from '../../components/HelpButton';
 import { exerciseHelp } from '../../services/exerciseHelp';
 import { androidLetterHighlightRuns } from '../../services/letterHighlight';
 import {
@@ -21,7 +22,6 @@ import {
   BookOpen,
   Trophy, Sparkles, Star, Check, ArrowLeft, Shapes,
 } from 'lucide-react-native';
-import { BigButton } from '../../components/BigButton';
 import { soundService } from '../../services/soundService';
 import { StoryPage } from '../../services/types';
 import { useAppStore } from '../../store/useAppStore';
@@ -91,9 +91,7 @@ export const StoryReaderScreen: React.FC = () => {
     return (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyText}>هیچ چیرۆکێک هەڵنەبژێردراوە</Text>
-        <BigButton onPress={() => setRoute('stories')} style={styles.emptyBtn}>
-          گەڕانەوە بۆ چیرۆکەکان
-        </BigButton>
+        <BackButton onPress={() => setRoute('stories')} fullWidth style={styles.emptyBtn}>گەڕانەوە بۆ چیرۆکەکان</BackButton>
       </View>
     );
   }
@@ -197,7 +195,7 @@ export const StoryReaderScreen: React.FC = () => {
           </View>
           <View style={styles.completionActions}>
             {targetLetter&&<TouchableOpacity accessibilityRole="button" accessibilityLabel={`بەردەوام بە لە وانەی پیتی ${targetLetter.glyph}`} onPress={continueLesson} style={styles.completionPrimary}><View style={styles.completionActionIcon}><Shapes size={23} color="#ffffff"/></View><Text style={styles.completionPrimaryText}>بەردەوام بە لە وانەکە</Text><ArrowLeft size={20} color="#ffffff"/></TouchableOpacity>}
-            <TouchableOpacity accessibilityRole="button" onPress={()=>setRoute('stories')} style={targetLetter?styles.completionSecondary:styles.completionPrimary}><BookOpen size={21} color={targetLetter?styles.completionSecondaryText.color:'#ffffff'}/><Text style={targetLetter?styles.completionSecondaryText:styles.completionPrimaryText}>گەڕانەوە بۆ چیرۆکەکان</Text>{!targetLetter&&<ArrowLeft size={20} color="#ffffff"/>}</TouchableOpacity>
+            <BackButton fullWidth onPress={()=>setRoute('stories')}>گەڕانەوە بۆ چیرۆکەکان</BackButton>
           </View>
         </View>
       </ScrollView>
@@ -245,11 +243,9 @@ export const StoryReaderScreen: React.FC = () => {
 
   return (
     <View style={styles.readerScreen}><ScrollView contentContainerStyle={[styles.container, tablet && { maxWidth: pageMax, width: '100%', alignSelf: 'center' }]}>
-      {targetLetter && <TouchableOpacity accessibilityRole="button" accessibilityLabel={`گەڕانەوە بۆ وانەی پیتی ${targetLetter.glyph}`} onPress={()=>{stopNarration();setSelectedLetter(targetLetter);setRoute('letter-detail');}} style={styles.backToLesson}>
-        <ChevronRight size={18} color={styles.backText.color}/><Text style={styles.backText}>وانەی پیتی «{targetLetter.glyph}»</Text>
-      </TouchableOpacity>}
+      {targetLetter && <BackButton accessibilityLabel={`گەڕانەوە بۆ وانەی پیتی ${targetLetter.glyph}`} onPress={()=>{stopNarration();setSelectedLetter(targetLetter);setRoute('letter-detail');}} style={{ marginBottom: 12 }}>{`وانەی پیتی «${targetLetter.glyph}»`}</BackButton>}
       {/* Mode Selector & Header */}
-      <HelpButton text={exerciseHelp.story} disabled={familyRecording} />
+      <HelpHint text={exerciseHelp.story} disabled={familyRecording} />
       <Text style={styles.storyTitle}>{story.titleKu}</Text>
       <View style={styles.headerRow}>
         <View style={styles.modeTabs}>

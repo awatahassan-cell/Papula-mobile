@@ -1,3 +1,4 @@
+import { BackButton } from '../../components/BackButton';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { rtlProps, rtlLayout } from '../../theme/rtl';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
@@ -261,10 +262,10 @@ export const WritingScreen: React.FC = () => {
         {result.rubric && guide && <WritingResultDetails guide={guide} strokes={submitted} aligned={mode==='trace'?submitted:normalizeIndependentWriting(guide,submitted)} rubric={result.rubric} stars={result.stars} />}
         {result.mastered ? <>
           {mode!=='independent' && <BigButton onPress={()=>changeMode(mode==='trace'?'copy':'independent')} variant="success" size="md" style={styles.fullButton}>{mode==='trace'?'ئێستا بە نموونە بنووسم':'ئێستا سەربەخۆ بنووسم'}</BigButton>}
-          <BigButton onPress={nextLesson} variant="success" size="md" style={styles.fullButton}>با بگەڕێینەوە بۆ ڕێڕەوی فێربوون</BigButton>
+          <BackButton onPress={nextLesson} fullWidth style={styles.fullButton}>با بگەڕێینەوە بۆ ڕێڕەوی فێربوون</BackButton>
           {!isLessonComplete(currentProfile,letter.id) && <BigButton onPress={()=>{setResult(null);setRoute('letter-detail');}} variant="outline" size="md" style={styles.fullButton}>هەنگاوەکانی وانەکە تەواو بکەم</BigButton>}
           {index===mockLetters.length-1 && isLessonComplete(currentProfile,letter.id) && <Text style={styles.resultText}>گەیشتیتە کۆتایی پیتەکان!</Text>}
-          <BigButton onPress={goHome} variant="outline" size="md" style={styles.fullButton}>گەڕانەوە بۆ سەرەتا</BigButton>
+          <BackButton onPress={goHome} fullWidth style={styles.fullButton}>گەڕانەوە بۆ سەرەتا</BackButton>
         </> : <>
           {mode!=='trace' && <BigButton onPress={()=>changeMode('trace')} variant="outline" size="md" style={styles.fullButton}>ڕێنما ببینم؛ یارمەتی دەوێت</BigButton>}
           <BigButton onPress={() => { setResult(null); clear(); usedHelp.current=false;attemptStarted.current=Date.now(); }} size="md" style={styles.fullButton}>دووبارە بنووسم ✍️</BigButton>

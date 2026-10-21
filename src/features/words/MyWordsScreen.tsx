@@ -1,3 +1,4 @@
+import { BackButton } from '../../components/BackButton';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import React from 'react';
@@ -84,14 +85,7 @@ export const MyWordsScreen: React.FC = () => {
         </View>
       )}
 
-      <BigButton
-        onPress={() => setRoute('home')}
-        variant="primary"
-        size="lg"
-        style={styles.homeBtn}
-      >
-        گەڕانەوە بۆ سەرەتا
-      </BigButton>
+      <BackButton onPress={() => setRoute('home')} fullWidth style={styles.homeBtn}>گەڕانەوە بۆ سەرەتا</BackButton>
     </ScrollView>
   );
 };

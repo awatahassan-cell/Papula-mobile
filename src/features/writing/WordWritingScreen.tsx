@@ -1,3 +1,4 @@
+import { BackButton } from '../../components/BackButton';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
@@ -161,7 +162,7 @@ export const WordWritingScreen: React.FC = () => {
           {!!reward && <Text style={s.rewardBadge}>+{reward} ئەستێرە ⭐</Text>}
         </View>
         <BigButton onPress={() => setSession(null)} size="md" variant="success" style={s.full}>وشە و ڕستەی دیکە 📝</BigButton>
-        <BigButton onPress={() => setRoute('writing')} size="md" variant="outline" style={s.full}>گەڕانەوە بۆ نووسینی پیت</BigButton>
+        <BackButton onPress={() => setRoute('writing')} fullWidth style={s.full}>گەڕانەوە بۆ نووسینی پیت</BackButton>
       </ScrollView>
     );
   }
@@ -261,7 +262,7 @@ export const WordWritingScreen: React.FC = () => {
             )}
           </View>
         )}
-        <BigButton onPress={leave} variant="outline" size="md" style={s.full}>گەڕانەوە بۆ لیست</BigButton>
+        <BackButton onPress={leave} fullWidth style={s.full}>گەڕانەوە بۆ لیست</BackButton>
       </ScrollView>
     );
   }
@@ -317,7 +318,7 @@ export const WordWritingScreen: React.FC = () => {
           );
         })}
       </View>
-      <BigButton onPress={() => setRoute('writing')} variant="outline" size="md" style={s.full}>گەڕانەوە بۆ نووسینی پیت</BigButton>
+      <BackButton onPress={() => setRoute('writing')} fullWidth style={s.full}>گەڕانەوە بۆ نووسینی پیت</BackButton>
     </ScrollView>
   );
 };

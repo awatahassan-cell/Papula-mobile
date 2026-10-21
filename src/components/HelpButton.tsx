@@ -1,18 +1,52 @@
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import React, { createContext, useCallback, useContext, useId, useMemo, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { Volume2 } from 'lucide-react-native';
-import { Text } from './RTLText';
 import { TactileButton } from './TactileButton';
-import { soundService } from '../services/soundService';
 import { useAppearance } from '../theme/useAppearance';
+import { accentFill } from '../theme/appearance';
+import { soundService } from '../services/soundService';
 
-export function HelpButton({ text, disabled = false }: { text: string; disabled?: boolean }) {
-  const { colors } = useAppearance();
-  const [visible, setVisible] = useState(false);
-  return <View style={{ gap: 6, paddingHorizontal: 12, paddingVertical: 3 }}>
-    <TactileButton accessibilityRole="button" accessibilityLabel="چی بکەم؟ ڕێنماییەکە دووبارە ببیستە" disabled={disabled} onPress={() => { setVisible(true); void soundService.speakWord(text); }} style={{ minHeight: 44, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 7 }}>
-      <Volume2 size={18} color={colors.mint} /><Text style={{ color: colors.mint }}>چی بکەم؟</Text>
+interface Hint { owner: string; text: string; disabled: boolean; }
+interface HelpContextValue { hint: Hint | null; register: (hint: Hint) => () => void; }
+const HelpContext = createContext<HelpContextValue | null>(null);
+
+export function HelpProvider({ children }: { children: React.ReactNode }) {
+  const [hint, setHint] = useState<Hint | null>(null);
+  const register = useCallback((next: Hint) => {
+    setHint(next);
+    // A departing screen must not clear the next screen's instructions.
+    return () => setHint(current => current?.owner === next.owner ? null : current);
+  }, []);
+  const value = useMemo(() => ({ hint, register }), [hint, register]);
+  return <HelpContext.Provider value={value}>{children}</HelpContext.Provider>;
+}
+
+/** Supplies the focused exercise's audio to the single, stationary app button. */
+export function HelpHint({ text, disabled = false }: { text: string; disabled?: boolean }) {
+  const owner = useId();
+  const register = useContext(HelpContext)?.register;
+  useFocusEffect(useCallback(() => register?.({ owner, text, disabled }), [register, owner, text, disabled]));
+  return null;
+}
+
+/** Outside every ScrollView and navigator: one position, voice only, on every page. */
+export function HelpDock({ fallbackText, disabled = false }: { fallbackText: string; disabled?: boolean }) {
+  const { colors, isNight } = useAppearance();
+  const hint = useContext(HelpContext)?.hint;
+  const unavailable = disabled || !!hint?.disabled;
+  const text = hint?.text || fallbackText;
+  return <View pointerEvents="box-none" testID="help-dock" style={[styles.dock, { direction: 'ltr' }]}>
+    <TactileButton testID="voice-help-button" accessibilityRole="button" accessibilityLabel="ڕێنمایی دەنگی ببیستە"
+      accessibilityState={{ disabled: unavailable }} disabled={unavailable}
+      onPress={() => { if (!unavailable) void soundService.speakWord(text); }} style={[styles.button, { backgroundColor: accentFill(colors, isNight), borderBottomColor: colors.mintDark }, unavailable && styles.disabled]}>
+      <Volume2 size={32} color="#ffffff" strokeWidth={2.4} />
     </TactileButton>
-    {visible && <TactileButton accessibilityRole="button" accessibilityLabel="داخستنی ڕێنمایی" onPress={() => setVisible(false)} style={{ padding: 10, backgroundColor: colors.lavender, borderRadius: 14 }}><Text style={{ color: colors.ink }}>{text}</Text><Text style={{ color: colors.muted, textAlign: 'center' }}>باشە، تێگەیشتم</Text></TactileButton>}
   </View>;
 }
+
+const styles = StyleSheet.create({
+  dock: { ...StyleSheet.absoluteFill, zIndex: 20 },
+  button: { position: 'absolute', left: 16, bottom: 16, width: 64, height: 64, borderRadius: 24, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 5 },
+  disabled: { opacity: 0.45 },
+});

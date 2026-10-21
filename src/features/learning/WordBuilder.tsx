@@ -1,4 +1,5 @@
-import { HelpButton } from '../../components/HelpButton';
+import { BackButton } from '../../components/BackButton';
+import { HelpHint } from '../../components/HelpButton';
 import { exerciseHelp } from '../../services/exerciseHelp';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useThemeStyles } from '../../theme/useAppearance';
@@ -57,13 +58,13 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
     if(round+1===queue.length){finishLearningGame('word');setFinished(true);}
     else {helped.current=false;setRound(round+1);reset();}
   };
-  if(!word)return <View style={s.container}><Text style={s.text}>وشەکان ئامادە نین</Text><TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={onExit}><Text style={s.text}>گەڕانەوە</Text></TouchableOpacity></View>;
+  if(!word)return <View style={s.container}><Text style={s.text}>وشەکان ئامادە نین</Text><BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton></View>;
   if(finished)return <ScrollView contentContainerStyle={s.container}>
     <Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! وشەکانت دروست کرد</Text>
     <Text style={s.text}>{queue.map(item=>item.word).join('، ')}</Text>
-    <TouchableOpacity accessibilityRole="button" style={s.button} onPress={onComplete||onExit}><Text style={s.buttonText}>{onComplete?'چیرۆکەکەم ببینم':'گەڕانەوە بۆ یارییەکان'}</Text></TouchableOpacity>
+    {onComplete ? <TouchableOpacity accessibilityRole="button" style={s.button} onPress={onComplete}><Text style={s.buttonText}>چیرۆکەکەم ببینم</Text></TouchableOpacity> : <BackButton fullWidth onPress={onExit}>گەڕانەوە بۆ یارییەکان</BackButton>}
   </ScrollView>;
-  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpButton text={exerciseHelp.word} />
+  return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpHint text={exerciseHelp.word} />
     <Text style={s.title}>وشە دروست بکەم</Text><Text style={s.text}>{round+1} / {queue.length}</Text>
     <View style={s.card}>
       <Text style={s.emoji}>{word.imageEmoji}</Text>
@@ -84,6 +85,6 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
       <TouchableOpacity accessibilityRole="button" accessibilityState={{expanded:showWords}} style={s.secondary} onPress={()=>setShowWords(!showWords)}><Text style={s.text}>وشەیەک هەڵبژێرە {showWords?'⌃':'⌄'}</Text></TouchableOpacity>
       {showWords && <View style={s.row}>{LEARNING_WORDS.map(item=><TouchableOpacity key={item.id} accessibilityRole="button" accessibilityLabel={`وشەی ${item.word}`} style={s.tile} onPress={()=>{helped.current=true;advancedRound.current=-1;setQueue([item]);setRound(0);setShowWords(false);reset();}}><Text style={{fontSize:28}}>{item.imageEmoji}</Text><Text style={s.text}>{item.word}</Text></TouchableOpacity>)}</View>}
     </>}
-    <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={onExit}><Text style={s.text}>گەڕانەوە</Text></TouchableOpacity>
+    <BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton>
   </ScrollView>;
 };

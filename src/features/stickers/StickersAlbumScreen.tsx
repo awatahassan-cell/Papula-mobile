@@ -1,10 +1,10 @@
+import { BackButton } from '../../components/BackButton';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text } from '../../components/RTLText';
-import { Lock, Award, Gift, Home } from 'lucide-react-native';
-import { BigButton } from '../../components/BigButton';
+import { Lock, Award, Gift } from 'lucide-react-native';
 import { BadgesComponent } from '../../components/BadgesComponent';
 import { mockStickers } from '../../data/mockStickers';
 import { soundService } from '../../services/soundService';
@@ -12,7 +12,7 @@ import { useAppStore } from '../../store/useAppStore';
 
 export const StickersAlbumScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
-  const { tone, isNight } = useAppearance();
+  const { tone } = useAppearance();
   const { currentProfile, setRoute, strings } = useAppStore();
   const [activeTab, setActiveTab] = useState<'stickers' | 'badges'>('stickers');
 
@@ -112,17 +112,7 @@ export const StickersAlbumScreen: React.FC = () => {
         </View>
       )}
 
-      <BigButton
-        onPress={() => setRoute('home')}
-        variant="primary"
-        size="lg"
-        style={styles.homeBtn}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <Home size={18} color={isNight ? '#2a1b00' : '#ffffff'} />
-          <Text style={{ fontWeight: '900', color: isNight ? '#2a1b00' : '#ffffff' }}>گەڕانەوە بۆ سەرەتا</Text>
-        </View>
-      </BigButton>
+      <BackButton onPress={() => setRoute('home')} fullWidth style={styles.homeBtn}>گەڕانەوە بۆ سەرەتا</BackButton>
     </ScrollView>
   );
 };
