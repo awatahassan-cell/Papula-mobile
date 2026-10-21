@@ -5,13 +5,13 @@ import { LEARNING_PAGE_PAUSE_MS } from '../../services/storyPlayback';
 import { StorySequence } from '../learning/StorySequence';
 import { readableText } from '../../services/foundationalLearning';
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Platform } from 'react-native';
 import { ResponsiveStoryImage } from '../../components/ResponsiveStoryImage';
 import { Text, InlineText } from '../../components/RTLText';
 import { StoryVoiceRecorder } from './StoryVoiceRecorder';
 import { HelpButton } from '../../components/HelpButton';
 import { exerciseHelp } from '../../services/exerciseHelp';
-import { letterHighlightRuns } from '../../services/letterHighlight';
+import { androidLetterHighlightRuns } from '../../services/letterHighlight';
 import {
   Play,
   Pause,
@@ -309,7 +309,7 @@ export const StoryReaderScreen: React.FC = () => {
         <Text testID="story-paragraph" accessibilityLabel={currentPage.textKu} style={[styles.storyParagraph, split && styles.storyParagraphSplit]}>
           {currentPage.textKu.split(/(\s+)/).map((part, index, parts) => /\s/.test(part)
             ? part
-            : <InlineText key={index} style={[activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? highlight : undefined]} onPress={() => handleWordTap(part)}>{letterHighlightRuns(part, targetLetter?.glyph).map((run, runIndex) => run.target ? <InlineText key={runIndex} style={styles.targetGlyph}>{run.text}</InlineText> : run.text)}</InlineText>)}
+            : <InlineText key={index} style={[activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? highlight : undefined]} onPress={() => handleWordTap(part)}>{androidLetterHighlightRuns(part, targetLetter?.glyph).map((run, runIndex) => run.target ? <InlineText key={runIndex} style={styles.targetGlyph}>{Platform.OS === 'android' ? run.displayText : run.text}</InlineText> : Platform.OS === 'android' ? run.displayText : run.text)}</InlineText>)}
         </Text>
       </View>
 
@@ -331,7 +331,7 @@ export const StoryReaderScreen: React.FC = () => {
         <Text testID="story-paragraph" accessibilityLabel={currentPage.textKu} style={styles.storyParagraph}>
           {currentPage.textKu.split(/(\s+)/).map((part, index, parts) => /\s/.test(part)
             ? part
-            : <InlineText key={index} style={[activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? highlight : undefined]} onPress={() => handleWordTap(part)}>{letterHighlightRuns(part, targetLetter?.glyph).map((run, runIndex) => run.target ? <InlineText key={runIndex} style={styles.targetGlyph}>{run.text}</InlineText> : run.text)}</InlineText>)}
+            : <InlineText key={index} style={[activeWord && parts.slice(0,index).join('').length >= activeWord.start && parts.slice(0,index).join('').length < activeWord.end ? highlight : undefined]} onPress={() => handleWordTap(part)}>{androidLetterHighlightRuns(part, targetLetter?.glyph).map((run, runIndex) => run.target ? <InlineText key={runIndex} style={styles.targetGlyph}>{Platform.OS === 'android' ? run.displayText : run.text}</InlineText> : Platform.OS === 'android' ? run.displayText : run.text)}</InlineText>)}
         </Text>
       </View>
 
