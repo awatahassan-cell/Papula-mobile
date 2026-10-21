@@ -32,8 +32,7 @@ import { soundService } from '../services/soundService';
 import { sectionIntroductions } from '../services/sectionIntroductions';
 import { useSessionGuard } from '../components/useSessionGuard';
 import { SaveStatusBanner } from '../components/SaveStatusBanner';
-import { HelpDock, HelpProvider } from '../components/HelpButton';
-import { exerciseHelp } from '../services/exerciseHelp';
+import { HelpProvider } from '../components/HelpButton';
 
 /** Any screen error lands here instead of a blank screen. */
 export const ErrorBoundary = AppErrorScreen;
@@ -137,7 +136,6 @@ const MainRouter: React.FC = () => {
             <ThemeProvider value={TRANSPARENT_THEME}>
               <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: appearanceColors.background, ...rtlLayout } }} />
             </ThemeProvider>
-            <HelpDock disabled={session.blocked} fallbackText={route === 'story-reader' ? exerciseHelp.story : route === 'letter-detail' ? exerciseHelp.letter : sectionIntroductions[route] || sectionIntroductions.home} />
           </View>
           {!tablet && <GardenNavigation />}
           <AmbientSky />

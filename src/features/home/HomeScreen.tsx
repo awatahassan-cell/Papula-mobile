@@ -4,6 +4,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { ArrowLeft, BookOpen, Flame, PencilLine, Puzzle, Settings, Sprout, Star } from 'lucide-react-native';
 import { tileSet } from '../../theme/candy';
+import { HelpPill } from '../../components/HelpButton';
 import { Text } from '../../components/RTLText';
 import { RiseIn } from '../../components/Motion';
 import { AdventureMap } from '../../components/AdventureMap';
@@ -67,6 +68,7 @@ export const HomeScreen: React.FC = () => {
   return <ScrollView contentContainerStyle={[s.page, { maxWidth: pageMax }]}>
     <View style={s.header}>
       <View style={s.brand}><Text style={[s.brandText, { color: isNight ? '#d3baff' : BRAND.main }]}>پەپوولە</Text></View>
+      <HelpPill />
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={`${currentProfile.stars} ئەستێرە، ستیکەرەکانم`} onPress={() => open('stickers')} style={s.stars}><Star size={20} color={GOLD.starInk} fill={GOLD.star} /><Text style={s.starCount}>{currentProfile.stars}</Text></TouchableOpacity>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="ڕێکخستنەکانی دایک و باوک" onPress={() => openParentGateWithCallback(() => setRoute('parent-dashboard'))} style={[s.settings, { backgroundColor: c.paper }]}><Settings size={21} color={c.muted} /></TouchableOpacity>
     </View>

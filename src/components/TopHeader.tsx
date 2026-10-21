@@ -6,6 +6,7 @@ import { Settings, Volume2, VolumeX, Square, Star, Flame } from 'lucide-react-na
 import { BackButton } from './BackButton';
 import { Text } from './RTLText';
 import { PapulaMascot } from './PapulaMascot';
+import { HelpPill } from './HelpButton';
 import { useAppStore } from '../store/useAppStore';
 import { soundService } from '../services/soundService';
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
@@ -23,6 +24,7 @@ export const TopHeader: React.FC = () => {
   return <View style={[s.frame,{backgroundColor:'transparent'}]}><View style={[s.header,{maxWidth:pageMax}]}>
     <View style={s.topRow}>
       <BackButton onPress={goBack} />
+      <HelpPill />
       {tablet && <TouchableOpacity accessibilityRole="button" accessibilityLabel="پەپوولە، سەرەتا" style={[s.brand,{flex:0,minWidth:width<900?130:150}]} onPress={()=>{void soundService.stopSpeaking();setRoute('home');}}><View style={{flexDirection:'row',alignItems:'center',gap:4}}><PapulaMascot size={30}/><Text numberOfLines={1} style={s.brandText}>پەپوولە</Text></View></TouchableOpacity>}
       {!tablet && <>
         <TouchableOpacity accessibilityRole="button" accessibilityLabel={`ستیکەرەکانم، ${currentProfile.stars} ئەستێرە`} style={[s.stat,{flex:0,minWidth:width<360?64:76,backgroundColor:GOLD.soft,borderWidth:2,borderColor:GOLD.border}]} onPress={()=>setRoute('stickers')}><Star size={17} color={GOLD.starInk} fill={GOLD.star}/><Text style={[s.statText,{color:GOLD.ink}]}>{currentProfile.stars}</Text></TouchableOpacity>
