@@ -12,3 +12,9 @@ export const TOOL_LABELS = { play: 'پیشاندان', stop: 'وەستاندن',
 export const PEN_LABELS = ['قەڵەمی یەکەم', 'قەڵەمی دووەم', 'قەڵەمی سێیەم'] as const;
 export const MODE_LABELS = ['١ ڕێنما', '٢ نموونە', '٣ سەربەخۆ'] as const;
 export const INK_TOOL_LABELS = { thin: 'قەڵەمی باریک', thick: 'قەڵەمی ئەستوور', expand: 'تەختە گەورە بکە', collapse: 'تەختە بچووک بکەرەوە' } as const;
+
+// New in the simplified writing screen (screen text only, never narrated).
+export const MORE_TOOLS = { open: 'ئامرازی زیاتر', close: 'ئامرازەکان بشارەوە' } as const;
+export const RESULT_DETAILS = { open: 'ببینە چۆن نووسیت', close: 'وردەکارییەکان بشارەوە' } as const;
+export const WORD_WRITING_TILE = { title: 'وشە و ڕستە بنووسم', hint: 'پیت بە پیت بنووسە و ئەپەکە بۆت دەپشکنێت' } as const;
+export const STEP_ADVANCE = 'ئێستا هەنگاوی دواتر…';

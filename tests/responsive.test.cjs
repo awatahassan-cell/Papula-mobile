@@ -9,8 +9,8 @@ assert.deepEqual([tabletP.tablet,tabletP.wide,tabletP.landscape],[true,false,fal
 assert.deepEqual([tabletL.tablet,tabletL.wide,tabletL.landscape],[true,true,true]);
 assert.ok(tabletL.pageMax>840&&phone.pageMax===840,'wide pages may grow past the phone column');
 // the board never overflows its container and grows on tablets
-assert.ok(writingBoardSide(phone)<=390-40);
-assert.ok(writingBoardSide(phone)<=phone.height-350,'leave room for the instruction and controls');
+assert.ok(writingBoardSide(phone)<=390-28);
+assert.ok(writingBoardSide(phone)<=phone.height-300,'leave room for the steps, the three tools and the check button');
 assert.ok(writingBoardSide(responsive(320,500))<writingBoardSide(phone),'short phones get a smaller board rather than clipping controls');
 assert.ok(writingBoardSide(tabletP)>writingBoardSide(phone));
 const side=writingBoardSide(tabletL);assert.ok(side>=280&&side<=560&&side<=768-300,'landscape board must fit beside the controls: '+side);

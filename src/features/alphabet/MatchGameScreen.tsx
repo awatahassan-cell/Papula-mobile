@@ -2,7 +2,8 @@ import { HelpHint } from '../../components/HelpButton';
 import { sectionIntroductions } from '../../services/sectionIntroductions';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
-import { Ear, Eye, Layers, Puzzle, Volume2 } from 'lucide-react-native';
+import { Ear, Eye, Layers, PencilLine, Puzzle, Volume2 } from 'lucide-react-native';
+import { WORD_WRITING_TILE } from '../writing/writingText';
 import { tileSet } from '../../theme/candy';
 import { StartingSoundGame } from '../learning/StartingSoundGame';
 import React, { useEffect, useState } from 'react';
@@ -18,7 +19,7 @@ import { learningStyles as baseLearningStyles } from '../learning/learningStyles
 export const MatchGameScreen: React.FC = () => {
   const s = useThemeStyles(baseLearningStyles);
   const { isNight } = useAppearance();
-  const { registerBackHandler } = useAppStore();
+  const { registerBackHandler, setRoute } = useAppStore();
   const tiles = tileSet(isNight);
   const { tablet, pageMax } = useResponsive();
   const [mode, setMode] = useState<'menu' | 'word' | 'sound' | 'similar' | 'phonics' | 'syllables'>('menu');
@@ -74,6 +75,25 @@ export const MatchGameScreen: React.FC = () => {
             </TouchableOpacity>
           );
         })}
+        {(() => {
+          const candy = tiles[5 % tiles.length];
+          return (
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel={WORD_WRITING_TILE.title}
+              style={[candyCard.tile, tablet && { width: '48%' }, { backgroundColor: candy.face, borderBottomColor: candy.lip }]}
+              onPress={() => setRoute('word-writing')}
+            >
+              <View style={[candyCard.icon, { backgroundColor: candy.chip }]}>
+                <PencilLine size={25} color={candy.icon} strokeWidth={2.3} />
+              </View>
+              <View style={candyCard.body}>
+                <Text style={[candyCard.title, { color: candy.ink }]}>{WORD_WRITING_TILE.title}</Text>
+                <Text style={[candyCard.hint, { color: candy.ink }]}>{WORD_WRITING_TILE.hint}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })()}
       </View>
     </ScrollView>
   );

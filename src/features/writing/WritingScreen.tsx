@@ -10,11 +10,11 @@ import { View, StyleSheet, ScrollView, PanResponder, Modal, GestureResponderEven
 import { PapulaMascot } from '../../components/PapulaMascot';
 import { LetterWordReveal } from '../../components/LetterWordReveal';
 import { Text } from '../../components/RTLText';
-import Svg, { Path, Line, Circle } from 'react-native-svg';
-import { Play, Eraser, Undo2, Maximize2, Minimize2 } from 'lucide-react-native';
+import Svg, { Path, Line, Circle, Text as SvgText } from 'react-native-svg';
+import { Play, Eraser, Undo2, Maximize2, Minimize2, SlidersHorizontal, Check } from 'lucide-react-native';
 import { BigButton } from '../../components/BigButton';
 import { useResponsive, writingBoardSide } from '../../theme/responsive';
-import { INK_TOOL_LABELS, MODE_LABELS, OPEN_WORD_WRITING, PEN_LABELS, TOOL_LABELS, STAGE_TITLES } from './writingText';
+import { INK_TOOL_LABELS, MODE_LABELS, MORE_TOOLS, PEN_LABELS, RESULT_DETAILS, STEP_ADVANCE, TOOL_LABELS, STAGE_TITLES } from './writingText';
 import { WritingResultDetails } from './WritingResultDetails';
 import { StarRating } from '../../components/StarRating';
 import { mockLetters } from '../../data/mockLetters';
@@ -36,7 +36,7 @@ const Stroke: React.FC<{ points: StrokePoint[]; color: string; width: number }> 
 
 export const WritingScreen: React.FC = () => {
   const styles = useThemeStyles(baseStyles);
-  const { colors, extras } = useAppearance();
+  const { colors } = useAppearance();
   const { selectedLetter, setSelectedLetter, setRoute, saveWritingScore, currentProfile, saveCheckpoint, clearCheckpoint } = useAppStore();
   const [letter, setLetter] = useState(selectedLetter || mockLetters[0]);
   const writingProgress = currentProfile.writingProgress?.[letter.id];
@@ -65,6 +65,8 @@ export const WritingScreen: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [demo, setDemo] = useState<number | null>(null);
+  const [moreTools, setMoreTools] = useState(false);
+  const [detailsFor, setDetailsFor] = useState<TracingScoreResult | null>(null);
   const info = useResponsive();
   const split = info.wide && info.landscape;
   const side = focused ? Math.max(160, Math.min(info.width - 40, info.height - 250, 480)) : writingBoardSide(info);
@@ -204,8 +206,17 @@ export const WritingScreen: React.FC = () => {
     if (!next || busy || !isLessonUnlocked(currentProfile, next.id)) return;
     void soundService.stopSpeaking(); setSelectedLetter(next); setLetter(next);
   };
-  // eslint-disable-next-line react-hooks/purity -- runs in an event handler, not during render
+  const changeModeRef = useRef<(next: WritingMode) => void>(() => {});
   const changeMode=(next:WritingMode)=>{stopDemo();void soundService.stopSpeaking();setMode(next);setResult(null);clear();usedHelp.current=false;attemptStarted.current=Date.now();};
+  useLayoutEffect(() => { changeModeRef.current = changeMode; });
+  const showDetails = detailsFor !== null && detailsFor === result;
+  // Passing a step moves the child on by itself after a moment; the buttons in the result still work at once.
+  useEffect(() => {
+    if (!result?.mastered || mode === 'independent' || showDetails) return;
+    const next: WritingMode = mode === 'trace' ? 'copy' : 'independent';
+    const timer = setTimeout(() => changeModeRef.current(next), 2600);
+    return () => clearTimeout(timer);
+  }, [result, mode, showDetails]);
   const goHome = () => { void soundService.stopSpeaking(); setResult(null); setRoute('home'); };
   const nextLesson = () => {
     clearCheckpoint?.();
@@ -226,7 +237,19 @@ export const WritingScreen: React.FC = () => {
           {strokes.map((stroke, i) => <Stroke key={`draw-${i}`} points={stroke} color={strokeInk[i]?.color || pen} width={(strokeInk[i]?.width || penWidth) * 100 / side} />)}
           <Stroke points={active} color={pen} width={penWidth * 100 / side} />
           {demo !== null && shownDemo.map((stroke, i) => <Stroke key={`demo-${i}`} points={stroke} color="#0369a1" width={3.6} />)}
-          {mode==='trace' && strokes.length === 0 && demo === null && guide?.strokes[0]?.[0] && <Circle cx={guide.strokes[0][0].x} cy={guide.strokes[0][0].y} r={2} fill="#047857" />}
+          {mode==='trace' && demo === null && guide?.strokes.map((stroke, i) => {
+            // Where each line starts and which way it goes; a marker disappears once that line has been drawn.
+            if (i < strokes.length || !stroke[0]) return null;
+            const from = stroke[0], to = stroke[Math.min(stroke.length - 1, 6)] || from;
+            const length = Math.hypot(to.x - from.x, to.y - from.y) || 1, ux = (to.x - from.x) / length, uy = (to.y - from.y) / length;
+            const tip = { x: from.x + ux * 9, y: from.y + uy * 9 }, wing = (angle: number) => ({ x: tip.x - (ux * Math.cos(angle) - uy * Math.sin(angle)) * 3.2, y: tip.y - (uy * Math.cos(angle) + ux * Math.sin(angle)) * 3.2 });
+            const left = wing(0.55), right = wing(-0.55);
+            return <React.Fragment key={`start-${i}`}>
+              <Path d={`M ${left.x} ${left.y} L ${tip.x} ${tip.y} L ${right.x} ${right.y}`} fill="none" stroke="#dfaa1d" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+              <Circle cx={from.x} cy={from.y} r={3.6} fill="#ffd43b" stroke="#dfaa1d" strokeWidth={0.8} />
+              <SvgText x={from.x} y={from.y + 1.6} fontSize={4.6} fontWeight="bold" fill="#3b2410" textAnchor="middle">{i + 1}</SvgText>
+            </React.Fragment>;
+          })}
         </Svg>
         {penTip && <View pointerEvents="none" style={{ position: 'absolute', left: (side - 46) / 2, top: (penTip.y / 100) * side - 38, transform: [{ translateX: (penTip.x / 100) * side - side / 2 }] }}><PapulaMascot size={46} mood="happy" /></View>}
       </View>
@@ -238,24 +261,25 @@ export const WritingScreen: React.FC = () => {
     <View style={styles.toolRow}>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={demo !== null ? TOOL_LABELS.stop : TOOL_LABELS.play} style={styles.roundTool} onPress={() => { if (demo !== null) stopDemo(); else playDemo(); }} disabled={busy || drawing || mode!=='trace'}>
         <Play size={20} color={colors.mint} /></TouchableOpacity>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel={TOOL_LABELS.undo} style={styles.roundTool} disabled={busy || drawing || demo !== null} onPress={() => { strokeRef.current = strokeRef.current.slice(0, -1); setStrokes(strokeRef.current); setStrokeInk(previous => previous.slice(0, -1)); }}>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel={TOOL_LABELS.undo} style={styles.roundTool} disabled={busy || drawing || demo !== null} onPress={() => { strokeRef.current = strokeRef.current.slice(0, -1); setStrokes(strokeRef.current); setStrokeInk(previous => previous.slice(0, -1)); setActive([]); setError(''); }}>
         <Undo2 size={20} color={colors.ink} /></TouchableOpacity>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={TOOL_LABELS.erase} style={styles.roundTool} disabled={busy || drawing || demo !== null} onPress={clear}>
         <Eraser size={20} color={colors.ink} /></TouchableOpacity>
-      <View style={[styles.toolDivider, { backgroundColor: colors.edge }]} />
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel={moreTools ? MORE_TOOLS.close : MORE_TOOLS.open} accessibilityState={{ expanded: moreTools }} style={[styles.roundTool, moreTools && { backgroundColor: colors.lavender }]} onPress={() => setMoreTools(value => !value)}>
+        <SlidersHorizontal size={20} color={colors.mint} /></TouchableOpacity>
+    </View>
+    {moreTools && <View style={styles.toolRow}>
       {pens.map((color, i) => <TouchableOpacity key={color} accessibilityRole="button" accessibilityLabel={PEN_LABELS[i]}
         disabled={drawing || busy || demo !== null} accessibilityState={{ selected: pen === color }} onPress={() => setPen(color)} style={[styles.penDot, { backgroundColor: color }, pen === color && { borderWidth: 3, borderColor: colors.paper, shadowColor: color, shadowOpacity: 0.9, shadowRadius: 8, shadowOffset: { width: 0, height: 0 }, elevation: 6 }]} />)}
-    </View>
-    <View style={styles.toolRow}>
-      {[4, 7].map(width => <TouchableOpacity key={width} accessibilityRole="button" accessibilityLabel={width === 4 ? INK_TOOL_LABELS.thin : INK_TOOL_LABELS.thick} accessibilityState={{selected: penWidth === width}} disabled={drawing || busy || demo !== null} onPress={() => setPenWidth(width)} style={[styles.roundTool, {borderWidth: 2, borderColor: penWidth === width ? colors.mint : colors.edge}]}><View style={{width: 22, height: width, borderRadius: width, backgroundColor: colors.ink}} /></TouchableOpacity>)}
+      <View style={[styles.toolDivider, { backgroundColor: colors.edge }]} />
+      {[4, 7].map(width => <TouchableOpacity key={width} accessibilityRole="button" accessibilityLabel={width === 4 ? INK_TOOL_LABELS.thin : INK_TOOL_LABELS.thick} accessibilityState={{selected: penWidth === width}} disabled={drawing || busy || demo !== null} onPress={() => setPenWidth(width)} style={[styles.roundTool, penWidth === width && { backgroundColor: colors.lavender }]}><View style={{ width: 22, height: width, borderRadius: width, backgroundColor: colors.ink }} /></TouchableOpacity>)}
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={focused ? INK_TOOL_LABELS.collapse : INK_TOOL_LABELS.expand} accessibilityState={{selected: focused}} disabled={drawing} onPress={() => setFocused(value => !value)} style={styles.roundTool}>{focused ? <Minimize2 size={21} color={colors.mint} /> : <Maximize2 size={21} color={colors.mint} />}</TouchableOpacity>
-    </View>
+    </View>}
     {!!error && <Text accessibilityLiveRegion="polite" style={styles.error}>{error}</Text>}
     <View style={styles.actionRow}>
-      <BigButton onPress={evaluate} disabled={busy || drawing || demo !== null || !guide} variant="success" size="md" style={styles.evalBtn}>
+      <BigButton onPress={evaluate} disabled={busy || drawing || demo !== null || !guide} variant="success" size="lg" style={styles.evalBtn}>
         {busy ? 'پشکنین دەکەم…' : 'نووسینەکەم چۆنە؟ ✓'}
       </BigButton>
-      {!focused && <BigButton onPress={() => setRoute('word-writing')} variant="outline" size="md" style={styles.wordWriteBtn}>{OPEN_WORD_WRITING}</BigButton>}
     </View>
     </>
   );
@@ -269,12 +293,21 @@ export const WritingScreen: React.FC = () => {
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="پیتی دواتر" disabled={!hasNext || busy}
         style={[styles.arrow, !hasNext && styles.disabled]} onPress={() => selectLetter(index + 1)}><Text style={styles.arrowText}>←</Text></TouchableOpacity>
     </View>
-    {!focused && <View style={[styles.modeBar, { backgroundColor: extras.glass }, split && styles.toolsCompact]} accessibilityRole="tablist">{(['trace','copy','independent'] as const).map((value,i)=>{
-      const locked = !lessonDone && ((value==='copy'&&!currentProfile.writingProgress?.[letter.id]?.tracePassed) || (value==='independent'&&!currentProfile.writingProgress?.[letter.id]?.copyPassed));
-      const on = mode===value;
-      return <TouchableOpacity key={value} accessibilityRole="tab" accessibilityState={{selected:on,disabled:busy||locked}} disabled={busy || locked} style={[styles.modeTab, on && { backgroundColor: accentFill(colors, isNight) }, locked && { opacity: 0.5 }]} onPress={()=>changeMode(value)}>
-        <Text style={[styles.modeTabText, { color: on ? '#ffffff' : colors.muted }]}>{MODE_LABELS[i]}</Text></TouchableOpacity>;
-    })}</View>}
+    {!focused && <View style={[styles.steps, split && styles.toolsCompact]} accessibilityRole="tablist">
+      {(['trace','copy','independent'] as const).map((value,i)=>{
+        const progress = currentProfile.writingProgress?.[letter.id];
+        const locked = !lessonDone && ((value==='copy'&&!progress?.tracePassed) || (value==='independent'&&!progress?.copyPassed));
+        const on = mode===value, passed = value==='trace' ? !!progress?.tracePassed : value==='copy' ? !!progress?.copyPassed : (progress?.independentPassDates?.length || 0) > 0;
+        return <React.Fragment key={value}>
+          {i > 0 && <View style={[styles.stepLine, { backgroundColor: passed || on ? colors.mint : colors.edge }]} />}
+          <TouchableOpacity accessibilityRole="tab" accessibilityLabel={MODE_LABELS[i]} accessibilityState={{selected:on,disabled:busy||locked}} disabled={busy || locked}
+            style={[styles.stepDot, { backgroundColor: on ? accentFill(colors, isNight) : passed ? '#23946a' : colors.lavender }, locked && { opacity: 0.5 }]} onPress={()=>changeMode(value)}>
+            {passed && !on ? <Check size={18} color="#ffffff" strokeWidth={3} /> : <Text style={[styles.stepNum, { color: on ? '#ffffff' : colors.muted }]}>{i + 1}</Text>}
+          </TouchableOpacity>
+        </React.Fragment>;
+      })}
+      <Text style={[styles.stepLabel, { color: colors.ink }]}>{MODE_LABELS[['trace','copy','independent'].indexOf(mode)].slice(2)}</Text>
+    </View>}
     {split && <Text style={styles.stage}>{STAGE_TITLES[mode]}</Text>}
     {!focused && <Text style={styles.instruction}>{mode==='trace'?guide?.instructionKu:mode==='copy'?'نموونەکە سەیر بکە و لە بۆردە بەتاڵەکە بینووسە.':'بەبێ ڕێنما پیتەکە بنووسە؛ هەموو هێڵ و خاڵەکانی بیر بکەرەوە.'}</Text>}
     {split ? <View style={styles.split}><View style={styles.splitBoard}>{boardNode}</View><View style={styles.splitControls}>{controlsNode}</View></View> : <>{boardNode}{controlsNode}</>}
@@ -283,7 +316,10 @@ export const WritingScreen: React.FC = () => {
         {result.mastered ? <LetterWordReveal glyph={letter.glyph} word={letter.exampleWords[0].word} /> : <Text style={styles.celebration}></Text>}
         <Text style={styles.resultTitle}>{confirmedMastery ? 'تەواو فێر بوویت!' : result.mastered ? 'ئافەرم! ئەم مەشقەت تەواو کرد' : 'با جارێکی تر ڕاهێنان بکەین'}</Text>
         <StarRating stars={result.stars} maxStars={3} size="lg" />
-        {result.rubric && guide && <WritingResultDetails guide={guide} strokes={submitted} aligned={mode==='trace'?submitted:normalizeIndependentWriting(guide,submitted)} rubric={result.rubric} stars={result.stars} />}
+        {!!result.feedbackKu && <Text style={styles.resultText}>{result.feedbackKu}</Text>}
+        {result.mastered && mode !== 'independent' && !showDetails && <Text style={styles.advanceHint}>{STEP_ADVANCE}</Text>}
+        {result.rubric && guide && <TouchableOpacity accessibilityRole="button" accessibilityState={{ expanded: showDetails }} onPress={() => setDetailsFor(showDetails ? null : result)} style={styles.detailsToggle}><Text style={styles.detailsText}>{showDetails ? RESULT_DETAILS.close : RESULT_DETAILS.open}</Text></TouchableOpacity>}
+        {showDetails && result.rubric && guide && <WritingResultDetails guide={guide} strokes={submitted} aligned={mode==='trace'?submitted:normalizeIndependentWriting(guide,submitted)} rubric={result.rubric} stars={result.stars} />}
         {result.mastered ? <>
           {mode!=='independent' && <BigButton onPress={()=>changeMode(mode==='trace'?'copy':'independent')} variant="success" size="md" style={styles.fullButton}>{mode==='trace'?'ئێستا بە نموونە بنووسم':'ئێستا سەربەخۆ بنووسم'}</BigButton>}
           <BackButton onPress={nextLesson} fullWidth style={styles.fullButton}>با بگەڕێینەوە بۆ ڕێڕەوی فێربوون</BackButton>
@@ -300,6 +336,11 @@ export const WritingScreen: React.FC = () => {
 };
 
 const baseStyles = StyleSheet.create({
+  steps: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, width: '100%' },
+  stepDot: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  stepNum: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 15 },
+  stepLine: { width: 22, height: 4, borderRadius: 2 },
+  stepLabel: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 15, marginStart: 8 },
   modeBar: { flexDirection: 'row', width: '100%', borderRadius: 999, padding: 3, gap: 4 },
   modeTab: { flex: 1, minHeight: 36, borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
   modeTabText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 13 },
@@ -340,6 +381,9 @@ const baseStyles = StyleSheet.create({
   modalScroll: { flexGrow: 1, justifyContent: 'center', alignItems: 'center' },
   modalCard: { width: '100%', maxWidth: 420, backgroundColor: '#fffef7', borderRadius: 28, padding: 18, alignItems: 'center', gap: 10 },
   celebration: { fontSize: 32 },
+  advanceHint: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 14, color: '#6d4ae8', textAlign: 'center' },
+  detailsToggle: { minHeight: 44, paddingHorizontal: 16, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1ebff' },
+  detailsText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 14, color: '#4f33b8' },
   resultTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 22, color: '#047857', textAlign: 'center' },
   resultText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 15, color: '#334155', textAlign: 'center' },
   listenHelp: { minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 },
