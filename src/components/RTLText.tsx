@@ -1,7 +1,9 @@
 import React, { createContext, forwardRef, useContext } from 'react';
-import { Platform, Text as NativeText, TextInput as NativeTextInput, StyleSheet, TextProps, TextInputProps, TextStyle } from 'react-native';
+import { Platform, Text as NativeText, TextInput as NativeTextInput, StyleSheet, TextProps, TextInputProps, TextStyle, View } from 'react-native';
 import { ibmTextStyle } from '../theme/typography';
 import { rtlProps } from '../theme/rtl';
+import { pictureFor } from '../art/pictures';
+import { SvgXml } from 'react-native-svg';
 
 const styles = StyleSheet.create({
   alignment: { textAlign: 'right' },
@@ -28,6 +30,14 @@ export const Text = forwardRef<NativeText, TextProps>(function RTLText({ style, 
   // Highlighted letters and karaoke words keep their paragraph's font weight.
   const flat = StyleSheet.flatten(style);
   const font = ibmTextStyle({ ...useContext(FontContext), ...flat });
+  // A lone emoji is drawn with the app's own picture, sized from the text's font size (see src/art/pictures.ts).
+  const picture = typeof props.children === 'string' ? pictureFor(props.children) : undefined;
+  if (picture) {
+    const size = Math.round((typeof flat?.fontSize === 'number' ? flat.fontSize : 24) * 1.15);
+    return <View accessible={false} importantForAccessibility="no" style={[{ width: size, height: size, alignSelf: 'center' }, flat && { marginVertical: flat.marginVertical, margin: flat.margin }]}>
+      <SvgXml xml={picture} width={size} height={size} />
+    </View>;
+  }
   return <FontContext.Provider value={font}><NativeText {...props} {...rtlProps} ref={ref} style={[styles.alignment, style, font, floorSize(flat), nativeAlign(flat), styles.direction, layoutDirection]} /></FontContext.Provider>;
 });
 

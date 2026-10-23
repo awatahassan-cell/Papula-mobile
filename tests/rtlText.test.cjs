@@ -21,7 +21,10 @@ const source = fs.readFileSync(path.join(__dirname, '../src/components/RTLText.t
 new Function('exports', 'module', 'require', ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React },
 }).outputText)(mod.exports, mod, name => name === 'react' ? react : name.endsWith('/typography') ? { ibmTextStyle }
-  : name.endsWith('/rtl') ? { rtlProps: { dir: 'rtl' } } : native);
+  : name.endsWith('/rtl') ? { rtlProps: { dir: 'rtl' } }
+  : name.endsWith('/art/pictures') ? { pictureFor: () => undefined }
+  : name === 'react-native-svg' ? { SvgXml: 'SvgXml' }
+  : name === 'react-native' ? { ...native, View: 'View' } : native);
 
 test('RTL applies to mixed text and inputs while preserving centering, refs and handlers', () => {
   const unwrap = element => element.type === 'FontProvider' ? element.props.children : element;
