@@ -3,6 +3,9 @@ import { Animated, Easing, Modal, Platform, ScrollView, StyleSheet, View } from 
 import { LinearGradient } from 'expo-linear-gradient';
 import { BigButton } from '../../components/BigButton';
 import { PapulaMascot } from '../../components/PapulaMascot';
+import { HelpHint } from '../../components/HelpButton';
+import { soundService } from '../../services/soundService';
+import { SPOKEN_GUIDES } from '../../data/spokenGuides';
 import { PetArt } from '../../components/PetArt';
 import { Text } from '../../components/RTLText';
 import { TactileButton } from '../../components/TactileButton';
@@ -87,6 +90,7 @@ export const GardenScreen: React.FC = () => {
   const sky: [string, string] = isNight ? ['#1d1a4f', '#2c2a72'] : ['#d9ecff', '#f3e8ff'];
 
   return <ScrollView contentContainerStyle={[s.page, { maxWidth: pageMax }]}>
+    <HelpHint text={SPOKEN_GUIDES.garden} disabled={!soundService.canSpeak(SPOKEN_GUIDES.garden)} />
     <LinearGradient colors={sky} style={s.pet}>
       <Text style={[s.heading, { color: isNight ? '#fff' : '#3b2f63' }]}>{T.friend}</Text>
       <PetArt stage={stage} mood={mood} size={190} bounceKey={bounce} />

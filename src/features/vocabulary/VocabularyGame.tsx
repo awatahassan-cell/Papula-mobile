@@ -13,6 +13,8 @@ import {
   PictureWord, VOCAB, VOCAB_CATEGORIES, VOCAB_SENTENCES, VocabCategory, VocabSentence, dueSentences, dueWordCount, dueWords,
   pictureDistractors, sentenceDistractors, wordPlan,
 } from '../../data/vocabulary';
+import { HelpHint } from '../../components/HelpButton';
+import { SPOKEN_GUIDES } from '../../data/spokenGuides';
 import { VOCAB_TEXT } from './vocabText';
 
 type Source = VocabCategory | 'sentences' | 'review';
@@ -48,8 +50,12 @@ export const VocabularyGame: React.FC<{ onExit: () => void; start?: Source }> = 
 
   const begin = (next: Source) => { setSource(next); setRun(r => r + 1); setIndex(0); setWrongIds([]); setAnswered(false); setFirstTry(0); missed.current = false; };
   const round = rounds[index];
+  // Each round reads its word or sentence aloud when it appears (children who cannot read yet are guided by ear).
+  const spokenNow = round ? (round.kind === 'word' ? round.item.word : round.item.text) : '';
+  useEffect(() => { if (spokenNow && soundService.canSpeak(spokenNow)) void soundService.speakWord(spokenNow); }, [spokenNow, index, run]);
 
   if (!source) return <ScrollView contentContainerStyle={s.container}>
+    <HelpHint text={SPOKEN_GUIDES.vocab} disabled={!soundService.canSpeak(SPOKEN_GUIDES.vocab)} />
     <Text style={s.title}>{VOCAB_TEXT.pickCategory}</Text>
     <View style={s.row}>{VOCAB_CATEGORIES.map(category => <TouchableOpacity key={category.id} accessibilityRole="button" accessibilityLabel={category.title} style={[s.card, local.choice]} onPress={() => begin(category.id)}>
       <Text style={s.emoji}>{category.emoji}</Text><Text style={s.title}>{category.title}</Text></TouchableOpacity>)}
@@ -85,7 +91,9 @@ export const VocabularyGame: React.FC<{ onExit: () => void; start?: Source }> = 
     setIndex(index + 1); setWrongIds([]); setAnswered(false); missed.current = false; recorded.current = false;
   };
   const optionStyle = (id: string) => [local.option, answered && id === target.id && s.correct, wrongIds.includes(id) && s.retry, wrongIds.includes(id) && s.disabled];
+  const guide = round.kind === 'word' ? SPOKEN_GUIDES.vocabWord : SPOKEN_GUIDES.vocabSentence;
   return <ScrollView ref={scroll} contentContainerStyle={s.container}>
+    <HelpHint text={guide} disabled={!soundService.canSpeak(guide)} />
     <Text style={s.text}>{index + 1} / {rounds.length}</Text>
     <Text style={s.title}>{round.kind === 'word' ? VOCAB_TEXT.pickWord : VOCAB_TEXT.pickPicture}</Text>
     <View style={s.card}>

@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'expo-router';
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { LEARNING_WORDS, learningActivity, localDay, logDay, updateReview, personalStories } from '../services/learningEngine';
 import { knownWordId, isVocabId } from '../data/vocabulary';
+import { QUEST_REWARD } from '../data/quests';
 import { claimGift, feed, petFed, petStage } from '../data/garden';
 import { normalizeCheckpoint } from '../services/learningContinuation';
 import { mockLetters } from '../data/mockLetters';
@@ -81,6 +82,7 @@ export interface AppContextType {
   recordPracticeResult: (letterIds: string[], correct: boolean, wordId?: string, skill?: LearningSkill, helped?: boolean) => void;
   recordSkillResult: (skill: LearningSkill, correct: boolean, helped?: boolean) => void;
   feedPet: () => void;
+  finishQuest: (questId: string) => number;
   claimPetGift: () => void;
   markButterfliesSeen: (ids: string[]) => void;
   savePlacement: (correct: number, total: number, letterIds: string[]) => void;
@@ -609,6 +611,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     updateCurrentProfile(after);
     if (petStage(petFed(after)).id !== petStage(petFed(before)).id) soundService.playSuccessFanfare(); else soundService.playCorrect(false);
   };
+  /** Marks an adventure finished and gives its nectar once per day. Returns the nectar given (0 if already rewarded today). */
+  const finishQuest = (questId: string) => {
+    const base = learningActivity(profileRef.current), today = localDay();
+    const reward = base.questDates?.[questId] === today ? 0 : QUEST_REWARD;
+    updateCurrentProfile({ ...base, questDates: { ...base.questDates, [questId]: today },
+      pet: reward ? { fed: petFed(base), ...base.pet, bonus: (base.pet?.bonus || 0) + reward } : base.pet });
+    soundService.playSuccessFanfare();
+    return reward;
+  };
   const claimPetGift = () => { const before = profileRef.current, after = claimGift(before); if (after !== before) { updateCurrentProfile(after); soundService.playCorrect(false); } };
   const markButterfliesSeen = (ids: string[]) => {
     const base = profileRef.current;
@@ -777,6 +788,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         recordPracticeResult,
         recordSkillResult,
         feedPet,
+        finishQuest,
         claimPetGift,
         markButterfliesSeen,
         savePlacement,
