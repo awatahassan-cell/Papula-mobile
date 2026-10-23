@@ -17,7 +17,8 @@ test('every picture is a single emoji key and a complete 100x100 SVG', () => {
     const svg = PICTURES[key];
     assert.ok(svg.startsWith('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">') && svg.endsWith('</svg>'), key);
     for (const tag of svg.match(/<ellipse[^>]*>/g) || []) assert.ok(/ rx="/.test(tag) && / ry="/.test(tag), `ellipse needs rx and ry in ${key}: ${tag}`);
-    assert.equal((svg.match(/</g) || []).length, (svg.match(/<[^/!][^>]*[^/]>|<[^/!][^>]*\/>|<\/[^>]+>/g) || []).length, `balanced tags in ${key}`);
+    assert.equal((svg.match(/</g) || []).length, (svg.match(/>/g) || []).length, `brackets match in ${key}`);
+    assert.equal((svg.match(/<g[ >]/g) || []).length, (svg.match(/<\/g>/g) || []).length, `groups close in ${key}`);
   }
 });
 

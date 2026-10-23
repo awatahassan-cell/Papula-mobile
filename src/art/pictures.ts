@@ -6,7 +6,7 @@
 const INK = 'stroke="#3b2f63" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"';
 const box = (body: string) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${body}</svg>`;
 
-export const PICTURES: Record<string, string> = {
+const DRAWN: Record<string, string> = {
   '⭐': box(`<path d="M50 7 L61 36 L92 37 L67 56 L76 86 L50 69 L24 86 L33 56 L8 37 L39 36 Z" fill="#ffd65a" ${INK}/><circle cx="42" cy="44" r="4" fill="#fff4c2"/>`),
   '☆': box(`<path d="M50 7 L61 36 L92 37 L67 56 L76 86 L50 69 L24 86 L33 56 L8 37 L39 36 Z" fill="#ffffff" stroke="#b9b1d6" stroke-width="4" stroke-linejoin="round"/>`),
   '🌟': box(`<circle cx="50" cy="50" r="40" fill="#ffe68a" opacity="0.45"/><path d="M50 14 L59 40 L86 41 L64 57 L72 84 L50 68 L28 84 L36 57 L14 41 L41 40 Z" fill="#ffd65a" ${INK}/>`),
@@ -55,6 +55,35 @@ export const PICTURES: Record<string, string> = {
   '🧒': box(`<rect x="28" y="64" width="44" height="30" rx="14" fill="#3db8ff" ${INK}/><circle cx="50" cy="40" r="22" fill="#ffd9b0" ${INK}/><path d="M28 38 Q28 14 50 14 Q72 14 72 38 Q64 26 50 26 Q36 26 28 38 Z" fill="#573147"/><circle cx="42" cy="42" r="3.6" fill="#3b2f63"/><circle cx="58" cy="42" r="3.6" fill="#3b2f63"/><path d="M44 52 Q50 57 56 52" fill="none" ${INK}/>`),
   '🥇': box(`<path d="M32 8 L44 40 M68 8 L56 40" fill="none" stroke="#3db8ff" stroke-width="8" stroke-linecap="round"/><circle cx="50" cy="62" r="28" fill="#ffd65a" ${INK}/><path d="M50 46 L54 56 L65 57 L57 64 L60 75 L50 69 L40 75 L43 64 L35 57 L46 56 Z" fill="#fff4c2"/>`),
 };
+
+/**
+ * Cartoon faces: a few drawings get big eyes, rosy cheeks and a smile at the spot given here (x, y, size).
+ * Their old eyes, noses and mouths are removed first so only the new face shows.
+ */
+const FACES: Record<string, [number, number, number]> = {
+  '⭐': [50, 54, 1], '🌟': [50, 54, 0.9], '☀': [50, 50, 0.9], '☁': [50, 54, 0.9], '🌙': [42, 52, 0.8],
+  '💧': [50, 62, 0.9], '🍎': [50, 60, 0.9], '🍋': [46, 52, 0.8], '🍌': [46, 58, 0.7], '🥛': [50, 62, 0.85],
+  '🍯': [50, 62, 0.85], '🥚': [50, 58, 0.9],
+  '🦁': [50, 58, 1], '🐘': [52, 40, 0.8], '🦊': [50, 54, 0.85], '🐻': [50, 56, 0.85], '🐱': [50, 58, 0.9],
+  '🐰': [50, 60, 0.9], '🦌': [50, 60, 0.85], '🐟': [42, 50, 0.8], '🐬': [50, 50, 0.8], '🐭': [50, 58, 0.9],
+  '🐶': [50, 56, 0.9], '🐓': [48, 46, 0.8], '🧒': [50, 44, 0.9],
+};
+const OLD_FACE = [
+  /<circle[^>]*fill="#3b2f63"[^>]*\/>/g, /<ellipse[^>]*fill="#3b2f63"[^>]*\/>/g, /<ellipse[^>]*fill="#48c79c"[^>]*\/>/g,
+  /<ellipse[^>]*fill="#ff8aa8"[^>]*\/>/g, /<path d="M44 68 Q50 74 56 68"[^>]*\/>/g, /<path d="M44 52 Q50 57 56 52"[^>]*\/>/g,
+  /<path d="M46 62 H54 L50 67 Z"[^>]*\/>/g,
+];
+const round = (n: number) => Math.round(n * 10) / 10;
+function cartoonFace(x: number, y: number, s: number): string {
+  const eye = (cx: number) => `<ellipse cx="${round(cx)}" cy="${round(y)}" rx="${round(3.8 * s)}" ry="${round(4.8 * s)}" fill="#3b2f63"/><circle cx="${round(cx + 1.4 * s)}" cy="${round(y - 1.8 * s)}" r="${round(1.4 * s)}" fill="#ffffff"/>`;
+  return `<g>${eye(x - 9 * s)}${eye(x + 9 * s)}<ellipse cx="${round(x - 15 * s)}" cy="${round(y + 7 * s)}" rx="${round(4.5 * s)}" ry="${round(3 * s)}" fill="#ff9fb8" opacity="0.75"/><ellipse cx="${round(x + 15 * s)}" cy="${round(y + 7 * s)}" rx="${round(4.5 * s)}" ry="${round(3 * s)}" fill="#ff9fb8" opacity="0.75"/><path d="M${round(x - 6 * s)} ${round(y + 4 * s)} Q${round(x)} ${round(y + 13 * s)} ${round(x + 6 * s)} ${round(y + 4 * s)}" fill="none" stroke="#3b2f63" stroke-width="3" stroke-linecap="round"/></g>`;
+}
+export const PICTURES: Record<string, string> = Object.fromEntries(Object.entries(DRAWN).map(([key, svg]) => {
+  const spot = FACES[key];
+  if (!spot) return [key, svg];
+  const cleaned = OLD_FACE.reduce((body, pattern) => body.replace(pattern, ''), svg);
+  return [key, cleaned.replace('</svg>', `${cartoonFace(...spot)}</svg>`)];
+}));
 
 /** The picture for a single emoji (variation selectors ignored), or undefined when it is not drawn yet. */
 export const pictureFor = (text: string): string | undefined => PICTURES[text.replace(/️/g, '').trim()];
