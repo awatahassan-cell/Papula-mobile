@@ -6,24 +6,24 @@ import { PetArt } from '../../components/PetArt';
 import { useAppStore } from '../../store/useAppStore';
 import { useAppearance } from '../../theme/useAppearance';
 import { tileSet } from '../../theme/candy';
-import { GARDEN_BUTTERFLIES, earnedButterflies, nectarOf, petFed, petMood, petStage, unseenButterflies } from '../../data/garden';
-import { GARDEN_TEXT } from '../garden/gardenText';
+import { petFed, petMood, petStage } from '../../data/garden';
 
-/** The home screen's one reminder of the friend: how it is doing, how many butterflies, and new ones waiting. */
+
+/** One simple entry to the child's flowers and growing friend. */
 export function PetHomeCard() {
   const { currentProfile, setRoute } = useAppStore();
   const { isNight } = useAppearance();
   const tile = tileSet(isNight)[1];
   const stage = petStage(petFed(currentProfile));
-  const fresh = unseenButterflies(currentProfile).length;
-  return <TactileButton accessibilityRole="button" accessibilityLabel={GARDEN_TEXT.homeCard} onPress={() => setRoute('garden')}
+
+  return <TactileButton accessibilityRole="button" accessibilityLabel="باغەکەم" onPress={() => setRoute('garden')}
     style={[s.card, { backgroundColor: tile.face, borderBottomColor: tile.lip }]}>
     <PetArt stage={stage} mood={petMood(currentProfile)} size={84} />
     <View style={s.body}>
-      <Text style={[s.title, { color: tile.ink }]}>{GARDEN_TEXT.homeCard}</Text>
-      <Text style={[s.line, { color: tile.ink }]}>{stage.name} · {GARDEN_TEXT.count(earnedButterflies(currentProfile).length, GARDEN_BUTTERFLIES.length)} 🦋 · 🍯 {nectarOf(currentProfile)}</Text>
+      <Text style={[s.title, { color: tile.ink }]}>باغەکەم</Text>
+      <Text style={[s.line, { color: tile.ink }]}>گوڵەکانت ببینە و خۆراکی هاوڕێکەت بدە.</Text>
     </View>
-    {fresh > 0 && <View style={s.badge}><Text style={s.badgeText}>{GARDEN_TEXT.homeNew(fresh)}</Text></View>}
+
   </TactileButton>;
 }
 const s = StyleSheet.create({

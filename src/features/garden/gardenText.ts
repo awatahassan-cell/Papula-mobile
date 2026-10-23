@@ -1,6 +1,6 @@
 /** Screen-only Kurdish text for the butterfly garden (not narrated, so it stays out of the audio-scanned files). */
 export const GARDEN_TEXT = {
-  title: 'باخچەی پەپوولە',
+  title: 'باغەکەم',
   friend: 'هاوڕێکەم',
   stageLabel: (name: string) => name,
   toNext: (name: string, left: number) => `${left} جار خۆراک بدە تا ببێتە ${name}`,
@@ -22,6 +22,6 @@ export const GARDEN_TEXT = {
   skip: 'لە باخچەکە ببینمەوە',
   close: 'داخستن',
   earnedBy: 'چۆن بەدەستت هێنا',
-  homeCard: 'باخچەی من',
+  homeCard: 'باغەکەم',
   homeNew: (n: number) => `${n} نوێ`,
 };

@@ -64,15 +64,15 @@ const Reveal: React.FC<{ queue: GardenButterfly[]; onDone: () => void }> = ({ qu
   </Modal>;
 };
 
-export const GardenScreen: React.FC = () => {
+export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'; embedded?: boolean }> = ({section='all',embedded=false}) => {
   const { colors: c, isNight } = useAppearance();
   const { pageMax } = useResponsive();
-  const { currentProfile, feedPet, claimPetGift, markButterfliesSeen } = useAppStore();
+  const { currentProfile, feedPet, claimPetGift, markButterfliesSeen, setRoute } = useAppStore();
   const reduced = useReducedMotion();
   const [selected, setSelected] = useState<GardenButterfly | null>(null);
   const [bounce, setBounce] = useState(0);
   const [gotGift, setGotGift] = useState(0);
-  const [reveal, setReveal] = useState<GardenButterfly[]>(() => unseenButterflies(currentProfile)); // butterflies earned since the last visit
+  const [reveal, setReveal] = useState<GardenButterfly[]>([]); // butterflies earned since the last visit
   const [float] = useState(() => new Animated.Value(0));
   useEffect(() => {
     if (reduced) return;
@@ -89,24 +89,26 @@ export const GardenScreen: React.FC = () => {
   const takeGift = () => { claimPetGift(); setGotGift(giftAmount()); };
   const sky: [string, string] = isNight ? ['#1d1a4f', '#2c2a72'] : ['#d9ecff', '#f3e8ff'];
 
-  return <ScrollView contentContainerStyle={[s.page, { maxWidth: pageMax }]}>
-    <HelpHint text={SPOKEN_GUIDES.garden} disabled={!soundService.canSpeak(SPOKEN_GUIDES.garden)} />
-    <LinearGradient colors={sky} style={s.pet}>
+  const Container=embedded?View:ScrollView;
+  return <Container {...(embedded?{style:{gap:14}}:{contentContainerStyle:[s.page,{maxWidth:pageMax}]})}>
+    {!embedded&&<HelpHint text={SPOKEN_GUIDES.garden} disabled={!soundService.canSpeak(SPOKEN_GUIDES.garden)} />}
+    {section!=='collection'&&<LinearGradient colors={sky} style={s.pet}>
       <Text style={[s.heading, { color: isNight ? '#fff' : '#3b2f63' }]}>{T.friend}</Text>
-      <PetArt stage={stage} mood={mood} size={190} bounceKey={bounce} />
+      <PetArt stage={stage} mood={mood} size={section==='companion'?140:190} bounceKey={bounce} />
       <Text style={[s.stage, { color: isNight ? '#fff' : '#3b2f63' }]}>{T.stageLabel(stage.name)}</Text>
       <View accessibilityRole="progressbar" accessibilityLabel={T.friend} accessibilityValue={{ min: 0, max: 100, now: Math.round(stageProgress(fed) * 100) }} style={s.track}>
         <View style={[s.fill, { width: `${Math.round(stageProgress(fed) * 100)}%` }]} />
       </View>
-      <Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{next ? T.toNext(next.name, next.from - fed) : T.maxStage}</Text>
+      {section!=='companion'&&<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{next ? T.toNext(next.name, next.from - fed) : T.maxStage}</Text>}
       <Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{fedNow ? T.fedToday : mood === 'sleepy' ? T.sleepy : ''}</Text>
-      <View style={[s.nectar, { backgroundColor: GOLD.soft, borderColor: GOLD.border }]}><Text style={s.nectarText}>🍯 {T.nectar(nectar)}</Text></View>
+      {section!=='companion'&&<View style={[s.nectar, { backgroundColor: GOLD.soft, borderColor: GOLD.border }]}><Text style={s.nectarText}>🍯 {T.nectar(nectar)}</Text></View>}
       <GoldButton label={T.feed} disabled={nectar < 1} onPress={feedIt} />
-      {nectar < 1 && <Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{T.noNectar}</Text>}
+      {nectar < 1 && (section==='companion'?<BigButton variant="secondary" onPress={()=>setRoute('home')} style={s.wide}>با گەشتەکەم بەردەوام بکەم</BigButton>:<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{T.noNectar}</Text>)}
       {gift ? <BigButton variant="outline" onPress={takeGift} style={s.wide}>{T.gift}</BigButton>
-        : <Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{gotGift ? T.giftGot(gotGift) : T.giftWait}</Text>}
-    </LinearGradient>
+        : section!=='companion'&&<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{gotGift ? T.giftGot(gotGift) : T.giftWait}</Text>}
+    </LinearGradient>}
 
+    {section!=='companion'&&<>
     <View style={s.collectionHead}>
       <Text style={[s.heading, { color: c.ink }]}>{T.collection}</Text>
       <View style={[s.chip, { backgroundColor: c.paper, borderColor: c.edge, borderWidth: 1 }]}><Text style={[s.small, { color: c.ink }]}>{T.count(earned, GARDEN_BUTTERFLIES.length)}</Text></View>
@@ -123,6 +125,8 @@ export const GardenScreen: React.FC = () => {
       </TactileButton>;
     })}</View>
 
+    {unseenButterflies(currentProfile).length>0&&<GoldButton label="پەپوولە نوێکانم ببینم" onPress={()=>setReveal(unseenButterflies(currentProfile))}/> }
+    </>}
     <Modal transparent visible={!!selected} animationType="fade" onRequestClose={() => setSelected(null)}>
       {selected && <View style={s.scrim}>
         <View style={[s.revealCard, { backgroundColor: c.paper, borderColor: isEarned(selected, counts) ? RARITY_COLOR[selected.rarity] : c.edge }]}>
@@ -136,8 +140,10 @@ export const GardenScreen: React.FC = () => {
       </View>}
     </Modal>
     {reveal.length > 0 && <Reveal queue={reveal} onDone={() => { markButterfliesSeen(reveal.map(item => item.id)); setReveal([]); }} />}
-  </ScrollView>;
+  </Container>;
 };
+
+export const GardenScreen = () => <GardenContents/>;
 
 const s = StyleSheet.create({
   page: { width: '100%', alignSelf: 'center', padding: 16, gap: 14, paddingBottom: 28 },
