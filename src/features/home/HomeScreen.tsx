@@ -5,6 +5,7 @@ import { HelpPill } from '../../components/HelpButton';
 import { Text } from '../../components/RTLText';
 import { TactileButton } from '../../components/TactileButton';
 import { GardenQuestCard } from '../adventure/GardenQuestCard';
+import { PetHomeCard } from './PetHomeCard';
 import { useAppStore } from '../../store/useAppStore';
 import { useAppearance } from '../../theme/useAppearance';
 import { GOLD } from '../../theme/tokens';
@@ -21,6 +22,7 @@ export const HomeScreen: React.FC = () => {
     </View>
     <Text testID="home-greeting" style={[s.greeting,{color:c.ink}]}>سڵاو {currentProfile.name}!</Text>
     <GardenQuestCard/>
+    <PetHomeCard/>
   </ScrollView>;
 };
 const s=StyleSheet.create({page:{width:'100%',maxWidth:660,alignSelf:'center',padding:17,paddingBottom:28,gap:16},header:{flexDirection:'row',alignItems:'center',gap:8},flex:{flex:1,minWidth:0},brand:{fontSize:25,fontWeight:'700'},greeting:{fontSize:23,lineHeight:38,fontWeight:'700'},settings:{width:44,height:44,borderRadius:17,alignItems:'center',justifyContent:'center'},stars:{minHeight:44,flexDirection:'row',gap:6,alignItems:'center',paddingHorizontal:9,backgroundColor:GOLD.soft,borderRadius:16},starCount:{fontSize:15,color:GOLD.ink,fontWeight:'700'}});
