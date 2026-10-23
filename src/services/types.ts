@@ -77,6 +77,7 @@ export interface StoryPage {
 }
 
 export interface StoryItem {
+  journeyLetterId?: string;
   targetLetterIds?: string[];
   sourceBook?: string;
   authorKu?: string;
@@ -142,6 +143,8 @@ export interface LessonProgress {
 
 export interface DayLog { seconds: number; lessons: number; stars: number; }
 export interface ChildProfile {
+  gardenQuest?: { steps: ('listen' | 'find' | 'build' | 'write' | 'story')[]; flowerSpot?: number };
+  gardenQuests?: Record<string, { steps: ('listen' | 'find' | 'build' | 'write' | 'story')[]; flowerSpot?: number }>;
   checkpoint?: LearningCheckpoint;
   /** Actual foreground learning time, independent of writing-attempt estimates. */
   screenTimeLog?: Record<string, number>;

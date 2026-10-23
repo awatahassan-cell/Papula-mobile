@@ -1,1 +1,1 @@
-export { LetterDetailScreen as default } from '../features/alphabet/LetterDetailScreen';
+export { GardenQuestScreen as default } from '../features/adventure/GardenQuestScreen';

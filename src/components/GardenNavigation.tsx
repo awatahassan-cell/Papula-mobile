@@ -2,17 +2,17 @@ import { TactileButton as TouchableOpacity } from './TactileButton';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
-import { Compass, BookOpen, Puzzle, Route } from 'lucide-react-native';
+import { Compass, BookOpen, Flower2, Route } from 'lucide-react-native';
 import { useAppStore, AppRoute } from '../store/useAppStore';
 import { useAppearance } from '../theme/useAppearance';
 import { soundService } from '../services/soundService';
 import { useResponsive } from '../theme/responsive';
 
 const tabs = [
-  { route: 'home', label: 'ماڵەوە', Icon: Compass },
+  { route: 'home', label: 'گەشتەکەم', Icon: Compass },
   { route: 'alphabet', label: 'ڕێڕەو', Icon: Route },
+  { route: 'garden', label: 'باغەکەم', Icon: Flower2 },
   { route: 'stories', label: 'چیرۆک', Icon: BookOpen },
-  { route: 'match-game', label: 'یاری', Icon: Puzzle },
 ] as const;
 
 export function GardenNavigation() {
@@ -20,7 +20,7 @@ export function GardenNavigation() {
   const { isGarden, colors: c, isNight, extras } = useAppearance();
   const { tablet } = useResponsive();
 
-  if (!isGarden || !['home', 'alphabet', 'stories', 'match-game', 'daily-practice', 'stickers', 'badges', 'my-words'].includes(route)) {
+  if (!isGarden || !['home', 'alphabet', 'garden', 'stories', 'match-game', 'daily-practice', 'stickers', 'badges', 'my-words'].includes(route)) {
     return null;
   }
 

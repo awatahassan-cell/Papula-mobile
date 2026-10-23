@@ -1,3 +1,4 @@
+import { finishGardenStep, plantGardenFlower, GardenStep } from '../services/gardenQuest';
 import { advanceWriting, writingMastered, skillAttempt, readingPracticeStories } from '../services/foundationalLearning';
 import { applyLessonStep, isLessonUnlocked, nextLessonLetter, reconcileLessons } from '../services/lessonPath';
 import { usePathname, useRouter } from 'expo-router';
@@ -15,6 +16,8 @@ import { defaultStrings, LocaleStrings } from '../theme/strings';
 export type AppRoute =
   | 'onboarding'
   | 'home'
+  | 'garden-quest'
+  | 'garden'
   | 'alphabet'
   | 'letter-detail'
   | 'match-game'
@@ -55,6 +58,8 @@ export interface AppContextType {
   dailyMissions: DailyMission[];
   switchProfile: (profileId: string) => void;
   createProfile: (profile: Omit<ChildProfile, 'id' | 'stars' | 'streakDays' | 'lastActiveDate' | 'masteredLetterIds' | 'inProgressLetterIds' | 'readStoryIds' | 'unlockedStickerIds' | 'savedWords' | 'dailyPracticeCompletedToday'>) => void;
+  completeGardenTask: (step: GardenStep, letterId?: string) => void;
+  plantQuestFlower: (spot: number, letterId?: string) => void;
   updateCurrentProfile: (updates: Partial<ChildProfile>) => void;
 
   parentSettings: ParentSettings;
@@ -97,7 +102,7 @@ export interface AppContextType {
 
 const AppContext = createContext<AppContextType | null>(null);
 
-const MAIN_TABS: AppRoute[] = ['home', 'alphabet', 'stories', 'match-game'];
+const MAIN_TABS: AppRoute[] = ['home', 'alphabet', 'garden', 'stories'];
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
@@ -560,13 +565,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const base=learningActivity(ensureMissionsForToday(profileRef.current));
     const first=!base.readStoryIds.includes(storyId);
     const firstToday=base.storyPracticeDates?.[storyId]!==today;
-    updateCurrentProfile(evaluateStreak({...base,
+    const updated = evaluateStreak({...base,
       readStoryIds:Array.from(new Set([...base.readStoryIds,storyId])),
       storyPracticeDates:{...base.storyPracticeDates,[storyId]:today},
       stars:base.stars+(first?3:0),
       dailyMissions:base.dailyMissions?.map(m=>m.targetType==='read_stories' && firstToday && !m.claimed
         ? {...m,currentCount:Math.min(m.targetCount,m.currentCount+1),completed:m.currentCount+1>=m.targetCount}:m),
-    }));
+    });
+    updateCurrentProfile(selectedStory?.id === storyId && selectedStory.journeyLetterId
+      ? finishGardenStep(updated, 'story', selectedStory.journeyLetterId) : updated);
   };
 
   const saveWord = (word: string) => {
@@ -598,6 +605,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }));
   };
 
+  const completeGardenTask = (step: GardenStep, letterId = 'ba') => { const next = finishGardenStep(profileRef.current, step, letterId); if (next !== profileRef.current) updateCurrentProfile(next); };
+  const plantQuestFlower = (spot: number, letterId = 'ba') => { const next = plantGardenFlower(profileRef.current, spot, letterId); if (next !== profileRef.current) updateCurrentProfile(next); };
   const recordSkillResult = (skill: LearningSkill, correct: boolean, helped=false) => {
     const base=learningActivity(profileRef.current);
     updateCurrentProfile({...base,skillProgress:{...base.skillProgress,[skill]:skillAttempt(base.skillProgress?.[skill],correct,helped)}});
@@ -741,6 +750,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         switchProfile,
         createProfile,
         updateCurrentProfile,
+        completeGardenTask,
+        plantQuestFlower,
         parentSettings,
         updateParentSettings,
         parentGateOpen,

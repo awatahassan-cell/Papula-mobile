@@ -1,8 +1,13 @@
 import { mockLetters } from '../data/mockLetters';
 import { ChildProfile, LessonProgress, LessonStep } from './types';
 
-export const isLessonComplete = (profile: ChildProfile, id: string) =>
-  profile.masteredLetterIds.includes(id) || !!profile.lessonProgress?.[id]?.completedAt;
+export const isLessonComplete = (profile: ChildProfile, id: string) => {
+  const garden = profile.gardenQuests?.[id] || (id === 'ba' ? profile.gardenQuest : undefined);
+  const finished = ['listen','find','build','write'].every(step=>garden?.steps?.includes(step as never));
+  const flower = Number.isInteger(garden?.flowerSpot) && garden!.flowerSpot! >= 0 && garden!.flowerSpot! < 3;
+  return profile.masteredLetterIds.includes(id) || !!profile.lessonProgress?.[id]?.completedAt
+    || (finished && (garden?.steps.includes('story') || flower));
+};
 
 export function lessonPath(profile: ChildProfile) {
   const first = mockLetters.findIndex(letter => !isLessonComplete(profile, letter.id));

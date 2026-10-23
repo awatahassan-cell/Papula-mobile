@@ -176,7 +176,7 @@ export const StoryReaderScreen: React.FC = () => {
 
   if(sequencing)return <StorySequence story={story} onComplete={()=>{setSequencing(false);setStoryFinished(true);completeStory(story.id);}} />;
   if (storyFinished) {
-    const continueLesson = () => { if(targetLetter){setSelectedLetter(targetLetter);setRoute('letter-detail');} };
+    const continueLesson = () => { if(targetLetter){setSelectedLetter(targetLetter);setRoute(story.journeyLetterId ? 'garden-quest' : 'letter-detail');} };
     return (
       <ScrollView contentContainerStyle={styles.completionPage}>
         <View testID="story-completion" style={styles.completionSheet}>
@@ -194,8 +194,8 @@ export const StoryReaderScreen: React.FC = () => {
             <View style={styles.completedBookCheck}><Check size={18} color={styles.completionBadgeText.color}/></View>
           </View>
           <View style={styles.completionActions}>
-            {targetLetter&&<TouchableOpacity accessibilityRole="button" accessibilityLabel={`بەردەوام بە لە وانەی پیتی ${targetLetter.glyph}`} onPress={continueLesson} style={styles.completionPrimary}><View style={styles.completionActionIcon}><Shapes size={23} color="#ffffff"/></View><Text style={styles.completionPrimaryText}>بەردەوام بە لە وانەکە</Text><ArrowLeft size={20} color="#ffffff"/></TouchableOpacity>}
-            <BackButton fullWidth onPress={()=>setRoute('stories')}>گەڕانەوە بۆ چیرۆکەکان</BackButton>
+            {targetLetter&&<TouchableOpacity accessibilityRole="button" accessibilityLabel={story.journeyLetterId ? 'گەڕانەوە بۆ باغ و ڕوواندنی گوڵ' : `بەردەوام بە لە وانەی پیتی ${targetLetter.glyph}`} onPress={continueLesson} style={styles.completionPrimary}><View style={styles.completionActionIcon}><Shapes size={23} color="#ffffff"/></View><Text style={styles.completionPrimaryText}>{story.journeyLetterId?'با گوڵەکەم بڕوێنم':'بەردەوام بە لە وانەکە'}</Text><ArrowLeft size={20} color="#ffffff"/></TouchableOpacity>}
+            {!story.journeyLetterId && <BackButton fullWidth onPress={()=>setRoute('stories')}>گەڕانەوە بۆ چیرۆکەکان</BackButton>}
           </View>
         </View>
       </ScrollView>

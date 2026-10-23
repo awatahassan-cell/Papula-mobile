@@ -20,7 +20,7 @@ export function GardenPageHeader() {
   const { route } = useAppStore();
   const { isGarden } = useAppearance();
   const { pageMax, tablet } = useResponsive();
-  if (!isGarden || route === 'home' || route === 'story-reader' || route === 'match-game' || route === 'letter-detail' || route === 'writing' || route === 'word-writing') return null;
+  if (!isGarden || route === 'alphabet' || route === 'home' || route === 'story-reader' || route === 'match-game' || route === 'letter-detail' || route === 'writing' || route === 'word-writing') return null;
   const heading = headings[route];
   if (!heading) return null;
   return <View style={[styles.frame, { maxWidth: pageMax }]}><GardenSection title={heading[0]} subtitle={!tablet?undefined:heading[1]} /></View>;
