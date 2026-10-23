@@ -72,7 +72,7 @@ export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'
   const [selected, setSelected] = useState<GardenButterfly | null>(null);
   const [bounce, setBounce] = useState(0);
   const [gotGift, setGotGift] = useState(0);
-  const [reveal, setReveal] = useState<GardenButterfly[]>([]); // butterflies earned since the last visit
+  const [reveal, setReveal] = useState<GardenButterfly[]>(() => unseenButterflies(currentProfile)); // butterflies earned since the last visit, celebrated on arrival
   const [float] = useState(() => new Animated.Value(0));
   useEffect(() => {
     if (reduced) return;
