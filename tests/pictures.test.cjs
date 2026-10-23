@@ -25,5 +25,5 @@ test('every picture is a single emoji key and a complete 100x100 SVG', () => {
 test('lookup ignores the variation selector used by some emoji', () => {
   assert.equal(pictureFor('☀️'), PICTURES['☀']);
   assert.equal(pictureFor('🦁'), PICTURES['🦁']);
-  assert.equal(pictureFor('🤔'), undefined, 'undrawn emoji fall back to text');
+  assert.equal(pictureFor('🧭'), undefined, 'undrawn emoji fall back to text');
 });
