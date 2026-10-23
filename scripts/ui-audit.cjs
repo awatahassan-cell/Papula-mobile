@@ -1,7 +1,7 @@
 // UI standards audit of the web export: touch targets under 44px, text under 12px, and the spread of corner radii.
 const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
 const PORT = process.env.PORT || 8099;
-const ROUTES = ['', 'alphabet', 'stories', 'story-reader', 'match-game', 'writing', 'word-writing', 'letter-detail', 'daily-practice', 'stickers', 'badges', 'my-words', 'parent-dashboard', 'onboarding'];
+const ROUTES = ['garden', '', 'alphabet', 'stories', 'story-reader', 'match-game', 'writing', 'word-writing', 'letter-detail', 'daily-practice', 'stickers', 'badges', 'my-words', 'parent-dashboard', 'onboarding'];
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH, args: ['--no-sandbox'] });
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });

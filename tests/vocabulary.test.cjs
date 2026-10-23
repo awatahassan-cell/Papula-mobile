@@ -50,3 +50,33 @@ test('the plan puts missed words first, then due ones, then new ones, and keeps 
   assert.equal(plan[1], 'v-a-fish');
   assert.equal(plan[plan.length - 1], 'v-a-cat');
 });
+
+const q = load(root + '/src/data/quests.ts');
+const guides = load(root + '/src/data/spokenGuides.ts');
+
+test('every adventure has a spoken story, enough words and three distinct pictures per step', () => {
+  for (const quest of q.QUESTS) {
+    assert.ok(guides.QUEST_VOICE[quest.id].intro && guides.QUEST_VOICE[quest.id].outro, quest.id);
+    const steps = q.questSteps(quest, {}, Math.random, now);
+    assert.equal(steps.length, quest.steps, quest.id);
+    assert.equal(new Set(steps.map(s => s.item.id)).size, steps.length, 'no word is asked twice');
+    for (const step of steps) {
+      assert.equal(step.options.length, 3);
+      assert.equal(new Set(step.options.map(o => o.emoji)).size, 3, 'pictures must differ');
+      assert.ok(step.options.some(o => o.id === step.item.id));
+    }
+  }
+});
+
+test('an adventure asks the words a child misses first, and its reward is once a day', () => {
+  const missed = updateReview(undefined, false, now);
+  const steps = q.questSteps(q.QUESTS[0], { wordReviews: { 'v-f-egg': missed } }, () => 0.5, now);
+  assert.ok(steps.some(s => s.item.id === 'v-f-egg'));
+  assert.ok(!q.questDoneToday({ questDates: {} }, 'quest-hungry', now));
+  assert.ok(q.questDoneToday({ questDates: { 'quest-hungry': '2026-03-10' } }, 'quest-hungry', now));
+});
+
+test('spoken guides are short plain sentences', () => {
+  assert.ok(guides.GUIDE_TEXTS.length >= 14);
+  for (const text of guides.GUIDE_TEXTS) assert.ok(text.length < 140 && /[؀-ۿ]/.test(text), text);
+});

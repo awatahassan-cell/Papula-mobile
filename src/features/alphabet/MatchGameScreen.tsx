@@ -2,8 +2,10 @@ import { HelpHint } from '../../components/HelpButton';
 import { sectionIntroductions } from '../../services/sectionIntroductions';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
-import { Ear, Eye, Layers, PencilLine, Shapes, Puzzle, Volume2 } from 'lucide-react-native';
+import { Ear, Eye, Layers, PencilLine, Shapes, Compass, Puzzle, Volume2 } from 'lucide-react-native';
 import { WORD_WRITING_TILE } from '../writing/writingText';
+import { QuestGame } from '../quests/QuestGame';
+import { QUEST_TILE } from '../quests/questText';
 import { VocabularyGame } from '../vocabulary/VocabularyGame';
 import { VOCAB_TILE } from '../vocabulary/vocabText';
 import { tileSet } from '../../theme/candy';
@@ -24,7 +26,7 @@ export const MatchGameScreen: React.FC = () => {
   const { registerBackHandler, setRoute } = useAppStore();
   const tiles = tileSet(isNight);
   const { tablet, pageMax } = useResponsive();
-  const [mode, setMode] = useState<'menu' | 'word' | 'sound' | 'similar' | 'phonics' | 'syllables' | 'vocab'>('menu');
+  const [mode, setMode] = useState<'menu' | 'word' | 'sound' | 'similar' | 'phonics' | 'syllables' | 'vocab' | 'quests'>('menu');
 
   useEffect(() => {
     if (!registerBackHandler) return;
@@ -41,6 +43,7 @@ export const MatchGameScreen: React.FC = () => {
 
   if (mode === 'phonics') return <StartingSoundGame onExit={() => setMode('menu')} />;
   if (mode === 'syllables') return <SyllableBuilder onExit={() => setMode('menu')} />;
+  if (mode === 'quests') return <QuestGame onExit={() => setMode('menu')} />;
   if (mode === 'vocab') return <VocabularyGame onExit={() => setMode('menu')} />;
   if (mode === 'word') return <WordBuilder onExit={() => setMode('menu')} />;
   if (mode === 'sound' || mode === 'similar') return <LetterPractice mode={mode} onExit={() => setMode('menu')} />;
@@ -49,6 +52,7 @@ export const MatchGameScreen: React.FC = () => {
     <ScrollView contentContainerStyle={[s.container, { paddingTop: 8, paddingBottom: 12 }, tablet && { maxWidth: pageMax }]}><HelpHint text={sectionIntroductions['match-game']} />
       <View style={tablet ? { flexDirection: 'row', flexWrap: 'wrap', gap: 12 } : { gap: 10 }}>
         {([
+          { mode: 'quests', title: QUEST_TILE.title, hint: QUEST_TILE.hint, Icon: Compass },
           { mode: 'word', title: 'وشە دروست بکەم', hint: 'پیتەکان پێکەوە ببەستە', Icon: Puzzle },
           { mode: 'similar', title: 'پیتە هاوشێوەکان', hint: 'شێوە و خاڵەکان جیا بکەرەوە', Icon: Eye },
           { mode: 'syllables', title: 'بڕگەکان', hint: 'وشەکە بە بڕگە پێکەوە ببەستە', Icon: Layers },
@@ -80,7 +84,7 @@ export const MatchGameScreen: React.FC = () => {
           );
         })}
         {(() => {
-          const candy = tiles[6 % tiles.length];
+          const candy = tiles[7 % tiles.length];
           return (
             <TouchableOpacity
               accessibilityRole="button"

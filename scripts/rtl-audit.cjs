@@ -4,7 +4,7 @@
 // right-to-left, flex rows that start on the left, and content that spills off the screen.
 const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
 const PORT = process.env.PORT || 8099;
-const ROUTES = ['', 'alphabet', 'stories', 'story-reader', 'match-game', 'writing', 'word-writing', 'letter-detail', 'daily-practice', 'stickers', 'badges', 'my-words', 'parent-dashboard', 'onboarding'];
+const ROUTES = ['garden', '', 'alphabet', 'stories', 'story-reader', 'match-game', 'writing', 'word-writing', 'letter-detail', 'daily-practice', 'stickers', 'badges', 'my-words', 'parent-dashboard', 'onboarding'];
 const SIZES = [['phone', 390, 844], ['tablet', 1024, 768]];
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH, args: ['--no-sandbox'] });

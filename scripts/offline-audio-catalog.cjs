@@ -66,7 +66,7 @@ function catalog() {
   const welcome = 'سڵاو هاوڕێی شیرینم، بەخێربێیت بۆ پەپوولە.';
   add(welcome, welcome, 'preview');
   // Optional narration is appended last and flagged, so existing recordings and batches are never reshuffled.
-  const { SYLLABLE_TEXTS, TIP_TEXTS, VOCAB_TEXTS, ADVENTURE_TEXTS } = data('data/narratedExtras.ts');
+  const { SYLLABLE_TEXTS, TIP_TEXTS, VOCAB_TEXTS, ADVENTURE_TEXTS, GUIDE_TEXTS } = data('data/narratedExtras.ts');
   const required = new Set(entries.keys());
   const addExtra = (text, category) => {
     const key = keyFor(text);
@@ -76,6 +76,7 @@ function catalog() {
   for (const text of TIP_TEXTS) addExtra(text, 'tip');
   for (const text of VOCAB_TEXTS) addExtra(text, 'vocabulary');
   for (const text of ADVENTURE_TEXTS) addExtra(text, 'adventure');
+  for (const text of GUIDE_TEXTS) addExtra(text, 'guide');
   return [...entries.values()];
 }
 
