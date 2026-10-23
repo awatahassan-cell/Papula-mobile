@@ -14,6 +14,9 @@ import { lessonChecklist, lessonPath, nextLessonLetter } from '../../services/le
 import { useResponsive } from '../../theme/responsive';
 import { useAppearance } from '../../theme/useAppearance';
 import { soundService } from '../../services/soundService';
+import { PetArt } from '../../components/PetArt';
+import { GARDEN_BUTTERFLIES, earnedButterflies, nectarOf, petFed, petMood, petStage, unseenButterflies } from '../../data/garden';
+import { GARDEN_TEXT } from '../garden/gardenText';
 
 const ACTIVITIES: { route: AppRoute; title: string; hint: string; Icon: typeof BookOpen; tile: number }[] = [
   { route: 'stories', title: 'کاتی چیرۆکە', hint: 'ببینە و ببیستە', Icon: BookOpen, tile: 0 },
@@ -36,6 +39,7 @@ export const HomeScreen: React.FC = () => {
   const dueCount = dueReviewLetters(currentProfile).length;
   const missions = currentProfile.dailyMissions || [];
   const missionsDone = missions.filter(mission => mission.completed).length;
+  const petNow = petStage(petFed(currentProfile)), newButterflies = unseenButterflies(currentProfile).length;
   const activeIndex = path.findIndex(node => node.status === 'current');
   const start = activeIndex < 0 ? Math.max(0, path.length - 3) : Math.max(0, Math.min(activeIndex - 1, path.length - 3));
   const open = (route: AppRoute) => { void soundService.stopSpeaking(); setRoute(route); };
@@ -79,6 +83,14 @@ export const HomeScreen: React.FC = () => {
       </View>
       <View style={[s.stack, s.flex]}><RiseIn delay={220}>{lesson}</RiseIn><Text style={[s.sectionTitle, ink]}>با زیاتر فێر بین</Text><RiseIn delay={360}>{activities}</RiseIn></View>
     </View>
+    <TouchableOpacity accessibilityRole="button" accessibilityLabel={GARDEN_TEXT.homeCard} onPress={() => open('garden')} style={[s.garden, { backgroundColor: tiles[1].face, borderBottomColor: tiles[1].lip }]}>
+      <PetArt stage={petNow} mood={petMood(currentProfile)} size={92} />
+      <View style={s.flex}>
+        <Text style={[s.goalTitle, { color: tiles[1].ink }]}>{GARDEN_TEXT.homeCard}</Text>
+        <Text style={[s.caption, { color: tiles[1].ink }]}>{petNow.name} · {GARDEN_TEXT.count(earnedButterflies(currentProfile).length, GARDEN_BUTTERFLIES.length)} 🦋 · 🍯 {nectarOf(currentProfile)}</Text>
+      </View>
+      {newButterflies > 0 && <View style={s.gardenBadge}><Text style={s.gardenBadgeText}>{GARDEN_TEXT.homeNew(newButterflies)}</Text></View>}
+    </TouchableOpacity>
     <View style={[s.goal, { backgroundColor: c.paper, borderColor: c.edge }]}>
       <View style={s.summary}><Text style={[s.goalTitle, ink]}>ئەرکەکانی ئەمڕۆ</Text><Text style={[s.caption, muted]}>{missionsDone} لە {missions.length}</Text></View>
       <View accessibilityRole="progressbar" accessibilityLabel="ئەرکەکانی ئەمڕۆ" accessibilityValue={{ min: 0, max: Math.max(1, missions.length), now: missionsDone }} style={[s.track, { backgroundColor: c.edge }]}><View style={[s.fill, { width: `${missions.length ? missionsDone / missions.length * 100 : 0}%` }]} /></View>
@@ -96,6 +108,8 @@ const s = StyleSheet.create({
   cta: { minHeight: 58, paddingHorizontal: 14, paddingVertical: 8, backgroundColor: GOLD.face, borderBottomWidth: 5, borderBottomColor: GOLD.lip, borderRadius: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 }, ctaText: { color: GOLD.ink, fontSize: 18, fontFamily: 'IBMPlexSansArabic_700Bold', flexShrink: 1, textAlign: 'center' },
   progressRow: { flexDirection: 'row', alignItems: 'center', gap: 10 }, steps: { flex: 1, flexDirection: 'row', gap: 5 }, step: { flex: 1, height: 7, borderRadius: 4 },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 }, tile: { flexGrow: 1, width: '46%', borderRadius: 24, padding: 14, minHeight: 88, borderBottomWidth: 5, gap: 10, flexDirection: 'row', alignItems: 'center' }, tileIcon: { backgroundColor: '#ffffff25', width: 40, height: 40, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 3 }, tileTitle: { color: '#fff', fontSize: 16, fontFamily: 'IBMPlexSansArabic_700Bold' }, tileHint: { color: '#fff', fontSize: 11, fontFamily: 'IBMPlexSansArabic_400Regular' },
+  garden: { borderRadius: 24, borderBottomWidth: 5, padding: 10, paddingEnd: 14, flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 100 },
+  gardenBadge: { backgroundColor: '#ff4d6d', borderRadius: 14, paddingHorizontal: 10, minHeight: 28, justifyContent: 'center' }, gardenBadgeText: { color: '#fff', fontSize: 13, fontFamily: 'IBMPlexSansArabic_700Bold' },
   sectionTitle: { fontSize: 15, fontFamily: 'IBMPlexSansArabic_600SemiBold', marginTop: 2 },
   summary: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }, summaryItem: { flexDirection: 'row', alignItems: 'center', gap: 5 }, goal: { padding: 16, borderRadius: 24, borderWidth: 1, gap: 10 }, goalTitle: { fontSize: 15, fontFamily: 'IBMPlexSansArabic_700Bold' }, track: { height: 10, borderRadius: 6, overflow: 'hidden' }, fill: { height: '100%', backgroundColor: '#21b977', borderRadius: 6 }, review: { flexDirection: 'row', alignItems: 'center', padding: 16, gap: 10, borderRadius: 24 },
 });

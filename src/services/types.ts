@@ -156,6 +156,10 @@ export interface ChildProfile {
   learnedWordIds?: string[];
   /** Spaced review of picture words and short sentences, keyed by word id. */
   wordReviews?: Record<string, LetterReview>;
+  /** The growing butterfly friend: times fed, bonus nectar from daily gifts, and the days of the last feeding and gift. */
+  pet?: { fed: number; bonus: number; lastFedDate?: string; giftDate?: string };
+  /** Garden butterflies the child has already seen being revealed. */
+  seenButterflyIds?: string[];
   dailyPracticeRewardDate?: string;
   gameRewardDates?: Record<string, string>;
   storyPracticeDates?: Record<string, string>;

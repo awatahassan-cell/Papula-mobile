@@ -2,7 +2,7 @@
 // Flags text below 4.5:1 (3:1 for large text) and icons below 3:1, on every route, day and night.
 const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'playwright');
 const PORT = process.env.PORT || 8099;
-const ROUTES = ['', 'alphabet', 'stories', 'story-reader', 'match-game', 'writing', 'word-writing', 'letter-detail', 'daily-practice', 'stickers', 'badges', 'my-words', 'parent-dashboard', 'onboarding'];
+const ROUTES = ['garden', '', 'alphabet', 'stories', 'story-reader', 'match-game', 'writing', 'word-writing', 'letter-detail', 'daily-practice', 'stickers', 'badges', 'my-words', 'parent-dashboard', 'onboarding'];
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH, args: ['--no-sandbox'] });
   let total = 0;

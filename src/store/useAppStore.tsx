@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'expo-router';
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { LEARNING_WORDS, learningActivity, localDay, logDay, updateReview, personalStories } from '../services/learningEngine';
 import { knownWordId, isVocabId } from '../data/vocabulary';
+import { claimGift, feed, petFed, petStage } from '../data/garden';
 import { normalizeCheckpoint } from '../services/learningContinuation';
 import { mockLetters } from '../data/mockLetters';
 import { authRepo, lettersRepo, progressRepo, storiesRepo, writingRepo } from '../services/repositories';
@@ -24,6 +25,7 @@ export type AppRoute =
   | 'story-reader'
   | 'daily-practice'
   | 'stickers'
+  | 'garden'
   | 'badges'
   | 'my-words'
   | 'parent-dashboard'
@@ -78,6 +80,9 @@ export interface AppContextType {
   saveWritingScore: (letterId: string, score: number, stars: number, mode?: WritingMode, helped?: boolean, seconds?: number) => Promise<LetterScoreRecord>;
   recordPracticeResult: (letterIds: string[], correct: boolean, wordId?: string, skill?: LearningSkill, helped?: boolean) => void;
   recordSkillResult: (skill: LearningSkill, correct: boolean, helped?: boolean) => void;
+  feedPet: () => void;
+  claimPetGift: () => void;
+  markButterfliesSeen: (ids: string[]) => void;
   savePlacement: (correct: number, total: number, letterIds: string[]) => void;
   finishLearningGame: (kind: 'word' | 'sound' | 'similar' | 'syllables' | 'writing') => number;
   getLetterBestStars: (letterId: string) => number;
@@ -598,6 +603,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }));
   };
 
+  const feedPet = () => {
+    const before = profileRef.current, after = feed(before);
+    if (after === before) return;
+    updateCurrentProfile(after);
+    if (petStage(petFed(after)).id !== petStage(petFed(before)).id) soundService.playSuccessFanfare(); else soundService.playCorrect(false);
+  };
+  const claimPetGift = () => { const before = profileRef.current, after = claimGift(before); if (after !== before) { updateCurrentProfile(after); soundService.playCorrect(false); } };
+  const markButterfliesSeen = (ids: string[]) => {
+    const base = profileRef.current;
+    updateCurrentProfile({ ...base, seenButterflyIds: Array.from(new Set([...(base.seenButterflyIds || []), ...ids])) });
+  };
+
   const recordSkillResult = (skill: LearningSkill, correct: boolean, helped=false) => {
     const base=learningActivity(profileRef.current);
     updateCurrentProfile({...base,skillProgress:{...base.skillProgress,[skill]:skillAttempt(base.skillProgress?.[skill],correct,helped)}});
@@ -759,6 +776,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         saveWritingScore,
         recordPracticeResult,
         recordSkillResult,
+        feedPet,
+        claimPetGift,
+        markButterfliesSeen,
         savePlacement,
         finishLearningGame,
         getLetterBestStars,
