@@ -1,3 +1,4 @@
+import { ORIGINAL_CHARACTERS } from './characters';
 /**
  * The app's own pictures, drawn in one style (flat shapes, dark plum outline, soft colours) to replace emoji.
  * Keys are emoji without the variation selector (see `pictureFor`). Each picture is a 100×100 SVG.
@@ -196,4 +197,7 @@ export const PICTURES: Record<string, string> = Object.fromEntries(Object.entrie
 }));
 
 /** The picture for a single emoji (variation selectors ignored), or undefined when it is not drawn yet. */
+Object.assign(PICTURES, ORIGINAL_CHARACTERS);
+PICTURES['🔴']=box('<circle cx="50" cy="50" r="35" fill="#f06c75" stroke="#39334c" stroke-width="4"/>');
+PICTURES['⚪']=box('<circle cx="50" cy="50" r="34" fill="#fff9ed" stroke="#b4adc6" stroke-width="4"/>');
 export const pictureFor = (text: string): string | undefined => PICTURES[text.replace(/️/g, '').trim()];

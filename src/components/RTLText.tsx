@@ -3,7 +3,8 @@ import { Platform, Text as NativeText, TextInput as NativeTextInput, StyleSheet,
 import { ibmTextStyle } from '../theme/typography';
 import { rtlProps } from '../theme/rtl';
 import { pictureFor } from '../art/pictures';
-import { SvgXml } from 'react-native-svg';
+import { CharacterPicture } from './CharacterPicture';
+import { pictureLabel } from '../art/pictureLabel';
 
 const styles = StyleSheet.create({
   alignment: { textAlign: 'right' },
@@ -26,6 +27,12 @@ const floorSize = (flat: TextStyle | undefined): TextStyle | null => typeof flat
 
 // Keep intentional centering while enforcing RTL for mixed Kurdish text,
 // numbers and punctuation, independently of the device's language.
+function plainLabel(children:React.ReactNode):string|undefined {
+  if(typeof children==='string'||typeof children==='number')return String(children);
+  if(children==null||typeof children==='boolean')return '';
+  if(Array.isArray(children)){const parts=children.map(plainLabel);return parts.some(part=>part===undefined)?undefined:parts.join('');}
+  return undefined;
+}
 export const Text = forwardRef<NativeText, TextProps>(function RTLText({ style, ...props }, ref) {
   // Highlighted letters and karaoke words keep their paragraph's font weight.
   const flat = StyleSheet.flatten(style);
@@ -35,7 +42,17 @@ export const Text = forwardRef<NativeText, TextProps>(function RTLText({ style, 
   if (picture) {
     const size = Math.round((typeof flat?.fontSize === 'number' ? flat.fontSize : 24) * 1.15);
     return <View accessible={false} importantForAccessibility="no" style={[{ width: size, height: size, alignSelf: 'center' }, flat && { marginVertical: flat.marginVertical, margin: flat.margin }]}>
-      <SvgXml xml={picture} width={size} height={size} />
+      <CharacterPicture symbol={String(props.children)} size={size} />
+    </View>;
+  }
+  // Mixed button labels use a vector beside one intact text run, never SVG nested inside native Text.
+  const raw=plainLabel(props.children);
+  const label=raw===undefined?undefined:pictureLabel(raw);
+  if(label?.symbols.length){
+    const size=Math.round((typeof flat?.fontSize==='number'?flat.fontSize:16)*1.15);
+    return <View style={{flexDirection:'row-reverse',flexWrap:'wrap',alignItems:'center',justifyContent:flat?.textAlign==='center'?'center':'flex-start',gap:6}}>
+      {label.symbols.map((symbol,index)=><CharacterPicture key={index} symbol={symbol} size={size} animate={false}/>)}
+      {!!label.text.trim()&&<FontContext.Provider value={font}><NativeText {...props} {...rtlProps} ref={ref} style={[styles.alignment,style,font,floorSize(flat),nativeAlign(flat),styles.direction,layoutDirection,{flexShrink:1}]}>{label.text}</NativeText></FontContext.Provider>}
     </View>;
   }
   return <FontContext.Provider value={font}><NativeText {...props} {...rtlProps} ref={ref} style={[styles.alignment, style, font, floorSize(flat), nativeAlign(flat), styles.direction, layoutDirection]} /></FontContext.Provider>;

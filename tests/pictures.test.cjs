@@ -3,10 +3,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
-const source = fs.readFileSync(path.join(__dirname, '../src/art/pictures.ts'), 'utf8');
-const mod = { exports: {} };
-new Function('exports', 'module', ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(mod.exports, mod);
-const { PICTURES, pictureFor } = mod.exports;
+const load=require('../scripts/story-narration-catalog.cjs').createLoader();
+const { PICTURES, pictureFor }=load(path.resolve(__dirname,'../src/art/pictures.ts'));
 
 test('every picture is a single emoji key and a complete 100x100 SVG', () => {
   const keys = Object.keys(PICTURES);

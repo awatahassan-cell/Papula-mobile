@@ -22,6 +22,8 @@ new Function('exports', 'module', 'require', ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React },
 }).outputText)(mod.exports, mod, name => name === 'react' ? react : name.endsWith('/typography') ? { ibmTextStyle }
   : name.endsWith('/rtl') ? { rtlProps: { dir: 'rtl' } }
+  : name.endsWith('/CharacterPicture') ? { CharacterPicture: 'CharacterPicture' }
+  : name.endsWith('/art/pictureLabel') ? { pictureLabel: text => ({text,symbols:[]}) }
   : name.endsWith('/art/pictures') ? { pictureFor: () => undefined }
   : name === 'react-native-svg' ? { SvgXml: 'SvgXml' }
   : name === 'react-native' ? { ...native, View: 'View' } : native);
