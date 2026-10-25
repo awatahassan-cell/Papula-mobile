@@ -33,6 +33,10 @@ export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:
   const locked=useRef(false);
   const round=rounds[index];
   const correct=selected===round?.target.id;
+  useEffect(()=>{
+    if(!round||finished)return;
+    void soundService.speakWord(`پیتی ${round.target.name}`);
+  },[index,round,finished]);
   useEffect(()=>()=>{void soundService.stopSpeaking();},[]);
   const choose=(id:string)=>{
     if(!round||locked.current)return;

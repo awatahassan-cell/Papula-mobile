@@ -26,6 +26,11 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   const advanced = useRef(-1);
   const round = rounds[index];
 
+  useEffect(() => {
+    if (!round || finished) return;
+    void soundService.speakWord(round.word.word);
+  }, [index, round, finished]);
+
   useEffect(() => () => { void soundService.stopSpeaking(); }, []);
 
   const undo = () => { setFeedback(''); setSelected(previous => previous.slice(0, -1)); };
@@ -45,6 +50,12 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
       soundService.playEncouragingTryAgain();
     }
   };
+  useEffect(() => {
+    if (round && selected.length === round.syllables.length && !feedback && !correct) {
+      check();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected.length, round, feedback, correct]);
   const next = () => {
     if (!correct || advanced.current === index) return;
     advanced.current = index;
@@ -76,7 +87,7 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
       <Text style={s.text}>وشەکە {round.syllables.length} بڕگەیە؛ بە ڕیز هەڵیانبژێرە</Text>
       <View style={s.row}>{round.tiles.map(tile => {
         const used = selected.includes(tile.id);
-        return <TouchableOpacity key={tile.id} accessibilityRole="button" accessibilityLabel={`بڕگەی ${tile.text}`} disabled={used || correct}
+        return <TouchableOpacity key={tile.id} accessibilityRole="button" accessibilityLabel={`بڕگەی ${tile.id + 1}: ${tile.text}`} disabled={used || correct}
           style={[s.tile, (used || correct) && s.disabled]} onPress={() => { setFeedback(''); setSelected(previous => [...previous, tile.id]); if (soundService.canSpeak(tile.text)) void soundService.speakWord(tile.text); }}>
           <Text style={s.glyph}>{tile.text}</Text></TouchableOpacity>;
       })}</View>

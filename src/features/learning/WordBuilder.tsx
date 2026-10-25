@@ -13,6 +13,8 @@ import { LEARNING_WORDS, LearningWord, shuffled, wordPlan, normalizedWord } from
 import { useAppStore } from '../../store/useAppStore';
 import { learningStyles as baseLearningStyles } from './learningStyles';
 
+const KURDISH_VOWELS = ['ا', 'ە', 'و', 'وو', 'ۆ', 'ی', 'ێ'];
+
 export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord[]; onComplete?:()=>void }> = ({onExit,initialWords,onComplete}) => {
   const s = useThemeStyles(baseLearningStyles);
   const { currentProfile,recordPracticeResult,finishLearningGame }=useAppStore();
@@ -28,6 +30,10 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
   const helped=useRef(false);
   const word=queue[round] || queue[0];
   const bank=useMemo(()=>word?shuffled(word.units.map((glyph,id)=>({glyph,id}))):[],[word]);
+  useEffect(()=>{
+    if(!word||finished)return;
+    void soundService.speakWord(word.word);
+  },[round,word,finished]);
   useEffect(()=>()=>{void soundService.stopSpeaking();},[]);
   const reset=()=>{locked.current=false;setSelected([]);setFeedback('');setCorrect(false);};
   const assembled=selected.map(id=>bank.find(tile=>tile.id===id)!.glyph).join('');
@@ -50,6 +56,12 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
     if(passed){soundService.playCorrect();void soundService.speakWord(word.word);}
     else {helped.current=true;soundService.playEncouragingTryAgain();}
   };
+  useEffect(()=>{
+    if(word && selected.length===word.units.length && !feedback && !correct && !locked.current){
+      check();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[selected.length,word,feedback,correct]);
   const advancedRound = useRef(-1);
   const advance=()=>{
     if (!correct || advancedRound.current === round) return;
@@ -71,8 +83,11 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
       <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>void soundService.speakWord(word.word)}><Text style={s.text}>وشەکە ببیستە</Text></TouchableOpacity>
       <Text accessibilityLiveRegion="polite" style={[s.glyph,{fontSize:Math.max(24,40-word.units.length*2),minHeight:44,writingDirection:'rtl'}]}>{assembled||'…'}</Text>
       <Text style={s.text}>پیتەکان بە ڕیز هەڵبژێرە</Text>
-      <View style={s.row}>{bank.map(tile=><TouchableOpacity key={tile.id} accessibilityRole="button" accessibilityLabel={`پیتی ${tile.glyph}، دانەی ${tile.id+1}`}
-        disabled={selected.includes(tile.id)||!!feedback} style={[s.tile,(selected.includes(tile.id)||!!feedback)&&s.disabled]} onPress={()=>choose(tile.id)}><Text style={s.glyph}>{tile.glyph}</Text></TouchableOpacity>)}</View>
+      <View style={s.row}>{bank.map(tile=>{
+        const isVowel=KURDISH_VOWELS.includes(tile.glyph);
+        return <TouchableOpacity key={tile.id} accessibilityRole="button" accessibilityLabel={`پیتی ${tile.glyph}، دانەی ${tile.id+1}`}
+          disabled={selected.includes(tile.id)||!!feedback} style={[s.tile,isVowel&&{borderColor:'#d97706',backgroundColor:'#fffbeb'},(selected.includes(tile.id)||!!feedback)&&s.disabled]} onPress={()=>choose(tile.id)}><Text style={s.glyph}>{tile.glyph}</Text></TouchableOpacity>;
+      })}</View>
       {!!feedback && <Text accessibilityLiveRegion="polite" style={s.text}>{feedback}</Text>}
     </View>
     {correct?<TouchableOpacity accessibilityRole="button" style={s.button} onPress={advance}><Text style={s.buttonText}>{round+1===queue.length?'تەواو بکەم ✓':'وشەی دواتر ←'}</Text></TouchableOpacity>

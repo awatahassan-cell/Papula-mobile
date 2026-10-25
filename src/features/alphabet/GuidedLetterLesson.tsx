@@ -9,6 +9,7 @@ import { Volume2, Headphones, Shapes, Images, Target, PencilLine, Check, Sparkle
 import { LetterItem } from '../../services/types';
 import { soundService } from '../../services/soundService';
 import { mockLetters } from '../../data/mockLetters';
+import { CONFUSABLE_GROUPS } from '../../services/learningEngine';
 import { getLetterStories } from '../../data/letterStories';
 import { getKurdishStrokeGuide } from '../../data/kurdishLetterGuides';
 import { isLessonComplete, isLessonUnlocked, lessonChecklist, lessonResumeStep } from '../../services/lessonPath';
@@ -60,8 +61,16 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
   const correct = answer === letter.glyph;
   const letterIndex = mockLetters.findIndex((item) => item.id === letter.id);
   const otherLetters = mockLetters.filter((item) => item.glyph !== letter.glyph);
-  const distractor = otherLetters[(Math.max(0, letterIndex) + round) % otherLetters.length];
-  const choices = (letterIndex + round) % 2 === 0 ? [letter, distractor] : [distractor, letter];
+  const confusableGroup = CONFUSABLE_GROUPS.find((group) => group.includes(letter.id)) || [];
+  const confusablePool = otherLetters.filter((item) => confusableGroup.includes(item.id));
+  const distractor1 = confusablePool.length > 0
+    ? confusablePool[round % confusablePool.length]
+    : otherLetters[(Math.max(0, letterIndex) + round) % otherLetters.length];
+  const remainingPool = otherLetters.filter((item) => item.id !== distractor1.id);
+  const distractor2 = remainingPool[(Math.max(0, letterIndex) + round + 1) % remainingPool.length];
+  const rawChoices = [letter, distractor1, distractor2];
+  const shift = (Math.max(0, letterIndex) + round) % 3;
+  const choices = [rawChoices[shift], rawChoices[(shift + 1) % 3], rawChoices[(shift + 2) % 3]];
   const example = letter.exampleWords[wordIndex];
   const practiceWord = letter.exampleWords[round];
   const guide = getKurdishStrokeGuide(letter.id) || getKurdishStrokeGuide(letter.glyph) || letter.strokeGuide;
@@ -261,7 +270,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
           <View style={styles.findWordRow}>
             <Text style={styles.exampleEmoji}>{practiceWord.imageEmoji}</Text>
             <View style={{ flex: 1, alignItems: 'center' }}>
-              <Text style={styles.practiceWord}>{practiceWord.word}</Text>
+              <WordWithLetter word={practiceWord.word} glyph={letter.glyph} />
               <Text style={styles.caption}>پیتی «{letter.glyph}» بدۆزەوە</Text>
             </View>
             <View style={styles.roundBadge}>
@@ -403,5 +412,3 @@ const baseStyles = StyleSheet.create({
   detailsBadge: { width: 40, minHeight: 42, borderRadius: 16, backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center' },
   detailsGlyph: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 28, lineHeight: 38, color: '#78350f', textAlign: 'center' },
 });
-
-

@@ -67,9 +67,10 @@ export function wordPlan(profile: ChildProfile, count=3): LearningWord[] {
   const max=profile.placement?.recommendedLevel===1?3:profile.placement?.recommendedLevel===2?5:profile.ageGroup==='3-4'?3:profile.ageGroup==='5-6'?5:8;
   const candidates=LEARNING_WORDS.filter(word=>word.units.length<=max);
   const known=(word:LearningWord)=>word.letterIds.filter(id=>!profile.masteredLetterIds.includes(id)).length;
+  const maxLetterIdx=(word:LearningWord)=>Math.max(0,...word.letterIds.map(id=>mockLetters.findIndex(l=>l.id===id)));
   return candidates.map((word,index)=>({word,index})).sort((a,b)=>
     Number(profile.learnedWordIds?.includes(a.word.id)||false)-Number(profile.learnedWordIds?.includes(b.word.id)||false)
-    || known(a.word)-known(b.word) || a.word.units.length-b.word.units.length || a.index-b.index).slice(0,count).map(item=>item.word);
+    || known(a.word)-known(b.word) || a.word.units.length-b.word.units.length || maxLetterIdx(a.word)-maxLetterIdx(b.word) || a.index-b.index).slice(0,count).map(item=>item.word);
 }
 export function shuffled<T>(items: T[], random:()=>number=Math.random): T[] {
   const result=[...items];

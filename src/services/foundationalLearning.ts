@@ -38,7 +38,7 @@ export function assessWriting(guide:StrokeGuide, strokes:StrokePoint[][], mode:W
   return {...traced,score:rubric.overall,stars,mastered:rubric.passes,feedbackKu,rubric};
 }
 export function startingSoundWords(profile:ChildProfile,count=5) {
-  const plan=reviewPlan(profile,mockLetters.length);
+  const plan=reviewPlan(profile,mockLetters.length).filter(letter=>!['ra','lla_heavy','wwaw','alif'].includes(letter.id));
   return plan.map(letter=>LEARNING_WORDS.find(word=>normalizedWord(word.units[0])===normalizedWord(letter.glyph))).filter((word):word is typeof LEARNING_WORDS[number]=>!!word).slice(0,count);
 }
 export function readableText(text:string,profile:ChildProfile): boolean {
