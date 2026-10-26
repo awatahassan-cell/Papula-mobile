@@ -45,21 +45,21 @@ const economy = R('services/rewards.ts');
 test('stickers: one list decides what is unlocked, and nothing is ever taken away', () => {
   assert.deepEqual(stickers.stickerIdsFor(0, []), []);
   const at20 = stickers.stickerIdsFor(20, []);
-  assert.ok(at20.includes('stk-bear') && !at20.includes('stk-mountain'));
+  assert.ok(at20.includes('stk-deer') && !at20.includes('stk-mountain'));
   const all = stickers.stickerIdsFor(1000, []);
   assert.equal(all.length, stickers.mockStickers.length, 'every sticker is reachable, not only the first four');
   assert.deepEqual(stickers.stickerIdsFor(0, ['stk-fox']), ['stk-fox'], 'owned stickers stay');
 });
 
-test('the economy is paced over weeks: no goal falls in two days, none is out of reach', () => {
-  const daily = economy.TYPICAL_DAILY_STARS;
+test('the economy suits a child who plays now and then: reachable, and never over in two days', () => {
+  const daily = economy.TYPICAL_DAILY_STARS, irregular = economy.IRREGULAR_DAILY_STARS;
   const goals = [...stickers.mockStickers.map(s => s.unlockedAtStars), ...garden.GARDEN_BUTTERFLIES.filter(b => b.kind === 'stars').map(b => b.n),
     ...badges.mockBadges.filter(b => b.targetType === 'total_stars').map(b => b.targetCount)];
   const top = Math.max(...goals);
-  assert.ok(top / daily >= 14, `the last star goal (${top}) must take at least two weeks at ${daily} stars a day`);
-  assert.ok(top / daily <= 45, 'and not more than about six weeks');
+  assert.ok(top / daily >= 8, `the last star goal (${top}) must outlast a week and a half of daily play`);
+  assert.ok(top / irregular <= 45, 'and be reachable in about six weeks even when the child plays three days in seven');
   const sorted = [...new Set(stickers.mockStickers.map(s => s.unlockedAtStars))].sort((a, b) => a - b);
-  for (let i = 1; i < sorted.length; i++) assert.ok((sorted[i] - sorted[i - 1]) / daily <= 5, `no wait longer than five days between stickers (${sorted[i - 1]}→${sorted[i]})`);
+  for (let i = 1; i < sorted.length; i++) assert.ok((sorted[i] - sorted[i - 1]) / irregular <= 6, `no wait over six days between stickers at an irregular pace (${sorted[i - 1]}→${sorted[i]})`);
   assert.ok(sorted[0] <= economy.REWARDS.startingStars, 'the first sticker is already there on day one');
 });
 

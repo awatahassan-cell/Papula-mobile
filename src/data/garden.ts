@@ -11,7 +11,7 @@ export const GOAL_TEXT: Record<GoalKind, (n: number) => string> = {
   letters: n => n === 1 ? 'یەک پیت فێر بە' : `${n} پیت فێر بە`,
   words: n => `${n} وشە فێر بە`,
   stories: n => n === 1 ? 'یەک چیرۆک بخوێنەوە' : `${n} چیرۆک بخوێنەوە`,
-  streak: n => `${n} ڕۆژ لە ڕیز فێربە`,
+  streak: n => `${n} ڕۆژ فێربە`,
   stars: n => `${n} ئەستێرە کۆ بکەرەوە`,
 };
 export const RARITY_TEXT: Record<Rarity, string> = { common: 'ئاسایی', rare: 'دەگمەن', legendary: 'ئەفسانەیی' };
@@ -35,14 +35,14 @@ export const GARDEN_BUTTERFLIES: GardenButterfly[] = [
     ['2', 'بەیانی', 100, 2], ['4', 'خۆرئاوا', 130, 4], ['7', 'هەفتانە', 12, 7, 'rare'], ['14', 'دووهەفتانە', -170, 14, 'legendary'],
   ]),
   ...make('stars', [
-    ['10', 'ئەستێرەیی', 150, 10], ['40', 'درەوشاوە', -80, 40, 'rare'], ['120', 'پاشای باخچە', 20, 120, 'legendary'],
+    ['10', 'ئەستێرەیی', 150, 10], ['35', 'درەوشاوە', -80, 35, 'rare'], ['100', 'پاشای باخچە', 20, 100, 'legendary'],
   ]),
 ];
 
 export interface GardenCounts { letters: number; words: number; stories: number; streak: number; stars: number; }
 export function gardenCounts(profile: ChildProfile): GardenCounts {
   const words = new Set([...(profile.learnedWordIds || []), ...Object.entries(profile.wordReviews || {}).filter(([, record]) => record.correct > 0).map(([id]) => id)]);
-  return { letters: completedLetterIds(profile).length, words: words.size, stories: profile.readStoryIds.length, streak: profile.streakDays, stars: profile.stars };
+  return { letters: completedLetterIds(profile).length, words: words.size, stories: profile.readStoryIds.length, streak: Math.max(profile.streakDays, profile.activeDays || 0), stars: profile.stars };
 }
 export const isEarned = (butterfly: GardenButterfly, counts: GardenCounts) => counts[butterfly.kind] >= butterfly.n;
 export const earnedButterflies = (profile: ChildProfile) => { const counts = gardenCounts(profile); return GARDEN_BUTTERFLIES.filter(item => isEarned(item, counts)); };
@@ -55,10 +55,10 @@ export interface PetStage { id: 'egg' | 'caterpillar' | 'cocoon' | 'baby' | 'but
 export const PET_STAGES: PetStage[] = [
   { id: 'egg', name: 'هێلکە', from: 0, size: 0.55 },
   { id: 'caterpillar', name: 'کرمۆلە', from: 3, size: 0.7 },
-  { id: 'cocoon', name: 'پیلە', from: 10, size: 0.8 },
-  { id: 'baby', name: 'پەپوولەی بچووک', from: 25, size: 0.7 },
-  { id: 'butterfly', name: 'پەپوولە', from: 50, size: 0.85 },
-  { id: 'royal', name: 'پەپوولەی شا', from: 100, size: 1 },
+  { id: 'cocoon', name: 'پیلە', from: 8, size: 0.8 },
+  { id: 'baby', name: 'پەپوولەی بچووک', from: 18, size: 0.7 },
+  { id: 'butterfly', name: 'پەپوولە', from: 35, size: 0.85 },
+  { id: 'royal', name: 'پەپوولەی شا', from: 70, size: 1 },
 ];
 export const petFed = (profile: ChildProfile) => profile.pet?.fed || 0;
 export function petStage(fed: number) { return [...PET_STAGES].reverse().find(stage => fed >= stage.from) || PET_STAGES[0]; }
@@ -90,7 +90,21 @@ export function feed(profile: ChildProfile, now = new Date()): ChildProfile {
   if (nectarOf(profile) < 1) return profile;
   return { ...profile, pet: { bonus: 0, ...profile.pet, fed: petFed(profile) + 1, lastFedDate: localDay(now) } };
 }
+export const GIFT_STACK_DAYS = 3;
+/** Days of gifts waiting: 1 normally, up to three when the child has been away (gifts keep for a few days). */
+export function giftDaysOwed(profile: ChildProfile, now = new Date()): number {
+  if (!giftReady(profile, now)) return 0;
+  const last = profile.pet?.giftDate;
+  if (!last) return 1;
+  const gap = Math.round((Date.parse(localDay(now) + 'T12:00:00') - Date.parse(last + 'T12:00:00')) / 86400000);
+  return Math.max(1, Math.min(GIFT_STACK_DAYS, gap));
+}
+export function giftTotal(profile: ChildProfile, now = new Date()): number {
+  let total = 0;
+  for (let i = 0; i < giftDaysOwed(profile, now); i++) total += giftAmount(new Date(now.getFullYear(), now.getMonth(), now.getDate() - i, 12));
+  return total;
+}
 export function claimGift(profile: ChildProfile, now = new Date()): ChildProfile {
   if (!giftReady(profile, now)) return profile;
-  return { ...profile, pet: { fed: petFed(profile), ...profile.pet, bonus: (profile.pet?.bonus || 0) + giftAmount(now), giftDate: localDay(now) } };
+  return { ...profile, pet: { fed: petFed(profile), ...profile.pet, bonus: (profile.pet?.bonus || 0) + giftTotal(profile, now), giftDate: localDay(now) } };
 }

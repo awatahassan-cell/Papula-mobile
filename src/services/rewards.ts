@@ -12,6 +12,8 @@ export const REWARDS = {
   dailyPractice: 3,
   allMissionsBonus: 3,
 } as const;
+/** A child who plays three days out of seven averages about this many stars per calendar day. */
+export const IRREGULAR_DAILY_STARS = 4;
 export const TYPICAL_DAILY_STARS = REWARDS.lessonComplete + 2 * REWARDS.gamePerKindPerDay + REWARDS.firstStory;
 
 const DIGITS = '٠١٢٣٤٥٦٧٨٩';

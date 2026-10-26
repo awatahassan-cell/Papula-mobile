@@ -164,6 +164,8 @@ export interface ChildProfile {
   pet?: { fed: number; bonus: number; lastFedDate?: string; giftDate?: string };
   /** Garden butterflies the child has already seen being revealed. */
   seenButterflyIds?: string[];
+  /** Days on which the child learned something (a gap does not reset it, unlike the streak). */
+  activeDays?: number;
   /** Day each adventure was last finished (its nectar reward is given once per day). */
   questDates?: Record<string, string>;
   dailyPracticeRewardDate?: string;

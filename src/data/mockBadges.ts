@@ -69,7 +69,7 @@ export const mockBadges: BadgeItem[] = [
     targetCount: 5,
   },
   {
-    id: 'badge-stars-40',
+    id: 'badge-stars-30',
     titleKu: 'کۆکەرەوەی ئەستێرە',
     titleEn: 'Star Catcher',
     descriptionKu: 'بەدەستهێنانی ۲۰ ئەستێرەی پرشنگدار',
@@ -77,10 +77,10 @@ export const mockBadges: BadgeItem[] = [
     badgeColor: 'from-yellow-400 to-amber-500',
     category: 'stars',
     targetType: 'total_stars',
-    targetCount: 40,
+    targetCount: 30,
   },
   {
-    id: 'badge-stars-150',
+    id: 'badge-stars-100',
     titleKu: 'ئەستێرەی درەوشاوە',
     titleEn: 'Superstar',
     descriptionKu: 'بەدەستهێنانی ۵۰ ئەستێرەی سەرکەوتن',
@@ -88,7 +88,7 @@ export const mockBadges: BadgeItem[] = [
     badgeColor: 'from-orange-400 to-rose-500',
     category: 'stars',
     targetType: 'total_stars',
-    targetCount: 150,
+    targetCount: 100,
   },
   {
     id: 'badge-streak-3',

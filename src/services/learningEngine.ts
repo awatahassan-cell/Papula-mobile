@@ -13,7 +13,7 @@ export const localDay = (date = new Date()) => `${date.getFullYear()}-${String(d
 export function learningActivity(profile: ChildProfile, now=new Date()): ChildProfile {
   const previous=profile.lastActiveDate?new Date(profile.lastActiveDate):null;
   const days=previous?Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime()-new Date(previous.getFullYear(),previous.getMonth(),previous.getDate()).getTime())/86400000):Infinity;
-  return {...profile,lastActiveDate:now.toISOString(),dailyPracticeCompletedToday:true,
+  return {...profile,lastActiveDate:now.toISOString(),dailyPracticeCompletedToday:true,activeDays:(profile.activeDays||0)+(days===0?0:1),
     streakDays:days===0?Math.max(1,profile.streakDays):days===1?profile.streakDays+1:1};
 }
 export function wordUnits(word: string): string[] {

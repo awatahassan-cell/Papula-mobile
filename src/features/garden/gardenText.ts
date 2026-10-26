@@ -12,6 +12,7 @@ export const GARDEN_TEXT = {
   fedToday: 'سپاس! زۆر خۆشحاڵە 💗',
   gift: 'دیاری ڕۆژانە 🎁',
   giftGot: (n: number) => `${n} دڵۆپ شەهدت وەرگرت!`,
+  giftBack: (days: number) => `چاوەڕێت بووین! دیاری ${days} ڕۆژ بۆ تۆ کۆ کرابوو.`,
   giftWait: 'دیاری ئەمڕۆت وەرگرت؛ سبەی دیسان',
   collection: 'پەپوولە کۆکراوەکانم',
   count: (a: number, b: number) => `${a} لە ${b}`,

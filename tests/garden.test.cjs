@@ -45,13 +45,13 @@ test('feeding costs nectar, grows the friend through the stages and never goes b
   assert.equal(g.feed(p, now), p);
   assert.equal(g.petStage(0).id, 'egg');
   assert.equal(g.petStage(3).id, 'caterpillar');
-  assert.equal(g.petStage(10).id, 'cocoon');
-  assert.equal(g.petStage(25).id, 'baby');
-  assert.equal(g.petStage(50).id, 'butterfly');
-  assert.equal(g.petStage(100).id, 'royal');
-  assert.equal(g.stageProgress(100), 1);
-  assert.equal(g.stageProgress(17.5), 0.5, 'halfway between cocoon (10) and baby (25)');
-  assert.equal(g.nextStage(100), undefined);
+  assert.equal(g.petStage(8).id, 'cocoon');
+  assert.equal(g.petStage(18).id, 'baby');
+  assert.equal(g.petStage(35).id, 'butterfly');
+  assert.equal(g.petStage(70).id, 'royal');
+  assert.equal(g.stageProgress(70), 1);
+  assert.equal(g.stageProgress(13), 0.5, 'halfway between cocoon (8) and baby (18)');
+  assert.equal(g.nextStage(70), undefined);
 });
 
 test('the daily gift can be taken once a day and always gives 2 to 5 drops', () => {
@@ -79,4 +79,31 @@ test('tinted butterflies get their own gradient ids and keep valid colours; lock
   for (const art of [a, b, locked]) assert.ok(!/#[0-9a-f]{0,5}["')]/i.test(art.wings));
   assert.ok(!/#(ed5aa9|30b9e4|48c79c)/i.test(locked.wings));
   assert.equal(tintedButterfly('x-1', 90), a, 'cached');
+});
+
+test('gifts keep for up to three days, so a child who was away is welcomed with more', () => {
+  const day = d => new Date(2026, 2, d, 12);
+  const first = g.giftTotal(kid(), day(10));
+  assert.ok(first >= 2 && first <= 5, 'a first gift is one day');
+  const claimed = g.claimGift(kid(), day(10));
+  assert.equal(g.giftDaysOwed(claimed, day(10)), 0, 'already taken today');
+  assert.equal(g.giftDaysOwed(claimed, day(11)), 1, 'next day: one gift');
+  assert.equal(g.giftDaysOwed(claimed, day(12)), 2, 'two days away: two gifts');
+  assert.equal(g.giftDaysOwed(claimed, day(20)), 3, 'ten days away: capped at three');
+  const back = g.giftTotal(claimed, day(20));
+  assert.ok(back >= 6 && back <= 15, `three days of 2-5 drops (${back})`);
+  assert.equal(g.nectarOf(g.claimGift(claimed, day(20))), g.nectarOf(claimed) + back);
+});
+
+test('days played count even with gaps, unlike the streak', () => {
+  const engine = load(root + '/src/services/learningEngine.ts');
+  let p = { ...kid(), streakDays: 0, lastActiveDate: undefined };
+  p = engine.learningActivity(p, new Date(2026, 2, 1, 10));
+  p = engine.learningActivity(p, new Date(2026, 2, 1, 18));
+  assert.equal(p.activeDays, 1, 'two sessions the same day are one day');
+  p = engine.learningActivity(p, new Date(2026, 2, 9, 10));
+  assert.equal(p.activeDays, 2, 'a gap does not lose the first day');
+  assert.equal(p.streakDays, 1, 'but the streak did reset');
+  assert.equal(g.gardenCounts(p).streak, 2, 'butterflies for days use days played');
+  assert.equal(g.gardenCounts({ ...p, activeDays: 0, streakDays: 5 }).streak, 5, 'old profiles keep their streak');
 });

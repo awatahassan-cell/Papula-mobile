@@ -17,7 +17,7 @@ import { GOLD } from '../../theme/tokens';
 import { useAppStore } from '../../store/useAppStore';
 import { haptics } from '../../services/haptics';
 import {
-  GARDEN_BUTTERFLIES, GOAL_TEXT, GardenButterfly, RARITY_TEXT, earnedButterflies, fedToday, gardenCounts, giftAmount, giftReady,
+  GARDEN_BUTTERFLIES, GOAL_TEXT, GardenButterfly, RARITY_TEXT, earnedButterflies, fedToday, gardenCounts, giftDaysOwed, giftReady, giftTotal,
   goalProgress, isEarned, nectarOf, nextStage, petFed, petMood, petStage, stageProgress, unseenButterflies,
 } from '../../data/garden';
 import { GARDEN_TEXT as T } from './gardenText';
@@ -71,7 +71,7 @@ export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'
   const reduced = useReducedMotion();
   const [selected, setSelected] = useState<GardenButterfly | null>(null);
   const [bounce, setBounce] = useState(0);
-  const [gotGift, setGotGift] = useState(0);
+  const [gotGift, setGotGift] = useState(0), [giftDays, setGiftDays] = useState(0);
   const [reveal, setReveal] = useState<GardenButterfly[]>(() => unseenButterflies(currentProfile)); // butterflies earned since the last visit, celebrated on arrival
   const [float] = useState(() => new Animated.Value(0));
   useEffect(() => {
@@ -86,7 +86,7 @@ export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'
   const fed = petFed(currentProfile), stage = petStage(fed), next = nextStage(fed), nectar = nectarOf(currentProfile);
   const mood = petMood(currentProfile), fedNow = fedToday(currentProfile), gift = giftReady(currentProfile);
   const feedIt = () => { if (nectar < 1) return; feedPet(); setBounce(n => n + 1); haptics.success(); };
-  const takeGift = () => { claimPetGift(); setGotGift(giftAmount()); };
+  const takeGift = () => { const total = giftTotal(currentProfile), days = giftDaysOwed(currentProfile); claimPetGift(); setGotGift(total); setGiftDays(days); };
   const sky: [string, string] = isNight ? ['#1d1a4f', '#2c2a72'] : ['#d9ecff', '#f3e8ff'];
 
   const Container=embedded?View:ScrollView;
@@ -105,7 +105,7 @@ export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'
       <GoldButton label={T.feed} disabled={nectar < 1} onPress={feedIt} />
       {nectar < 1 && (section==='companion'?<BigButton variant="secondary" onPress={()=>setRoute('home')} style={s.wide}>با گەشتەکەم بەردەوام بکەم</BigButton>:<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{T.noNectar}</Text>)}
       {gift ? <BigButton variant="outline" onPress={takeGift} style={s.wide}>{T.gift}</BigButton>
-        : section!=='companion'&&<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{gotGift ? T.giftGot(gotGift) : T.giftWait}</Text>}
+        : (section!=='companion'||gotGift>0)&&<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{gotGift ? `${giftDays > 1 ? T.giftBack(giftDays) + ' ' : ''}${T.giftGot(gotGift)}` : T.giftWait}</Text>}
     </LinearGradient>}
 
     {section!=='companion'&&<>
