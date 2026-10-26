@@ -9,7 +9,7 @@ const ui = walk(path.join(__dirname, '../src')).map(f => fs.readFileSync(f, 'utf
 // (A navigation change once removed the only buttons to the games and to the practice screen.)
 test('every main screen has a way in from the interface', () => {
   const reachable = route => new RegExp(`setRoute\\('${route}'\\)|route: '${route}'`).test(ui);
-  for (const route of ['alphabet', 'garden', 'stories', 'match-game', 'daily-practice', 'stickers', 'parent-dashboard', 'word-writing', 'garden-quest', 'writing']) {
+  for (const route of ['alphabet', 'garden', 'stories', 'match-game', 'daily-practice', 'stickers', 'parent-dashboard', 'word-writing', 'garden-quest', 'writing', 'my-words']) {
     assert.ok(reachable(route), `no button opens ${route}`);
   }
 });

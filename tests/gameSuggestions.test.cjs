@@ -3,10 +3,11 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const load = require('../scripts/story-narration-catalog.cjs').createLoader();
 const g = load(path.resolve('src/services/gameSuggestions.ts'));
-const kid = (known, extra = {}) => ({ masteredLetterIds: Array.from({ length: known }, (_, i) => 'l' + i), ...extra });
+const ids = load(path.resolve('src/data/mockLetters.ts')).mockLetters.map(l => l.id);
+const kid = (known, extra = {}) => ({ masteredLetterIds: ids.slice(0, known), ...extra });
 const day = n => new Date(2026, 2, n, 12);
 
-test('a new child is offered only the easy listening games', () => {
+test('a new child is offered only the easy games that need no reading', () => {
   assert.equal(g.allowedLevel(kid(0)), 1);
   for (let d = 1; d <= 28; d++) {
     const picks = g.suggestedGames(kid(1), day(d));

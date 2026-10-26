@@ -1,4 +1,5 @@
 import { BadgeItem, ChildProfile } from '../services/types';
+import { completedLetterIds } from '../services/lessonPath';
 
 export const mockBadges: BadgeItem[] = [
   {
@@ -125,7 +126,7 @@ export function getBadgeStatus(
 
   switch (badge.targetType) {
     case 'mastered_letters':
-      currentProgress = profile.masteredLetterIds?.length || 0;
+      currentProgress = completedLetterIds(profile).length;
       break;
     case 'read_stories':
       currentProgress = profile.readStoryIds?.length || 0;

@@ -30,6 +30,9 @@ export function StickersAlbumScreen() {
         {!open&&<Text style={[s.hint,{color:c.muted}]}>{sticker.unlockedAtStars} ⭐</Text>}
       </TactileButton>;
     })}</View>}
+    <TactileButton accessibilityRole="button" accessibilityLabel="وشەکانم" onPress={()=>{void soundService.stopSpeaking();setRoute('my-words');}} style={{minHeight:56,borderRadius:20,borderWidth:2,borderColor:c.edge,backgroundColor:c.paper,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:10}}>
+      <Text style={[s.title,{color:c.ink,fontSize:18}]}>وشەکانم ({currentProfile.savedWords.length})</Text>
+    </TactileButton>
     <BackButton fullWidth onPress={()=>setRoute('garden')}>گەڕانەوە بۆ باغەکەم</BackButton>
   </ScrollView>;
 }

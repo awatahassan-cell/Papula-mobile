@@ -1,6 +1,7 @@
 import { mockLetters } from '../data/mockLetters';
 import { ChildProfile, LearningSkill, SkillProgress, StrokeGuide, StrokePoint, WritingMode, WritingProgress } from './types';
 import { LEARNING_WORDS, shuffled, localDay, normalizedWord, reviewPlan, wordUnits } from './learningEngine';
+import { completedLetterIds } from './lessonPath';
 import { evaluateTracing } from './tracingScorer';
 import { buildWritingRubric, rubricFeedback } from './writingRubric';
 import { SKILL_LABELS } from './skillLabels';
@@ -42,7 +43,7 @@ export function startingSoundWords(profile:ChildProfile,count=5) {
   return plan.map(letter=>LEARNING_WORDS.find(word=>normalizedWord(word.units[0])===normalizedWord(letter.glyph))).filter((word):word is typeof LEARNING_WORDS[number]=>!!word).slice(0,count);
 }
 export function readableText(text:string,profile:ChildProfile): boolean {
-  const known=new Set([...profile.masteredLetterIds,...Object.entries(profile.letterReviews||{}).filter(([,r])=>r.level>=1).map(([id])=>id),...Object.entries(profile.writingProgress||{}).filter(([,progress])=>progress.tracePassed).map(([id])=>id)]);
+  const known=new Set([...profile.masteredLetterIds,...completedLetterIds(profile),...Object.entries(profile.letterReviews||{}).filter(([,r])=>r.level>=1).map(([id])=>id),...Object.entries(profile.writingProgress||{}).filter(([,progress])=>progress.tracePassed).map(([id])=>id)]);
   const learned=new Set((profile.learnedWordIds||[]).map(id=>normalizedWord(LEARNING_WORDS.find(word=>word.id===id)?.word||'')));
   return text.split(/\s+/).filter(Boolean).every(token=>{
     const word=token.replace(/[،؛.!؟«»“”():\d]/g,'');

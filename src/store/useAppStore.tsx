@@ -1,12 +1,13 @@
 import { finishPlayPilotRound, PlayPilotStep } from '../services/playPilot';
 import { finishGardenStep, plantGardenFlower, GardenStep } from '../services/gardenQuest';
 import { advanceWriting, writingMastered, skillAttempt, readingPracticeStories } from '../services/foundationalLearning';
-import { applyLessonStep, isLessonUnlocked, nextLessonLetter, reconcileLessons } from '../services/lessonPath';
+import { applyLessonStep, completedLetterIds, isLessonUnlocked, nextLessonLetter, reconcileLessons } from '../services/lessonPath';
 import { usePathname, useRouter } from 'expo-router';
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { LEARNING_WORDS, learningActivity, localDay, logDay, updateReview, personalStories } from '../services/learningEngine';
 import { knownWordId, isVocabId } from '../data/vocabulary';
 import { QUEST_REWARD } from '../data/quests';
+import { stickerIdsFor } from '../data/mockStickers';
 import { claimGift, feed, petFed, petStage } from '../data/garden';
 import { normalizeCheckpoint } from '../services/learningContinuation';
 import { mockLetters } from '../data/mockLetters';
@@ -366,12 +367,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const updateCurrentProfile = (updates: Partial<ChildProfile>) => {
     const updated = { ...profileRef.current, ...updates };
     updated.unlockedStickerIds=[...updated.unlockedStickerIds];
-    for(const [threshold,sticker] of [[6,'stk-fox'],[10,'stk-bear'],[15,'stk-deer'],[20,'stk-mountain']] as const) {
-      if(updated.stars>=threshold && !updated.unlockedStickerIds.includes(sticker)) updated.unlockedStickerIds.push(sticker);
-    }
+    updated.unlockedStickerIds=stickerIdsFor(updated.stars,updated.unlockedStickerIds);
     // Weekly report: whatever this update earned is added to today's entry.
     const before = profileRef.current;
-    const gain = { seconds: Math.max(0, (updated.practiceSeconds || 0) - (before.practiceSeconds || 0)), lessons: Math.max(0, updated.masteredLetterIds.length - before.masteredLetterIds.length), stars: Math.max(0, updated.stars - before.stars) };
+    const gain = { seconds: Math.max(0, (updated.practiceSeconds || 0) - (before.practiceSeconds || 0)), lessons: Math.max(0, completedLetterIds(updated).length - completedLetterIds(before).length), stars: Math.max(0, updated.stars - before.stars) };
     if (gain.seconds || gain.lessons || gain.stars) updated.dailyLog = logDay(before.dailyLog, localDay(), gain);
     profileRef.current = updated;
     setCurrentProfile(updated);
@@ -463,11 +462,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const addStars = (amount: number) => {
     const newTotal = profileRef.current.stars + amount;
-    const newUnlockedStickers = [...profileRef.current.unlockedStickerIds];
-    if (newTotal >= 6 && !newUnlockedStickers.includes('stk-fox')) newUnlockedStickers.push('stk-fox');
-    if (newTotal >= 10 && !newUnlockedStickers.includes('stk-bear')) newUnlockedStickers.push('stk-bear');
-    if (newTotal >= 15 && !newUnlockedStickers.includes('stk-deer')) newUnlockedStickers.push('stk-deer');
-    if (newTotal >= 20 && !newUnlockedStickers.includes('stk-mountain')) newUnlockedStickers.push('stk-mountain');
+    const newUnlockedStickers = stickerIdsFor(newTotal, profileRef.current.unlockedStickerIds);
 
     updateCurrentProfile({
       stars: newTotal,

@@ -1,10 +1,11 @@
 import { ChildProfile, LearningSkill } from './types';
 import { mockLetters } from '../data/mockLetters';
 import { reviewPlan } from './learningEngine';
-import { isLessonUnlocked } from './lessonPath';
+import { completedLetterIds, isLessonUnlocked } from './lessonPath';
 
 export function personalPractice(profile: ChildProfile, now = new Date()) {
-  const known = (id: string) => profile.masteredLetterIds.includes(id) || !!profile.lessonProgress?.[id]?.listened || !!profile.writingProgress?.[id]?.tracePassed || (profile.letterReviews?.[id]?.attempts || 0) > 0;
+  const done = new Set(completedLetterIds(profile));
+  const known = (id: string) => profile.masteredLetterIds.includes(id) || done.has(id) || !!profile.lessonProgress?.[id]?.listened || !!profile.writingProgress?.[id]?.tracePassed || (profile.letterReviews?.[id]?.attempts || 0) > 0;
   return reviewPlan(profile, mockLetters.length, now).filter(letter => known(letter.id) && isLessonUnlocked(profile, letter.id)).slice(0, 3).map(letter => {
     const writing = profile.writingProgress?.[letter.id];
     const record = profile.letterReviews?.[letter.id];

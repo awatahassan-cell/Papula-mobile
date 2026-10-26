@@ -1,5 +1,6 @@
 import { mockLetters } from '../data/mockLetters';
 import { DayLog, ChildProfile, ExampleWord, LetterItem, LetterReview, StoryItem } from './types';
+import { completedLetterIds } from './lessonPath';
 
 export const CONFUSABLE_GROUPS = [
   ['ba', 'pa', 'ta'], ['ra', 'rra_heavy', 'za'], ['lam', 'lla_heavy'],
@@ -66,7 +67,8 @@ export function reviewPlan(profile: ChildProfile, count=3, now = new Date()): Le
 export function wordPlan(profile: ChildProfile, count=3): LearningWord[] {
   const max=profile.placement?.recommendedLevel===1?3:profile.placement?.recommendedLevel===2?5:profile.ageGroup==='3-4'?3:profile.ageGroup==='5-6'?5:8;
   const candidates=LEARNING_WORDS.filter(word=>word.units.length<=max);
-  const known=(word:LearningWord)=>word.letterIds.filter(id=>!profile.masteredLetterIds.includes(id)).length;
+  const done=new Set([...profile.masteredLetterIds,...completedLetterIds(profile)]);
+  const known=(word:LearningWord)=>word.letterIds.filter(id=>!done.has(id)).length;
   const maxLetterIdx=(word:LearningWord)=>Math.max(0,...word.letterIds.map(id=>mockLetters.findIndex(l=>l.id===id)));
   return candidates.map((word,index)=>({word,index})).sort((a,b)=>
     Number(profile.learnedWordIds?.includes(a.word.id)||false)-Number(profile.learnedWordIds?.includes(b.word.id)||false)

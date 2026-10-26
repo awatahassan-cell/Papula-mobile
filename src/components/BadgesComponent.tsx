@@ -1,5 +1,6 @@
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import { BRAND } from '../theme/tokens';
+import { completedLetterIds } from '../services/lessonPath';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
@@ -18,7 +19,7 @@ export const BadgesComponent: React.FC = () => {
 
     switch (badge.targetType) {
       case 'mastered_letters':
-        return currentProfile.masteredLetterIds.length >= badge.targetCount;
+        return completedLetterIds(currentProfile).length >= badge.targetCount;
       case 'read_stories':
         return currentProfile.readStoryIds.length >= badge.targetCount;
       case 'total_stars':

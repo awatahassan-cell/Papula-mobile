@@ -15,6 +15,7 @@ function load(file) {
 const g = load(root + '/src/data/garden.ts');
 const { tintedButterfly } = load(root + '/src/components/tintedButterfly.ts');
 const now = new Date('2026-03-10T10:00:00');
+const letterIds = load(root + '/src/data/mockLetters.ts').mockLetters.map(l => l.id);
 const kid = extra => ({ masteredLetterIds: [], readStoryIds: [], streakDays: 0, stars: 0, lastActiveDate: now.toISOString(), ...extra });
 
 test('every butterfly has a unique id, a reachable goal and a hue', () => {
@@ -27,7 +28,7 @@ test('every butterfly has a unique id, a reachable goal and a hue', () => {
 test('butterflies unlock from existing progress and are announced once', () => {
   const none = kid();
   assert.equal(g.earnedButterflies(none).length, 0);
-  const some = kid({ masteredLetterIds: ['a', 'b', 'c'], readStoryIds: ['s1'], stars: 12, streakDays: 2 });
+  const some = kid({ masteredLetterIds: letterIds.slice(0, 3), readStoryIds: ['s1'], stars: 12, streakDays: 2 });
   const ids = g.earnedButterflies(some).map(b => b.id);
   for (const id of ['letters-1', 'letters-3', 'stories-1', 'streak-2', 'stars-10']) assert.ok(ids.includes(id), id);
   assert.equal(g.unseenButterflies({ ...some, seenButterflyIds: ids }).length, 0);

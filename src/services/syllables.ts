@@ -1,6 +1,7 @@
 import { SYLLABLE_WORDS } from '../data/syllableWords';
 import { ChildProfile } from './types';
 import { LEARNING_WORDS, LearningWord, normalizedWord, shuffled } from './learningEngine';
+import { completedLetterIds } from './lessonPath';
 
 export interface SyllableTile { id: number; text: string; }
 export interface SyllableRound { word: LearningWord; syllables: string[]; tiles: SyllableTile[]; }
@@ -29,7 +30,8 @@ export function syllableWords(): { word: LearningWord; syllables: string[] }[] {
 /** Easy words first, preferring words the child has already learned the letters of. */
 export function syllableRounds(profile: ChildProfile, count = 4, random: () => number = Math.random): SyllableRound[] {
   const max = maxSyllables(profile);
-  const unknown = (word: LearningWord) => word.letterIds.filter(id => !profile.masteredLetterIds.includes(id)).length;
+  const done = new Set([...profile.masteredLetterIds, ...completedLetterIds(profile)]);
+  const unknown = (word: LearningWord) => word.letterIds.filter(id => !done.has(id)).length;
   const pool = syllableWords().filter(item => item.syllables.length <= max);
   const ordered = shuffled(pool, random)
     .sort((a, b) => a.syllables.length - b.syllables.length || unknown(a.word) - unknown(b.word))

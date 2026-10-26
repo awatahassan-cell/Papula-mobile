@@ -1,5 +1,6 @@
 import { ChildProfile } from '../services/types';
 import { localDay } from '../services/learningEngine';
+import { completedLetterIds } from '../services/lessonPath';
 
 export type Rarity = 'common' | 'rare' | 'legendary';
 export type GoalKind = 'letters' | 'words' | 'stories' | 'streak' | 'stars';
@@ -41,7 +42,7 @@ export const GARDEN_BUTTERFLIES: GardenButterfly[] = [
 export interface GardenCounts { letters: number; words: number; stories: number; streak: number; stars: number; }
 export function gardenCounts(profile: ChildProfile): GardenCounts {
   const words = new Set([...(profile.learnedWordIds || []), ...Object.entries(profile.wordReviews || {}).filter(([, record]) => record.correct > 0).map(([id]) => id)]);
-  return { letters: profile.masteredLetterIds.length, words: words.size, stories: profile.readStoryIds.length, streak: profile.streakDays, stars: profile.stars };
+  return { letters: completedLetterIds(profile).length, words: words.size, stories: profile.readStoryIds.length, streak: profile.streakDays, stars: profile.stars };
 }
 export const isEarned = (butterfly: GardenButterfly, counts: GardenCounts) => counts[butterfly.kind] >= butterfly.n;
 export const earnedButterflies = (profile: ChildProfile) => { const counts = gardenCounts(profile); return GARDEN_BUTTERFLIES.filter(item => isEarned(item, counts)); };

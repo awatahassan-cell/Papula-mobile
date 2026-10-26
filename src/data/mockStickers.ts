@@ -1,5 +1,9 @@
 import { StickerItem } from '../services/types';
 
+/** Every sticker whose star goal is reached, added to the ones already owned (never removes any). */
+export const stickerIdsFor = (stars: number, owned: string[]): string[] =>
+  Array.from(new Set([...owned, ...mockStickers.filter(sticker => stars >= sticker.unlockedAtStars).map(sticker => sticker.id)]));
+
 export const mockStickers: StickerItem[] = [
   { id: 'stk-butterfly', nameKu: 'پەپوولەی ڕەنگین', emoji: '🦋', unlockedAtStars: 3, category: 'animals' },
   { id: 'stk-fox', nameKu: 'ڕێوی زرنگ', emoji: '🦊', unlockedAtStars: 6, category: 'animals' },

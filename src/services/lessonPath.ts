@@ -9,6 +9,9 @@ export const isLessonComplete = (profile: ChildProfile, id: string) => {
     || (finished && (garden?.steps.includes('story') || flower));
 };
 
+/** Letters whose lesson is complete by any route: the flower journey, the old lesson, or writing mastery. */
+export const completedLetterIds = (profile: ChildProfile): string[] => mockLetters.filter(letter => isLessonComplete(profile, letter.id)).map(letter => letter.id);
+
 export function lessonPath(profile: ChildProfile) {
   const first = mockLetters.findIndex(letter => !isLessonComplete(profile, letter.id));
   return mockLetters.map((letter, index) => ({
