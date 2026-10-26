@@ -8,6 +8,7 @@ import { LEARNING_WORDS, learningActivity, localDay, logDay, updateReview, perso
 import { knownWordId, isVocabId } from '../data/vocabulary';
 import { QUEST_REWARD } from '../data/quests';
 import { stickerIdsFor } from '../data/mockStickers';
+import { REWARDS } from '../services/rewards';
 import { claimGift, feed, petFed, petStage } from '../data/garden';
 import { normalizeCheckpoint } from '../services/learningContinuation';
 import { mockLetters } from '../data/mockLetters';
@@ -539,7 +540,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
-  const claimAllMissionsBonusReward = (bonusAmount: number = 10): number => {
+  const claimAllMissionsBonusReward = (bonusAmount: number = REWARDS.allMissionsBonus): number => {
     const todayStr = getTodayDateString();
     if (currentProfile.dailyMissionsBonusClaimedDate === todayStr) {
       return currentProfile.stars;
@@ -663,7 +664,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const completeDailyPractice = () => {
     const today=localDay();
     const base=learningActivity(ensureMissionsForToday(profileRef.current));
-    const reward=base.dailyPracticeRewardDate===today?0:5;
+    const reward=base.dailyPracticeRewardDate===today?0:REWARDS.dailyPractice;
     updateCurrentProfile(evaluateStreak({...base,stars:base.stars+reward,dailyPracticeRewardDate:today,
       dailyMissions:base.dailyMissions?.map(m=>m.targetType==='daily_practice' && reward>0 && !m.claimed
         ? {...m,currentCount:Math.min(m.targetCount,m.currentCount+1),completed:m.currentCount+1>=m.targetCount}:m),
@@ -683,10 +684,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const writing=advanceWriting(profile.writingProgress?.[letterId],mode,passed,helped,now);
     const mastered=writingMastered(writing);
     const newStars = profile.stars + (mastered && !profile.masteredLetterIds.includes(letterId) ? 2 : 0);
-    const unlockedStickerIds = [...profile.unlockedStickerIds];
-    for (const [threshold, sticker] of [[6, 'stk-fox'], [10, 'stk-bear'], [15, 'stk-deer'], [20, 'stk-mountain']] as const) {
-      if (newStars >= threshold && !unlockedStickerIds.includes(sticker)) unlockedStickerIds.push(sticker);
-    }
+    const unlockedStickerIds = stickerIdsFor(newStars, profile.unlockedStickerIds);
     const missions = (profile.dailyMissions || []).map(mission => {
       if (!passed || mission.targetType !== 'trace_letters' || mission.claimed) return mission;
       const count = Math.min(mission.targetCount, mission.currentCount + 1);

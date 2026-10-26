@@ -44,14 +44,14 @@ test('feeding costs nectar, grows the friend through the stages and never goes b
   assert.equal(g.nectarOf(p), 0);
   assert.equal(g.feed(p, now), p);
   assert.equal(g.petStage(0).id, 'egg');
-  assert.equal(g.petStage(2).id, 'caterpillar');
-  assert.equal(g.petStage(6).id, 'cocoon');
-  assert.equal(g.petStage(12).id, 'baby');
-  assert.equal(g.petStage(25).id, 'butterfly');
-  assert.equal(g.petStage(50).id, 'royal');
-  assert.equal(g.stageProgress(50), 1);
-  assert.equal(g.stageProgress(4), 0.5);
-  assert.equal(g.nextStage(50), undefined);
+  assert.equal(g.petStage(3).id, 'caterpillar');
+  assert.equal(g.petStage(10).id, 'cocoon');
+  assert.equal(g.petStage(25).id, 'baby');
+  assert.equal(g.petStage(50).id, 'butterfly');
+  assert.equal(g.petStage(100).id, 'royal');
+  assert.equal(g.stageProgress(100), 1);
+  assert.equal(g.stageProgress(17.5), 0.5, 'halfway between cocoon (10) and baby (25)');
+  assert.equal(g.nextStage(100), undefined);
 });
 
 test('the daily gift can be taken once a day and always gives 2 to 5 drops', () => {

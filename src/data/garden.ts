@@ -35,7 +35,7 @@ export const GARDEN_BUTTERFLIES: GardenButterfly[] = [
     ['2', 'بەیانی', 100, 2], ['4', 'خۆرئاوا', 130, 4], ['7', 'هەفتانە', 12, 7, 'rare'], ['14', 'دووهەفتانە', -170, 14, 'legendary'],
   ]),
   ...make('stars', [
-    ['10', 'ئەستێرەیی', 150, 10], ['30', 'درەوشاوە', -80, 30, 'rare'], ['60', 'پاشای باخچە', 20, 60, 'legendary'],
+    ['10', 'ئەستێرەیی', 150, 10], ['40', 'درەوشاوە', -80, 40, 'rare'], ['120', 'پاشای باخچە', 20, 120, 'legendary'],
   ]),
 ];
 
@@ -54,11 +54,11 @@ export const goalProgress = (butterfly: GardenButterfly, counts: GardenCounts) =
 export interface PetStage { id: 'egg' | 'caterpillar' | 'cocoon' | 'baby' | 'butterfly' | 'royal'; name: string; from: number; size: number; }
 export const PET_STAGES: PetStage[] = [
   { id: 'egg', name: 'هێلکە', from: 0, size: 0.55 },
-  { id: 'caterpillar', name: 'کرمۆلە', from: 2, size: 0.7 },
-  { id: 'cocoon', name: 'پیلە', from: 6, size: 0.8 },
-  { id: 'baby', name: 'پەپوولەی بچووک', from: 12, size: 0.7 },
-  { id: 'butterfly', name: 'پەپوولە', from: 25, size: 0.85 },
-  { id: 'royal', name: 'پەپوولەی شا', from: 50, size: 1 },
+  { id: 'caterpillar', name: 'کرمۆلە', from: 3, size: 0.7 },
+  { id: 'cocoon', name: 'پیلە', from: 10, size: 0.8 },
+  { id: 'baby', name: 'پەپوولەی بچووک', from: 25, size: 0.7 },
+  { id: 'butterfly', name: 'پەپوولە', from: 50, size: 0.85 },
+  { id: 'royal', name: 'پەپوولەی شا', from: 100, size: 1 },
 ];
 export const petFed = (profile: ChildProfile) => profile.pet?.fed || 0;
 export function petStage(fed: number) { return [...PET_STAGES].reverse().find(stage => fed >= stage.from) || PET_STAGES[0]; }

@@ -12,7 +12,7 @@ export const defaultDailyMissionTemplates: Omit<DailyMission, 'currentCount' | '
     icon: '✍️',
     targetType: 'trace_letters',
     targetCount: 2,
-    starReward: 2,
+    starReward: 1,
     actionRoute: 'writing',
   },
   {
@@ -23,7 +23,7 @@ export const defaultDailyMissionTemplates: Omit<DailyMission, 'currentCount' | '
     icon: '📖',
     targetType: 'read_stories',
     targetCount: 1,
-    starReward: 3,
+    starReward: 2,
     actionRoute: 'stories',
   },
   {
@@ -34,7 +34,7 @@ export const defaultDailyMissionTemplates: Omit<DailyMission, 'currentCount' | '
     icon: '🎮',
     targetType: 'match_game',
     targetCount: 1,
-    starReward: 2,
+    starReward: 1,
     actionRoute: 'match-game',
   },
   {
@@ -45,7 +45,7 @@ export const defaultDailyMissionTemplates: Omit<DailyMission, 'currentCount' | '
     icon: '🔖',
     targetType: 'save_word',
     targetCount: 1,
-    starReward: 2,
+    starReward: 1,
     actionRoute: 'alphabet',
   },
 ];

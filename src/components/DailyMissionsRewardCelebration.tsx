@@ -1,6 +1,7 @@
 import { TactileButton as TouchableOpacity } from './TactileButton';
 import { rtlProps, rtlLayout } from '../theme/rtl';
 import { useThemeStyles } from '../theme/useAppearance';
+import { REWARDS, kurdishDigits } from '../services/rewards';
 import React from 'react';
 import { Modal, View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
@@ -22,7 +23,7 @@ export const DailyMissionsRewardCelebration: React.FC<CelebrationProps> = ({
 
   const handleClaim = () => {
     soundService.playGrandCelebration();
-    claimAllMissionsBonusReward(10);
+    claimAllMissionsBonusReward(REWARDS.allMissionsBonus);
     onClose();
   };
 
@@ -35,12 +36,12 @@ export const DailyMissionsRewardCelebration: React.FC<CelebrationProps> = ({
           <PapulaMascot size={150} mood="surprised" />
           <Text style={styles.title}>پیرۆزە! هەموو ئەرکەکانت تەواو کرد!</Text>
           <Text style={styles.desc}>
-            تۆ ئەمڕۆ پاڵەوانێکی زۆر زیرەک بوویت. ١٠ ئەستێرەی زێڕین وەربگرە وەک خەڵات!
+            تۆ ئەمڕۆ پاڵەوانێکی زۆر زیرەک بوویت. {kurdishDigits(REWARDS.allMissionsBonus)} ئەستێرەی زێڕین وەربگرە وەک خەڵات!
           </Text>
 
           <View style={styles.starBox}>
             <Text style={styles.starIcon}>⭐</Text>
-            <Text style={styles.starNum}>+10</Text>
+            <Text style={styles.starNum}>+{REWARDS.allMissionsBonus}</Text>
           </View>
 
           <TouchableOpacity

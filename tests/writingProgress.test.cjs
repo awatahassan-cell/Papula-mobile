@@ -47,7 +47,7 @@ const render=()=>{cursor=callbackCursor=0;return AppProvider({children:null}).pr
  assert.equal(saved.letterReviews.ghayn.level,0);
  const gameStars=saved.stars;assert.equal(context.finishLearningGame('similar'),2);assert.equal(context.finishLearningGame('similar'),0);
  assert.equal(saved.stars,gameStars+2);
- assert.equal(context.completeDailyPractice(),5);assert.equal(context.completeDailyPractice(),0);
+ assert.equal(context.completeDailyPractice(),3);assert.equal(context.completeDailyPractice(),0);
  const storyStars=saved.stars;context.completeStory('test-story');context.completeStory('test-story');assert.equal(saved.stars,storyStars+3);
  const garden=templateWords('personal-garden');for(const item of garden)context.saveWord(item.word);
  assert.equal(personalStories(saved).length,0,'bookmarked words do not unlock stories');

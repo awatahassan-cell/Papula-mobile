@@ -40,17 +40,37 @@ test('the pilot lesson reward is given once even if the journey is replayed', ()
   assert.equal(twice.stars, 7, 'replaying does not pay again');
 });
 
+const economy = R('services/rewards.ts');
+
 test('stickers: one list decides what is unlocked, and nothing is ever taken away', () => {
   assert.deepEqual(stickers.stickerIdsFor(0, []), []);
   const at20 = stickers.stickerIdsFor(20, []);
-  assert.ok(at20.includes('stk-mountain') && !at20.includes('stk-sun'));
+  assert.ok(at20.includes('stk-bear') && !at20.includes('stk-mountain'));
   const all = stickers.stickerIdsFor(1000, []);
   assert.equal(all.length, stickers.mockStickers.length, 'every sticker is reachable, not only the first four');
   assert.deepEqual(stickers.stickerIdsFor(0, ['stk-fox']), ['stk-fox'], 'owned stickers stay');
 });
 
-test('star goals are reachable and nectar never goes below zero', () => {
-  const top = Math.max(...stickers.mockStickers.map(s => s.unlockedAtStars), ...garden.GARDEN_BUTTERFLIES.filter(b => b.kind === 'stars').map(b => b.n));
-  assert.ok(top <= 100, 'star goals stay within reach of a few weeks of play');
+test('the economy is paced over weeks: no goal falls in two days, none is out of reach', () => {
+  const daily = economy.TYPICAL_DAILY_STARS;
+  const goals = [...stickers.mockStickers.map(s => s.unlockedAtStars), ...garden.GARDEN_BUTTERFLIES.filter(b => b.kind === 'stars').map(b => b.n),
+    ...badges.mockBadges.filter(b => b.targetType === 'total_stars').map(b => b.targetCount)];
+  const top = Math.max(...goals);
+  assert.ok(top / daily >= 14, `the last star goal (${top}) must take at least two weeks at ${daily} stars a day`);
+  assert.ok(top / daily <= 45, 'and not more than about six weeks');
+  const sorted = [...new Set(stickers.mockStickers.map(s => s.unlockedAtStars))].sort((a, b) => a - b);
+  for (let i = 1; i < sorted.length; i++) assert.ok((sorted[i] - sorted[i - 1]) / daily <= 5, `no wait longer than five days between stickers (${sorted[i - 1]}→${sorted[i]})`);
+  assert.ok(sorted[0] <= economy.REWARDS.startingStars, 'the first sticker is already there on day one');
+});
+
+test('daily income stays small: missions and practice cannot flood a child with stars', () => {
+  const missions = R('data/mockMissions.ts').defaultDailyMissionTemplates;
+  const missionStars = missions.reduce((sum, m) => sum + m.starReward, 0) + economy.REWARDS.allMissionsBonus;
+  assert.ok(missionStars <= 10, `a day of missions pays ${missionStars}`);
+  assert.ok(economy.REWARDS.dailyPractice <= 3);
+  assert.equal(economy.kurdishDigits(30), '٣٠');
+});
+
+test('nectar never goes below zero', () => {
   assert.equal(garden.nectarOf({ ...child(), stars: 0, pet: { fed: 3, bonus: 0 } }), 0);
 });
