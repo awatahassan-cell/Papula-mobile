@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Easing, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Animated, Easing, Platform, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Volume2 } from 'lucide-react-native';
 import { useReducedMotion } from '../../components/Motion';
 import { BackButton } from '../../components/BackButton';
@@ -77,28 +77,30 @@ export const PairsGame: React.FC<Props> = ({ onExit }) => {
 };
 
 const ROUNDS = 6;
-const STAGE_HEIGHT = 400, BUBBLE = 78, LEFTS = ['1%', '17%', '33%', '49%', '65%', '76%'];
+const BUBBLE = 88, LEFTS = ['0%', '16%', '32%', '48%', '64%', '73%'];
+/** The sky takes the space left under the header and above the back button and tab bar. */
+const skyHeight = (windowHeight: number) => Math.max(400, Math.min(680, windowHeight - 330));
 type Letter = (typeof mockLetters)[number];
 /** One bubble rising slowly from the bottom edge of the sky and starting over when it leaves the top; with reduced motion it just sits still. */
-const Bubble: React.FC<{ letter: Letter; index: number; state: 'idle' | 'caught' | 'wrong'; onPress: () => void }> = ({ letter, index, state, onPress }) => {
+const Bubble: React.FC<{ letter: Letter; index: number; state: 'idle' | 'caught' | 'wrong'; height: number; onPress: () => void }> = ({ letter, index, state, height, onPress }) => {
   const s = useThemeStyles(baseLearningStyles);
   const reduced = useReducedMotion();
-  const [y] = useState(() => new Animated.Value(STAGE_HEIGHT));
+  const [y] = useState(() => new Animated.Value(height));
   useEffect(() => {
-    if (reduced) { y.setValue(24 + (index % 3) * 120); return; }
+    if (reduced) { y.setValue(24 + (index % 3) * Math.round((height - BUBBLE - 48) / 2)); return; }
     let alive = true;
-    const travel = STAGE_HEIGHT + BUBBLE, duration = 11000 + index * 1400;
+    const travel = height + BUBBLE, duration = 11000 + index * 1400;
     const run = (from: number) => {
       y.setValue(from);
       Animated.timing(y, { toValue: -BUBBLE, duration: duration * (from + BUBBLE) / travel, easing: Easing.linear, useNativeDriver: Platform.OS !== 'web', isInteraction: false })
-        .start(({ finished }) => { if (alive && finished) run(STAGE_HEIGHT); });
+        .start(({ finished }) => { if (alive && finished) run(height); });
     };
-    run(STAGE_HEIGHT - (index * travel) / 6.5);
+    run(height - (index * travel) / 6.5);
     return () => { alive = false; y.stopAnimation(); };
-  }, [reduced, index, y]);
+  }, [reduced, index, y, height]);
   return <Animated.View style={[local.floater, { left: LEFTS[index % LEFTS.length] as `${number}%`, transform: [{ translateY: y }] }]}>
     <TouchableOpacity accessibilityRole="button" accessibilityLabel={letter.glyph} onPress={onPress} style={[local.bubble, state === 'caught' && local.caught, state === 'wrong' && local.wrong]}>
-      <View style={local.shine} /><Text style={[s.glyph, { fontSize: 38, lineHeight: 52 }]}>{letter.glyph}</Text>
+      <View style={local.shine} /><Text style={[s.glyph, { fontSize: 42, lineHeight: 56 }]}>{letter.glyph}</Text>
     </TouchableOpacity>
   </Animated.View>;
 };
@@ -110,6 +112,7 @@ export const CatchGame: React.FC<Props> = ({ onExit }) => {
   const [run, setRun] = useState(0), [round, setRound] = useState(0), [caught, setCaught] = useState(false), [wrong, setWrong] = useState<string[]>([]);
   const targets = useMemo(() => { const order = shuffled(letters); return Array.from({ length: ROUNDS }, (_, i) => order[i % order.length]); }, [run, letters]); // eslint-disable-line react-hooks/exhaustive-deps
   const missed = useRef(false), timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const sky = skyHeight(useWindowDimensions().height);
   const target = targets[round];
   const options = useMemo(() => target ? shuffled([target, ...shuffled(letters.filter(letter => letter.id !== target.id)).slice(0, 5)]) : [], [target, letters]);
   useStop(); useEffect(() => () => clearTimeout(timer.current), []);
@@ -127,10 +130,11 @@ export const CatchGame: React.FC<Props> = ({ onExit }) => {
     }
   };
   return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.text}>{round + 1} / {ROUNDS}</Text>
-    <Text style={s.title}>{T.catch.ask}</Text>
-    <TouchableOpacity accessibilityRole="button" accessibilityLabel={T.catch.ask} style={local.speaker} onPress={() => sayLetter(target.glyph)}><Volume2 size={40} color="#ffffff" strokeWidth={2.4} /></TouchableOpacity>
-    <View style={local.sky}>{options.map((letter, i) => <Bubble key={`${run}-${round}-${letter.id}`} letter={letter} index={i}
+    <View style={local.head}>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel={T.catch.ask} style={local.speaker} onPress={() => sayLetter(target.glyph)}><Volume2 size={34} color="#ffffff" strokeWidth={2.4} /></TouchableOpacity>
+      <Text style={[s.title, { flex: 1 }]}>{T.catch.ask}</Text><Text style={s.text}>{round + 1} / {ROUNDS}</Text>
+    </View>
+    <View style={[local.sky, { height: sky }]}>{options.map((letter, i) => <Bubble key={`${run}-${round}-${letter.id}`} letter={letter} index={i} height={sky}
       state={caught && letter.id === target.id ? 'caught' : wrong.includes(letter.id) ? 'wrong' : 'idle'} onPress={() => tap(letter.id)} />)}</View>
     {caught && <Text accessibilityLiveRegion="polite" style={s.text}>{T.right} 🦋</Text>}
     <BackButton fullWidth onPress={onExit}>{T.back}</BackButton>
@@ -175,12 +179,13 @@ export const TrainGame: React.FC<Props> = ({ onExit }) => {
 const local = StyleSheet.create({
   card: { width: '30%', minHeight: 96, flexGrow: 1 },
   back: { backgroundColor: '#ede9fe', borderColor: '#a78bfa' },
-  sky: { width: '100%', height: STAGE_HEIGHT, borderRadius: 30, overflow: 'hidden', backgroundColor: '#e0f2fe', borderWidth: 3, borderColor: '#bae6fd' },
+  sky: { width: '100%', borderRadius: 30, overflow: 'hidden', backgroundColor: '#e0f2fe', borderWidth: 3, borderColor: '#bae6fd' },
   floater: { position: 'absolute', top: 0, width: BUBBLE, height: BUBBLE },
   bubble: { width: BUBBLE, height: BUBBLE, borderRadius: BUBBLE / 2, borderWidth: 3, borderBottomWidth: 5, borderColor: '#7dd3fc', backgroundColor: '#ffffffe6', alignItems: 'center', justifyContent: 'center' },
   shine: { position: 'absolute', top: 9, start: 13, width: 18, height: 10, borderRadius: 9, backgroundColor: '#e0f2fe', transform: [{ rotate: '-30deg' }] },
   caught: { backgroundColor: '#dcfce7', borderColor: '#16a34a', transform: [{ scale: 1.2 }] },
   wrong: { backgroundColor: '#fef3c7', borderColor: '#d97706', opacity: 0.45 },
-  speaker: { width: 84, height: 84, borderRadius: 42, backgroundColor: '#6d4ae0', borderBottomWidth: 6, borderBottomColor: '#4c33a8', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' },
+  head: { flexDirection: 'row', alignItems: 'center', gap: 10, width: '100%' },
+  speaker: { width: 64, height: 64, borderRadius: 32, backgroundColor: '#6d4ae0', borderBottomWidth: 6, borderBottomColor: '#4c33a8', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' },
   slot: { borderStyle: 'dashed', minWidth: 54 },
 });
