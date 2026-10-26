@@ -1,6 +1,6 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useResponsive } from '../../theme/responsive';
-import { BRAND, GOLD } from '../../theme/tokens';
+import { BRAND } from "../../theme/tokens";
 import React,{useEffect,useState} from 'react';
 import {FlatList,Image,View,StyleSheet,ScrollView} from 'react-native';
 import {Text} from '../../components/RTLText';
@@ -33,7 +33,6 @@ export const StoriesListScreen:React.FC=()=>{
  const open=(story:StoryItem)=>{void soundService.stopSpeaking();if(story.isPremium&&!parentSettings.isSubscribed){setPaywallOpen(true);return;}setSelectedStory(story);setRoute('story-reader');};
  const ready=personalStories(currentProfile),reading=readingPracticeStories(currentProfile);
  const letterStories=letterId?getLetterStories(letterId):alfubeNweStories;
- const selectedLetter=mockLetters.find(letter=>letter.id===letterId);
  const data:ShelfItem[]=category==='letters'?letterStories.map(story=>({id:story.id,story})):[
   ...PERSONAL_STORY_TEMPLATES.map(template=>({id:template.id,template})),
   {id:'reading-heading',heading:'خۆم دەخوێنمەوە',subtitle:reading.length?'ڕستەی کورت بە پیت و وشە ناسراوەکانت.':'بە فێربوونی پیت و وشە، چیرۆکی گونجاو لێرە بۆت دەکرێتەوە.'},
@@ -43,15 +42,13 @@ export const StoriesListScreen:React.FC=()=>{
  ];
  if(wordLesson)return <WordBuilder key={wordLesson} initialWords={templateWords(wordLesson)} onExit={()=>setWordLesson(null)} onComplete={()=>setWordLesson(null)}/>;
  const header=<View style={s.intro}>
-  <View style={s.welcome}><View style={s.welcomeIcon}><BookOpen size={29} color={c.mint} strokeWidth={1.7}/></View><View style={s.copy}><Text style={s.welcomeTitle}>دنیای چیرۆکەکان</Text></View><Sparkles size={21} color={GOLD.soft}/></View>
   <View accessibilityRole="tablist" style={s.categoryTabs}>{([{id:'letters',label:'چیرۆکی پیتەکان',Icon:Shapes},{id:'words',label:'چیرۆکی وشەکان',Icon:WholeWord}] as const).map(({id,label,Icon})=><TouchableOpacity key={id} accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{selected:category===id}} aria-selected={category===id} onPress={()=>setCategory(id)} style={[s.categoryTab,category===id&&s.categoryActive]}><Icon size={24} color={category===id?c.mint:c.muted} strokeWidth={1.8}/><Text style={[s.categoryLabel,category===id&&s.categoryLabelActive]}>{label}</Text></TouchableOpacity>)}</View>
   {category==='letters'?<>
    <ScrollView testID="story-letter-rail" horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.letterRail} style={s.railFrame}>
     <TouchableOpacity accessibilityRole="button" accessibilityLabel="هەموو چیرۆکی پیتەکان" accessibilityState={{selected:letterId===null}} onPress={()=>setLetterId(null)} style={[s.letterChip,s.allChip,letterId===null&&s.letterActive]}><Shapes size={18} color={letterId===null?'#fff':c.mint}/><Text style={[s.allText,letterId===null&&s.chipActiveText]}>هەمووی</Text></TouchableOpacity>
     {mockLetters.map(letter=><TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`چیرۆکی پیتی ${letter.glyph}`} accessibilityState={{selected:letterId===letter.id}} onPress={()=>setLetterId(letter.id)} style={[s.letterChip,letterId===letter.id&&s.letterActive]}><Text style={[s.letterGlyph,letterId===letter.id&&s.chipActiveText]}>{letter.glyph}</Text></TouchableOpacity>)}
    </ScrollView>
-   <View style={s.shelfHeading}><View style={s.smallIcon}><Headphones size={18} color={c.mint}/></View><View style={s.copy}><Text style={s.shelfTitle}>{selectedLetter?`چیرۆکی پیتی «${selectedLetter.glyph}»`:'هەموو چیرۆکی پیتەکان'}</Text></View></View>
-  </>:<View style={s.shelfHeading}><View style={s.smallIcon}><WholeWord size={20} color={c.mint}/></View><View style={s.copy}><Text style={s.shelfTitle}>وشەکان فێر ببە، چیرۆکەکە بکەرەوە</Text></View></View>}
+  </>:null}
  </View>;
  const renderItem=({item}:{item:ShelfItem})=>{
   if(item.heading)return <View style={s.groupHeading}><Text style={s.sectionTitle}>{item.heading}</Text><Text style={s.hint}>{item.subtitle}</Text>{loadError&&item.id==='listening-heading'&&<Text style={s.hint}>چیرۆکەکان بار نەکران؛ تکایە دووبارە بەشەکە بکەرەوە.</Text>}</View>;
@@ -64,11 +61,11 @@ export const StoriesListScreen:React.FC=()=>{
   return <TouchableOpacity accessibilityRole="button" accessibilityLabel={`${title}، ${template&&!story?'فێربوونی وشەکان':premium?'چیرۆکی تایبەت':'خوێندنەوەی چیرۆک'}`} onPress={action} activeOpacity={.88} style={s.bookCard}>
    <View style={[s.cover,template&&s.wordCover]}>
     {story?.coverImage!==undefined?<Image source={story.coverImage} accessible={false} resizeMode="contain" style={s.coverImage}/>:<View style={s.coverScene}><View style={s.coverHalo}><Text style={s.coverEmoji}>{template?.emoji||story?.coverEmoji||''}</Text></View><View style={s.coverStar}><Sparkles size={26} color={c.coralDark}/></View><View style={s.coverBook}><BookOpen size={25} color={c.mint}/></View></View>}
-    <View style={s.coverBadge}>{completed?<Check size={15} color={c.mint}/>:premium?<Lock size={15} color={c.muted}/>:category==='letters'?<Shapes size={15} color={c.mint}/>:<Headphones size={15} color={c.mint}/>}<Text style={s.badgeText}>{completed?'خوێندراوەتەوە':premium?'پەپوولە پڵەس':template?'بە وشەکانی تۆ':category==='letters'?'چیرۆکی پیت':'چیرۆکی گوێگرتن'}</Text></View>
+    <View style={s.coverBadge}>{completed?<Check size={15} color={c.mint}/>:premium?<Lock size={15} color={c.muted}/>:category==='letters'?<Shapes size={15} color={c.mint}/>:<Headphones size={15} color={c.mint}/>}</View>
    </View>
    <View style={s.bookBody}><Text style={s.bookTitle}>{title}</Text>
-    {template?<><View style={s.wordChips}>{words.map(word=><View key={word.id} style={[s.wordChip,currentProfile.learnedWordIds?.includes(word.id)&&s.wordKnown]}>{currentProfile.learnedWordIds?.includes(word.id)&&<Check size={13} color={c.mint}/>}<Text style={s.wordText}>{word.word}</Text></View>)}</View><View style={s.wordProgress} accessibilityRole="progressbar" accessibilityLabel="وشە فێربووەکان" accessibilityValue={{min:0,max:words.length,now:learned}}>{words.map((word,index)=><View key={word.id} style={[s.wordProgressPart,index<learned&&s.wordProgressDone]}/>)}</View></>:<Text numberOfLines={2} style={s.summary}>{story?.summaryKu||story?.pages[0]?.textKu}</Text>}
-    <View style={s.bookFooter}><View style={s.readButton}>{template&&!story?<WholeWord size={19} color="#fff"/>:<BookOpen size={19} color="#fff"/>}<Text style={s.readText}>{template&&!story?'وشەکان فێر ببە':'چیرۆکەکە بخوێنەوە'}</Text><ArrowLeft size={17} color="#fff"/></View>{story&&story.pages.length>1&&<Text style={s.pageCount}>{story.pages.length} لاپەڕە</Text>}</View>
+    {template?<><View style={s.wordChips}>{words.map(word=><View key={word.id} style={[s.wordChip,currentProfile.learnedWordIds?.includes(word.id)&&s.wordKnown]}>{currentProfile.learnedWordIds?.includes(word.id)&&<Check size={13} color={c.mint}/>}<Text style={s.wordText}>{word.word}</Text></View>)}</View><View style={s.wordProgress} accessibilityRole="progressbar" accessibilityLabel="وشە فێربووەکان" accessibilityValue={{min:0,max:words.length,now:learned}}>{words.map((word,index)=><View key={word.id} style={[s.wordProgressPart,index<learned&&s.wordProgressDone]}/>)}</View></>:null}
+    <View style={s.bookFooter}><View style={s.readButton}>{template&&!story?<WholeWord size={19} color="#fff"/>:<BookOpen size={19} color="#fff"/>}<ArrowLeft size={17} color="#fff"/></View></View>
    </View>
   </TouchableOpacity>;
  };

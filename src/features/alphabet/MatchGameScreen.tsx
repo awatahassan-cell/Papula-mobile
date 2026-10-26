@@ -97,7 +97,6 @@ export const MatchGameScreen: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={[s.container, { paddingTop: 8, paddingBottom: 14 }, tablet && { maxWidth: pageMax }]}><HelpHint text={sectionIntroductions['match-game']} />
-      <Text style={candyCard.sectionHeader}>{MENU_TEXT.today}</Text>
       {dueCount > 0 && <TouchableOpacity accessibilityRole="button" accessibilityLabel={MENU_TEXT.review} onPress={() => { void soundService.stopSpeaking(); setRoute('daily-practice'); }} style={[candyCard.big, candyCard.review, { backgroundColor: tiles[3 % tiles.length].face, borderBottomColor: tiles[3 % tiles.length].lip }]}>
         <View style={[candyCard.bigIcon, { backgroundColor: tiles[3 % tiles.length].chip }]}><Sprout size={38} color={tiles[3 % tiles.length].icon} strokeWidth={2.3} /></View>
         <View style={candyCard.body}><Text style={[candyCard.bigTitle, { color: tiles[3 % tiles.length].ink }]}>{MENU_TEXT.review}</Text><Text style={[candyCard.hint, { color: tiles[3 % tiles.length].ink }]}>{MENU_TEXT.reviewHint(dueCount)}</Text></View>
@@ -114,7 +113,7 @@ export const MatchGameScreen: React.FC = () => {
           </TouchableOpacity>;
         })}
       </View>
-      <Text style={[candyCard.sectionHeader, candyCard.sectionGap]}>🦋 {FREE_PLAY_TILE.title}</Text>
+      <View accessible accessibilityLabel={FREE_PLAY_TILE.title} style={candyCard.divider}><Text style={candyCard.dividerEmoji}>🦋</Text></View>
       <View style={tablet ? { flexDirection: 'row', gap: 12 } : { gap: 10 }}>
         {freePlayStates(currentProfile, text => soundService.canSpeak(text)).map((game, i) => {
           const Icon = game.open ? FREE_ICONS[game.id] : Lock, candy = tiles[(i + 2) % tiles.length], text = FREE_PLAY_TEXT[game.id];
@@ -190,6 +189,8 @@ const candyCard = StyleSheet.create({
   bigTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, textAlign: 'center' },
   more: { minHeight: 48, borderRadius: 18, borderWidth: 2, borderColor: '#cbd5e1', paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, alignSelf: 'center' },
   moreText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 15, color: '#475569' },
+  divider: { alignItems: 'center', marginTop: 6, borderTopWidth: 2, borderTopColor: '#e2e8f0', paddingTop: 6 },
+  dividerEmoji: { fontSize: 28 },
   sectionGap: { marginTop: 10 },
   sectionHeader: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#1e293b', textAlign: 'right', paddingHorizontal: 4 },
   tile: { minHeight: 72, borderRadius: 24, borderBottomWidth: 4, paddingVertical: 10, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },

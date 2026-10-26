@@ -1,3 +1,4 @@
+import { kurdishDigits } from '../../services/rewards';
 import React, { useCallback, useRef } from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Text } from '../../components/RTLText';
@@ -18,6 +19,6 @@ export const AlphabetGridScreen: React.FC = () => {
   const scroller = useRef<ScrollView>(null), pathTop = useRef(0), scrolled = useRef(false);
   const focus = useCallback((y: number) => { if (scrolled.current) return; scrolled.current = true; setTimeout(() => scroller.current?.scrollTo({ y: pathTop.current + y, animated: true }), 350); }, []);
   const completed = lessonPath(currentProfile).filter(node => node.status === 'completed').length;
-  return <ScrollView ref={scroller} contentContainerStyle={[s.container, { paddingHorizontal: learningLayout(width).padding, maxWidth: pageMax }]}><View style={s.progress}><View style={[s.iconBox, { backgroundColor: colors.lavender }]}><Route size={22} color={colors.mint} /></View><View style={{ flex: 1, minWidth: 0 }}><Text style={s.title}>{completed} لە ٣٤ وانە تەواو کراوە</Text><Text style={s.hint}>یەک پیت، چەند هەنگاوێکی خۆش</Text></View></View><View onLayout={event => { pathTop.current = event.nativeEvent.layout.y; }}><LearningPath onFocusY={focus} /></View></ScrollView>;
+  return <ScrollView ref={scroller} contentContainerStyle={[s.container, { paddingHorizontal: learningLayout(width).padding, maxWidth: pageMax }]}><View style={s.progress}><View style={[s.iconBox, { backgroundColor: colors.lavender }]}><Route size={22} color={colors.mint} /></View><View style={{ flex: 1, minWidth: 0 }}><Text accessibilityLabel={`${completed} لە ٣٤`} style={s.title}>{kurdishDigits(completed)} / ٣٤</Text></View></View><View onLayout={event => { pathTop.current = event.nativeEvent.layout.y; }}><LearningPath onFocusY={focus} /></View></ScrollView>;
 };
 const baseStyles = StyleSheet.create({container:{width:'100%',maxWidth:840,alignSelf:'center',paddingBottom:24},progress:{padding:14,borderRadius:24,backgroundColor:'#fff',flexDirection:'row',alignItems:'center',gap:12},iconBox:{width:44,height:44,borderRadius:16,alignItems:'center',justifyContent:'center'},title:{fontFamily:'IBMPlexSansArabic_700Bold',color:c.mint,fontSize:17},hint:{fontFamily:'IBMPlexSansArabic_400Regular',color:c.muted,fontSize:13}});

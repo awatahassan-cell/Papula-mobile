@@ -1,7 +1,7 @@
+import { kurdishDigits } from '../../services/rewards';
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Gift, Award, Flower2, Lock } from 'lucide-react-native';
-import { BackButton } from '../../components/BackButton';
 import { TactileButton } from '../../components/TactileButton';
 import { Text } from '../../components/RTLText';
 import { HelpHint } from '../../components/HelpButton';
@@ -20,7 +20,6 @@ export function StickersAlbumScreen() {
   return <ScrollView contentContainerStyle={s.page}>
     <HelpHint text={sectionIntroductions.stickers}/>
     <Text style={[s.title,{color:c.ink}]}>ئەلبوومەکەم 📖</Text>
-    <Text style={[s.hint,{color:c.muted}]}>یادگارییە جوانەکانی گەشتەکەت لێرەن.</Text>
     <View accessibilityRole="tablist" style={[s.tabs,{backgroundColor:c.lavender}]}>{tabs.map(({id,label,Icon})=><TactileButton key={id} accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{selected:active===id}} onPress={()=>{void soundService.stopSpeaking();setActive(id);}} style={[s.tab,active===id&&{backgroundColor:c.paper}]}><Icon size={26} color={c.mint}/><Text style={[s.tabText,{color:c.ink}]}>{label}</Text></TactileButton>)}</View>
     {active==='butterflies'?<GardenContents key={currentProfile.id} section="collection" embedded/>:active==='badges'?<BadgesComponent/>:<View style={s.grid}>{mockStickers.map(sticker=>{
       const open=currentProfile.unlockedStickerIds.includes(sticker.id)||currentProfile.stars>=sticker.unlockedAtStars;
@@ -31,9 +30,8 @@ export function StickersAlbumScreen() {
       </TactileButton>;
     })}</View>}
     <TactileButton accessibilityRole="button" accessibilityLabel="وشەکانم" onPress={()=>{void soundService.stopSpeaking();setRoute('my-words');}} style={{minHeight:56,borderRadius:20,borderWidth:2,borderColor:c.edge,backgroundColor:c.paper,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:10}}>
-      <Text style={[s.title,{color:c.ink,fontSize:18}]}>وشەکانم ({currentProfile.savedWords.length})</Text>
+      <Text style={[s.title,{color:c.ink,fontSize:18}]}>{kurdishDigits(currentProfile.savedWords.length)}</Text>
     </TactileButton>
-    <BackButton fullWidth onPress={()=>setRoute('garden')}>گەڕانەوە بۆ باغەکەم</BackButton>
   </ScrollView>;
 }
 const s=StyleSheet.create({page:{width:'100%',maxWidth:680,alignSelf:'center',padding:18,paddingBottom:32,gap:16},title:{fontSize:25,lineHeight:42,fontWeight:'700'},hint:{fontSize:14,lineHeight:26},tabs:{flexDirection:'row',gap:6,padding:6,borderRadius:24},tab:{flex:1,minHeight:74,borderRadius:20,gap:6,alignItems:'center',justifyContent:'center',padding:6},tabText:{fontSize:14,fontWeight:'700'},grid:{flexDirection:'row',flexWrap:'wrap',gap:12,justifyContent:'space-between'},cell:{width:'48%',minHeight:145,borderWidth:2,borderRadius:25,padding:14,gap:8,alignItems:'center',justifyContent:'center'},emoji:{fontSize:47},name:{fontSize:16,lineHeight:28,fontWeight:'700',textAlign:'center'}});

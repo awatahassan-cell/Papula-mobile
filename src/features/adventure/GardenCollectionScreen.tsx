@@ -16,7 +16,6 @@ export function GardenCollectionScreen() {
   return <ScrollView contentContainerStyle={s.page}>
     <HelpHint text={sectionIntroductions.garden}/>
     <Text style={[s.title,{color:c.ink}]}>باغەکەم</Text>
-    <Text style={[s.hint,{color:c.muted}]}>بە فێربوون، باغەکەت جوانتر دەبێت و هاوڕێکەت گەورە دەبێت.</Text>
     <SharedGarden profile={currentProfile} onOpen={id=>{const letter=mockLetters.find(item=>item.id===id);if(letter){setSelectedLetter(letter);setRoute('garden-quest');}}}/>
     <GardenContents key={currentProfile.id} section="companion" embedded/>
     <TactileButton accessibilityRole="button" accessibilityLabel="ئەلبوومەکەم" onPress={()=>setRoute('stickers')} style={{backgroundColor:c.paper,borderColor:c.edge,borderWidth:1,borderRadius:24,padding:16,alignItems:'center',gap:8}}>

@@ -1,4 +1,3 @@
-import { kurdishDigits } from '../../services/rewards';
 /** Screen-only Kurdish text for the butterfly garden (not narrated, so it stays out of the audio-scanned files). */
 export const GARDEN_TEXT = {
   title: 'باغەکەم',
@@ -18,7 +17,7 @@ export const GARDEN_TEXT = {
   locked: 'هێشتا نەکراوەتەوە',
   newOne: 'پەپوولەیەکی نوێ!',
   great: 'ئافەرین!',
-  next: (left: number) => `دواتر (${kurdishDigits(left)})`,
+  next: (_left: number) => 'دواتر',
   skip: 'لە باخچەکە ببینمەوە',
   close: 'داخستن',
   earnedBy: 'چۆن بەدەستت هێنا',

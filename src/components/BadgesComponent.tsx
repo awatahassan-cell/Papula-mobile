@@ -1,10 +1,11 @@
+import { kurdishDigits } from '../services/rewards';
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import { BRAND } from '../theme/tokens';
 import { completedLetterIds } from '../services/lessonPath';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
-import { Trophy, Lock, CheckCircle2, Award } from 'lucide-react-native';
+import { Trophy, Lock } from 'lucide-react-native';
 import { mockBadges } from '../data/mockBadges';
 import { useAppStore } from '../store/useAppStore';
 
@@ -39,18 +40,10 @@ export const BadgesComponent: React.FC = () => {
     <View style={styles.container}>
       {/* Banner */}
       <View style={styles.banner}>
-        <View style={styles.bannerBadge}>
-          <Award size={14} color={tone('#f59e0b')} />
-          <Text style={styles.bannerBadgeText}>دەستکەوت و نیشانەکان</Text>
-        </View>
-        <Text style={[styles.title, { color: '#ffffff' }]}>کۆکراوەی میدالیا زێڕینەکانت</Text>
-        <Text style={[styles.subtitle, { color: '#ffffff' }]}>
-          مەشق بکە، چیرۆک بخوێنەوە و پیتەکان فێربە بۆ کردنەوەی نیشانەکان!
-        </Text>
         <View style={styles.progressCounter}>
           <Trophy size={16} color={tone('#d97706')} />
           <Text style={styles.progressText}>
-            {unlockedCount} لە {mockBadges.length} بەدەستهاتووە
+            {kurdishDigits(unlockedCount)} / {kurdishDigits(mockBadges.length)}
           </Text>
         </View>
       </View>
@@ -81,23 +74,7 @@ export const BadgesComponent: React.FC = () => {
               </View>
 
               <Text style={styles.badgeTitle}>{badge.titleKu}</Text>
-              <Text style={styles.badgeDesc}>{badge.descriptionKu}</Text>
 
-              <View
-                style={[
-                  styles.statusPill,
-                  unlocked ? styles.statusPillUnlocked : styles.statusPillLocked,
-                ]}
-              >
-                {unlocked ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <CheckCircle2 size={12} color={tone('#166534')} />
-                    <Text style={styles.statusPillTextUnlocked}>بەدەستهاتووە</Text>
-                  </View>
-                ) : (
-                  <Text style={styles.statusPillTextLocked}>داخراوە</Text>
-                )}
-              </View>
             </View>
           );
         })}

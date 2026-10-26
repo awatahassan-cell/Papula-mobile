@@ -1,4 +1,4 @@
-import { BackButton } from '../../components/BackButton';
+import { kurdishDigits } from '../../services/rewards';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
 import React from 'react';
@@ -29,31 +29,24 @@ export const MyWordsScreen: React.FC = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>{currentProfile.savedWords.length} وشە</Text>
+          <Text style={styles.badgeText}>{kurdishDigits(currentProfile.savedWords.length)}</Text>
         </View>
 
         <View style={styles.titleCol}>
           <Text style={styles.title}>{strings.home.myWordsTitle}</Text>
-          <Text style={styles.subtitle}>
-            ئەو وشە خۆشانەی کە لە چیرۆک و پیتەکانەوە فێریان بوویت
-          </Text>
         </View>
       </View>
 
       {currentProfile.savedWords.length === 0 ? (
         <View style={styles.emptyCard}>
           <BookOpen size={48} color={tone('#f59e0b')} style={{ marginBottom: 10 }} />
-          <Text style={styles.emptyTitle}>هێشتا هیچ وشەیەکت پاشەکەوت نەکردووە</Text>
-          <Text style={styles.emptySub}>
-            کاتێک چیرۆکێک دەخوێنیتەوە، پەنجە بنێ بە وشەکاندا تاوەکو لێرە خەزن بکرێن!
-          </Text>
           <BigButton
             onPress={() => setRoute('stories')}
             variant="primary"
             size="md"
             style={styles.emptyBtn}
           >
-            دەستپێکردنی چیرۆکێک
+            چیرۆک
           </BigButton>
         </View>
       ) : (
@@ -85,7 +78,6 @@ export const MyWordsScreen: React.FC = () => {
         </View>
       )}
 
-      <BackButton onPress={() => setRoute('home')} fullWidth style={styles.homeBtn}>گەڕانەوە بۆ سەرەتا</BackButton>
     </ScrollView>
   );
 };

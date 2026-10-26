@@ -145,7 +145,7 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
         {index===1?<CharacterPicture symbol={item.glyph} size={compact?53:67} animate={false}/>:<Text style={[s.glyph,{color:c.ink}]}>{item.glyph}</Text>}
         {phase==='watch'&&item.id===round.answer&&<DemoPointer/>}
       </TactileButton>)}</View>
-      <View style={[s.footer,compact&&{height:52}]}>{phase==='won'?<TactileButton accessibilityRole="button" accessibilityLabel="بڕۆین بۆ هەنگاوی دواتر" onPress={advance} style={[s.primary,{backgroundColor:fill}]}><Text style={s.primaryText}>ئافەرم!</Text><ArrowLeft size={32} color="#fff"/></TactileButton>:<Text accessibilityLiveRegion="polite" style={[s.hint,{color:c.muted}]}>{error?'دەست لە دوگمەی دەنگ بدە':phase==='watch'?'سەیر بکە…':T.turn}</Text>}</View>
+      <View style={[s.footer,compact&&{height:52}]}>{phase==='won'?<TactileButton accessibilityRole="button" accessibilityLabel="بڕۆین بۆ هەنگاوی دواتر" onPress={advance} style={[s.primary,{backgroundColor:fill}]}><Text style={s.primaryText}>ئافەرم!</Text><ArrowLeft size={32} color="#fff"/></TactileButton>:error?<Volume2 size={34} color={c.coralDark}/>:null}</View>
     </>}
   </View>;
 }

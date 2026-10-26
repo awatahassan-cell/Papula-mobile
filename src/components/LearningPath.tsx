@@ -1,4 +1,3 @@
-import { kurdishDigits } from '../services/rewards';
 import { TactileButton as TouchableOpacity } from './TactileButton';
 import { BRAND, DONE, GOLD, LOCKED } from '../theme/tokens';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -123,7 +122,7 @@ export function LearningPath({ onFocusY }: { preview?: boolean; onFocusY?: (y: n
       const unitColor = [c.sky, c.peach, c.lavender, c.leaf][unit % 4];
       return <View key={'b' + unit} style={[s.unit, { top: y, backgroundColor: unitColor, direction: 'rtl' }]}>
         <View style={[s.unitBadge, { backgroundColor: accent === c.mint ? accentFill(c, isNight) : accent }]}><Text style={[s.unitNumber, accent === c.coralDark && isNight && { color: '#2a1b00' }]}>{unit + 1}</Text></View>
-        <View style={{ flex: 1 }}><Text style={[s.eyebrow, { color: c.muted }]}>بەشی {unit + 1}</Text><Text style={[s.unitTitle, { color: c.ink }]}>{unitNames[unit]}</Text></View>
+        <View style={{ flex: 1 }} accessible accessibilityLabel={unitNames[unit]} />
         <Star size={22} color={c.mint} fill={c.mint} />
       </View>;
     })}
@@ -145,8 +144,6 @@ export function LearningPath({ onFocusY }: { preview?: boolean; onFocusY?: (y: n
             <View style={[s.status, { backgroundColor: done ? DONE.face : locked ? LOCKED.badge : BRAND.main }]}>{done ? <Check color="#fff" size={15} /> : locked ? <Lock color="#fff" size={13} /> : <Play color="#fff" size={13} fill="#fff" />}</View>
           </TouchableOpacity>
         </View>
-        <Text style={[s.nodeLabel, { left: (W - 120) / 2, top: p.y + size / 2 + 8, transform: [{ translateX: dx }], color: current ? (isNight ? '#ffd66b' : c.mint) : c.muted }]}>{done ? 'دووبارە بکەوە' : locked ? `وانەی ${kurdishDigits(node.index + 1)}` : 'دەست پێ بکە'}</Text>
-        {current && <View pointerEvents="none" style={[s.startBadge, { left: (W - 140) / 2, top: p.y - size / 2 - 34, transform: [{ translateX: dx }], backgroundColor: isNight ? '#241c80' : '#ffffff', borderColor: isNight ? '#ffd66b' : '#c9b6ff', direction: 'rtl' }]}><Text style={[s.startLabel, { color: isNight ? '#ffd66b' : c.mint }]}>ئێستا نۆرەی تۆیە!</Text></View>}
         {current && <Animated.View pointerEvents="none" style={[s.butterfly, { left: (W - 60) / 2, top: p.y - size / 2 - 14, transform: [{ translateX: butterflyCenterX - W / 2 }, { translateY: bob.interpolate({ inputRange: [0, 1], outputRange: [6, -10] }) }, { rotate: bob.interpolate({ inputRange: [0, 1], outputRange: ['-8deg', '10deg'] }) }] }]}><PapulaMascot size={60} /></Animated.View>}
       </React.Fragment>;
     })}

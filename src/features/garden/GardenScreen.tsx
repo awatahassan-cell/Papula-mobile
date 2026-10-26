@@ -1,3 +1,4 @@
+import { kurdishDigits } from '../../services/rewards';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Animated, Easing, Modal, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,14 +18,14 @@ import { GOLD } from '../../theme/tokens';
 import { useAppStore } from '../../store/useAppStore';
 import { haptics } from '../../services/haptics';
 import {
-  GARDEN_BUTTERFLIES, GOAL_TEXT, GardenButterfly, RARITY_TEXT, earnedButterflies, fedToday, gardenCounts,
-  goalProgress, isEarned, nectarOf, nextStage, petFed, petMood, petStage, stageProgress, unseenButterflies,
+  GARDEN_BUTTERFLIES, GOAL_TEXT, GardenButterfly, earnedButterflies, fedToday, gardenCounts,
+  goalProgress, isEarned, nectarOf, petFed, petMood, petStage, stageProgress, unseenButterflies,
 } from '../../data/garden';
 import { GARDEN_TEXT as T } from './gardenText';
 
 const native = Platform.OS !== 'web';
-const GoldButton: React.FC<{ label: string; onPress: () => void; disabled?: boolean }> = ({ label, onPress, disabled }) =>
-  <TactileButton accessibilityRole="button" accessibilityLabel={label} disabled={disabled} onPress={onPress} style={[s.feed, disabled && s.feedOff]}><Text style={s.feedText}>{label}</Text></TactileButton>;
+const GoldButton: React.FC<{ label: string; onPress: () => void; disabled?: boolean; accessibilityLabel?: string }> = ({ label, onPress, disabled, accessibilityLabel }) =>
+  <TactileButton accessibilityRole="button" accessibilityLabel={accessibilityLabel || label} disabled={disabled} onPress={onPress} style={[s.feed, disabled && s.feedOff]}><Text style={s.feedText}>{label}</Text></TactileButton>;
 const RARITY_COLOR = { common: '#8aa0c8', rare: '#e0a800', legendary: '#d6478f' } as const;
 
 export const Butterfly: React.FC<{ item: GardenButterfly; size: number; locked?: boolean }> = ({ item, size, locked }) => {
@@ -55,8 +56,6 @@ const Reveal: React.FC<{ queue: GardenButterfly[]; onDone: () => void }> = ({ qu
           <Butterfly item={item} size={210} />
         </Animated.View>
         <Text style={[s.itemName, { color: c.ink }]}>{item.name}</Text>
-        <View style={[s.chip, { backgroundColor: RARITY_COLOR[item.rarity] }]}><Text style={s.chipText}>{RARITY_TEXT[item.rarity]}</Text></View>
-        <Text style={[s.small, { color: c.muted }]}>{GOAL_TEXT[item.kind](item.n)} ✓</Text>
         <GoldButton label={last ? T.great : T.next(queue.length - index - 1)} onPress={() => (last ? onDone() : setIndex(index + 1))} />
         {!last && <BigButton variant="secondary" size="sm" onPress={onDone}>{T.skip}</BigButton>}
       </View>
@@ -83,7 +82,7 @@ export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'
   }, [reduced, float]);
 
   const counts = gardenCounts(currentProfile), earned = earnedButterflies(currentProfile).length;
-  const fed = petFed(currentProfile), stage = petStage(fed), next = nextStage(fed), nectar = nectarOf(currentProfile);
+  const fed = petFed(currentProfile), stage = petStage(fed), nectar = nectarOf(currentProfile);
   const mood = petMood(currentProfile), fedNow = fedToday(currentProfile);
   const feedIt = () => { if (nectar < 1) return; feedPet(); setBounce(n => n + 1); haptics.success(); };
   const wake = () => { welcomePetBack(); setGreeted(true); setBounce(n => n + 1); haptics.success(); };
@@ -93,7 +92,6 @@ export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'
   return <Container {...(embedded?{style:{gap:14}}:{contentContainerStyle:[s.page,{maxWidth:pageMax}]})}>
     {!embedded&&<HelpHint text={SPOKEN_GUIDES.garden} disabled={!soundService.canSpeak(SPOKEN_GUIDES.garden)} />}
     {section!=='collection'&&<LinearGradient colors={sky} style={s.pet}>
-      <Text style={[s.heading, { color: isNight ? '#fff' : '#3b2f63' }]}>{T.friend}</Text>
       {mood === 'sleepy'
         ? <TactileButton accessibilityRole="button" accessibilityLabel={T.wakeLabel} onPress={wake}><PetArt stage={stage} mood={mood} size={section==='companion'?140:190} bounceKey={bounce} /></TactileButton>
         : <PetArt stage={stage} mood={mood} size={section==='companion'?140:190} bounceKey={bounce} />}
@@ -101,17 +99,15 @@ export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'
       <View accessibilityRole="progressbar" accessibilityLabel={T.friend} accessibilityValue={{ min: 0, max: 100, now: Math.round(stageProgress(fed) * 100) }} style={s.track}>
         <View style={[s.fill, { width: `${Math.round(stageProgress(fed) * 100)}%` }]} />
       </View>
-      {section!=='companion'&&<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{next ? T.toNext(next.name, next.from - fed) : T.maxStage}</Text>}
-      <Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{greeted ? T.welcomeBack : fedNow ? T.fedToday : mood === 'sleepy' ? T.sleepy : ''}</Text>
-      {section!=='companion'&&<View style={[s.nectar, { backgroundColor: GOLD.soft, borderColor: GOLD.border }]}><Text style={s.nectarText}>🍯 {T.nectar(nectar)}</Text></View>}
-      <GoldButton label={T.feed} disabled={nectar < 1} onPress={feedIt} />
-      {nectar < 1 && (section==='companion'?<BigButton variant="secondary" onPress={()=>setRoute('home')} style={s.wide}>با گەشتەکەم بەردەوام بکەم</BigButton>:<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{T.noNectar}</Text>)}
+      <Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{greeted || fedNow ? '💗' : mood === 'sleepy' ? '💤' : ''}</Text>
+      {section!=='companion'&&<View style={[s.nectar, { backgroundColor: GOLD.soft, borderColor: GOLD.border }]}><Text accessibilityLabel={T.nectar(nectar)} style={s.nectarText}>🍯 {kurdishDigits(nectar)}</Text></View>}
+      <GoldButton label="🍯" accessibilityLabel={T.feed} disabled={nectar < 1} onPress={feedIt} />
+      {nectar < 1 && (section==='companion'?<BigButton variant="secondary" onPress={()=>setRoute('home')} style={s.wide}>🦋</BigButton>:null)}
     </LinearGradient>}
 
     {section!=='companion'&&<>
     <View style={s.collectionHead}>
-      <Text style={[s.heading, { color: c.ink }]}>{T.collection}</Text>
-      <View style={[s.chip, { backgroundColor: c.paper, borderColor: c.edge, borderWidth: 1 }]}><Text style={[s.small, { color: c.ink }]}>{T.count(earned, GARDEN_BUTTERFLIES.length)}</Text></View>
+      <View style={[s.chip, { backgroundColor: c.paper, borderColor: c.edge, borderWidth: 1 }]}><Text style={[s.small, { color: c.ink }]}>{kurdishDigits(earned)} / {kurdishDigits(GARDEN_BUTTERFLIES.length)}</Text></View>
     </View>
     <View style={s.grid}>{GARDEN_BUTTERFLIES.map((item, index) => {
       const open = isEarned(item, counts), isNew = open && !currentProfile.seenButterflyIds?.includes(item.id);
@@ -132,8 +128,6 @@ export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'
         <View style={[s.revealCard, { backgroundColor: c.paper, borderColor: isEarned(selected, counts) ? RARITY_COLOR[selected.rarity] : c.edge }]}>
           <Butterfly item={selected} size={170} locked={!isEarned(selected, counts)} />
           <Text style={[s.itemName, { color: c.ink }]}>{isEarned(selected, counts) ? selected.name : T.locked}</Text>
-          <View style={[s.chip, { backgroundColor: RARITY_COLOR[selected.rarity] }]}><Text style={s.chipText}>{RARITY_TEXT[selected.rarity]}</Text></View>
-          <Text style={[s.small, { color: c.muted }]}>{T.earnedBy}: {GOAL_TEXT[selected.kind](selected.n)}</Text>
           {!isEarned(selected, counts) && <View accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: selected.n, now: Math.min(selected.n, counts[selected.kind]) }} style={s.track}><View style={[s.fill, { width: `${Math.round(goalProgress(selected, counts) * 100)}%` }]} /></View>}
           <BigButton variant="secondary" onPress={() => setSelected(null)}>{T.close}</BigButton>
         </View>
