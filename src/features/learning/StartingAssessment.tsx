@@ -30,7 +30,7 @@ export const StartingAssessment:React.FC<{onExit:()=>void}>=({onExit})=>{
   return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpHint text={exerciseHelp.assessment} />
     <Text style={s.title}>با بزانین چی دەزانیت</Text><Text style={s.text}>ئەمە تاقیکردنەوەی نمرە نییە؛ «هێشتا نازانم»یش وەڵامێکی باشە.</Text><Text style={s.text}>{index+1} / {questions.length}</Text>
     <View style={s.card}><Text style={s.emoji}>{question.emoji}</Text><Text style={s.text}>گوێ بگرە و هەڵبژێرە</Text>
-      <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>{const active=++token.current;void soundService.speakWord(question.prompt,{onEnd:()=>{if(token.current===active)setHeard(true);}});}}><Text style={s.buttonText}>پرسیارەکە ببیستە</Text></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>{const active=++token.current;void soundService.speakWord(question.prompt,{onEnd:()=>{if(token.current===active)setHeard(true);},onError:()=>{if(token.current===active)setHeard(true);}});}}><Text style={s.buttonText}>پرسیارەکە ببیستە</Text></TouchableOpacity>
       <View style={s.row}>{question.options.map(option=><TouchableOpacity key={option.id} accessibilityRole="button" disabled={answered||!heard} style={[s.tile,!heard&&s.disabled]} onPress={()=>choose(option.id)}><Text style={s.glyph}>{option.text}</Text></TouchableOpacity>)}</View>
       {!answered && <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>choose('skip')}><Text style={s.text}>هێشتا نازانم</Text></TouchableOpacity>}
       {answered && <Text style={s.text}>سوپاس! با یاریی دواتر ببینین</Text>}

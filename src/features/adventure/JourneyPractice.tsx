@@ -25,7 +25,7 @@ export function JourneyPractice({letterId,free=false,onExit}:{letterId:string;fr
   const narrate=useCallback(()=>{
     const active=++token.current;clearTimeout(timer.current);setAudioError(false);
     const parts=round?[instruction,round.kind==='missing'?round.word:`پیتی ${round.letter.name}`]:[instruction];
-    const play=(i:number)=>{if(active!==token.current)return;if(i===parts.length){setHeard(true);return;}void soundService.speakWord(parts[i],{onEnd:()=>{if(active===token.current)timer.current=setTimeout(()=>play(i+1),i===0?900:0);},onError:()=>{if(active===token.current)setAudioError(true);}});};
+    const play=(i:number)=>{if(active!==token.current)return;if(i===parts.length){setHeard(true);return;}void soundService.speakWord(parts[i],{onEnd:()=>{if(active===token.current)timer.current=setTimeout(()=>play(i+1),i===0?900:0);},onError:()=>{if(active===token.current){setAudioError(true);setHeard(true);}}});};
     play(0);
   },[instruction,round]);
   useFocusEffect(useCallback(()=>{setHeard(false);narrate();return()=>{token.current++;clearTimeout(timer.current);void soundService.stopSpeaking();};},[narrate]));

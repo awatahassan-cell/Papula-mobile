@@ -19,6 +19,9 @@ import { getLetterStory } from '../../data/letterStories';
 import { PLAY_PILOT_TEXT as T } from './playPilotText';
 import { playJourneyContent } from './playJourneyContent';
 
+/** Narration that neither finishes nor fails (a call, a lost audio session) must not leave the child unable to answer. */
+const WATCH_LIMIT_MS=12000;
+
 function DemoPointer() {
   const reduced=useReducedMotion();
   const [tap]=useState(()=>new Animated.Value(0));
@@ -72,7 +75,7 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
   const [showIntro]=useState(()=>playPilotProgress(currentProfile,letterId).length===0&&!isLessonComplete(currentProfile,letterId));
   const [phase,setPhase]=useState<'watch'|'play'|'won'>('watch');
   const [mistakes,setMistakes]=useState(0),[demoVersion,setDemoVersion]=useState(0),[error,setError]=useState(false);
-  const token=useRef(0),locked=useRef(false),nextLock=useRef(false),timer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined);
+  const token=useRef(0),locked=useRef(false),nextLock=useRef(false),timer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined),guard=useRef<ReturnType<typeof setTimeout>|undefined>(undefined);
   const done=index>=rounds.length,round=rounds[Math.min(index,2)];
   const planted=gardenProgress(currentProfile,letterId).flowerSpot!==undefined;
   const beginner=currentProfile.ageGroup!=='7-8'||currentProfile.placement?.recommendedLevel===1;
@@ -83,22 +86,22 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
   const narrate=useCallback(()=>{
     // A changed demo request intentionally replays the sample; store ticks do not.
     void demoVersion;
-    const active=++token.current;clearTimeout(timer.current);setError(false);
-    if(!done){setPhase('watch');locked.current=false;}
+    const active=++token.current;clearTimeout(timer.current);clearTimeout(guard.current);setError(false);
+    if(!done){setPhase('watch');locked.current=false;guard.current=setTimeout(()=>{if(active===token.current)setPhase(current=>current==='watch'?'play':current);},WATCH_LIMIT_MS);}
     const parts=done?[instruction]:[...(intro?[T.intro]:[]),instruction];
     const run=(i:number)=>{if(active!==token.current)return;if(i===parts.length){if(!done)timer.current=setTimeout(()=>{if(active!==token.current)return;setPhase('play');void soundService.speakWord(T.turn);},850);return;}
-      void soundService.speakWord(parts[i],{onEnd:()=>{if(active===token.current)timer.current=setTimeout(()=>run(i+1),i+1<parts.length?450:0);},onError:()=>{if(active===token.current)setError(true);}});
+      void soundService.speakWord(parts[i],{onEnd:()=>{if(active===token.current)timer.current=setTimeout(()=>run(i+1),i+1<parts.length?450:0);},onError:()=>{if(active!==token.current)return;setError(true);if(!done){locked.current=false;setPhase('play');}}});
     };run(0);
   },[done,instruction,intro,demoVersion]);
-  useFocusEffect(useCallback(()=>{narrate();return()=>{token.current++;clearTimeout(timer.current);void soundService.stopSpeaking();};},[narrate]));
+  useFocusEffect(useCallback(()=>{narrate();return()=>{token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();};},[narrate]));
   const pick=(id:string)=>{
     if(phase!=='play'||locked.current)return;
     locked.current=true;
     recordPracticeResult([letterId],id===round.answer,undefined,index===2?'word':'recognition',true);
     if(id!==round.answer){Promise.resolve().then(()=>{locked.current=false;});setMistakes(n=>n+1);soundService.playEncouragingTryAgain();void soundService.speakWord(T.retry);if(mistakes+1>=2)setDemoVersion(n=>n+1);return;}
-    locked.current=true;nextLock.current=false;token.current++;clearTimeout(timer.current);setPhase('won');completePlayPilotRound(PLAY_PILOT_STEPS[index],letterId);soundService.playCorrect();void soundService.speakWord(T.success);
+    locked.current=true;nextLock.current=false;token.current++;clearTimeout(timer.current);clearTimeout(guard.current);setPhase('won');completePlayPilotRound(PLAY_PILOT_STEPS[index],letterId);soundService.playCorrect();void soundService.speakWord(T.success);
   };
-  const advance=()=>{if(phase!=='won'||nextLock.current)return;nextLock.current=true;token.current++;clearTimeout(timer.current);void soundService.stopSpeaking();locked.current=false;setPhase('watch');setMistakes(0);setIndex(n=>n+1);};
+  const advance=()=>{if(phase!=='won'||nextLock.current)return;nextLock.current=true;token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();locked.current=false;setPhase('watch');setMistakes(0);setIndex(n=>n+1);};
   const fill=accentFill(c,isNight);
   return <View testID="play-pilot-journey" style={[s.page,{backgroundColor:c.background},compact&&{padding:8,gap:6}]}>
     <HelpHint text={instruction}/>

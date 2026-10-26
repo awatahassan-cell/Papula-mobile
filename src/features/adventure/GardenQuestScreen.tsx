@@ -72,7 +72,7 @@ export function LegacyGardenQuest({letterId}:{letterId:string}) {
       }
       void soundService.speakWord(part,{
         onEnd:()=>run(index+1),
-        onError:()=>{if(attempt.current===token){setSpeaking(false);setAudioError(true);}},
+        onError:()=>{if(attempt.current===token){setSpeaking(false);setAudioError(true);setHeard(true);}},
       });
     };
     run(0);
