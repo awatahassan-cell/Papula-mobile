@@ -25,12 +25,17 @@ import { suggestedGames } from '../../services/gameSuggestions';
 import { dueReviewLetters } from '../../services/learningEngine';
 import { dueWordCount } from '../../data/vocabulary';
 import { PairsGame, CatchGame, TrainGame } from '../freeplay/FreePlayGames';
+import { BasketGame, FillGame, MatchLettersGame, OddGame } from '../freeplay/FreePlayMore';
+import { PALETTE, Tone } from '../freeplay/playKit';
 import { FREE_PLAY_TEXT, FREE_PLAY_TILE } from '../freeplay/freePlayText';
 import { kurdishDigits } from '../../services/rewards';
 import { FreePlayId, freePlayStates } from '../../services/freePlay';
 
 type GameMode = 'word' | 'sound' | 'similar' | 'phonics' | 'syllables' | 'vocab' | 'quests' | FreePlayId;
-const FREE_ICONS: Record<FreePlayId, string> = { pairs: '🃏', catch: '🫧', train: '🚂' };
+const FREE_ICONS: Record<FreePlayId, { icon: string; tone: Tone }> = {
+  pairs: { icon: '🃏', tone: 'purple' }, catch: { icon: '🫧', tone: 'sky' }, match: { icon: '🖼', tone: 'indigo' }, odd: { icon: '👁', tone: 'purple' },
+  basket: { icon: '🧺', tone: 'emerald' }, fill: { icon: '🔍', tone: 'rose' }, train: { icon: '🚂', tone: 'amber' },
+};
 
 const MENU_TEXT = { today: 'ئەمڕۆ ئەم یارییانە بکە', more: 'یارییەکانی تر', review: 'مەشقی دووبارەکردنەوە', reviewHint: (n: number) => `${n} شت کاتی بیرخستنەوەیانە` };
 
@@ -91,6 +96,10 @@ export const MatchGameScreen: React.FC = () => {
   if (mode === 'pairs') return <PairsGame onExit={() => setMode('menu')} />;
   if (mode === 'catch') return <CatchGame onExit={() => setMode('menu')} />;
   if (mode === 'train') return <TrainGame onExit={() => setMode('menu')} />;
+  if (mode === 'basket') return <BasketGame onExit={() => setMode('menu')} />;
+  if (mode === 'odd') return <OddGame onExit={() => setMode('menu')} />;
+  if (mode === 'match') return <MatchLettersGame onExit={() => setMode('menu')} />;
+  if (mode === 'fill') return <FillGame onExit={() => setMode('menu')} />;
   if (mode === 'word') return <WordBuilder onExit={() => setMode('menu')} />;
   if (mode === 'sound' || mode === 'similar') return <LetterPractice mode={mode} onExit={() => setMode('menu')} />;
 
@@ -115,15 +124,15 @@ export const MatchGameScreen: React.FC = () => {
         })}
       </View>
       <View accessible accessibilityLabel={FREE_PLAY_TILE.title} style={candyCard.divider}><Text style={candyCard.dividerEmoji}>🦋</Text></View>
-      <View style={tablet ? { flexDirection: 'row', gap: 12 } : { gap: 10 }}>
-        {freePlayStates(currentProfile, text => soundService.canSpeak(text)).map((game, i) => {
-          const icon = game.open ? FREE_ICONS[game.id] : '🔒', candy = tiles[(i + 2) % tiles.length], text = FREE_PLAY_TEXT[game.id];
-          return <TouchableOpacity key={game.id} accessibilityRole="button" accessibilityState={{ disabled: !game.open }} accessibilityLabel={game.open ? text.title : `${text.title}. ${game.missing > 0 ? FREE_PLAY_TEXT.locked(game.missing) : FREE_PLAY_TEXT.notReady}`}
+      <View style={candyCard.freeGrid}>
+        {freePlayStates(currentProfile, text => soundService.canSpeak(text)).map(game => {
+          const text = FREE_PLAY_TEXT[game.id], look = FREE_ICONS[game.id], p = PALETTE[look.tone];
+          return <TouchableOpacity key={game.id} accessibilityRole="button" accessibilityState={{ disabled: !game.open }}
+            accessibilityLabel={game.open ? text.title : `${text.title}. ${game.missing > 0 ? FREE_PLAY_TEXT.locked(game.missing) : FREE_PLAY_TEXT.notReady}`}
             onPress={() => { if (!game.open) return; void soundService.stopSpeaking(); setMode(game.id); }}
-            style={[candyCard.tile, tablet && { flex: 1 }, { backgroundColor: candy.face, borderBottomColor: candy.lip }, !game.open && { opacity: 0.55 }]}>
-            <View style={[candyCard.icon, { backgroundColor: candy.chip }]}><CharacterPicture symbol={icon} size={40} animate={false} /></View>
-            <View style={candyCard.body}><Text style={[candyCard.title, { color: candy.ink }]}>{text.title}</Text>
-              {!game.open && game.missing > 0 && <Text style={[candyCard.hint, { color: candy.ink, fontSize: 16 }]}>+{kurdishDigits(game.missing)}</Text>}</View>
+            style={[candyCard.freeTile, { backgroundColor: p.soft, borderColor: p.face, borderBottomColor: p.lip }, !game.open && { opacity: 0.5 }]}>
+            <CharacterPicture symbol={game.open ? look.icon : '🔒'} size={64} animate={false} />
+            <Text numberOfLines={1} style={[candyCard.freeTitle, { color: p.ink }]}>{game.open || game.missing === 0 ? text.title : `+${kurdishDigits(game.missing)}`}</Text>
           </TouchableOpacity>;
         })}
       </View>
@@ -192,6 +201,9 @@ const candyCard = StyleSheet.create({
   moreText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 15, color: '#475569' },
   divider: { alignItems: 'center', marginTop: 6, borderTopWidth: 2, borderTopColor: '#e2e8f0', paddingTop: 6 },
   dividerEmoji: { fontSize: 28 },
+  freeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'center' },
+  freeTile: { width: '47%', flexGrow: 1, minHeight: 124, borderRadius: 26, borderWidth: 4, borderBottomWidth: 8, alignItems: 'center', justifyContent: 'center', gap: 4, padding: 8 },
+  freeTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 15, textAlign: 'center' },
   sectionGap: { marginTop: 10 },
   sectionHeader: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#1e293b', textAlign: 'right', paddingHorizontal: 4 },
   tile: { minHeight: 72, borderRadius: 24, borderBottomWidth: 4, paddingVertical: 10, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },

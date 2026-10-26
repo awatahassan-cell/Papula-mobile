@@ -1,40 +1,25 @@
 import { kurdishDigits } from '../../services/rewards';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, Platform, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { Volume2 } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useReducedMotion } from '../../components/Motion';
 import { BackButton } from '../../components/BackButton';
+import { CharacterPicture } from '../../components/CharacterPicture';
 import { Text } from '../../components/RTLText';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
-import { useThemeStyles } from '../../theme/useAppearance';
 import { soundService } from '../../services/soundService';
 import { useAppStore } from '../../store/useAppStore';
 import { LearningWord, shuffled } from '../../services/learningEngine';
 import { completedLetterIds } from '../../services/lessonPath';
 import { mockLetters } from '../../data/mockLetters';
 import { pairWords, trainWords } from '../../services/freePlay';
-import { learningStyles as baseLearningStyles } from '../learning/learningStyles';
+import { BUBBLE_COLOURS, Finish, K, PALETTE, PlayHeader, Tile, canSay, say, sayLetter, useStop } from './playKit';
 import { FREE_PLAY_TEXT as T } from './freePlayText';
 
 type Props = { onExit: () => void };
-const say = (text: string) => { if (soundService.canSpeak(text)) void soundService.speakWord(text); };
-const sayLetter = (glyph: string) => { const letter = mockLetters.find(item => item.glyph === glyph); void soundService.speakWord(glyph, { letterName: letter?.name }); };
-const useStop = () => useEffect(() => () => { void soundService.stopSpeaking(); }, []);
-const canSay = (text: string) => soundService.canSpeak(text);
-
-/** Finished screen shared by the three games. */
-const Finish: React.FC<{ onAgain: () => void; onExit: () => void }> = ({ onAgain, onExit }) => {
-  const s = useThemeStyles(baseLearningStyles);
-  return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.emoji}>🦋</Text><Text style={s.title}>{T.done}</Text>
-    <TouchableOpacity accessibilityRole="button" style={s.button} onPress={onAgain}><Text style={s.buttonText}>{T.again}</Text></TouchableOpacity>
-    <BackButton fullWidth onPress={onExit}>{T.back}</BackButton>
-  </ScrollView>;
-};
 
 /** Memory: a picture card and the card with its word. Opening a card reads the word aloud; a wrong pair just turns back. */
 export const PairsGame: React.FC<Props> = ({ onExit }) => {
-  const s = useThemeStyles(baseLearningStyles);
   const { currentProfile, recordPracticeResult } = useAppStore();
   const [run, setRun] = useState(0);
   const words = useMemo(() => shuffled(pairWords(currentProfile, canSay)).slice(0, 3), [run]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -64,13 +49,13 @@ export const PairsGame: React.FC<Props> = ({ onExit }) => {
       timer.current = setTimeout(() => setOpen([]), 1100);
     }
   };
-  return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.title}>{T.pairs.ask}</Text>
-    <View style={s.row}>{cards.map(card => {
-      const shown = open.includes(card.key) || done.includes(card.key);
+  return <ScrollView contentContainerStyle={K.page}>
+    <View style={K.row}>{cards.map((card, i) => {
+      const shown = open.includes(card.key) || done.includes(card.key), tone = BUBBLE_COLOURS[i % BUBBLE_COLOURS.length];
+      const finished = done.includes(card.key);
       return <TouchableOpacity key={card.key} accessibilityRole="button" accessibilityLabel={shown ? card.word.word : '🦋'} onPress={() => flip(card.key)}
-        style={[s.tile, local.card, !shown && local.back, done.includes(card.key) && s.correct]}>
-        {!shown ? <Text style={s.emoji}>🦋</Text> : card.pic ? <Text style={[s.emoji, { fontSize: 52, lineHeight: 62 }]}>{card.word.imageEmoji}</Text> : <Text style={s.glyph}>{card.word.word}</Text>}
+        style={[K.tile, local.card, shown ? { backgroundColor: finished ? PALETTE.emerald.soft : '#ffffff', borderColor: finished ? PALETTE.emerald.face : PALETTE.amber.face, borderBottomColor: finished ? PALETTE.emerald.lip : PALETTE.amber.lip } : { backgroundColor: tone.face, borderColor: tone.lip, borderBottomColor: tone.lip }]}>
+        {!shown ? <CharacterPicture symbol="🦋" size={52} animate={false} /> : card.pic ? <CharacterPicture symbol={card.word.imageEmoji} size={72} animate={false} /> : <Text style={K.glyph}>{card.word.word}</Text>}
       </TouchableOpacity>;
     })}</View>
     <BackButton fullWidth onPress={onExit}>{T.back}</BackButton>
@@ -78,15 +63,16 @@ export const PairsGame: React.FC<Props> = ({ onExit }) => {
 };
 
 const ROUNDS = 6;
-const BUBBLE = 88, LEFTS = ['0%', '16%', '32%', '48%', '64%', '73%'];
+const BUBBLE = 92;
+const LEFTS = ['0%', '16%', '32%', '48%', '64%', '72%'];
 /** The sky takes the space left under the header and above the back button and tab bar. */
-const skyHeight = (windowHeight: number) => Math.max(400, Math.min(680, windowHeight - 330));
+const skyHeight = (windowHeight: number) => Math.max(380, Math.min(660, windowHeight - 400));
 type Letter = (typeof mockLetters)[number];
-/** One bubble rising slowly from the bottom edge of the sky and starting over when it leaves the top; with reduced motion it just sits still. */
+/** One coloured bubble rising slowly from the bottom edge of the sky and starting over when it leaves the top; with reduced motion it just sits still. */
 const Bubble: React.FC<{ letter: Letter; index: number; state: 'idle' | 'caught' | 'wrong'; height: number; onPress: () => void }> = ({ letter, index, state, height, onPress }) => {
-  const s = useThemeStyles(baseLearningStyles);
   const reduced = useReducedMotion();
   const [y] = useState(() => new Animated.Value(height));
+  const tone = BUBBLE_COLOURS[index % BUBBLE_COLOURS.length];
   useEffect(() => {
     if (reduced) { y.setValue(24 + (index % 3) * Math.round((height - BUBBLE - 48) / 2)); return; }
     let alive = true;
@@ -100,14 +86,15 @@ const Bubble: React.FC<{ letter: Letter; index: number; state: 'idle' | 'caught'
     return () => { alive = false; y.stopAnimation(); };
   }, [reduced, index, y, height]);
   return <Animated.View style={[local.floater, { left: LEFTS[index % LEFTS.length] as `${number}%`, transform: [{ translateY: y }] }]}>
-    <TouchableOpacity accessibilityRole="button" accessibilityLabel={letter.glyph} onPress={onPress} style={[local.bubble, state === 'caught' && local.caught, state === 'wrong' && local.wrong]}>
-      <View style={local.shine} /><Text style={[s.glyph, { fontSize: 42, lineHeight: 56 }]}>{letter.glyph}</Text>
+    <TouchableOpacity accessibilityRole="button" accessibilityLabel={letter.glyph} onPress={onPress}
+      style={[local.bubble, { backgroundColor: tone.face + 'cc', borderColor: tone.lip }, state === 'caught' && local.caught, state === 'wrong' && local.wrong]}>
+      <View style={local.shine} /><Text style={local.bubbleText}>{letter.glyph}</Text>
     </TouchableOpacity>
   </Animated.View>;
 };
+
 /** The child hears a letter and taps its bubble. No clock and nothing falls; a wrong bubble just fades. */
 export const CatchGame: React.FC<Props> = ({ onExit }) => {
-  const s = useThemeStyles(baseLearningStyles);
   const { currentProfile, recordPracticeResult } = useAppStore();
   const letters = useMemo(() => mockLetters.filter(letter => completedLetterIds(currentProfile).includes(letter.id)), []); // eslint-disable-line react-hooks/exhaustive-deps
   const [run, setRun] = useState(0), [round, setRound] = useState(0), [caught, setCaught] = useState(false), [wrong, setWrong] = useState<string[]>([]);
@@ -130,14 +117,13 @@ export const CatchGame: React.FC<Props> = ({ onExit }) => {
       missed.current = true; setWrong(list => [...list, id]); soundService.playEncouragingTryAgain();
     }
   };
-  return <ScrollView contentContainerStyle={s.container}>
-    <View style={local.head}>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel={T.catch.ask} style={local.speaker} onPress={() => sayLetter(target.glyph)}><Volume2 size={34} color="#ffffff" strokeWidth={2.4} /></TouchableOpacity>
-      <Text style={[s.title, { flex: 1 }]}>{T.catch.ask}</Text><Text style={s.text}>{kurdishDigits(round + 1)} / {kurdishDigits(ROUNDS)}</Text>
-    </View>
-    <View style={[local.sky, { height: sky }]}>{options.map((letter, i) => <Bubble key={`${run}-${round}-${letter.id}`} letter={letter} index={i} height={sky}
-      state={caught && letter.id === target.id ? 'caught' : wrong.includes(letter.id) ? 'wrong' : 'idle'} onPress={() => tap(letter.id)} />)}</View>
-    {caught && <Text accessibilityLiveRegion="polite" style={s.text}>{T.right} 🦋</Text>}
+  return <ScrollView contentContainerStyle={K.page}>
+    <PlayHeader tone="amber" label={T.catch.ask} onSpeak={() => sayLetter(target.glyph)} counter={`${kurdishDigits(round + 1)} / ${kurdishDigits(ROUNDS)}`}>
+      <Text style={[K.target, { color: PALETTE.rose.lip, backgroundColor: PALETTE.rose.soft, borderColor: PALETTE.rose.face }]}>{target.glyph}</Text>
+    </PlayHeader>
+    <LinearGradient colors={['#38bdf8', '#7dd3fc', '#cffafe']} style={[K.area, { height: sky }]}>{options.map((letter, i) => <Bubble key={`${run}-${round}-${letter.id}`} letter={letter} index={i} height={sky}
+      state={caught && letter.id === target.id ? 'caught' : wrong.includes(letter.id) ? 'wrong' : 'idle'} onPress={() => tap(letter.id)} />)}</LinearGradient>
+    {caught && <Text accessibilityLiveRegion="polite" style={K.cheer}>{T.right}</Text>}
     <BackButton fullWidth onPress={onExit}>{T.back}</BackButton>
   </ScrollView>;
 };
@@ -145,7 +131,6 @@ export const CatchGame: React.FC<Props> = ({ onExit }) => {
 const TRAINS = 3;
 /** A picture and empty carriages: the child taps the letters in order. A wrong letter just stays in the bank. */
 export const TrainGame: React.FC<Props> = ({ onExit }) => {
-  const s = useThemeStyles(baseLearningStyles);
   const { currentProfile, recordPracticeResult } = useAppStore();
   const [run, setRun] = useState(0), [index, setIndex] = useState(0), [filled, setFilled] = useState(0), [wrong, setWrong] = useState<number | null>(null);
   const queue = useMemo<LearningWord[]>(() => shuffled(trainWords(currentProfile, canSay)).slice(0, TRAINS), [run]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -164,29 +149,31 @@ export const TrainGame: React.FC<Props> = ({ onExit }) => {
     } else { missed.current = true; setWrong(tile.id); soundService.playEncouragingTryAgain(); setTimeout(() => setWrong(null), 500); }
   };
   const next = () => { setUsedIds([]); missed.current = false; setFilled(0); setIndex(index + 1); };
-  return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.text}>{kurdishDigits(index + 1)} / {kurdishDigits(queue.length)}</Text>
-    <Text style={s.title}>{T.train.ask}</Text>
-    <TouchableOpacity accessibilityRole="button" accessibilityLabel={word.word} onPress={() => say(word.word)}><Text style={[s.emoji, { fontSize: 84, lineHeight: 100 }]}>{word.imageEmoji}</Text></TouchableOpacity>
-    <View style={s.row}>{word.units.map((glyph, i) => <View key={i} style={[s.tile, local.slot, i < filled && s.correct]}>{i < filled && <Text style={s.glyph}>{glyph}</Text>}</View>)}</View>
-    <View style={s.row}>{bank.map(tile => <TouchableOpacity key={tile.id} accessibilityRole="button" accessibilityLabel={tile.glyph} onPress={() => tap(tile)}
-      style={[s.tile, usedIds.includes(tile.id) && s.disabled, wrong === tile.id && s.retry]}><Text style={s.glyph}>{tile.glyph}</Text></TouchableOpacity>)}</View>
-    {complete && <Text accessibilityLiveRegion="polite" style={s.text}>{T.right} 🦋</Text>}
-    {complete && <TouchableOpacity accessibilityRole="button" style={s.button} onPress={next}><Text style={s.buttonText}>{T.next}</Text></TouchableOpacity>}
+  return <ScrollView contentContainerStyle={K.page}>
+    <PlayHeader tone="amber" label={word.word} onSpeak={() => say(word.word)} counter={`${kurdishDigits(index + 1)} / ${kurdishDigits(queue.length)}`}>
+      <CharacterPicture symbol="🚂" size={64} />
+    </PlayHeader>
+    <LinearGradient colors={['#fef3c7', '#ffedd5', '#fff7ed']} style={[K.area, local.trainArea]}>
+      <View style={local.picCard}><CharacterPicture symbol={word.imageEmoji} size={110} /></View>
+      <View style={K.row}>{word.units.map((glyph, i) => <View key={i} style={[K.tile, local.slot, i < filled && { backgroundColor: PALETTE.emerald.soft, borderColor: PALETTE.emerald.face, borderStyle: 'solid' }]}>{i < filled && <Text style={K.glyph}>{glyph}</Text>}</View>)}</View>
+      <View style={K.row}>{bank.map(tile => <Tile key={tile.id} tone="amber" label={tile.glyph} state={wrong === tile.id ? 'wrong' : 'idle'} disabled={usedIds.includes(tile.id)} onPress={() => tap(tile)}
+        style={usedIds.includes(tile.id) ? { opacity: 0.25 } : undefined}><Text style={K.glyph}>{tile.glyph}</Text></Tile>)}</View>
+      {complete && <Text accessibilityLiveRegion="polite" style={K.cheer}>{T.right}</Text>}
+      {complete && <TouchableOpacity accessibilityRole="button" accessibilityLabel={T.next} style={[K.big, { backgroundColor: PALETTE.emerald.face, borderBottomColor: PALETTE.emerald.lip }]} onPress={next}><Text style={[K.bigText, { color: PALETTE.emerald.ink }]}>{T.next}</Text></TouchableOpacity>}
+    </LinearGradient>
     <BackButton fullWidth onPress={onExit}>{T.back}</BackButton>
   </ScrollView>;
 };
 
 const local = StyleSheet.create({
-  card: { width: '30%', minHeight: 96, flexGrow: 1 },
-  back: { backgroundColor: '#ede9fe', borderColor: '#a78bfa' },
-  sky: { width: '100%', borderRadius: 30, overflow: 'hidden', backgroundColor: '#e0f2fe', borderWidth: 3, borderColor: '#bae6fd' },
+  card: { width: '30%', minHeight: 110, flexGrow: 1 },
   floater: { position: 'absolute', top: 0, width: BUBBLE, height: BUBBLE },
-  bubble: { width: BUBBLE, height: BUBBLE, borderRadius: BUBBLE / 2, borderWidth: 3, borderBottomWidth: 5, borderColor: '#7dd3fc', backgroundColor: '#ffffffe6', alignItems: 'center', justifyContent: 'center' },
-  shine: { position: 'absolute', top: 9, start: 13, width: 18, height: 10, borderRadius: 9, backgroundColor: '#e0f2fe', transform: [{ rotate: '-30deg' }] },
-  caught: { backgroundColor: '#dcfce7', borderColor: '#16a34a', transform: [{ scale: 1.2 }] },
-  wrong: { backgroundColor: '#fef3c7', borderColor: '#d97706', opacity: 0.45 },
-  head: { flexDirection: 'row', alignItems: 'center', gap: 10, width: '100%' },
-  speaker: { width: 64, height: 64, borderRadius: 32, backgroundColor: '#6d4ae0', borderBottomWidth: 6, borderBottomColor: '#4c33a8', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' },
-  slot: { borderStyle: 'dashed', minWidth: 54 },
+  bubble: { width: BUBBLE, height: BUBBLE, borderRadius: BUBBLE / 2, borderWidth: 4, alignItems: 'center', justifyContent: 'center' },
+  bubbleText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 46, lineHeight: 62, color: '#ffffff', textShadowColor: '#00000055', textShadowOffset: { width: 0, height: 2 }, textShadowRadius: 3 },
+  shine: { position: 'absolute', top: 10, start: 16, width: 22, height: 12, borderRadius: 10, backgroundColor: '#ffffffaa', transform: [{ rotate: '-30deg' }] },
+  caught: { backgroundColor: '#86efacdd', borderColor: '#16a34a', transform: [{ scale: 1.2 }] },
+  wrong: { opacity: 0.3 },
+  trainArea: { padding: 14, gap: 16, alignItems: 'center', borderColor: '#fde68a' },
+  picCard: { padding: 10, borderRadius: 30, backgroundColor: '#ffffff', borderWidth: 4, borderColor: PALETTE.amber.face },
+  slot: { borderStyle: 'dashed', borderColor: PALETTE.amber.lip, backgroundColor: '#ffffff', borderBottomWidth: 4, minWidth: 64 },
 });
