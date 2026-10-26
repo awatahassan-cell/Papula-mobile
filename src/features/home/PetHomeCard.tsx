@@ -20,7 +20,6 @@ export function PetHomeCard() {
     <PetArt stage={stage} mood={petMood(currentProfile)} size={84} />
     <View style={s.body}>
       <Text style={[s.title, { color: tile.ink }]}>باغەکەم</Text>
-      <Text style={[s.line, { color: tile.ink }]}>گوڵەکانت ببینە و خۆراکی هاوڕێکەت بدە.</Text>
     </View>
     {hasNew && <View accessibilityElementsHidden importantForAccessibility="no" style={s.dot} />}
   </TactileButton>;

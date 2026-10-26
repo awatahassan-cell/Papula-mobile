@@ -43,16 +43,15 @@ export const StoriesListScreen:React.FC=()=>{
  ];
  if(wordLesson)return <WordBuilder key={wordLesson} initialWords={templateWords(wordLesson)} onExit={()=>setWordLesson(null)} onComplete={()=>setWordLesson(null)}/>;
  const header=<View style={s.intro}>
-  <View style={s.welcome}><View style={s.welcomeIcon}><BookOpen size={29} color={c.mint} strokeWidth={1.7}/></View><View style={s.copy}><Text style={s.welcomeTitle}>دنیای چیرۆکەکان</Text><Text style={s.welcomeHint}>چیرۆکێک هەڵبژێرە و گوێ بگرە.</Text></View><Sparkles size={21} color={GOLD.soft}/></View>
+  <View style={s.welcome}><View style={s.welcomeIcon}><BookOpen size={29} color={c.mint} strokeWidth={1.7}/></View><View style={s.copy}><Text style={s.welcomeTitle}>دنیای چیرۆکەکان</Text></View><Sparkles size={21} color={GOLD.soft}/></View>
   <View accessibilityRole="tablist" style={s.categoryTabs}>{([{id:'letters',label:'چیرۆکی پیتەکان',Icon:Shapes},{id:'words',label:'چیرۆکی وشەکان',Icon:WholeWord}] as const).map(({id,label,Icon})=><TouchableOpacity key={id} accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{selected:category===id}} aria-selected={category===id} onPress={()=>setCategory(id)} style={[s.categoryTab,category===id&&s.categoryActive]}><Icon size={24} color={category===id?c.mint:c.muted} strokeWidth={1.8}/><Text style={[s.categoryLabel,category===id&&s.categoryLabelActive]}>{label}</Text></TouchableOpacity>)}</View>
   {category==='letters'?<>
-   <View style={s.sectionHeading}><Text style={s.sectionTitle}>پیتێک هەڵبژێرە</Text><Text style={s.sectionCount}>{alfubeNweStories.length} چیرۆکی وێنەدار</Text></View>
    <ScrollView testID="story-letter-rail" horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.letterRail} style={s.railFrame}>
     <TouchableOpacity accessibilityRole="button" accessibilityLabel="هەموو چیرۆکی پیتەکان" accessibilityState={{selected:letterId===null}} onPress={()=>setLetterId(null)} style={[s.letterChip,s.allChip,letterId===null&&s.letterActive]}><Shapes size={18} color={letterId===null?'#fff':c.mint}/><Text style={[s.allText,letterId===null&&s.chipActiveText]}>هەمووی</Text></TouchableOpacity>
     {mockLetters.map(letter=><TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`چیرۆکی پیتی ${letter.glyph}`} accessibilityState={{selected:letterId===letter.id}} onPress={()=>setLetterId(letter.id)} style={[s.letterChip,letterId===letter.id&&s.letterActive]}><Text style={[s.letterGlyph,letterId===letter.id&&s.chipActiveText]}>{letter.glyph}</Text></TouchableOpacity>)}
    </ScrollView>
-   <View style={s.shelfHeading}><View style={s.smallIcon}><Headphones size={18} color={c.mint}/></View><View style={s.copy}><Text style={s.shelfTitle}>{selectedLetter?`چیرۆکی پیتی «${selectedLetter.glyph}»`:'هەموو چیرۆکی پیتەکان'}</Text><Text style={s.hint}>پیتەکە لە ناو چیرۆکدا بدۆزەوە.</Text></View></View>
-  </>:<View style={s.shelfHeading}><View style={s.smallIcon}><WholeWord size={20} color={c.mint}/></View><View style={s.copy}><Text style={s.shelfTitle}>وشەکان فێر ببە، چیرۆکەکە بکەرەوە</Text><Text style={s.hint}>سێ وشەی بچووک، سەرەتای چیرۆکێکی خۆش.</Text></View></View>}
+   <View style={s.shelfHeading}><View style={s.smallIcon}><Headphones size={18} color={c.mint}/></View><View style={s.copy}><Text style={s.shelfTitle}>{selectedLetter?`چیرۆکی پیتی «${selectedLetter.glyph}»`:'هەموو چیرۆکی پیتەکان'}</Text></View></View>
+  </>:<View style={s.shelfHeading}><View style={s.smallIcon}><WholeWord size={20} color={c.mint}/></View><View style={s.copy}><Text style={s.shelfTitle}>وشەکان فێر ببە، چیرۆکەکە بکەرەوە</Text></View></View>}
  </View>;
  const renderItem=({item}:{item:ShelfItem})=>{
   if(item.heading)return <View style={s.groupHeading}><Text style={s.sectionTitle}>{item.heading}</Text><Text style={s.hint}>{item.subtitle}</Text>{loadError&&item.id==='listening-heading'&&<Text style={s.hint}>چیرۆکەکان بار نەکران؛ تکایە دووبارە بەشەکە بکەرەوە.</Text>}</View>;

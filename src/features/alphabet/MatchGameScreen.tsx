@@ -25,6 +25,7 @@ import { dueReviewLetters } from '../../services/learningEngine';
 import { dueWordCount } from '../../data/vocabulary';
 import { PairsGame, CatchGame, TrainGame } from '../freeplay/FreePlayGames';
 import { FREE_PLAY_TEXT, FREE_PLAY_TILE } from '../freeplay/freePlayText';
+import { kurdishDigits } from '../../services/rewards';
 import { FreePlayId, freePlayStates } from '../../services/freePlay';
 
 type GameMode = 'word' | 'sound' | 'similar' | 'phonics' | 'syllables' | 'vocab' | 'quests' | FreePlayId;
@@ -110,7 +111,6 @@ export const MatchGameScreen: React.FC = () => {
             style={[candyCard.big, tablet && { flex: 1 }, { backgroundColor: candy.face, borderBottomColor: candy.lip }]}>
             <View style={[candyCard.bigIcon, { backgroundColor: candy.chip }]}><item.Icon size={38} color={candy.icon} strokeWidth={2.3} /></View>
             <Text style={[candyCard.bigTitle, { color: candy.ink }]}>{item.title}</Text>
-            <Text style={[candyCard.hint, { color: candy.ink, textAlign: 'center', fontSize: 14 }]}>{item.hint}</Text>
           </TouchableOpacity>;
         })}
       </View>
@@ -123,7 +123,7 @@ export const MatchGameScreen: React.FC = () => {
             style={[candyCard.tile, tablet && { flex: 1 }, { backgroundColor: candy.face, borderBottomColor: candy.lip }, !game.open && { opacity: 0.55 }]}>
             <View style={[candyCard.icon, { backgroundColor: candy.chip }]}><Icon size={25} color={candy.icon} strokeWidth={2.3} /></View>
             <View style={candyCard.body}><Text style={[candyCard.title, { color: candy.ink }]}>{text.title}</Text>
-              <Text style={[candyCard.hint, { color: candy.ink }]}>{game.open ? text.hint : game.missing > 0 ? FREE_PLAY_TEXT.locked(game.missing) : FREE_PLAY_TEXT.notReady}</Text></View>
+              {!game.open && game.missing > 0 && <Text style={[candyCard.hint, { color: candy.ink, fontSize: 16 }]}>+{kurdishDigits(game.missing)}</Text>}</View>
           </TouchableOpacity>;
         })}
       </View>
@@ -185,7 +185,7 @@ export const MatchGameScreen: React.FC = () => {
 const candyCard = StyleSheet.create({
   section: { width: '100%', gap: 8, marginTop: 2 },
   review: { minHeight: 96, flexDirection: 'row', justifyContent: 'flex-start', gap: 12 },
-  big: { minHeight: 150, borderRadius: 28, borderBottomWidth: 6, padding: 14, alignItems: 'center', justifyContent: 'center', gap: 10 },
+  big: { minHeight: 132, borderRadius: 28, borderBottomWidth: 6, padding: 14, alignItems: 'center', justifyContent: 'center', gap: 10 },
   bigIcon: { width: 68, height: 68, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   bigTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, textAlign: 'center' },
   more: { minHeight: 48, borderRadius: 18, borderWidth: 2, borderColor: '#cbd5e1', paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, alignSelf: 'center' },
