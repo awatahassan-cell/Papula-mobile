@@ -4,7 +4,7 @@ import { Settings, Star } from 'lucide-react-native';
 import { HelpPill } from '../../components/HelpButton';
 import { Text } from '../../components/RTLText';
 import { TactileButton } from '../../components/TactileButton';
-import { GardenQuestCard } from '../adventure/GardenQuestCard';
+import { HomeHero } from './HomeHero';
 import { PetHomeCard } from './PetHomeCard';
 import { useAppStore } from '../../store/useAppStore';
 import { useAppearance } from '../../theme/useAppearance';
@@ -21,7 +21,7 @@ export const HomeScreen: React.FC = () => {
       <TactileButton accessibilityRole="button" accessibilityLabel="ڕێکخستنەکانی دایک و باوک" onPress={()=>openParentGateWithCallback(()=>setRoute('parent-dashboard'))} style={[s.settings,{backgroundColor:c.paper}]}><Settings size={23} color={c.muted}/></TactileButton>
     </View>
     <Text testID="home-greeting" style={[s.greeting,{color:c.ink}]}>سڵاو {currentProfile.name}!</Text>
-    <GardenQuestCard/>
+    <HomeHero/>
     <PetHomeCard/>
   </ScrollView>;
 };

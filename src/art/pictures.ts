@@ -1,4 +1,5 @@
 import { ORIGINAL_CHARACTERS } from './characters';
+import { fullBodyPictures } from './fullBody';
 /**
  * The app's own pictures, drawn in one style (flat shapes, dark plum outline, soft colours) to replace emoji.
  * Keys are emoji without the variation selector (see `pictureFor`). Each picture is a 100×100 SVG.
@@ -198,6 +199,9 @@ export const PICTURES: Record<string, string> = Object.fromEntries(Object.entrie
 
 /** The picture for a single emoji (variation selectors ignored), or undefined when it is not drawn yet. */
 Object.assign(PICTURES, ORIGINAL_CHARACTERS);
+Object.assign(PICTURES, fullBodyPictures(PICTURES)); // head-only animals get the same standing body
+PICTURES['🧸'] = PICTURES['🐻']; // the teddy is the bear
+PICTURES['🐇'] = ORIGINAL_CHARACTERS['🐰'].replace(/#ffffff/gi, '#ead3b0').replace(/#fff[0-9a-f]{3}\b/gi, m => m);
 PICTURES['🔴']=box('<circle cx="50" cy="50" r="35" fill="#f06c75" stroke="#39334c" stroke-width="4"/>');
 PICTURES['⚪']=box('<circle cx="50" cy="50" r="34" fill="#fff9ed" stroke="#b4adc6" stroke-width="4"/>');
 export const pictureFor = (text: string): string | undefined => PICTURES[text.replace(/️/g, '').trim()];

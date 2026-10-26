@@ -34,6 +34,23 @@ function DemoPointer() {
   return <Animated.View pointerEvents="none" style={[s.hand,{transform:[{translateY:tap.interpolate({inputRange:[0,1],outputRange:[0,5]})}]}]}><Svg width="34" height="40" viewBox="0 0 34 40"><Path d="M13 22 V6 Q13 1 18 3 V17 Q22 12 25 18 Q31 16 31 23 V29 Q30 38 23 38 H16 Q12 37 9 33 L3 25 Q1 20 6 20Z" fill="#ffd8b0" stroke="#6d5372" strokeWidth="2"/></Svg></Animated.View>;
 }
 
+/** The flower that grows with each win (the same drawing is reused for the finale). */
+function FlowerSvg({steps,size}:{steps:number;size:number}) {
+  return <Svg width={size} height={size} viewBox="0 0 100 100">
+        <Path d="M18 91 Q50 76 82 91" stroke="#aa754a" strokeWidth="10" strokeLinecap="round" fill="none"/>
+        {steps===0?<Path d="M43 80 Q39 66 53 67 Q64 76 51 82Z" fill="#bb793e" stroke="#89552e" strokeWidth="2"/>:<>
+          <Path d={steps===1?'M50 84 Q47 70 50 56':'M50 84 Q48 62 50 38'} stroke="#389351" strokeWidth="6" strokeLinecap="round" fill="none"/>
+          <Path d="M49 73 Q27 75 27 57 Q44 55 49 73 M51 65 Q69 65 73 48 Q55 47 51 65" fill="#58b863"/>
+          {steps===1?<Path d="M50 58 Q38 54 39 44 Q52 43 50 58" fill="#72c96d"/>:steps===2?<Path d="M50 45 Q27 26 43 16 Q50 9 57 16 Q73 26 50 45Z" fill="#ed7ba8"/>:<>
+            {[0,60,120,180,240,300].map(angle=><Circle key={angle} cx="50" cy="17" r="13" fill="#f47eac" transform={`rotate(${angle} 50 33)`}/>)}
+            <Circle cx="50" cy="33" r="13" fill="#ffda58"/>
+            <Circle cx="46" cy="31" r="1.5" fill="#684a39"/><Circle cx="54" cy="31" r="1.5" fill="#684a39"/>
+            <Path d="M46 37 Q50 41 54 37" stroke="#684a39" strokeWidth="2" fill="none" strokeLinecap="round"/>
+          </>}
+        </>}
+  </Svg>;
+}
+
 function GrowingFlowerScene({steps,celebrate=false,compact=false}:{steps:number;celebrate?:boolean;compact?:boolean}) {
   const reduced=useReducedMotion();
   const [growth]=useState(()=>new Animated.Value(1));
@@ -47,23 +64,30 @@ function GrowingFlowerScene({steps,celebrate=false,compact=false}:{steps:number;
   return <View testID="growing-flower" accessibilityLabel={stages[steps]} style={[s.trail,compact&&{height:64}]}>
     <Svg width="100%" height="100%" viewBox="0 0 360 100" preserveAspectRatio="none"><Path d="M0 80 Q90 59 180 78 Q270 59 360 80 V100 H0Z" fill="#bfe49a"/></Svg>
     <Animated.View style={{position:'absolute',bottom:0,alignSelf:'center',transform:[{scale:growth}]}}>
-      <Svg width={compact?66:94} height={compact?66:94} viewBox="0 0 100 100">
-        <Path d="M18 91 Q50 76 82 91" stroke="#aa754a" strokeWidth="10" strokeLinecap="round" fill="none"/>
-        {steps===0?<Path d="M43 80 Q39 66 53 67 Q64 76 51 82Z" fill="#bb793e" stroke="#89552e" strokeWidth="2"/>:<>
-          <Path d={steps===1?'M50 84 Q47 70 50 56':'M50 84 Q48 62 50 38'} stroke="#389351" strokeWidth="6" strokeLinecap="round" fill="none"/>
-          <Path d="M49 73 Q27 75 27 57 Q44 55 49 73 M51 65 Q69 65 73 48 Q55 47 51 65" fill="#58b863"/>
-          {steps===1?<Path d="M50 58 Q38 54 39 44 Q52 43 50 58" fill="#72c96d"/>:steps===2?<Path d="M50 45 Q27 26 43 16 Q50 9 57 16 Q73 26 50 45Z" fill="#ed7ba8"/>:<>
-            {[0,60,120,180,240,300].map(angle=><Circle key={angle} cx="50" cy="17" r="13" fill="#f47eac" transform={`rotate(${angle} 50 33)`}/>)}
-            <Circle cx="50" cy="33" r="13" fill="#ffda58"/>
-            <Circle cx="46" cy="31" r="1.5" fill="#684a39"/><Circle cx="54" cy="31" r="1.5" fill="#684a39"/>
-            <Path d="M46 37 Q50 41 54 37" stroke="#684a39" strokeWidth="2" fill="none" strokeLinecap="round"/>
-          </>}
-        </>}
-      </Svg>
+      <FlowerSvg steps={steps} size={compact?66:94}/>
     </Animated.View>
     <View style={{position:'absolute',left:24,bottom:12}}><CharacterPicture symbol="🦋" size={compact?44:62} animate={celebrate}/></View>
   </View>;
 }
+/** The finish: one big happy flower, Papula and sparkles, so the end of a journey feels like a party. */
+function Finale({compact}:{compact:boolean}) {
+  const reduced=useReducedMotion();
+  const [pop]=useState(()=>new Animated.Value(reduced?1:0.3));
+  useEffect(()=>{
+    if(reduced)return;
+    const animation=Animated.spring(pop,{toValue:1,friction:4.5,tension:70,useNativeDriver:Platform.OS!=='web'});
+    animation.start();return()=>animation.stop();
+  },[pop,reduced]);
+  const size=compact?150:220;
+  return <View testID="play-finale" style={s.finale}>
+    <Animated.View style={{transform:[{scale:pop}]}}><FlowerSvg steps={3} size={size}/></Animated.View>
+    <View style={[s.finaleBug,{left:8}]}><CharacterPicture symbol="🦋" size={compact?64:92} animate/></View>
+    <View style={[s.finaleStar,{right:14,top:6}]}><CharacterPicture symbol="⭐" size={compact?34:46} animate={false}/></View>
+    <View style={[s.finaleStar,{left:30,top:2}]}><CharacterPicture symbol="✨" size={compact?30:40} animate={false}/></View>
+    <View style={[s.finaleStar,{right:34,bottom:10}]}><CharacterPicture symbol="✨" size={compact?26:34} animate={false}/></View>
+  </View>;
+}
+
 /** One short, voiced journey for each teaching entry. */
 export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LETTER}:{startAtBeginning?:boolean;letterId?:string}={}) {
   const {letter,target,masked,rounds}=playJourneyContent(letterId);
@@ -108,6 +132,7 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
     <View style={[s.header,compact&&{height:40}]}><View style={s.dots}>{PLAY_PILOT_STEPS.map((step,i)=><View key={step} style={[s.dot,{backgroundColor:i<index||(i===index&&phase==='won')?c.mint:c.edge}]}/>)}</View><TactileButton accessibilityRole="button" accessibilityLabel="ڕێنماییەکە دووبارە ببیستە" onPress={narrate} style={[s.audio,{backgroundColor:c.lavender}]}><Volume2 size={27} color={c.mint}/></TactileButton></View>
     <GrowingFlowerScene steps={Math.min(3,index+(phase==='won'?1:0))} celebrate={done||phase==='won'} compact={compact}/>
     {done?<View style={s.finish}>
+      <Finale compact={compact}/>
       <Text style={[s.title,{color:c.ink}]}>{planted?'گوڵەکەت لە باغەکەتە!':'گوڵەکەت ئامادەیە!'}</Text>
       <TactileButton accessibilityRole="button" accessibilityLabel={planted?'باغەکەم ببینم':'گوڵەکەم بچێنم'} onPress={()=>{if(planted){setRoute('garden');return;}plantQuestFlower(0,letterId);soundService.playCorrect();}} style={[s.primary,{backgroundColor:fill},compact&&{minHeight:50,padding:6}]}><Flower2 size={28} color="#fff"/><Text style={s.primaryText}>{planted?'باغەکەم ببینم':'گوڵەکەم بچێنم'}</Text></TactileButton>
       <View style={s.extras}><TactileButton accessibilityRole="button" accessibilityLabel="چیرۆکی پیتەکە" onPress={()=>{const story=getLetterStory(letterId);if(story){setSelectedStory(story);setRoute('story-reader');}}} style={[s.extra,{backgroundColor:c.sky}]}><BookOpen size={27} color={c.mint}/><Text style={{color:c.ink}}>چیرۆک</Text></TactileButton><TactileButton accessibilityRole="button" accessibilityLabel="مەشقی نووسین" onPress={()=>{setSelectedLetter(letter);setRoute('writing');}} style={[s.extra,{backgroundColor:c.leaf}]}><PencilLine size={27} color={c.mint}/><Text style={{color:c.ink}}>نووسین</Text></TactileButton><TactileButton accessibilityRole="button" accessibilityLabel="دووبارە یاری بکەم" onPress={()=>{locked.current=false;nextLock.current=false;setMistakes(0);setPhase('watch');setIndex(0);}} style={[s.extra,{backgroundColor:c.lavender}]}><RotateCcw size={27} color={c.mint}/><Text style={{color:c.ink}}>یاری</Text></TactileButton></View>
@@ -124,4 +149,4 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
     </>}
   </View>;
 }
-const s=StyleSheet.create({page:{flex:1,width:'100%',maxWidth:650,alignSelf:'center',padding:12,gap:8},header:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',height:48},dots:{flexDirection:'row',gap:9},dot:{width:27,height:11,borderRadius:6},audio:{width:48,height:46,borderRadius:17,alignItems:'center',justifyContent:'center'},trail:{height:94,borderRadius:24,overflow:'hidden',backgroundColor:'#ddf2ff'},rabbit:{position:'absolute',bottom:3},carrot:{position:'absolute',right:2,bottom:6},title:{fontSize:21,lineHeight:34,fontWeight:'700',textAlign:'center'},task:{flex:1,minHeight:80,maxHeight:190,borderRadius:27,borderWidth:1,alignItems:'center',justifyContent:'center'},target:{fontSize:78,lineHeight:100,fontWeight:'700'},word:{fontSize:45,lineHeight:68,fontWeight:'700',writingDirection:'rtl'},options:{flexDirection:'row',gap:12},option:{flex:1,height:102,borderRadius:25,borderWidth:3,alignItems:'center',justifyContent:'center'},demonstrating:{borderWidth:4},glyph:{fontSize:47,lineHeight:78,fontWeight:'700'},hand:{position:'absolute',bottom:-2,right:4},footer:{height:64,justifyContent:'center'},hint:{fontSize:17,lineHeight:30,textAlign:'center'},primary:{width:'100%',minHeight:60,borderRadius:23,padding:10,flexDirection:'row',gap:12,alignItems:'center',justifyContent:'center'},primaryText:{fontSize:20,lineHeight:34,color:'#fff',fontWeight:'700'},finish:{flex:1,alignItems:'center',justifyContent:'center',gap:14},extras:{flexDirection:'row',gap:10,width:'100%'},extra:{flex:1,minHeight:64,borderRadius:19,padding:6,gap:4,alignItems:'center',justifyContent:'center'}});
+const s=StyleSheet.create({finale:{width:'100%',flex:1,minHeight:150,alignItems:'center',justifyContent:'center'},finaleBug:{position:'absolute',bottom:8},finaleStar:{position:'absolute'},page:{flex:1,width:'100%',maxWidth:650,alignSelf:'center',padding:12,gap:8},header:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',height:48},dots:{flexDirection:'row',gap:9},dot:{width:27,height:11,borderRadius:6},audio:{width:48,height:46,borderRadius:17,alignItems:'center',justifyContent:'center'},trail:{height:94,borderRadius:24,overflow:'hidden',backgroundColor:'#ddf2ff'},rabbit:{position:'absolute',bottom:3},carrot:{position:'absolute',right:2,bottom:6},title:{fontSize:21,lineHeight:34,fontWeight:'700',textAlign:'center'},task:{flex:1,minHeight:80,maxHeight:190,borderRadius:27,borderWidth:1,alignItems:'center',justifyContent:'center'},target:{fontSize:78,lineHeight:100,fontWeight:'700'},word:{fontSize:45,lineHeight:68,fontWeight:'700',writingDirection:'rtl'},options:{flexDirection:'row',gap:12},option:{flex:1,height:102,borderRadius:25,borderWidth:3,alignItems:'center',justifyContent:'center'},demonstrating:{borderWidth:4},glyph:{fontSize:47,lineHeight:78,fontWeight:'700'},hand:{position:'absolute',bottom:-2,right:4},footer:{height:64,justifyContent:'center'},hint:{fontSize:17,lineHeight:30,textAlign:'center'},primary:{width:'100%',minHeight:60,borderRadius:23,padding:10,flexDirection:'row',gap:12,alignItems:'center',justifyContent:'center'},primaryText:{fontSize:20,lineHeight:34,color:'#fff',fontWeight:'700'},finish:{flex:1,alignItems:'center',justifyContent:'center',gap:14},extras:{flexDirection:'row',gap:10,width:'100%'},extra:{flex:1,minHeight:64,borderRadius:19,padding:6,gap:4,alignItems:'center',justifyContent:'center'}});

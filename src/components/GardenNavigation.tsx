@@ -2,7 +2,7 @@ import { TactileButton as TouchableOpacity } from './TactileButton';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from './RTLText';
-import { Compass, BookOpen, Flower2, Route } from 'lucide-react-native';
+import { Compass, BookOpen, Flower2, Puzzle, Route } from 'lucide-react-native';
 import { useAppStore, AppRoute } from '../store/useAppStore';
 import { useAppearance } from '../theme/useAppearance';
 import { soundService } from '../services/soundService';
@@ -11,6 +11,7 @@ import { useResponsive } from '../theme/responsive';
 const tabs = [
   { route: 'home', label: 'گەشتەکەم', Icon: Compass },
   { route: 'alphabet', label: 'ڕێڕەو', Icon: Route },
+  { route: 'match-game', label: 'یاری', Icon: Puzzle },
   { route: 'garden', label: 'باغەکەم', Icon: Flower2 },
   { route: 'stories', label: 'چیرۆک', Icon: BookOpen },
 ] as const;
