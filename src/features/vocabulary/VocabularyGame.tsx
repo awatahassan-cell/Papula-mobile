@@ -1,3 +1,4 @@
+import { kurdishDigits } from '../../services/rewards';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { BackButton } from '../../components/BackButton';
@@ -94,7 +95,7 @@ export const VocabularyGame: React.FC<{ onExit: () => void; start?: Source }> = 
   const guide = round.kind === 'word' ? SPOKEN_GUIDES.vocabWord : SPOKEN_GUIDES.vocabSentence;
   return <ScrollView ref={scroll} contentContainerStyle={s.container}>
     <HelpHint text={guide} disabled={!soundService.canSpeak(guide)} />
-    <Text style={s.text}>{index + 1} / {rounds.length}</Text>
+    <Text style={s.text}>{kurdishDigits(index + 1)} / {kurdishDigits(rounds.length)}</Text>
     <Text style={s.title}>{round.kind === 'word' ? VOCAB_TEXT.pickWord : VOCAB_TEXT.pickPicture}</Text>
     <View style={s.card}>
       {round.kind === 'word' ? <Text style={[s.emoji, { fontSize: 84, lineHeight: 100 }]}>{round.item.emoji}</Text>

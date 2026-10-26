@@ -1,3 +1,4 @@
+import { kurdishDigits } from '../../services/rewards';
 import { BackButton } from '../../components/BackButton';
 import { HelpHint } from '../../components/HelpButton';
 import { exerciseHelp } from '../../services/exerciseHelp';
@@ -80,7 +81,7 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   const canHearSyllables = round.syllables.every(text => soundService.canSpeak(text));
   const full = selected.length === round.syllables.length;
   return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpHint text={exerciseHelp.syllables} />
-    <Text style={s.title}>بڕگەکان پێکەوە ببەستە</Text><Text style={s.text}>{index + 1} / {rounds.length}</Text>
+    <Text style={s.title}>بڕگەکان پێکەوە ببەستە</Text><Text style={s.text}>{kurdishDigits(index + 1)} / {kurdishDigits(rounds.length)}</Text>
     <View style={s.card}>
       <Text style={s.emoji}>{round.word.imageEmoji}</Text>
       <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={() => void soundService.speakWord(round.word.word)}><Text style={s.text}>وشەکە ببیستە</Text></TouchableOpacity>

@@ -1,6 +1,5 @@
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { personalPractice } from '../../services/personalPractice';
-import { useResponsive } from '../../theme/responsive';
 import { useThemeStyles } from '../../theme/useAppearance';
 import { StartingAssessment } from '../learning/StartingAssessment';
 import React, { useEffect, useState } from 'react';
@@ -17,7 +16,6 @@ import { learningStyles as baseLearningStyles } from '../learning/learningStyles
 export const DailyPracticeScreen: React.FC = () => {
   const s = useThemeStyles(baseLearningStyles);
   const {currentProfile,setSelectedLetter,setRoute,completeDailyPractice,registerBackHandler,saveCheckpoint}=useAppStore();
-  const {tablet}=useResponsive();
   const [tab,setTab]=useState<'personal'|'missions'>('personal');
   const [assessing,setAssessing]=useState(false);
   const [practicing,setPracticing]=useState(false);
@@ -49,19 +47,20 @@ export const DailyPracticeScreen: React.FC = () => {
       <TouchableOpacity accessibilityRole="button" accessibilityState={{selected:tab==='missions'}} style={[s.secondary,tab==='missions'&&s.correct]} onPress={()=>setTab('missions')}><Text style={s.text}>ئەرکەکانی ئەمڕۆ</Text></TouchableOpacity>
     </View>
     {tab==='missions'?<DailyMissionsComponent />:<>
-      <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>setAssessing(true)}><Text style={s.text}>{currentProfile.placement?'دەستپێکەکەم دووبارە هەڵبسەنگێنمەوە':'با بزانین چی دەزانم'}</Text></TouchableOpacity>
-      {currentProfile.placement && <Text style={s.text}>{currentProfile.placement.recommendedLevel===1?'دەستپێک: ناسینەوەی پیت و گوێگرتن':currentProfile.placement.recommendedLevel===2?'دەستپێک: شێوەی پیت و وشەسازی':'دەستپێک: خوێندنەوە و نووسینی سەربەخۆ'}</Text>}
       <Text style={s.title}>با ئەم پیتانە دووبارە بکەینەوە</Text>
       <Text style={s.text}>مەشقەکە بەپێی هەوڵ و پێشکەوتنی تۆیە</Text>
       {!plan.length&&<TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>setRoute('alphabet')}><Text style={s.buttonText}>سەرەتا پیتێک لە ڕێڕەوی فێربوون هەڵبژێرە</Text></TouchableOpacity>}
-      <View style={tablet?{flexDirection:'row',gap:14,width:'100%'}:{gap:16,width:'100%'}}>{plan.map(task=>{
+      {!!plan.length&&<><TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>openTask(plan[0])}><Text style={s.buttonText}>دەست بە مەشقی ئەمڕۆ بکەم</Text></TouchableOpacity><TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>setPracticing(true)}><Text style={s.text}>یاریی پێداچوونەوە</Text></TouchableOpacity></>}
+      <View style={{flexDirection:'row',flexWrap:'wrap',gap:10,width:'100%',justifyContent:'center'}}>{plan.map(task=>{
         const {letter,reason}=task;
-        return <TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`وانەی پیتی ${letter.glyph}`} style={[s.card,tablet&&{flex:1}]} onPress={()=>openTask(task)}>
-          <Text style={[s.glyph,{fontSize:54}]}>{letter.glyph}</Text><Text style={s.text}>{reason}</Text><Text style={s.text}>٢ خولەک</Text>
+        return <TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`وانەی پیتی ${letter.glyph}`} style={[s.card,{minWidth:96,flexGrow:1,flexBasis:'28%',padding:10}]} onPress={()=>openTask(task)}>
+          <Text style={[s.glyph,{fontSize:46}]}>{letter.glyph}</Text><Text numberOfLines={2} style={[s.text,{fontSize:13}]}>{reason}</Text>
         </TouchableOpacity>;
       })}</View>
-      {!!plan.length&&<><TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>openTask(plan[0])}><Text style={s.buttonText}>دەست بە مەشقی ئەمڕۆ بکەم</Text></TouchableOpacity><TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>setPracticing(true)}><Text style={s.text}>یاریی پێداچوونەوە</Text></TouchableOpacity></>}
       {dueWordsNow>0&&<TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>setReviewingWords(true)}><Text style={s.text}>{VOCAB_TEXT.review} · {VOCAB_TEXT.reviewHint(dueWordsNow)}</Text></TouchableOpacity>}
+
+      <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>setAssessing(true)}><Text style={s.text}>{currentProfile.placement?'دەستپێکەکەم دووبارە هەڵبسەنگێنمەوە':'با بزانین چی دەزانم'}</Text></TouchableOpacity>
+      {currentProfile.placement && <Text style={s.text}>{currentProfile.placement.recommendedLevel===1?'دەستپێک: ناسینەوەی پیت و گوێگرتن':currentProfile.placement.recommendedLevel===2?'دەستپێک: شێوەی پیت و وشەسازی':'دەستپێک: خوێندنەوە و نووسینی سەربەخۆ'}</Text>}
     </>}
   </ScrollView>;
 };

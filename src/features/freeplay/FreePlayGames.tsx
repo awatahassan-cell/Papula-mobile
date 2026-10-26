@@ -1,3 +1,4 @@
+import { kurdishDigits } from '../../services/rewards';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, Platform, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Volume2 } from 'lucide-react-native';
@@ -132,7 +133,7 @@ export const CatchGame: React.FC<Props> = ({ onExit }) => {
   return <ScrollView contentContainerStyle={s.container}>
     <View style={local.head}>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={T.catch.ask} style={local.speaker} onPress={() => sayLetter(target.glyph)}><Volume2 size={34} color="#ffffff" strokeWidth={2.4} /></TouchableOpacity>
-      <Text style={[s.title, { flex: 1 }]}>{T.catch.ask}</Text><Text style={s.text}>{round + 1} / {ROUNDS}</Text>
+      <Text style={[s.title, { flex: 1 }]}>{T.catch.ask}</Text><Text style={s.text}>{kurdishDigits(round + 1)} / {kurdishDigits(ROUNDS)}</Text>
     </View>
     <View style={[local.sky, { height: sky }]}>{options.map((letter, i) => <Bubble key={`${run}-${round}-${letter.id}`} letter={letter} index={i} height={sky}
       state={caught && letter.id === target.id ? 'caught' : wrong.includes(letter.id) ? 'wrong' : 'idle'} onPress={() => tap(letter.id)} />)}</View>
@@ -164,7 +165,7 @@ export const TrainGame: React.FC<Props> = ({ onExit }) => {
   };
   const next = () => { setUsedIds([]); missed.current = false; setFilled(0); setIndex(index + 1); };
   return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.text}>{index + 1} / {queue.length}</Text>
+    <Text style={s.text}>{kurdishDigits(index + 1)} / {kurdishDigits(queue.length)}</Text>
     <Text style={s.title}>{T.train.ask}</Text>
     <TouchableOpacity accessibilityRole="button" accessibilityLabel={word.word} onPress={() => say(word.word)}><Text style={[s.emoji, { fontSize: 84, lineHeight: 100 }]}>{word.imageEmoji}</Text></TouchableOpacity>
     <View style={s.row}>{word.units.map((glyph, i) => <View key={i} style={[s.tile, local.slot, i < filled && s.correct]}>{i < filled && <Text style={s.glyph}>{glyph}</Text>}</View>)}</View>

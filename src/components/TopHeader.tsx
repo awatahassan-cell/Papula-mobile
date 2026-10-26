@@ -7,7 +7,8 @@ import { BackButton } from './BackButton';
 import { Text } from './RTLText';
 import { PapulaMascot } from './PapulaMascot';
 import { HelpPill } from './HelpButton';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, MAIN_TABS } from '../store/useAppStore';
+import { kurdishDigits } from '../services/rewards';
 import { soundService } from '../services/soundService';
 import { useAppearance, useThemeStyles } from '../theme/useAppearance';
 import { gardenColors as c } from '../theme/appearance';
@@ -23,15 +24,15 @@ export const TopHeader: React.FC = () => {
   if(route==='home')return null; // the home screen has its own greeting row
   return <View style={[s.frame,{backgroundColor:'transparent'}]}><View style={[s.header,{maxWidth:pageMax}]}>
     <View style={s.topRow}>
-      <BackButton onPress={goBack} />
+      {!MAIN_TABS.includes(route) && <BackButton onPress={goBack} />}
       <HelpPill />
       {tablet && <TouchableOpacity accessibilityRole="button" accessibilityLabel="پەپوولە، سەرەتا" style={[s.brand,{flex:0,minWidth:width<900?130:150}]} onPress={()=>{void soundService.stopSpeaking();setRoute('home');}}><View style={{flexDirection:'row',alignItems:'center',gap:4}}><PapulaMascot size={30}/><Text numberOfLines={1} style={s.brandText}>پەپوولە</Text></View></TouchableOpacity>}
       {!tablet && <>
-        <TouchableOpacity accessibilityRole="button" accessibilityLabel={`ئەلبوومەکەم، ${currentProfile.stars} ئەستێرە`} style={[s.stat,{flex:0,minWidth:width<360?64:76,backgroundColor:GOLD.soft,borderWidth:2,borderColor:GOLD.border}]} onPress={()=>setRoute('stickers')}><Star size={17} color={GOLD.starInk} fill={GOLD.star}/><Text style={[s.statText,{color:GOLD.ink}]}>{currentProfile.stars}</Text></TouchableOpacity>
-        <View accessible accessibilityLabel={`${currentProfile.streakDays} ڕۆژ لە دوای یەک`} style={[s.stat,{flex:0,minWidth:width<360?48:64}]}><Flame size={17} color={c.coral}/><Text style={s.statText}>{currentProfile.streakDays}</Text></View>
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel={`ئەلبوومەکەم، ${currentProfile.stars} ئەستێرە`} style={[s.stat,{flex:0,minWidth:width<360?64:76,backgroundColor:GOLD.soft,borderWidth:2,borderColor:GOLD.border}]} onPress={()=>setRoute('stickers')}><Star size={17} color={GOLD.starInk} fill={GOLD.star}/><Text style={[s.statText,{color:GOLD.ink}]}>{kurdishDigits(currentProfile.stars)}</Text></TouchableOpacity>
+        <View accessible accessibilityLabel={`${currentProfile.streakDays} ڕۆژ لە دوای یەک`} style={[s.stat,{flex:0,minWidth:width<360?48:64}]}><Flame size={17} color={c.coral}/><Text style={s.statText}>{kurdishDigits(currentProfile.streakDays)}</Text></View>
         <View style={{flex:1}}/>
       </>}
-      {tablet && <View style={[s.stats,s.statsInline,width<900&&{minWidth:280}]}><TouchableOpacity accessibilityRole="button" accessibilityLabel="ئەلبوومەکەم" style={s.profile} onPress={()=>setRoute('stickers')}><Text style={s.avatar}>{currentProfile.avatar}</Text><Text numberOfLines={1} style={s.name}>{currentProfile.name}</Text></TouchableOpacity><View style={s.stat}><Flame size={17} color={c.coral}/><Text style={s.statText}>{currentProfile.streakDays} ڕۆژ</Text></View><View style={[s.stat,{backgroundColor:GOLD.soft,borderWidth:2,borderColor:GOLD.border}]}><Star size={17} color={GOLD.starInk} fill={GOLD.star}/><Text style={[s.statText,{color:GOLD.ink}]}>{currentProfile.stars}</Text></View></View>}
+      {tablet && <View style={[s.stats,s.statsInline,width<900&&{minWidth:280}]}><TouchableOpacity accessibilityRole="button" accessibilityLabel="ئەلبوومەکەم" style={s.profile} onPress={()=>setRoute('stickers')}><Text style={s.avatar}>{currentProfile.avatar}</Text><Text numberOfLines={1} style={s.name}>{currentProfile.name}</Text></TouchableOpacity><View style={s.stat}><Flame size={17} color={c.coral}/><Text style={s.statText}>{kurdishDigits(currentProfile.streakDays)} ڕۆژ</Text></View><View style={[s.stat,{backgroundColor:GOLD.soft,borderWidth:2,borderColor:GOLD.border}]}><Star size={17} color={GOLD.starInk} fill={GOLD.star}/><Text style={[s.statText,{color:GOLD.ink}]}>{kurdishDigits(currentProfile.stars)}</Text></View></View>}
       {tablet && <View style={{flex:1}}/>}
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={speaking?'وەستاندنی دەنگ':'دەنگی ئەپ'} style={s.icon} onPress={()=>speaking?void soundService.stopSpeaking():toggle()}>{speaking?<Square size={19} color={c.coral}/>:parentSettings.soundFxEnabled?<Volume2 size={21} color={c.ink}/>:<VolumeX size={21} color={c.muted}/>}</TouchableOpacity>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="ڕێکخستنەکانی دایک و باوک" style={s.icon} onPress={()=>openParentGateWithCallback(()=>setRoute('parent-dashboard'))}><Settings size={21} color={c.muted}/></TouchableOpacity>

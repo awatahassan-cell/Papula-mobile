@@ -114,7 +114,7 @@ export interface AppContextType {
 
 const AppContext = createContext<AppContextType | null>(null);
 
-const MAIN_TABS: AppRoute[] = ['home', 'alphabet', 'match-game', 'garden', 'stories'];
+export const MAIN_TABS: AppRoute[] = ['home', 'alphabet', 'match-game', 'garden', 'stories'];
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();

@@ -110,10 +110,11 @@ export const MatchGameScreen: React.FC = () => {
             style={[candyCard.big, tablet && { flex: 1 }, { backgroundColor: candy.face, borderBottomColor: candy.lip }]}>
             <View style={[candyCard.bigIcon, { backgroundColor: candy.chip }]}><item.Icon size={38} color={candy.icon} strokeWidth={2.3} /></View>
             <Text style={[candyCard.bigTitle, { color: candy.ink }]}>{item.title}</Text>
+            <Text style={[candyCard.hint, { color: candy.ink, textAlign: 'center', fontSize: 14 }]}>{item.hint}</Text>
           </TouchableOpacity>;
         })}
       </View>
-      <Text style={candyCard.sectionHeader}>{FREE_PLAY_TILE.title} — {FREE_PLAY_TILE.hint}</Text>
+      <Text style={[candyCard.sectionHeader, candyCard.sectionGap]}>🦋 {FREE_PLAY_TILE.title}</Text>
       <View style={tablet ? { flexDirection: 'row', gap: 12 } : { gap: 10 }}>
         {freePlayStates(currentProfile, text => soundService.canSpeak(text)).map((game, i) => {
           const Icon = game.open ? FREE_ICONS[game.id] : Lock, candy = tiles[(i + 2) % tiles.length], text = FREE_PLAY_TEXT[game.id];
@@ -184,12 +185,13 @@ export const MatchGameScreen: React.FC = () => {
 const candyCard = StyleSheet.create({
   section: { width: '100%', gap: 8, marginTop: 2 },
   review: { minHeight: 96, flexDirection: 'row', justifyContent: 'flex-start', gap: 12 },
-  big: { minHeight: 132, borderRadius: 28, borderBottomWidth: 6, padding: 14, alignItems: 'center', justifyContent: 'center', gap: 10 },
+  big: { minHeight: 150, borderRadius: 28, borderBottomWidth: 6, padding: 14, alignItems: 'center', justifyContent: 'center', gap: 10 },
   bigIcon: { width: 68, height: 68, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   bigTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, textAlign: 'center' },
   more: { minHeight: 48, borderRadius: 18, borderWidth: 2, borderColor: '#cbd5e1', paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, alignSelf: 'center' },
   moreText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 15, color: '#475569' },
-  sectionHeader: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 15, color: '#334155', textAlign: 'right', paddingHorizontal: 4 },
+  sectionGap: { marginTop: 10 },
+  sectionHeader: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#1e293b', textAlign: 'right', paddingHorizontal: 4 },
   tile: { minHeight: 72, borderRadius: 24, borderBottomWidth: 4, paddingVertical: 10, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },
   mainAction: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 },
   icon: { width: 44, height: 44, borderRadius: 16, backgroundColor: '#ffffff25', alignItems: 'center', justifyContent: 'center' },
