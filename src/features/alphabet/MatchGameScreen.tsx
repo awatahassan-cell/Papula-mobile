@@ -2,7 +2,7 @@ import { HelpHint } from '../../components/HelpButton';
 import { sectionIntroductions } from '../../services/sectionIntroductions';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
-import { ChevronDown, ChevronUp, Compass, Sprout, Ear, Eye, Layers, LucideIcon, PencilLine, Puzzle, Shapes, Volume2 } from 'lucide-react-native';
+import { ChevronDown, ChevronUp, Compass, Lock, Flower2, Bug, TrainFront, Sprout, Ear, Eye, Layers, LucideIcon, PencilLine, Puzzle, Shapes, Volume2 } from 'lucide-react-native';
 import { WORD_WRITING_TILE } from '../writing/writingText';
 import { QuestGame } from '../quests/QuestGame';
 import { QUEST_TILE } from '../quests/questText';
@@ -23,8 +23,12 @@ import { learningStyles as baseLearningStyles } from '../learning/learningStyles
 import { suggestedGames } from '../../services/gameSuggestions';
 import { dueReviewLetters } from '../../services/learningEngine';
 import { dueWordCount } from '../../data/vocabulary';
+import { PairsGame, CatchGame, TrainGame } from '../freeplay/FreePlayGames';
+import { FREE_PLAY_TEXT, FREE_PLAY_TILE } from '../freeplay/freePlayText';
+import { FreePlayId, freePlayStates } from '../../services/freePlay';
 
-type GameMode = 'word' | 'sound' | 'similar' | 'phonics' | 'syllables' | 'vocab' | 'quests';
+type GameMode = 'word' | 'sound' | 'similar' | 'phonics' | 'syllables' | 'vocab' | 'quests' | FreePlayId;
+const FREE_ICONS: Record<FreePlayId, LucideIcon> = { pairs: Flower2, catch: Bug, train: TrainFront };
 
 const MENU_TEXT = { today: 'ئەمڕۆ ئەم یارییانە بکە', more: 'یارییەکانی تر', review: 'مەشقی دووبارەکردنەوە', reviewHint: (n: number) => `${n} شت کاتی بیرخستنەوەیانە` };
 
@@ -82,6 +86,9 @@ export const MatchGameScreen: React.FC = () => {
   if (mode === 'syllables') return <SyllableBuilder onExit={() => setMode('menu')} />;
   if (mode === 'quests') return <QuestGame onExit={() => setMode('menu')} />;
   if (mode === 'vocab') return <VocabularyGame onExit={() => setMode('menu')} />;
+  if (mode === 'pairs') return <PairsGame onExit={() => setMode('menu')} />;
+  if (mode === 'catch') return <CatchGame onExit={() => setMode('menu')} />;
+  if (mode === 'train') return <TrainGame onExit={() => setMode('menu')} />;
   if (mode === 'word') return <WordBuilder onExit={() => setMode('menu')} />;
   if (mode === 'sound' || mode === 'similar') return <LetterPractice mode={mode} onExit={() => setMode('menu')} />;
 
@@ -103,6 +110,19 @@ export const MatchGameScreen: React.FC = () => {
             style={[candyCard.big, tablet && { flex: 1 }, { backgroundColor: candy.face, borderBottomColor: candy.lip }]}>
             <View style={[candyCard.bigIcon, { backgroundColor: candy.chip }]}><item.Icon size={38} color={candy.icon} strokeWidth={2.3} /></View>
             <Text style={[candyCard.bigTitle, { color: candy.ink }]}>{item.title}</Text>
+          </TouchableOpacity>;
+        })}
+      </View>
+      <Text style={candyCard.sectionHeader}>{FREE_PLAY_TILE.title} — {FREE_PLAY_TILE.hint}</Text>
+      <View style={tablet ? { flexDirection: 'row', gap: 12 } : { gap: 10 }}>
+        {freePlayStates(currentProfile, text => soundService.canSpeak(text)).map((game, i) => {
+          const Icon = game.open ? FREE_ICONS[game.id] : Lock, candy = tiles[(i + 2) % tiles.length], text = FREE_PLAY_TEXT[game.id];
+          return <TouchableOpacity key={game.id} accessibilityRole="button" accessibilityState={{ disabled: !game.open }} accessibilityLabel={game.open ? text.title : `${text.title}. ${game.missing > 0 ? FREE_PLAY_TEXT.locked(game.missing) : FREE_PLAY_TEXT.notReady}`}
+            onPress={() => { if (!game.open) return; void soundService.stopSpeaking(); setMode(game.id); }}
+            style={[candyCard.tile, tablet && { flex: 1 }, { backgroundColor: candy.face, borderBottomColor: candy.lip }, !game.open && { opacity: 0.55 }]}>
+            <View style={[candyCard.icon, { backgroundColor: candy.chip }]}><Icon size={25} color={candy.icon} strokeWidth={2.3} /></View>
+            <View style={candyCard.body}><Text style={[candyCard.title, { color: candy.ink }]}>{text.title}</Text>
+              <Text style={[candyCard.hint, { color: candy.ink }]}>{game.open ? text.hint : game.missing > 0 ? FREE_PLAY_TEXT.locked(game.missing) : FREE_PLAY_TEXT.notReady}</Text></View>
           </TouchableOpacity>;
         })}
       </View>
