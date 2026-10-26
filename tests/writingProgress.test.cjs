@@ -1,16 +1,17 @@
 const fs=require('fs'),path=require('path'),assert=require('node:assert/strict');
 const ts=require('typescript');
 const root=path.join(__dirname,'..','src');
-const values=[];let cursor=0;let saved;
+const values=[],callbacks=[];let cursor=0,callbackCursor=0;let saved;
 const profile={id:'test-child',name:'test',avatar:'🦋',ageGroup:'5-6',stars:0,streakDays:0,lastActiveDate:'',masteredLetterIds:[],inProgressLetterIds:[],readStoryIds:[],unlockedStickerIds:[],savedWords:[],dailyPracticeCompletedToday:false};
-const react={createContext:()=>({Provider:'provider'}),useContext:()=>null,useEffect:()=>{},useRef:initial=>({current:initial}),useState:initial=>{const i=cursor++;if(!(i in values))values[i]=initial && typeof initial==='object' && 'masteredLetterIds' in initial?structuredClone(profile):initial;return [values[i],next=>{values[i]=typeof next==='function'?next(values[i]):next;}];},createElement:(type,props)=>({type,props})};react.default=react;
+const react={useCallback:(fn,deps)=>{const i=callbackCursor++,old=callbacks[i];if(old&&deps.length===old.deps.length&&deps.every((d,j)=>Object.is(d,old.deps[j])))return old.fn;callbacks[i]={fn,deps};return fn;},createContext:()=>({Provider:'provider'}),useContext:()=>null,useEffect:()=>{},useRef:initial=>({current:initial}),useState:initial=>{const i=cursor++;if(!(i in values))values[i]=initial && typeof initial==='object' && 'masteredLetterIds' in initial?structuredClone(profile):initial;return [values[i],next=>{values[i]=typeof next==='function'?next(values[i]):next;}];},createElement:(type,props)=>({type,props})};react.default=react;
 const records={};
 const repos={writingRepo:{saveBestScore:async(id,letter,score,stars)=>{const old=records[letter];return records[letter]={letterId:letter,bestScore:Math.max(old?.bestScore||0,score),bestStars:Math.max(old?.bestStars||0,stars),updatedAt:new Date().toISOString()};}},progressRepo:{saveChildProfile:async(p)=>{saved=structuredClone(p);}},authRepo:{saveParentSettings:async()=>{}},lettersRepo:{},storiesRepo:{}};
 const cache=new Map();
 function load(file){file=path.resolve(file);if(cache.has(file))return cache.get(file);const output=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.React}}).outputText;const module={exports:{}};cache.set(file,module.exports);new Function('exports','module','require',output)(module.exports,module,p=>p==='react'?react:p==='expo-router'?{usePathname:()=>'/',useRouter:()=>({navigate(){},replace(){}})}:p.endsWith('/repositories')?repos:p.endsWith('/soundService')?{soundService:{playSuccessFanfare(){},playCorrect(){},playPop(){}}}:load(path.resolve(path.dirname(file),p+'.ts')));return module.exports;}
 const {AppProvider}=load(root+'/store/useAppStore.tsx');
-const render=()=>{cursor=0;return AppProvider({children:null}).props.value;};
+const render=()=>{cursor=callbackCursor=0;return AppProvider({children:null}).props.value;};
 (async()=>{
+ const registered=render().registerBackHandler;render().updateCurrentProfile({practiceSeconds:20});assert.equal(render().registerBackHandler,registered,'screen-time updates keep the back registration callback stable');
  await render().saveWritingScore('dal',70,2);
  assert.deepEqual(saved.masteredLetterIds,[],'2 stars must not grant mastery');
  assert.equal(saved.stars,0,'failed trace must not grant mastery reward');

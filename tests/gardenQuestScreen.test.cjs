@@ -5,11 +5,11 @@ test('spoken instructions gate listening; cancelled speech cannot pass; the real
   const letters=load(path.resolve(__dirname,'../src/data/mockLetters.ts'));
   const text=load(path.resolve(__dirname,'../src/features/adventure/questText.ts'));
   const guides=load(path.resolve(__dirname,'../src/data/kurdishLetterGuides.ts'));
-  const states=[],refs=[];let cursor=0,rc=0,focus;
+  const states=[],refs=[],memoCallbacks=[];let cursor=0,rc=0,cc=0,focus;
   const speech=[],callbacks=[],completed=[];
   const timers=new Map();let timerId=0;
-  const react={useState(initial){const i=cursor++;if(!(i in states))states[i]=typeof initial==='function'?initial():initial;return[states[i],value=>states[i]=typeof value==='function'?value(states[i]):value];},useRef(initial){return refs[rc++]??={current:initial};},useCallback:fn=>fn,useMemo:fn=>fn(),createElement:(type,props,...children)=>({type,props:{...props,children}})};react.default=react;
-  const store={currentProfile:{id:'one',stars:0,masteredLetterIds:[]},selectedLetter:letters.mockLetters[0],setSelectedLetter(){},setSelectedStory(story){store.selectedStory=story;},setRoute(route){store.route=route;},completeGardenTask(step,id){completed.push(step);store.currentProfile=quest.finishGardenStep(store.currentProfile,step,id);},plantQuestFlower(){}};
+  const react={useState(initial){const i=cursor++;if(!(i in states))states[i]=typeof initial==='function'?initial():initial;return[states[i],value=>states[i]=typeof value==='function'?value(states[i]):value];},useRef(initial){return refs[rc++]??={current:initial};},useCallback:(fn,deps)=>{const i=cc++,old=memoCallbacks[i];if(old&&deps.length===old.deps.length&&deps.every((d,j)=>Object.is(d,old.deps[j])))return old.fn;memoCallbacks[i]={fn,deps};return fn;},useMemo:fn=>fn(),createElement:(type,props,...children)=>({type,props:{...props,children}})};react.default=react;
+  const store={currentProfile:{id:'one',stars:0,masteredLetterIds:[letters.mockLetters[0].id]},selectedLetter:letters.mockLetters[1],setSelectedLetter(){},setSelectedStory(story){store.selectedStory=story;},setRoute(route){store.route=route;},completeGardenTask(step,id){completed.push(step);store.currentProfile=quest.finishGardenStep(store.currentProfile,step,id);},plantQuestFlower(){}};
   const module={exports:{}};
   new Function('exports','require','setTimeout','clearTimeout',ts.transpileModule(fs.readFileSync(path.resolve(__dirname,'../src/features/adventure/GardenQuestScreen.tsx'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.React}}).outputText)(module.exports,name=>{
     if(name==='react')return react;
@@ -32,18 +32,23 @@ test('spoken instructions gate listening; cancelled speech cannot pass; the real
     if(name.endsWith('/kurdishLetterGuides'))return guides;
     if(name.endsWith('/foundationalLearning'))return{assessWriting:()=>({mastered:true})};
     if(name.endsWith('/WritingBoard'))return{WritingBoard:'Board'};
+    if(name.endsWith('/PlayPilotJourney'))return{PlayPilotJourney:'Pilot'};
+    if(name.endsWith('/playPilot'))return load(path.resolve(__dirname,'../src/services/playPilot.ts'));
     if(name.endsWith('/JourneyPractice'))return{JourneyPractice:'Practice'};
     if(name.endsWith('/SharedGarden'))return{SharedGarden:'SharedGarden'};
     if(name.endsWith('/GardenScene'))return{GardenScene:'Scene'};
     if(name.endsWith('/soundService'))return{soundService:{speakWord:(value,opts)=>{speech.push(value);callbacks.push(opts);return Promise.resolve();},stopSpeaking:async()=>{},playCorrect(){},playEncouragingTryAgain(){}}};
     throw Error(name);
   },(fn,ms)=>{const id=++timerId;timers.set(id,{fn,ms});return id;},id=>timers.delete(id));
-  const outer=module.exports.GardenQuestScreen();
-  const render=()=>{cursor=rc=0;return outer.type(outer.props);};
+  const outer={type:module.exports.LegacyGardenQuest,props:{letterId:'ra'}};
+  const render=()=>{cursor=rc=cc=0;return outer.type(outer.props);};
   const nodes=tree=>!tree||typeof tree!=='object'?[]:Array.isArray(tree)?tree.flatMap(nodes):typeof tree.type==='function'?nodes(tree.type(tree.props)):[tree,...nodes(tree.props.children)];
   const button=(tree,label)=>nodes(tree).find(n=>n.type==='Button'&&n.props.accessibilityLabel===label);
   let tree=render();button(tree,'با گەشتەکە دەست پێ بکەین').props.onPress();tree=render();
   const stop=focus();tree=render();
+  const activeNarration=focus,spokenBefore=speech.length;
+  for(let i=0;i<30;i++){store.currentProfile={...store.currentProfile,practiceSeconds:i};store.registerBackHandler=()=>{};tree=render();assert.equal(focus,activeNarration,'scroll/store updates must not retrigger focused narration');}
+  assert.equal(speech.length,spokenBefore);
   assert.equal(button(tree,`پیتی ${store.selectedLetter.name}`).props.disabled,true);
   const stale=callbacks.shift();stop();stale.onEnd();tree=render();
   assert.equal(button(tree,`پیتی ${store.selectedLetter.name}`).props.disabled,true,'cancelled instructions cannot unlock the answer');
@@ -79,7 +84,7 @@ test('spoken instructions gate listening; cancelled speech cannot pass; the real
   const partsPause=[...timers.values()][0];timers.clear();partsPause.fn();
   assert.equal(speech.at(-1),challenge.tiles.slice().reverse()[0].glyph);
   while(callbacks.length)callbacks.shift().onEnd();
-  for(const tile of challenge.tiles.slice().reverse()){button(tree,`پیتی ${tile.glyph}`).props.onPress();await Promise.resolve();tree=render();}
+  for(const tile of challenge.tiles.slice().reverse()){nodes(tree).find(n=>n.type==='Button'&&n.props.accessibilityLabel===`پیتی ${tile.glyph}`&&!n.props.disabled).props.onPress();await Promise.resolve();tree=render();}
   assert.deepEqual(completed,['listen','find','build']);
   button(tree,'بڕۆین بۆ ئەرکی دواتر').props.onPress();tree=render();
   nodes(tree).find(n=>n.type==='Board').props.onStrokesChange([[{x:10,y:20}]]);tree=render();

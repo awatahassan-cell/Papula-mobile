@@ -52,7 +52,8 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   };
   useEffect(() => {
     if (round && selected.length === round.syllables.length && !feedback && !correct) {
-      check();
+      const timer=setTimeout(check,0);
+      return ()=>clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected.length, round, feedback, correct]);

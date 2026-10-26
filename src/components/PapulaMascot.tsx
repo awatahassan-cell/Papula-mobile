@@ -24,8 +24,10 @@ export function PapulaMascot({ size = 120, mood = 'happy', flap = true, art: cus
     return () => loop.stop();
   }, [still, slow, wing]);
   const art = custom ? { ...BUTTERFLY_MOODS[mood], ...custom } : BUTTERFLY_MOODS[mood], height = (size * 290) / 320;
+  // The outer image owns its accessible label; SvgXml camel-cases this XML attribute on web.
+  const wings=art.wings.replace(/\saria-label="[^"]*"/g,''), body=art.body.replace(/\saria-label="[^"]*"/g,'');
   return <View accessible accessibilityRole="image" accessibilityLabel={art.label} style={{ width: size, height }}>
-    <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { transform: [{ scaleX: wing.interpolate({ inputRange: [0, 1], outputRange: [1, slow ? 0.94 : 0.84] }) }] }]}><SvgXml xml={art.wings} width={size} height={height} /></Animated.View>
-    <View pointerEvents="none" style={StyleSheet.absoluteFill}><SvgXml xml={art.body} width={size} height={height} /></View>
+    <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { transform: [{ scaleX: wing.interpolate({ inputRange: [0, 1], outputRange: [1, slow ? 0.94 : 0.84] }) }] }]}><SvgXml xml={wings} width={size} height={height} /></Animated.View>
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}><SvgXml xml={body} width={size} height={height} /></View>
   </View>;
 }

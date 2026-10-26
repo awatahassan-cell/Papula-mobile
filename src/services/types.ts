@@ -143,6 +143,7 @@ export interface LessonProgress {
 
 export interface DayLog { seconds: number; lessons: number; stars: number; }
 export interface ChildProfile {
+  playJourneys?: Record<string,{rounds:('sound'|'picture'|'missing')[];completedAt?:string}>;
   gardenQuest?: { steps: ('listen' | 'find' | 'build' | 'write' | 'story')[]; flowerSpot?: number };
   gardenQuests?: Record<string, { steps: ('listen' | 'find' | 'build' | 'write' | 'story')[]; flowerSpot?: number }>;
   checkpoint?: LearningCheckpoint;

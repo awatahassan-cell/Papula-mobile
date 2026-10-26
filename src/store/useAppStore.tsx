@@ -1,8 +1,9 @@
+import { finishPlayPilotRound, PlayPilotStep } from '../services/playPilot';
 import { finishGardenStep, plantGardenFlower, GardenStep } from '../services/gardenQuest';
 import { advanceWriting, writingMastered, skillAttempt, readingPracticeStories } from '../services/foundationalLearning';
 import { applyLessonStep, isLessonUnlocked, nextLessonLetter, reconcileLessons } from '../services/lessonPath';
 import { usePathname, useRouter } from 'expo-router';
-import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { LEARNING_WORDS, learningActivity, localDay, logDay, updateReview, personalStories } from '../services/learningEngine';
 import { knownWordId, isVocabId } from '../data/vocabulary';
 import { QUEST_REWARD } from '../data/quests';
@@ -19,6 +20,7 @@ export type AppRoute =
   | 'onboarding'
   | 'home'
   | 'butterfly-garden'
+  | 'play-pilot'
   | 'garden-quest'
   | 'garden'
   | 'alphabet'
@@ -61,6 +63,7 @@ export interface AppContextType {
   dailyMissions: DailyMission[];
   switchProfile: (profileId: string) => void;
   createProfile: (profile: Omit<ChildProfile, 'id' | 'stars' | 'streakDays' | 'lastActiveDate' | 'masteredLetterIds' | 'inProgressLetterIds' | 'readStoryIds' | 'unlockedStickerIds' | 'savedWords' | 'dailyPracticeCompletedToday'>) => void;
+  completePlayPilotRound: (step: PlayPilotStep, letterId?: string) => void;
   completeGardenTask: (step: GardenStep, letterId?: string) => void;
   plantQuestFlower: (spot: number, letterId?: string) => void;
   updateCurrentProfile: (updates: Partial<ChildProfile>) => void;
@@ -141,9 +144,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     navigateInternal(next);
   };
 
-  const registerBackHandler = (handler: (() => boolean) | null) => {
+  const registerBackHandler = useCallback((handler: (() => boolean) | null) => {
     customBackRef.current = handler;
-  };
+  }, []);
 
   const [selectedLetter, setSelectedLetterState] = useState<LetterItem | null>(null);
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
@@ -612,6 +615,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }));
   };
 
+  const completePlayPilotRound = (step: PlayPilotStep, letterId?: string) => {const next=finishPlayPilotRound(profileRef.current,step,letterId);if(next!==profileRef.current)updateCurrentProfile(next);};
   const completeGardenTask = (step: GardenStep, letterId = 'ba') => { const next = finishGardenStep(profileRef.current, step, letterId); if (next !== profileRef.current) updateCurrentProfile(next); };
   const plantQuestFlower = (spot: number, letterId = 'ba') => { const next = plantGardenFlower(profileRef.current, spot, letterId); if (next !== profileRef.current) updateCurrentProfile(next); };
   const feedPet = () => {
@@ -778,6 +782,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         switchProfile,
         createProfile,
         updateCurrentProfile,
+        completePlayPilotRound,
         completeGardenTask,
         plantQuestFlower,
         parentSettings,

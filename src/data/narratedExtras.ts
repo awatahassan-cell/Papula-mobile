@@ -1,3 +1,5 @@
+import { PLAY_JOURNEY_NARRATION } from '../features/adventure/playJourneyContent';
+import { PLAY_PILOT_TEXT } from '../features/adventure/playPilotText';
 import { RUBRIC_SENTENCES } from '../services/writingRubric';
 import { VOCAB, VOCAB_SENTENCES } from './vocabulary';
 import { GUIDE_TEXTS } from './spokenGuides';
@@ -14,7 +16,7 @@ export const TIP_TEXTS: string[] = Array.from(new Set(Object.values(RUBRIC_SENTE
 
 /** Picture words and short sentences of the vocabulary game; the game hides 🔊 until these are recorded. */
 export const VOCAB_TEXTS: string[] = [...VOCAB.map(item => item.word), ...VOCAB_SENTENCES.map(item => item.text)];
-export const ADVENTURE_TEXTS: string[] = QUEST_NARRATION;
+export const ADVENTURE_TEXTS: string[] = [...QUEST_NARRATION,...Object.values(PLAY_PILOT_TEXT),...PLAY_JOURNEY_NARRATION];
 
 /** Spoken explanations of the newer screens and adventures; recorded optionally like the vocabulary. */
 export { GUIDE_TEXTS };

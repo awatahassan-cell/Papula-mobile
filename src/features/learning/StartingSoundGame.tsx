@@ -30,7 +30,6 @@ export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
   const round=rounds[index];const correct=answer===round?.target.id;
   useEffect(()=>{
     if(!round||finished)return;
-    setHeard(true);
     const active=++token.current;
     void soundService.speakWord(round.word.word,{onEnd:()=>{if(active===token.current)setHeard(true);}});
   },[index,round,finished]);

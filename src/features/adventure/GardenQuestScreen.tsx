@@ -23,15 +23,16 @@ import { GardenScene } from './GardenScene';
 import { SharedGarden } from './SharedGarden';
 import { JourneyPractice } from './JourneyPractice';
 import { QUEST_TEXT } from './questText';
+import { PlayPilotJourney } from './PlayPilotJourney';
 
 const tasks=[{title:'دەنگی پیت',Icon:Headphones},{title:'وێنەکە بدۆزەوە',Icon:Search},{title:'وشەکە پێک بهێنە',Icon:Puzzle},{title:'پردەکە تەواو بکە',Icon:PencilLine},{title:'چیرۆکی پیت',Icon:BookOpen}];
 export function GardenQuestScreen() {
   const {currentProfile,selectedLetter,setSelectedLetter,setRoute}=useAppStore();
   const letterId=selectedLetter?.id || nextLessonLetter(currentProfile)?.id || mockLetters[0].id;
   if(!isLessonUnlocked(currentProfile,letterId)) return <View style={{padding:24,gap:20}}><HelpHint text={QUEST_TEXT.locked}/><Text>{QUEST_TEXT.locked}</Text><BackButton onPress={()=>{setSelectedLetter(nextLessonLetter(currentProfile)||mockLetters[0]);setRoute('garden-quest');}}>گەشتی ئێستام بکەمەوە</BackButton></View>;
-  return <Quest key={`${currentProfile.id}:${letterId}`} letterId={letterId}/>;
+  return <PlayPilotJourney key={`${currentProfile.id}:${letterId}`} letterId={letterId}/>;
 }
-function Quest({letterId}:{letterId:string}) {
+export function LegacyGardenQuest({letterId}:{letterId:string}) {
   const {colors:c,isNight}=useAppearance();
   const {width}=useResponsive();
   const {currentProfile,completeGardenTask,plantQuestFlower,setRoute,setSelectedLetter,setSelectedStory,registerBackHandler}=useAppStore();
@@ -76,15 +77,19 @@ function Quest({letterId}:{letterId:string}) {
     };
     run(0);
   },[]);
-  // Focus-bound audio stops on leaving, switching children/letters, or advancing the task.
+  // Back-button registration must never restart narration when the store updates.
   useFocusEffect(useCallback(()=>{
     if(practice){
       registerBackHandler?.(()=>{setPractice(null);return true;});
       return ()=>registerBackHandler?.(null);
     }
+  },[practice,registerBackHandler]));
+  // Only a changed exercise or route focus starts automatic narration.
+  useFocusEffect(useCallback(()=>{
+    if(practice)return;
     play(JSON.parse(voiceKey).parts,()=>{if(!intro&&!picker&&stage===0)setHeard(true);});
     return ()=>{attempt.current++;clearTimeout(pauseTimer.current);void soundService.stopSpeaking();};
-  },[voiceKey,play,intro,picker,stage,practice,registerBackHandler]));
+  },[voiceKey,play,intro,picker,stage,practice]));
   const narrate=()=>play(JSON.parse(voiceKey).parts,()=>{if(!intro&&!picker&&stage===0)setHeard(true);});
   const succeed=()=>{if(accepted.current)return;accepted.current=true;setWon(true);setRetry(0);completeGardenTask(GARDEN_STEPS[stage],letter.id);soundService.playCorrect();};
   const answer=(correct:boolean)=>{if(accepted.current)return;if(correct)succeed();else{setRetry(value=>value+1);soundService.playEncouragingTryAgain();}};
