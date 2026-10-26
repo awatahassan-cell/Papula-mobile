@@ -160,8 +160,8 @@ export interface ChildProfile {
   learnedWordIds?: string[];
   /** Spaced review of picture words and short sentences, keyed by word id. */
   wordReviews?: Record<string, LetterReview>;
-  /** The growing butterfly friend: times fed, bonus nectar from daily gifts, and the days of the last feeding and gift. */
-  pet?: { fed: number; bonus: number; lastFedDate?: string; giftDate?: string };
+  /** The growing butterfly friend: times fed, nectar earned from adventures, the day of the last feeding, and the day it was welcomed back. */
+  pet?: { fed: number; bonus: number; lastFedDate?: string; welcomedDate?: string };
   /** Garden butterflies the child has already seen being revealed. */
   seenButterflyIds?: string[];
   /** Days on which the child learned something (a gap does not reset it, unlike the streak). */

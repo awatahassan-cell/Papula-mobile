@@ -17,7 +17,7 @@ import { GOLD } from '../../theme/tokens';
 import { useAppStore } from '../../store/useAppStore';
 import { haptics } from '../../services/haptics';
 import {
-  GARDEN_BUTTERFLIES, GOAL_TEXT, GardenButterfly, RARITY_TEXT, earnedButterflies, fedToday, gardenCounts, giftDaysOwed, giftReady, giftTotal,
+  GARDEN_BUTTERFLIES, GOAL_TEXT, GardenButterfly, RARITY_TEXT, earnedButterflies, fedToday, gardenCounts,
   goalProgress, isEarned, nectarOf, nextStage, petFed, petMood, petStage, stageProgress, unseenButterflies,
 } from '../../data/garden';
 import { GARDEN_TEXT as T } from './gardenText';
@@ -67,11 +67,11 @@ const Reveal: React.FC<{ queue: GardenButterfly[]; onDone: () => void }> = ({ qu
 export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'; embedded?: boolean }> = ({section='all',embedded=false}) => {
   const { colors: c, isNight } = useAppearance();
   const { pageMax } = useResponsive();
-  const { currentProfile, feedPet, claimPetGift, markButterfliesSeen, setRoute } = useAppStore();
+  const { currentProfile, feedPet, welcomePetBack, markButterfliesSeen, setRoute } = useAppStore();
   const reduced = useReducedMotion();
   const [selected, setSelected] = useState<GardenButterfly | null>(null);
   const [bounce, setBounce] = useState(0);
-  const [gotGift, setGotGift] = useState(0), [giftDays, setGiftDays] = useState(0);
+  const [greeted, setGreeted] = useState(false);
   const [reveal, setReveal] = useState<GardenButterfly[]>(() => unseenButterflies(currentProfile)); // butterflies earned since the last visit, celebrated on arrival
   const [float] = useState(() => new Animated.Value(0));
   useEffect(() => {
@@ -84,9 +84,9 @@ export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'
 
   const counts = gardenCounts(currentProfile), earned = earnedButterflies(currentProfile).length;
   const fed = petFed(currentProfile), stage = petStage(fed), next = nextStage(fed), nectar = nectarOf(currentProfile);
-  const mood = petMood(currentProfile), fedNow = fedToday(currentProfile), gift = giftReady(currentProfile);
+  const mood = petMood(currentProfile), fedNow = fedToday(currentProfile);
   const feedIt = () => { if (nectar < 1) return; feedPet(); setBounce(n => n + 1); haptics.success(); };
-  const takeGift = () => { const total = giftTotal(currentProfile), days = giftDaysOwed(currentProfile); claimPetGift(); setGotGift(total); setGiftDays(days); };
+  const wake = () => { welcomePetBack(); setGreeted(true); setBounce(n => n + 1); haptics.success(); };
   const sky: [string, string] = isNight ? ['#1d1a4f', '#2c2a72'] : ['#d9ecff', '#f3e8ff'];
 
   const Container=embedded?View:ScrollView;
@@ -94,18 +94,18 @@ export const GardenContents: React.FC<{ section?: 'all'|'companion'|'collection'
     {!embedded&&<HelpHint text={SPOKEN_GUIDES.garden} disabled={!soundService.canSpeak(SPOKEN_GUIDES.garden)} />}
     {section!=='collection'&&<LinearGradient colors={sky} style={s.pet}>
       <Text style={[s.heading, { color: isNight ? '#fff' : '#3b2f63' }]}>{T.friend}</Text>
-      <PetArt stage={stage} mood={mood} size={section==='companion'?140:190} bounceKey={bounce} />
+      {mood === 'sleepy'
+        ? <TactileButton accessibilityRole="button" accessibilityLabel={T.wakeLabel} onPress={wake}><PetArt stage={stage} mood={mood} size={section==='companion'?140:190} bounceKey={bounce} /></TactileButton>
+        : <PetArt stage={stage} mood={mood} size={section==='companion'?140:190} bounceKey={bounce} />}
       <Text style={[s.stage, { color: isNight ? '#fff' : '#3b2f63' }]}>{T.stageLabel(stage.name)}</Text>
       <View accessibilityRole="progressbar" accessibilityLabel={T.friend} accessibilityValue={{ min: 0, max: 100, now: Math.round(stageProgress(fed) * 100) }} style={s.track}>
         <View style={[s.fill, { width: `${Math.round(stageProgress(fed) * 100)}%` }]} />
       </View>
       {section!=='companion'&&<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{next ? T.toNext(next.name, next.from - fed) : T.maxStage}</Text>}
-      <Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{fedNow ? T.fedToday : mood === 'sleepy' ? T.sleepy : ''}</Text>
+      <Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{greeted ? T.welcomeBack : fedNow ? T.fedToday : mood === 'sleepy' ? T.sleepy : ''}</Text>
       {section!=='companion'&&<View style={[s.nectar, { backgroundColor: GOLD.soft, borderColor: GOLD.border }]}><Text style={s.nectarText}>🍯 {T.nectar(nectar)}</Text></View>}
       <GoldButton label={T.feed} disabled={nectar < 1} onPress={feedIt} />
       {nectar < 1 && (section==='companion'?<BigButton variant="secondary" onPress={()=>setRoute('home')} style={s.wide}>با گەشتەکەم بەردەوام بکەم</BigButton>:<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{T.noNectar}</Text>)}
-      {gift ? <BigButton variant="outline" onPress={takeGift} style={s.wide}>{T.gift}</BigButton>
-        : (section!=='companion'||gotGift>0)&&<Text style={[s.small, { color: isNight ? '#d7d3f5' : '#5b5380' }]}>{gotGift ? `${giftDays > 1 ? T.giftBack(giftDays) + ' ' : ''}${T.giftGot(gotGift)}` : T.giftWait}</Text>}
     </LinearGradient>}
 
     {section!=='companion'&&<>

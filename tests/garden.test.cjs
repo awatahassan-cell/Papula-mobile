@@ -54,17 +54,6 @@ test('feeding costs nectar, grows the friend through the stages and never goes b
   assert.equal(g.nextStage(70), undefined);
 });
 
-test('the daily gift can be taken once a day and always gives 2 to 5 drops', () => {
-  let p = kid({ stars: 0 });
-  assert.ok(g.giftReady(p, now));
-  p = g.claimGift(p, now);
-  assert.ok(!g.giftReady(p, now));
-  assert.equal(g.claimGift(p, now), p);
-  assert.ok(g.nectarOf(p) >= 2 && g.nectarOf(p) <= 5);
-  assert.ok(g.giftReady(p, new Date('2026-03-11T09:00:00')));
-  for (let d = 1; d <= 60; d++) { const a = g.giftAmount(new Date(2026, 0, d)); assert.ok(a >= 2 && a <= 5); }
-});
-
 test('a friend who was away gets sleepy, never sad, and is happy once fed', () => {
   const away = kid({ stars: 5, lastActiveDate: new Date(now.getTime() - 4 * 86400000).toISOString() });
   assert.equal(g.petMood(away, now), 'sleepy');
@@ -81,20 +70,6 @@ test('tinted butterflies get their own gradient ids and keep valid colours; lock
   assert.equal(tintedButterfly('x-1', 90), a, 'cached');
 });
 
-test('gifts keep for up to three days, so a child who was away is welcomed with more', () => {
-  const day = d => new Date(2026, 2, d, 12);
-  const first = g.giftTotal(kid(), day(10));
-  assert.ok(first >= 2 && first <= 5, 'a first gift is one day');
-  const claimed = g.claimGift(kid(), day(10));
-  assert.equal(g.giftDaysOwed(claimed, day(10)), 0, 'already taken today');
-  assert.equal(g.giftDaysOwed(claimed, day(11)), 1, 'next day: one gift');
-  assert.equal(g.giftDaysOwed(claimed, day(12)), 2, 'two days away: two gifts');
-  assert.equal(g.giftDaysOwed(claimed, day(20)), 3, 'ten days away: capped at three');
-  const back = g.giftTotal(claimed, day(20));
-  assert.ok(back >= 6 && back <= 15, `three days of 2-5 drops (${back})`);
-  assert.equal(g.nectarOf(g.claimGift(claimed, day(20))), g.nectarOf(claimed) + back);
-});
-
 test('days played count even with gaps, unlike the streak', () => {
   const engine = load(root + '/src/services/learningEngine.ts');
   let p = { ...kid(), streakDays: 0, lastActiveDate: undefined };
@@ -106,4 +81,28 @@ test('days played count even with gaps, unlike the streak', () => {
   assert.equal(p.streakDays, 1, 'but the streak did reset');
   assert.equal(g.gardenCounts(p).streak, 2, 'butterflies for days use days played');
   assert.equal(g.gardenCounts({ ...p, activeDays: 0, streakDays: 5 }).streak, 5, 'old profiles keep their streak');
+});
+
+test('nothing is given for free: there is no gift, and a new child starts with no stars', () => {
+  assert.equal(typeof g.claimGift, 'undefined');
+  assert.equal(typeof g.giftReady, 'undefined');
+  const economy = load(root + '/src/services/rewards.ts');
+  assert.equal(economy.REWARDS.startingStars, 0);
+});
+
+test('a friend left alone for two days sleeps, and is welcomed back once', () => {
+  const day = d => new Date(2026, 2, d, 12);
+  const kidOn = (lastDay, extra = {}) => kid({ lastActiveDate: day(lastDay).toISOString(), ...extra });
+  assert.equal(g.awayDays(kidOn(10), day(10)), 0);
+  assert.equal(g.awayDays(kidOn(10), day(11)), 1);
+  assert.equal(g.needsWelcomeBack(kidOn(10), day(11)), false, 'one day away: still awake');
+  assert.equal(g.needsWelcomeBack(kidOn(10), day(12)), true, 'two days away: asleep');
+  assert.equal(g.petMood(kidOn(10), day(12)), 'sleepy');
+  const woke = g.welcomeBack(kidOn(10), day(12));
+  assert.equal(g.needsWelcomeBack(woke, day(12)), false, 'welcomed: not asleep any more today');
+  assert.notEqual(g.petMood(woke, day(12)), 'sleepy');
+  assert.equal(g.welcomeBack(woke, day(12)), woke, 'the welcome is not repeated');
+  assert.equal(g.needsWelcomeBack(woke, day(20)), true, 'a later long absence is welcomed again');
+  assert.equal(g.needsWelcomeBack(kidOn(10, { pet: { fed: 1, bonus: 0, lastFedDate: '2026-03-11' } }), day(12)), false, 'feeding counts as a visit');
+  assert.equal(g.petMood(kidOn(10), day(20)) === 'sad', false, 'never sad');
 });

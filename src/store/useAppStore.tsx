@@ -9,7 +9,7 @@ import { knownWordId, isVocabId } from '../data/vocabulary';
 import { QUEST_REWARD } from '../data/quests';
 import { stickerIdsFor } from '../data/mockStickers';
 import { REWARDS } from '../services/rewards';
-import { claimGift, feed, petFed, petStage } from '../data/garden';
+import { feed, petFed, petStage, welcomeBack } from '../data/garden';
 import { normalizeCheckpoint } from '../services/learningContinuation';
 import { mockLetters } from '../data/mockLetters';
 import { authRepo, lettersRepo, progressRepo, storiesRepo, writingRepo } from '../services/repositories';
@@ -93,7 +93,7 @@ export interface AppContextType {
   recordSkillResult: (skill: LearningSkill, correct: boolean, helped?: boolean) => void;
   feedPet: () => void;
   finishQuest: (questId: string) => number;
-  claimPetGift: () => void;
+  welcomePetBack: () => void;
   markButterfliesSeen: (ids: string[]) => void;
   savePlacement: (correct: number, total: number, letterIds: string[]) => void;
   finishLearningGame: (kind: 'word' | 'sound' | 'similar' | 'syllables' | 'writing') => number;
@@ -343,13 +343,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       // eslint-disable-next-line react-hooks/purity
       id: `child-${Date.now()}`,
       ...newChild,
-      stars: 5,
+      stars: REWARDS.startingStars,
       streakDays: 1,
       lastActiveDate: new Date().toISOString(),
       masteredLetterIds: [],
       inProgressLetterIds: [],
       readStoryIds: [],
-      unlockedStickerIds: ['stk-butterfly'],
+      unlockedStickerIds: [],
       savedWords: [],
       dailyPracticeCompletedToday: true,
     };
@@ -629,7 +629,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     soundService.playSuccessFanfare();
     return reward;
   };
-  const claimPetGift = () => { const before = profileRef.current, after = claimGift(before); if (after !== before) { updateCurrentProfile(after); soundService.playCorrect(false); } };
+  const welcomePetBack = () => { const before = profileRef.current, after = welcomeBack(before); if (after !== before) { updateCurrentProfile(after); soundService.playCorrect(false); } };
   const markButterfliesSeen = (ids: string[]) => {
     const base = profileRef.current;
     updateCurrentProfile({ ...base, seenButterflyIds: Array.from(new Set([...(base.seenButterflyIds || []), ...ids])) });
@@ -798,7 +798,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         recordSkillResult,
         feedPet,
         finishQuest,
-        claimPetGift,
+        welcomePetBack,
         markButterfliesSeen,
         savePlacement,
         finishLearningGame,

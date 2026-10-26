@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Play, Volume2 } from 'lucide-react-native';
@@ -14,6 +14,7 @@ import { sectionIntroductions } from '../../services/sectionIntroductions';
 import { gardenProgress } from '../../services/gardenQuest';
 import { nextLessonLetter } from '../../services/lessonPath';
 import { mockLetters } from '../../data/mockLetters';
+import { needsWelcomeBack } from '../../data/garden';
 import { HOME_TEXT as T } from './homeText';
 
 const STRIP = 6;
@@ -23,7 +24,9 @@ const STRIP = 6;
  * and the flower path as pictures. A six-year-old needs no reading to know what to press.
  */
 export function HomeHero() {
-  const { currentProfile, setRoute, setSelectedLetter } = useAppStore();
+  const { currentProfile, setRoute, setSelectedLetter, welcomePetBack } = useAppStore();
+  const sleeping = needsWelcomeBack(currentProfile);
+  const [greeted, setGreeted] = useState(false); // the welcome stays on screen after the friend wakes up
   const { colors: c, isNight } = useAppearance();
   const current = nextLessonLetter(currentProfile);
   const next = current || mockLetters[mockLetters.length - 1];
@@ -35,10 +38,12 @@ export function HomeHero() {
   const sky: [string, string] = isNight ? ['#26306b', '#3a2e70'] : ['#dff1ff', '#efe6ff'];
   const go = () => { void soundService.stopSpeaking(); if (current) { setSelectedLetter(next); setRoute('garden-quest'); } else setRoute('garden'); };
   return <LinearGradient testID="home-hero" colors={sky} style={s.card}>
-    <TactileButton accessibilityRole="button" accessibilityLabel={T.hearMe} onPress={() => { void soundService.speakWord(sectionIntroductions.home); }} style={s.mascot}>
-      <PapulaMascot size={150} mood="happy" />
-      <View style={[s.bubble, { backgroundColor: c.paper, borderColor: c.edge }]}><Volume2 size={26} color={GOLD.starInk} strokeWidth={2.6} /></View>
+    <TactileButton accessibilityRole="button" accessibilityLabel={sleeping ? T.wake : T.hearMe}
+      onPress={() => { if (sleeping) { welcomePetBack(); setGreeted(true); } void soundService.speakWord(sectionIntroductions.home); }} style={s.mascot}>
+      <PapulaMascot size={150} mood={sleeping ? 'sleepy' : 'happy'} flap={!sleeping} />
+      <View style={[s.bubble, { backgroundColor: c.paper, borderColor: c.edge }]}>{sleeping ? <Text style={s.zzz}>💤</Text> : <Volume2 size={26} color={GOLD.starInk} strokeWidth={2.6} />}</View>
     </TactileButton>
+    {(sleeping || greeted) && <View style={[s.say, { backgroundColor: c.paper, borderColor: c.edge }]}><Text style={[s.sayText, { color: c.ink }]}>{greeted ? T.welcomeBack : T.sleeping}</Text></View>}
     <Breathe style={s.full}>
       <TactileButton accessibilityRole="button" accessibilityLabel={current ? T.playLabel(next.name) : T.allDone} onPress={go} style={s.play}>
         <View style={s.letterTile}><Text style={s.letter}>{current ? next.glyph : '🌸'}</Text></View>
@@ -65,6 +70,9 @@ const s = StyleSheet.create({
   letter: { fontSize: 52, lineHeight: 74, color: '#3b2f63', fontFamily: 'IBMPlexSansArabic_700Bold' },
   playText: { fontSize: 22, color: GOLD.ink, fontFamily: 'IBMPlexSansArabic_700Bold', textAlign: 'center' },
   round: { width: 64, height: 64, borderRadius: 32, backgroundColor: '#6d4ae8', alignItems: 'center', justifyContent: 'center' },
+  say: { alignSelf: 'stretch', borderRadius: 20, borderWidth: 2, paddingVertical: 8, paddingHorizontal: 14 },
+  sayText: { fontSize: 17, textAlign: 'center', fontFamily: 'IBMPlexSansArabic_600SemiBold' },
+  zzz: { fontSize: 28 },
   strip: { flexDirection: 'row', gap: 8, justifyContent: 'center', flexWrap: 'wrap' },
   slot: { width: 44, height: 52, borderRadius: 16, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   slotNow: { borderWidth: 3 },

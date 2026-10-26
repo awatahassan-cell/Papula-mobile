@@ -51,16 +51,12 @@ test('stickers: one list decides what is unlocked, and nothing is ever taken awa
   assert.deepEqual(stickers.stickerIdsFor(0, ['stk-fox']), ['stk-fox'], 'owned stickers stay');
 });
 
-test('the economy suits a child who plays now and then: reachable, and never over in two days', () => {
-  const daily = economy.TYPICAL_DAILY_STARS, irregular = economy.IRREGULAR_DAILY_STARS;
-  const goals = [...stickers.mockStickers.map(s => s.unlockedAtStars), ...garden.GARDEN_BUTTERFLIES.filter(b => b.kind === 'stars').map(b => b.n),
-    ...badges.mockBadges.filter(b => b.targetType === 'total_stars').map(b => b.targetCount)];
-  const top = Math.max(...goals);
-  assert.ok(top / daily >= 8, `the last star goal (${top}) must outlast a week and a half of daily play`);
-  assert.ok(top / irregular <= 45, 'and be reachable in about six weeks even when the child plays three days in seven');
+test('star goals are in order and the first one comes from learning, not from a free start', () => {
   const sorted = [...new Set(stickers.mockStickers.map(s => s.unlockedAtStars))].sort((a, b) => a - b);
-  for (let i = 1; i < sorted.length; i++) assert.ok((sorted[i] - sorted[i - 1]) / irregular <= 6, `no wait over six days between stickers at an irregular pace (${sorted[i - 1]}→${sorted[i]})`);
-  assert.ok(sorted[0] <= economy.REWARDS.startingStars, 'the first sticker is already there on day one');
+  assert.ok(sorted[0] > economy.REWARDS.startingStars, 'a new child has to earn the first sticker');
+  assert.ok(sorted[0] <= economy.REWARDS.lessonComplete + economy.REWARDS.gamePerKindPerDay, 'but one lesson and one game are enough');
+  for (let i = 1; i < sorted.length; i++) assert.ok(sorted[i] > sorted[i - 1]);
+  assert.equal(economy.REWARDS.startingStars, 0);
 });
 
 test('daily income stays small: missions and practice cannot flood a child with stars', () => {

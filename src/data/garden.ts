@@ -68,43 +68,29 @@ export function stageProgress(fed: number) {
   const current = petStage(fed), next = nextStage(fed);
   return next ? (fed - current.from) / (next.from - current.from) : 1;
 }
-/** Every star earned is one drop of nectar; feeding costs one. Daily gifts add extra. */
+/** Every star earned by learning is one drop of nectar; feeding costs one. Nothing is given for free. */
 export const nectarOf = (profile: ChildProfile) => Math.max(0, profile.stars + (profile.pet?.bonus || 0) - petFed(profile));
 export const fedToday = (profile: ChildProfile, now = new Date()) => profile.pet?.lastFedDate === localDay(now);
-export const giftReady = (profile: ChildProfile, now = new Date()) => profile.pet?.giftDate !== localDay(now);
-/** 2–5 drops, the same for a given day so a quick re-open cannot reroll it. */
-export function giftAmount(now = new Date()) {
-  const day = localDay(now);
-  let hash = 0; for (const char of day) hash = (hash * 31 + char.charCodeAt(0)) % 9973;
-  return 2 + (hash % 4);
-}
-const daysSince = (iso: string | undefined, now: Date) => iso ? Math.floor((now.getTime() - new Date(iso).getTime()) / 86400000) : 0;
 export type PetMood = 'happy' | 'calm' | 'sleepy';
-/** A friend who was away only gets sleepy, never sad: coming back wakes them up. */
+export const WELCOME_AFTER_DAYS = 2;
+const dayNumber = (iso: string) => Math.round(Date.parse(localDay(new Date(iso)) + 'T12:00:00') / 86400000);
+/** Whole calendar days since the child last learned or fed the friend (0 when they came today). */
+export function awayDays(profile: ChildProfile, now = new Date()): number {
+  const seen = [profile.lastActiveDate, profile.pet?.lastFedDate ? profile.pet.lastFedDate + 'T12:00:00' : undefined].filter((x): x is string => !!x).map(dayNumber);
+  if (!seen.length) return 0;
+  return Math.max(0, dayNumber(now.toISOString()) - Math.max(...seen));
+}
+/** A friend left alone for two days falls asleep, and wakes with a welcome when the child comes back. */
+export const needsWelcomeBack = (profile: ChildProfile, now = new Date()) =>
+  awayDays(profile, now) >= WELCOME_AFTER_DAYS && profile.pet?.welcomedDate !== localDay(now);
+export const welcomeBack = (profile: ChildProfile, now = new Date()): ChildProfile =>
+  needsWelcomeBack(profile, now) ? { ...profile, pet: { fed: petFed(profile), bonus: 0, ...profile.pet, welcomedDate: localDay(now) } } : profile;
+/** Never sad: a friend who was away is only sleepy. */
 export function petMood(profile: ChildProfile, now = new Date()): PetMood {
-  if (fedToday(profile, now)) return 'happy';
-  const away = Math.min(daysSince(profile.lastActiveDate, now), profile.pet?.lastFedDate ? daysSince(profile.pet.lastFedDate + 'T12:00:00', now) : 99);
-  return away >= 2 ? 'sleepy' : 'calm';
+  if (needsWelcomeBack(profile, now)) return 'sleepy';
+  return fedToday(profile, now) ? 'happy' : 'calm';
 }
 export function feed(profile: ChildProfile, now = new Date()): ChildProfile {
   if (nectarOf(profile) < 1) return profile;
-  return { ...profile, pet: { bonus: 0, ...profile.pet, fed: petFed(profile) + 1, lastFedDate: localDay(now) } };
-}
-export const GIFT_STACK_DAYS = 3;
-/** Days of gifts waiting: 1 normally, up to three when the child has been away (gifts keep for a few days). */
-export function giftDaysOwed(profile: ChildProfile, now = new Date()): number {
-  if (!giftReady(profile, now)) return 0;
-  const last = profile.pet?.giftDate;
-  if (!last) return 1;
-  const gap = Math.round((Date.parse(localDay(now) + 'T12:00:00') - Date.parse(last + 'T12:00:00')) / 86400000);
-  return Math.max(1, Math.min(GIFT_STACK_DAYS, gap));
-}
-export function giftTotal(profile: ChildProfile, now = new Date()): number {
-  let total = 0;
-  for (let i = 0; i < giftDaysOwed(profile, now); i++) total += giftAmount(new Date(now.getFullYear(), now.getMonth(), now.getDate() - i, 12));
-  return total;
-}
-export function claimGift(profile: ChildProfile, now = new Date()): ChildProfile {
-  if (!giftReady(profile, now)) return profile;
-  return { ...profile, pet: { fed: petFed(profile), ...profile.pet, bonus: (profile.pet?.bonus || 0) + giftTotal(profile, now), giftDate: localDay(now) } };
+  return { ...profile, pet: { bonus: 0, ...profile.pet, fed: petFed(profile) + 1, lastFedDate: localDay(now), welcomedDate: localDay(now) } };
 }
