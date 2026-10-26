@@ -2,7 +2,8 @@ import { HelpHint } from '../../components/HelpButton';
 import { sectionIntroductions } from '../../services/sectionIntroductions';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
 import { useAppearance, useThemeStyles } from '../../theme/useAppearance';
-import { ChevronDown, ChevronUp, Compass, Lock, Flower2, Bug, TrainFront, Sprout, Ear, Eye, Layers, LucideIcon, PencilLine, Puzzle, Shapes, Volume2 } from 'lucide-react-native';
+import { ChevronDown, ChevronUp, Volume2 } from 'lucide-react-native';
+import { CharacterPicture } from '../../components/CharacterPicture';
 import { WORD_WRITING_TILE } from '../writing/writingText';
 import { QuestGame } from '../quests/QuestGame';
 import { QUEST_TILE } from '../quests/questText';
@@ -29,33 +30,33 @@ import { kurdishDigits } from '../../services/rewards';
 import { FreePlayId, freePlayStates } from '../../services/freePlay';
 
 type GameMode = 'word' | 'sound' | 'similar' | 'phonics' | 'syllables' | 'vocab' | 'quests' | FreePlayId;
-const FREE_ICONS: Record<FreePlayId, LucideIcon> = { pairs: Flower2, catch: Bug, train: TrainFront };
+const FREE_ICONS: Record<FreePlayId, string> = { pairs: '🃏', catch: '🫧', train: '🚂' };
 
 const MENU_TEXT = { today: 'ئەمڕۆ ئەم یارییانە بکە', more: 'یارییەکانی تر', review: 'مەشقی دووبارەکردنەوە', reviewHint: (n: number) => `${n} شت کاتی بیرخستنەوەیانە` };
 
-type GameItem = { id: GameMode | 'word-writing'; title: string; hint: string; Icon: LucideIcon };
+type GameItem = { id: GameMode | 'word-writing'; title: string; hint: string; icon: string };
 const GAME_SECTIONS: { level: string; items: GameItem[] }[] = [
   {
     level: '⭐ ئاستی ١ — گوێ بگرە و بناسەوە',
     items: [
-      { id: 'sound', title: 'یاریی دەنگ', hint: 'گوێ بگرە و پیتەکە بدۆزەوە', Icon: Volume2 },
-      { id: 'phonics', title: 'دەنگی سەرەتای وشە', hint: 'وشەکە ببیستە و دەنگی یەکەم بدۆزەوە', Icon: Ear },
-      { id: 'similar', title: 'پیتە هاوشێوەکان', hint: 'شێوە و خاڵەکان جیا بکەرەوە', Icon: Eye },
+      { id: 'sound', title: 'یاریی دەنگ', hint: 'گوێ بگرە و پیتەکە بدۆزەوە', icon: '🔊' },
+      { id: 'phonics', title: 'دەنگی سەرەتای وشە', hint: 'وشەکە ببیستە و دەنگی یەکەم بدۆزەوە', icon: '👂' },
+      { id: 'similar', title: 'پیتە هاوشێوەکان', hint: 'شێوە و خاڵەکان جیا بکەرەوە', icon: '👁' },
     ],
   },
   {
     level: '⭐⭐ ئاستی ٢ — بڕگە و وشە دروست بکە',
     items: [
-      { id: 'syllables', title: 'بڕگەکان', hint: 'وشەکە بە بڕگە پێکەوە ببەستە', Icon: Layers },
-      { id: 'word', title: 'وشە دروست بکەم', hint: 'پیتەکان پێکەوە ببەستە', Icon: Puzzle },
-      { id: 'vocab', title: VOCAB_TILE.title, hint: VOCAB_TILE.hint, Icon: Shapes },
+      { id: 'syllables', title: 'بڕگەکان', hint: 'وشەکە بە بڕگە پێکەوە ببەستە', icon: '🎵' },
+      { id: 'word', title: 'وشە دروست بکەم', hint: 'پیتەکان پێکەوە ببەستە', icon: '🧩' },
+      { id: 'vocab', title: VOCAB_TILE.title, hint: VOCAB_TILE.hint, icon: '🍎' },
     ],
   },
   {
     level: '⭐⭐⭐ ئاستی ٣ — چیرۆک و نووسین',
     items: [
-      { id: 'quests', title: QUEST_TILE.title, hint: QUEST_TILE.hint, Icon: Compass },
-      { id: 'word-writing', title: WORD_WRITING_TILE.title, hint: WORD_WRITING_TILE.hint, Icon: PencilLine },
+      { id: 'quests', title: QUEST_TILE.title, hint: QUEST_TILE.hint, icon: '🧭' },
+      { id: 'word-writing', title: WORD_WRITING_TILE.title, hint: WORD_WRITING_TILE.hint, icon: '✏' },
     ],
   },
 ];
@@ -98,7 +99,7 @@ export const MatchGameScreen: React.FC = () => {
   return (
     <ScrollView contentContainerStyle={[s.container, { paddingTop: 8, paddingBottom: 14 }, tablet && { maxWidth: pageMax }]}><HelpHint text={sectionIntroductions['match-game']} />
       {dueCount > 0 && <TouchableOpacity accessibilityRole="button" accessibilityLabel={MENU_TEXT.review} onPress={() => { void soundService.stopSpeaking(); setRoute('daily-practice'); }} style={[candyCard.big, candyCard.review, { backgroundColor: tiles[3 % tiles.length].face, borderBottomColor: tiles[3 % tiles.length].lip }]}>
-        <View style={[candyCard.bigIcon, { backgroundColor: tiles[3 % tiles.length].chip }]}><Sprout size={38} color={tiles[3 % tiles.length].icon} strokeWidth={2.3} /></View>
+        <View style={[candyCard.bigIcon, { backgroundColor: tiles[3 % tiles.length].chip }]}><CharacterPicture symbol="🌱" size={56} animate={false} /></View>
         <View style={candyCard.body}><Text style={[candyCard.bigTitle, { color: tiles[3 % tiles.length].ink }]}>{MENU_TEXT.review}</Text><Text style={[candyCard.hint, { color: tiles[3 % tiles.length].ink }]}>{MENU_TEXT.reviewHint(dueCount)}</Text></View>
       </TouchableOpacity>}
       <View style={tablet ? { flexDirection: 'row', gap: 12 } : { gap: 12 }}>
@@ -108,7 +109,7 @@ export const MatchGameScreen: React.FC = () => {
           return <TouchableOpacity key={id} accessibilityRole="button" accessibilityLabel={item.title}
             onPress={() => { void soundService.stopSpeaking(); setMode(item.id as GameMode); }}
             style={[candyCard.big, tablet && { flex: 1 }, { backgroundColor: candy.face, borderBottomColor: candy.lip }]}>
-            <View style={[candyCard.bigIcon, { backgroundColor: candy.chip }]}><item.Icon size={38} color={candy.icon} strokeWidth={2.3} /></View>
+            <View style={[candyCard.bigIcon, { backgroundColor: candy.chip }]}><CharacterPicture symbol={item.icon} size={56} animate={false} /></View>
             <Text style={[candyCard.bigTitle, { color: candy.ink }]}>{item.title}</Text>
           </TouchableOpacity>;
         })}
@@ -116,11 +117,11 @@ export const MatchGameScreen: React.FC = () => {
       <View accessible accessibilityLabel={FREE_PLAY_TILE.title} style={candyCard.divider}><Text style={candyCard.dividerEmoji}>🦋</Text></View>
       <View style={tablet ? { flexDirection: 'row', gap: 12 } : { gap: 10 }}>
         {freePlayStates(currentProfile, text => soundService.canSpeak(text)).map((game, i) => {
-          const Icon = game.open ? FREE_ICONS[game.id] : Lock, candy = tiles[(i + 2) % tiles.length], text = FREE_PLAY_TEXT[game.id];
+          const icon = game.open ? FREE_ICONS[game.id] : '🔒', candy = tiles[(i + 2) % tiles.length], text = FREE_PLAY_TEXT[game.id];
           return <TouchableOpacity key={game.id} accessibilityRole="button" accessibilityState={{ disabled: !game.open }} accessibilityLabel={game.open ? text.title : `${text.title}. ${game.missing > 0 ? FREE_PLAY_TEXT.locked(game.missing) : FREE_PLAY_TEXT.notReady}`}
             onPress={() => { if (!game.open) return; void soundService.stopSpeaking(); setMode(game.id); }}
             style={[candyCard.tile, tablet && { flex: 1 }, { backgroundColor: candy.face, borderBottomColor: candy.lip }, !game.open && { opacity: 0.55 }]}>
-            <View style={[candyCard.icon, { backgroundColor: candy.chip }]}><Icon size={25} color={candy.icon} strokeWidth={2.3} /></View>
+            <View style={[candyCard.icon, { backgroundColor: candy.chip }]}><CharacterPicture symbol={icon} size={40} animate={false} /></View>
             <View style={candyCard.body}><Text style={[candyCard.title, { color: candy.ink }]}>{text.title}</Text>
               {!game.open && game.missing > 0 && <Text style={[candyCard.hint, { color: candy.ink, fontSize: 16 }]}>+{kurdishDigits(game.missing)}</Text>}</View>
           </TouchableOpacity>;
@@ -155,7 +156,7 @@ export const MatchGameScreen: React.FC = () => {
                     }}
                   >
                     <View style={[candyCard.icon, { backgroundColor: candy.chip }]}>
-                      <item.Icon size={25} color={candy.icon} strokeWidth={2.3} />
+                      <CharacterPicture symbol={item.icon} size={40} animate={false} />
                     </View>
                     <View style={candyCard.body}>
                       <Text style={[candyCard.title, { color: candy.ink }]}>{item.title}</Text>
@@ -185,7 +186,7 @@ const candyCard = StyleSheet.create({
   section: { width: '100%', gap: 8, marginTop: 2 },
   review: { minHeight: 96, flexDirection: 'row', justifyContent: 'flex-start', gap: 12 },
   big: { minHeight: 132, borderRadius: 28, borderBottomWidth: 6, padding: 14, alignItems: 'center', justifyContent: 'center', gap: 10 },
-  bigIcon: { width: 68, height: 68, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
+  bigIcon: { width: 84, height: 84, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
   bigTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, textAlign: 'center' },
   more: { minHeight: 48, borderRadius: 18, borderWidth: 2, borderColor: '#cbd5e1', paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, alignSelf: 'center' },
   moreText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 15, color: '#475569' },
@@ -195,7 +196,7 @@ const candyCard = StyleSheet.create({
   sectionHeader: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#1e293b', textAlign: 'right', paddingHorizontal: 4 },
   tile: { minHeight: 72, borderRadius: 24, borderBottomWidth: 4, paddingVertical: 10, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },
   mainAction: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 },
-  icon: { width: 44, height: 44, borderRadius: 16, backgroundColor: '#ffffff25', alignItems: 'center', justifyContent: 'center' },
+  icon: { width: 54, height: 54, borderRadius: 18, backgroundColor: '#ffffff25', alignItems: 'center', justifyContent: 'center' },
   body: { flex: 1, minWidth: 0 },
   title: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 17, color: '#ffffff', textAlign: 'right' },
   hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 12, color: '#ffffff', textAlign: 'right', marginTop: 1 },

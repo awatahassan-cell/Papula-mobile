@@ -4,7 +4,8 @@ import { useThemeStyles } from '../../theme/useAppearance';
 import { StartingAssessment } from '../learning/StartingAssessment';
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { Compass, Gamepad2, ListChecks, Play, Shapes, Sprout } from 'lucide-react-native';
+import { Play } from 'lucide-react-native';
+import { CharacterPicture } from '../../components/CharacterPicture';
 import { Text } from '../../components/RTLText';
 import { DailyMissionsComponent } from '../../components/DailyMissionsComponent';
 import { useAppStore } from '../../store/useAppStore';
@@ -44,8 +45,8 @@ export const DailyPracticeScreen: React.FC = () => {
   if(practicing)return <LetterPractice mode="review" onComplete={()=>{completeDailyPractice();}} onExit={()=>setPracticing(false)} />;
   return <ScrollView contentContainerStyle={[s.container,{alignItems:'center',gap:14}]}>
     <View style={s.row}>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel="مەشقی من" accessibilityState={{selected:tab==='personal'}} style={[local.tab,tab==='personal'&&s.correct]} onPress={()=>setTab('personal')}><Sprout size={30} color="#047857" strokeWidth={2.3}/></TouchableOpacity>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel="ئەرکەکانی ئەمڕۆ" accessibilityState={{selected:tab==='missions'}} style={[local.tab,tab==='missions'&&s.correct]} onPress={()=>setTab('missions')}><ListChecks size={30} color="#4338ca" strokeWidth={2.3}/></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="مەشقی من" accessibilityState={{selected:tab==='personal'}} style={[local.tab,tab==='personal'&&s.correct]} onPress={()=>setTab('personal')}><CharacterPicture symbol="🌱" size={44} animate={false}/></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="ئەرکەکانی ئەمڕۆ" accessibilityState={{selected:tab==='missions'}} style={[local.tab,tab==='missions'&&s.correct]} onPress={()=>setTab('missions')}><CharacterPicture symbol="🎯" size={44} animate={false}/></TouchableOpacity>
     </View>
     {tab==='missions'?<DailyMissionsComponent />:<>
       {plan.length>0?<TouchableOpacity accessibilityRole="button" accessibilityLabel="دەست بە مەشقی ئەمڕۆ بکەم" style={local.play} onPress={()=>openTask(plan[0])}>
@@ -54,10 +55,10 @@ export const DailyPracticeScreen: React.FC = () => {
       :<TouchableOpacity accessibilityRole="button" accessibilityLabel="سەرەتا پیتێک لە ڕێڕەوی فێربوون هەڵبژێرە" style={local.play} onPress={()=>setRoute('alphabet')}><View style={local.playIcon}><Play size={44} color="#ffffff" fill="#ffffff"/></View></TouchableOpacity>}
       {plan.length>1&&<View style={local.tiles}>{plan.slice(1).map(task=><TouchableOpacity key={task.letter.id} accessibilityRole="button" accessibilityLabel={`وانەی پیتی ${task.letter.glyph}`} style={local.tile} onPress={()=>openTask(task)}><Text style={[s.glyph,{fontSize:46}]}>{task.letter.glyph}</Text></TouchableOpacity>)}</View>}
       <View style={local.tiles}>
-        {plan.length>0&&<TouchableOpacity accessibilityRole="button" accessibilityLabel="یاریی پێداچوونەوە" style={[local.tile,local.game]} onPress={()=>setPracticing(true)}><Gamepad2 size={40} color="#4338ca" strokeWidth={2.2}/></TouchableOpacity>}
-        {dueWordsNow>0&&<TouchableOpacity accessibilityRole="button" accessibilityLabel={`${VOCAB_TEXT.review}. ${VOCAB_TEXT.reviewHint(dueWordsNow)}`} style={[local.tile,local.game]} onPress={()=>setReviewingWords(true)}><Shapes size={40} color="#4338ca" strokeWidth={2.2}/></TouchableOpacity>}
+        {plan.length>0&&<TouchableOpacity accessibilityRole="button" accessibilityLabel="یاریی پێداچوونەوە" style={[local.tile,local.game]} onPress={()=>setPracticing(true)}><CharacterPicture symbol="🎮" size={58} animate={false}/></TouchableOpacity>}
+        {dueWordsNow>0&&<TouchableOpacity accessibilityRole="button" accessibilityLabel={`${VOCAB_TEXT.review}. ${VOCAB_TEXT.reviewHint(dueWordsNow)}`} style={[local.tile,local.game]} onPress={()=>setReviewingWords(true)}><CharacterPicture symbol="🍎" size={58} animate={false}/></TouchableOpacity>}
       </View>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel={currentProfile.placement?'دەستپێکەکەم دووبارە هەڵبسەنگێنمەوە':'با بزانین چی دەزانم'} style={local.small} onPress={()=>setAssessing(true)}><Compass size={22} color="#64748b"/></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel={currentProfile.placement?'دەستپێکەکەم دووبارە هەڵبسەنگێنمەوە':'با بزانین چی دەزانم'} style={local.small} onPress={()=>setAssessing(true)}><CharacterPicture symbol="🧭" size={32} animate={false}/></TouchableOpacity>
     </>}
   </ScrollView>;
 };
