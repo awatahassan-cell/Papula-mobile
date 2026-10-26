@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Animated, Easing, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Volume2 } from 'lucide-react-native';
+import { useReducedMotion } from '../../components/Motion';
 import { BackButton } from '../../components/BackButton';
 import { Text } from '../../components/RTLText';
 import { TactileButton as TouchableOpacity } from '../../components/TactileButton';
@@ -75,6 +77,31 @@ export const PairsGame: React.FC<Props> = ({ onExit }) => {
 };
 
 const ROUNDS = 6;
+const STAGE_HEIGHT = 400, BUBBLE = 78, LEFTS = ['1%', '17%', '33%', '49%', '65%', '76%'];
+type Letter = (typeof mockLetters)[number];
+/** One bubble rising slowly from the bottom edge of the sky and starting over when it leaves the top; with reduced motion it just sits still. */
+const Bubble: React.FC<{ letter: Letter; index: number; state: 'idle' | 'caught' | 'wrong'; onPress: () => void }> = ({ letter, index, state, onPress }) => {
+  const s = useThemeStyles(baseLearningStyles);
+  const reduced = useReducedMotion();
+  const [y] = useState(() => new Animated.Value(STAGE_HEIGHT));
+  useEffect(() => {
+    if (reduced) { y.setValue(24 + (index % 3) * 120); return; }
+    let alive = true;
+    const travel = STAGE_HEIGHT + BUBBLE, duration = 11000 + index * 1400;
+    const run = (from: number) => {
+      y.setValue(from);
+      Animated.timing(y, { toValue: -BUBBLE, duration: duration * (from + BUBBLE) / travel, easing: Easing.linear, useNativeDriver: Platform.OS !== 'web', isInteraction: false })
+        .start(({ finished }) => { if (alive && finished) run(STAGE_HEIGHT); });
+    };
+    run(STAGE_HEIGHT - (index * travel) / 6.5);
+    return () => { alive = false; y.stopAnimation(); };
+  }, [reduced, index, y]);
+  return <Animated.View style={[local.floater, { left: LEFTS[index % LEFTS.length] as `${number}%`, transform: [{ translateY: y }] }]}>
+    <TouchableOpacity accessibilityRole="button" accessibilityLabel={letter.glyph} onPress={onPress} style={[local.bubble, state === 'caught' && local.caught, state === 'wrong' && local.wrong]}>
+      <View style={local.shine} /><Text style={[s.glyph, { fontSize: 38, lineHeight: 52 }]}>{letter.glyph}</Text>
+    </TouchableOpacity>
+  </Animated.View>;
+};
 /** The child hears a letter and taps its bubble. No clock and nothing falls; a wrong bubble just fades. */
 export const CatchGame: React.FC<Props> = ({ onExit }) => {
   const s = useThemeStyles(baseLearningStyles);
@@ -102,10 +129,9 @@ export const CatchGame: React.FC<Props> = ({ onExit }) => {
   return <ScrollView contentContainerStyle={s.container}>
     <Text style={s.text}>{round + 1} / {ROUNDS}</Text>
     <Text style={s.title}>{T.catch.ask}</Text>
-    <TouchableOpacity accessibilityRole="button" accessibilityLabel={T.catch.ask} style={s.secondary} onPress={() => sayLetter(target.glyph)}><Text style={s.text}>🔊</Text></TouchableOpacity>
-    <View style={s.row}>{options.map((letter, i) => <TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={letter.glyph}
-      style={[local.bubble, { marginTop: i % 2 ? 18 : 0 }, caught && letter.id === target.id && s.correct, wrong.includes(letter.id) && s.retry, wrong.includes(letter.id) && s.disabled]} onPress={() => tap(letter.id)}>
-      <Text style={s.glyph}>{letter.glyph}</Text></TouchableOpacity>)}</View>
+    <TouchableOpacity accessibilityRole="button" accessibilityLabel={T.catch.ask} style={local.speaker} onPress={() => sayLetter(target.glyph)}><Volume2 size={40} color="#ffffff" strokeWidth={2.4} /></TouchableOpacity>
+    <View style={local.sky}>{options.map((letter, i) => <Bubble key={`${run}-${round}-${letter.id}`} letter={letter} index={i}
+      state={caught && letter.id === target.id ? 'caught' : wrong.includes(letter.id) ? 'wrong' : 'idle'} onPress={() => tap(letter.id)} />)}</View>
     {caught && <Text accessibilityLiveRegion="polite" style={s.text}>{T.right} 🦋</Text>}
     <BackButton fullWidth onPress={onExit}>{T.back}</BackButton>
   </ScrollView>;
@@ -149,6 +175,12 @@ export const TrainGame: React.FC<Props> = ({ onExit }) => {
 const local = StyleSheet.create({
   card: { width: '30%', minHeight: 96, flexGrow: 1 },
   back: { backgroundColor: '#ede9fe', borderColor: '#a78bfa' },
-  bubble: { width: 84, height: 84, borderRadius: 42, borderWidth: 3, borderColor: '#93c5fd', backgroundColor: '#eff6ff', alignItems: 'center', justifyContent: 'center' },
+  sky: { width: '100%', height: STAGE_HEIGHT, borderRadius: 30, overflow: 'hidden', backgroundColor: '#e0f2fe', borderWidth: 3, borderColor: '#bae6fd' },
+  floater: { position: 'absolute', top: 0, width: BUBBLE, height: BUBBLE },
+  bubble: { width: BUBBLE, height: BUBBLE, borderRadius: BUBBLE / 2, borderWidth: 3, borderBottomWidth: 5, borderColor: '#7dd3fc', backgroundColor: '#ffffffe6', alignItems: 'center', justifyContent: 'center' },
+  shine: { position: 'absolute', top: 9, start: 13, width: 18, height: 10, borderRadius: 9, backgroundColor: '#e0f2fe', transform: [{ rotate: '-30deg' }] },
+  caught: { backgroundColor: '#dcfce7', borderColor: '#16a34a', transform: [{ scale: 1.2 }] },
+  wrong: { backgroundColor: '#fef3c7', borderColor: '#d97706', opacity: 0.45 },
+  speaker: { width: 84, height: 84, borderRadius: 42, backgroundColor: '#6d4ae0', borderBottomWidth: 6, borderBottomColor: '#4c33a8', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' },
   slot: { borderStyle: 'dashed', minWidth: 54 },
 });
