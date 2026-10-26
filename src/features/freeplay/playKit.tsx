@@ -27,7 +27,7 @@ export type Tone = keyof typeof PALETTE;
 export const BUBBLE_COLOURS = [PALETTE.rose, PALETTE.amber, PALETTE.emerald, PALETTE.sky, PALETTE.purple, PALETTE.indigo];
 
 export const K = StyleSheet.create({
-  page: { paddingHorizontal: 14, paddingTop: 6, paddingBottom: 14, gap: 10, width: '100%', maxWidth: 720, alignSelf: 'center' },
+  page: { flexGrow: 1, paddingHorizontal: 14, paddingTop: 6, paddingBottom: 14, gap: 10, width: '100%', maxWidth: 720, alignSelf: 'center' },
   head: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 10, borderRadius: 26, borderWidth: 4, backgroundColor: '#ffffff', width: '100%' },
   prompt: { flex: 1, minWidth: 0 },
   target: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 40, lineHeight: 54, textAlign: 'center', minWidth: 72, borderRadius: 18, borderWidth: 3, paddingHorizontal: 8 },

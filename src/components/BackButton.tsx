@@ -29,7 +29,7 @@ const s = StyleSheet.create({
   button: { alignSelf: 'flex-start', flexShrink: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderBottomWidth: 5 },
   square: { width: 54, height: 54, borderRadius: 20 },
   labeled: { minHeight: 56, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, gap: 12 },
-  full: { width: '100%', alignSelf: 'stretch' },
+  full: { width: '100%', alignSelf: 'stretch', marginTop: 'auto' },
   iconWell: { width: 34, height: 34, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffffff20' },
   label: { flexShrink: 1, fontSize: 16, lineHeight: 27, fontWeight: '700', color: '#ffffff', textAlign: 'center' },
   disabled: { opacity: 0.45 },

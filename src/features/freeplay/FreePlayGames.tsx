@@ -66,7 +66,7 @@ const ROUNDS = 6;
 const BUBBLE = 92;
 const LEFTS = ['0%', '16%', '32%', '48%', '64%', '72%'];
 /** The sky takes the space left under the header and above the back button and tab bar. */
-const skyHeight = (windowHeight: number) => Math.max(380, Math.min(660, windowHeight - 400));
+const skyHeight = (windowHeight: number) => Math.max(380, Math.min(660, windowHeight - 350));
 type Letter = (typeof mockLetters)[number];
 /** One coloured bubble rising slowly from the bottom edge of the sky and starting over when it leaves the top; with reduced motion it just sits still. */
 const Bubble: React.FC<{ letter: Letter; index: number; state: 'idle' | 'caught' | 'wrong'; height: number; onPress: () => void }> = ({ letter, index, state, height, onPress }) => {

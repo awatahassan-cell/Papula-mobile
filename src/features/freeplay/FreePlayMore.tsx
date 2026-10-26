@@ -30,7 +30,7 @@ export const BasketGame: React.FC<Props> = ({ onExit }) => {
   const letters = useMemo(() => mockLetters.filter(letter => completedLetterIds(currentProfile).includes(letter.id)), []); // eslint-disable-line react-hooks/exhaustive-deps
   const [run, setRun] = useState(0), [score, setScore] = useState(0), [width, setWidth] = useState(0), [basketX, setBasketX] = useState(0), [drops, setDrops] = useState<Drop[]>([]);
   const target = useMemo<Letter>(() => shuffled(letters)[0], [run, letters]); // eslint-disable-line react-hooks/exhaustive-deps
-  const height = Math.max(380, Math.min(620, useWindowDimensions().height - 400));
+  const height = Math.max(380, Math.min(620, useWindowDimensions().height - 350));
   const basket = useRef(0);
   const moveBasket = (x: number) => { basket.current = x; setBasketX(x); };
   useStop();

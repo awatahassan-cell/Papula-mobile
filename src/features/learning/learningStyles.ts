@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 export const learningStyles = StyleSheet.create({
-  container:{paddingHorizontal:14,paddingTop:6,paddingBottom:12,gap:7,width:'100%',maxWidth:720,alignSelf:'center'},
+  container:{flexGrow:1,paddingHorizontal:14,paddingTop:6,paddingBottom:12,gap:7,width:'100%',maxWidth:720,alignSelf:'center'},
   title:{fontFamily:'IBMPlexSansArabic_700Bold',fontSize:19,color:'#1e293b',textAlign:'center',alignSelf:'stretch'},
   text:{fontFamily:'IBMPlexSansArabic_400Regular',fontSize:15,color:'#475569',textAlign:'center',alignSelf:'stretch'},
   card:{backgroundColor:'#fff7ed',padding:14,borderRadius:28,borderWidth:4,borderColor:'#fcd34d',gap:8,alignItems:'center'},
