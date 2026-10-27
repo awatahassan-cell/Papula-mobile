@@ -18,6 +18,7 @@ import { playPilotProgress, PLAY_PILOT_LETTER, PLAY_PILOT_STEPS } from '../../se
 import { getLetterStory } from '../../data/letterStories';
 import { PLAY_PILOT_TEXT as T } from './playPilotText';
 import { playJourneyContent } from './playJourneyContent';
+import { LetterIntro } from './LetterIntro';
 
 /** Narration that neither finishes nor fails (a call, a lost audio session) must not leave the child unable to answer. */
 const WATCH_LIMIT_MS=12000;
@@ -107,7 +108,9 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
   const options=twoChoices?round.options.filter(item=>item.id===round.answer||item.id===round.options.find(other=>other.id!==round.answer)!.id):round.options;
   const instruction=done?(planted?T.planted:T.done):round.instruction;
   const intro=index===0&&showIntro;
+  const [listening,setListening]=useState(()=>index===0&&showIntro); // the letter is introduced by ear before the first round
   const narrate=useCallback(()=>{
+    if(listening)return;
     // A changed demo request intentionally replays the sample; store ticks do not.
     void demoVersion;
     const active=++token.current;clearTimeout(timer.current);clearTimeout(guard.current);setError(false);
@@ -116,7 +119,7 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
     const run=(i:number)=>{if(active!==token.current)return;if(i===parts.length){if(!done)timer.current=setTimeout(()=>{if(active!==token.current)return;setPhase('play');void soundService.speakWord(T.turn);},850);return;}
       void soundService.speakWord(parts[i],{onEnd:()=>{if(active===token.current)timer.current=setTimeout(()=>run(i+1),i+1<parts.length?450:0);},onError:()=>{if(active!==token.current)return;setError(true);if(!done){locked.current=false;setPhase('play');}}});
     };run(0);
-  },[done,instruction,intro,demoVersion]);
+  },[done,instruction,intro,demoVersion,listening]);
   useFocusEffect(useCallback(()=>{narrate();return()=>{token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();};},[narrate]));
   const pick=(id:string)=>{
     if(phase!=='play'||locked.current)return;
@@ -127,6 +130,7 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
   };
   const advance=()=>{if(phase!=='won'||nextLock.current)return;nextLock.current=true;token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();locked.current=false;setPhase('watch');setMistakes(0);setIndex(n=>n+1);};
   const fill=accentFill(c,isNight);
+  if(listening)return <LetterIntro letter={letter} onDone={()=>setListening(false)}/>;
   return <View testID="play-pilot-journey" style={[s.page,{backgroundColor:c.background},compact&&{padding:8,gap:6}]}>
     <HelpHint text={instruction}/>
     <View style={[s.header,compact&&{height:40}]}><View style={s.dots}>{PLAY_PILOT_STEPS.map((step,i)=><View key={step} style={[s.dot,{backgroundColor:i<index||(i===index&&phase==='won')?c.mint:c.edge}]}/>)}</View><TactileButton accessibilityRole="button" accessibilityLabel="ڕێنماییەکە دووبارە ببیستە" onPress={narrate} style={[s.audio,{backgroundColor:c.lavender}]}><Volume2 size={27} color={c.mint}/></TactileButton></View>

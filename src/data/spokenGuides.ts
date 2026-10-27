@@ -11,6 +11,7 @@ export const SPOKEN_GUIDES = {
   quests: 'ئەمە ماجەرایەکانی پەپوولەیە. ماجەرایەک هەڵبژێرە و یارمەتی پەپوولە بدە.',
   questStep: 'گوێ بگرە و وێنەی دروست هەڵبژێرە.',
   questWrong: 'نزیک بوویت. دووبارە هەوڵ بدە.',
+  letterWords: 'لەم وشانەدا هەیە.',
 } as const;
 
 export interface QuestVoice { intro: string; outro: string; }

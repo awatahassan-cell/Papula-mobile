@@ -25,6 +25,7 @@ const allLetters=catalogLoad(path.resolve('src/data/mockLetters.ts')).mockLetter
   if(name.endsWith('/useAppStore'))return{useAppStore:()=>store};
   if(name.endsWith('/soundService'))return{soundService:{speakWord:(text)=>{speech.push(text);return Promise.resolve();},stopSpeaking:async()=>{},playCorrect(){},playEncouragingTryAgain(){}}};
   if(name.endsWith('/letterStories'))return{getLetterStory:()=>({id:'story-dal'})};
+  if(name.endsWith('/LetterIntro'))return{LetterIntro:'LetterIntro'};
   return load(path.resolve('src/features/adventure',name+'.ts'));
  },(fn,ms)=>{const id=++timerId;timers.set(id,fn);return id;},id=>timers.delete(id));
  const render=()=>{si=ri=ci=0;return module.exports.PlayPilotJourney({letterId:letter.id});};
@@ -33,7 +34,7 @@ const allLetters=catalogLoad(path.resolve('src/data/mockLetters.ts')).mockLetter
  const option=(tree,id)=>nodes(tree).find(n=>n.props.testID===`pilot-option-${id}`);
  const focusNow=()=>{if(focus!==lastFocus){cleanup?.();lastFocus=focus;cleanup=focus();}};
  const finishSpeech=()=>{for(let i=0;i<20&&(pending.length||timers.size);i++){while(pending.length)pending.shift()();for(const [id,fn] of [...timers]){timers.delete(id);fn();}}};
- let tree=render();focusNow();tree=render();
+ let tree=render();if(tree.type==='LetterIntro'){tree.props.onDone();tree=render();}focusNow();tree=render();
  assert.equal(option(tree,letter.id).props.disabled,true,'still gated while the narration is within its time limit');
  for(const [id,fn] of [...timers]){timers.delete(id);fn();}
  tree=render();
