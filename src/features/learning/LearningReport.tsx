@@ -9,6 +9,9 @@ import {hardLetters,weeklySummary} from '../../services/learningEngine';
 import {skillSummary,writingMastered} from '../../services/foundationalLearning';
 import { personalPractice } from '../../services/personalPractice';
 import { ParentLearningAdvice } from '../../components/ParentLearningAdvice';
+import { mockLetters } from '../../data/mockLetters';
+import { completedLetterIds } from '../../services/lessonPath';
+import { letterRecognitionConfirmed } from '../../services/letterChecks';
 
 const WEEKDAY_SHORT=['ی','د','س','چ','پ','ھ','ش'];// getDay(): Sunday first
 const skillIcons={recognition:Shapes,forms:Link2,phonics:AudioLines,syllables:Layers,word:WholeWord,writing:PencilLine,reading:BookOpen};
@@ -19,6 +22,7 @@ export const LearningReport:React.FC<{profile:ChildProfile}>=({profile})=>{
  const next=personalPractice(profile).map(task=>task.letter);
  const hard=hardLetters(profile);
  const independent=Object.values(profile.writingProgress||{}).filter(writingMastered).length;
+ const confirmed=mockLetters.filter(letter=>letterRecognitionConfirmed(profile,letter.id));
  const minutes=Math.round((profile.practiceSeconds||0)/60);
  const week=weeklySummary(profile);
  const peak=Math.max(1,...week.days.map(day=>day.minutes));
@@ -35,9 +39,14 @@ export const LearningReport:React.FC<{profile:ChildProfile}>=({profile})=>{
   </View>
   <View style={s.weekTotals}>
    <View style={s.weekTotal}><Text style={s.weekNumber}>{week.minutes}</Text><Text style={s.weekLabel}>خولەک</Text></View>
-   <View style={s.weekTotal}><Text style={s.weekNumber}>{week.lessons}</Text><Text style={s.weekLabel}>پیتی نوێ</Text></View>
+   <View style={s.weekTotal}><Text style={s.weekNumber}>{week.lessons}</Text><Text style={s.weekLabel}>وانەی تەواوکراو</Text></View>
    <View style={s.weekTotal}><Text style={s.weekNumber}>{week.stars}</Text><Text style={s.weekLabel}>ئەستێرە</Text></View>
   </View>
+ </View>
+ <View style={s.reviewCard}>
+  <Text style={s.sectionTitle}>وانە و ناسینەوەی سەربەخۆ</Text>
+  <Text style={s.subtitle}>{`${completedLetterIds(profile).length} وانە تەواو کراوە؛ ${confirmed.length} پیت بە گوێگرتن لە دوو ڕۆژی جیاواز بێ نموونە ناسراوەتەوە.`}</Text>
+  <Text style={s.subtitle}>تەواوکردنی گەشتی بە یارمەتی بە مانای فێربوونی سەربەخۆ نییە. ئەم پێوانەیە تەنها ناسینەوەی پیتە؛ نووسین و خوێندنەوە جیاوازن.</Text>
  </View>
  <View style={s.summaryRow}>
    <View style={s.summaryTile}><View style={s.summaryTop}><PencilLine size={20} color={s.accent.color}/><Text style={s.summaryNumber}>{independent}</Text></View><Text style={s.summaryLabel}>پیتی سەربەخۆ</Text><Text style={s.summaryHint}>نووسین بێ یارمەتی لە دوو ڕۆژی جیاواز</Text></View>

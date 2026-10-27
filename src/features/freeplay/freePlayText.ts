@@ -1,5 +1,14 @@
 /** Screen-only Kurdish text for free play. The games are guided by pictures and by the recorded letter and word voices. */
 export const FREE_PLAY_TILE = { title: 'یاریی ئازاد', hint: 'یاری بکە و فێر بە، بێ پەلە' };
+export const FREE_PLAY_GUIDES = {
+  pairs: 'کارتێک بکەرەوە و گوێ بگرە. پاشان وێنە و وشەی یەکسان بدۆزەوە.',
+  catch: 'گوێ بگرە و دەست لە بڵقی پیتی دروست بدە. پەلە مەکە.',
+  train: 'گوێ لە وشەکە بگرە. پیتەکان بە ڕیز هەڵبژێرە و وشەکە دروست بکە.',
+  match: 'دەست لە پیتێک بدە، پاشان وێنەی وشەیەک هەڵبژێرە کە بەو پیتە دەست پێ دەکات.',
+  odd: 'سەیری چوار پیتەکە بکە. دەست لە ئەو پیتە بدە کە جیاوازە.',
+  basket: 'گوێ بگرە. سەبەتەکە بە پەنجەت بجوڵێنە و پیتی داواکراو بگرە.',
+  fill: 'گوێ لە وشەکە بگرە. سەیری پیتەکان بکە و پیتی ونبوو هەڵبژێرە.',
+} as const;
 export const FREE_PLAY_TEXT = {
   pairs: { title: 'کارتی جووت', hint: 'وێنە و وشەکەی بدۆزەوە', ask: 'وێنەیەک و وشەکەی بدۆزەوە' },
   catch: { title: 'بڵق بتەقێنە', hint: 'پیتی دروست بگرە', ask: 'ئەم پیتە بگرە' },

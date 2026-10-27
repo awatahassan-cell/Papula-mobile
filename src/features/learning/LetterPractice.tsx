@@ -52,20 +52,22 @@ export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:
     if(index+1===rounds.length){if(mode==='review')onComplete?.();else finishLearningGame(mode);setFinished(true);}
     else {setIndex(index+1);setSelected(null);locked.current=false;}
   };
-  if(finished)return <View style={s.container}><Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! مەشقەکەت تەواو کرد</Text><Text style={s.text}>پیتەکانت بە دروستی ناسینەوە</Text><BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton></View>;
+  if(finished)return <View style={s.container}><View style={[s.card,{backgroundColor:'#ecfdf5',borderColor:'#34d399',borderBottomColor:'#059669',paddingVertical:24}]}><Text style={s.emoji}>🦋 🌟</Text><Text style={s.title}>ئافەرم! مەشقەکەت تەواو کرد</Text><Text style={s.text}>پیتەکانت بە دروستی ناسینەوە</Text></View><BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton></View>;
   if(!round)return <View style={s.container}><Text style={s.text}>مەشقێک ئامادە نییە</Text></View>;
   return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpHint text={exerciseHelp.letter} />
-    <Text style={s.title}>{mode==='similar'?'پیتە هاوشێوەکان':mode==='review'?'مەشقی من':'یاریی دەنگ'}</Text>
-    <Text style={s.text}>{index+1} / {rounds.length}</Text>
-    <View style={s.card}>
-      {mode==='similar' && <><Text style={[s.glyph,{fontSize:48}]}>{round.target.glyph}</Text><Text style={s.text}>شێوە و خاڵەکانی ئەم پیتە سەیر بکە</Text></>}
-      <TouchableOpacity accessibilityRole="button" style={s.button} onPress={()=>void soundService.speakWord(`پیتی ${round.target.name}`)}><Text style={s.buttonText}>دەنگەکە ببیستە</Text></TouchableOpacity>
+    <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',backgroundColor:'#ffffff',borderRadius:24,borderWidth:3,borderBottomWidth:6,borderColor:'#a78bfa',borderBottomColor:'#6d28d9',paddingHorizontal:14,paddingVertical:10}}>
+      <Text style={[s.title,{flex:1,textAlign:'right',fontSize:19}]}>{mode==='similar'?'پیتە هاوشێوەکان':mode==='review'?'مەشقی من':'یاریی دەنگ'}</Text>
+      <View style={{backgroundColor:'#ede9fe',borderRadius:16,borderWidth:2,borderColor:'#a78bfa',paddingHorizontal:10,paddingVertical:4}}><Text style={[s.text,{color:'#4c1d95',fontFamily:'IBMPlexSansArabic_700Bold'}]}>{index+1} / {rounds.length}</Text></View>
+    </View>
+    <View style={[s.card,{backgroundColor:'#f5f3ff',borderColor:'#a78bfa',borderBottomColor:'#6d28d9'}]}>
+      {mode==='similar' && <><View style={{backgroundColor:'#ffffff',borderRadius:28,borderWidth:4,borderColor:'#c4b5fd',paddingHorizontal:28,paddingVertical:10}}><Text style={[s.glyph,{fontSize:54,lineHeight:72}]}>{round.target.glyph}</Text></View><Text style={s.text}>شێوە و خاڵەکانی ئەم پیتە سەیر بکە</Text></>}
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="دەنگەکە ببیستە" style={s.button} onPress={()=>void soundService.speakWord(`پیتی ${round.target.name}`)}><Text style={s.buttonText}>🔊 دەنگەکە ببیستە</Text></TouchableOpacity>
       <Text style={s.text}>{mode==='similar'?'کامەیان هەمان پیتە؟':'کام پیتت بیست؟'}</Text>
       <View style={s.row}>{round.options.map(letter=><TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`پیتی ${letter.glyph}`}
-        disabled={selected!==null} style={[s.tile,selected===letter.id&&(correct?s.correct:s.retry)]} onPress={()=>choose(letter.id)}><Text style={s.glyph}>{letter.glyph}</Text></TouchableOpacity>)}</View>
-      {selected && <Text accessibilityLiveRegion="polite" style={s.text}>{correct?'ئافەرم! پیتی دروستت دۆزییەوە':'باشە، جارێکی تر گوێ بگرە و هەوڵ بدە'}</Text>}
+        disabled={selected!==null} style={[s.tile,{minWidth:92,minHeight:92},selected===letter.id&&(correct?s.correct:s.retry)]} onPress={()=>choose(letter.id)}><Text style={[s.glyph,{fontSize:44,lineHeight:62}]}>{letter.glyph}</Text></TouchableOpacity>)}</View>
+      {selected && <Text accessibilityLiveRegion="polite" style={[s.text,{fontFamily:'IBMPlexSansArabic_700Bold',color:correct?'#047857':'#be123c'}]}>{correct?'ئافەرم! پیتی دروستت دۆزییەوە':'باشە، جارێکی تر گوێ بگرە و هەوڵ بدە'}</Text>}
     </View>
-    {correct?<TouchableOpacity accessibilityRole="button" style={s.button} onPress={next}><Text style={s.buttonText}>{index+1===rounds.length?'تەواو بکەم ✓':'پیتی دواتر ←'}</Text></TouchableOpacity>
+    {correct?<TouchableOpacity accessibilityRole="button" style={[s.button,{backgroundColor:'#34d399',borderColor:'#a7f3d0',borderBottomColor:'#047857'}]} onPress={next}><Text style={[s.buttonText,{color:'#064e3b'}]}>{index+1===rounds.length?'تەواو بکەم ✓':'پیتی دواتر ←'}</Text></TouchableOpacity>
       :selected?<TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>{setSelected(null);locked.current=false;}}><Text style={s.text}>جارێکی تر هەوڵ بدەم</Text></TouchableOpacity>:null}
     <BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton>
   </ScrollView>;

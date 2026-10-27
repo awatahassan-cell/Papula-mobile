@@ -1,4 +1,3 @@
-import { kurdishDigits } from '../../services/rewards';
 import { BackButton } from '../../components/BackButton';
 import { HelpHint } from '../../components/HelpButton';
 import { exerciseHelp } from '../../services/exerciseHelp';
@@ -53,8 +52,8 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   };
   useEffect(() => {
     if (round && selected.length === round.syllables.length && !feedback && !correct) {
-      const timer=setTimeout(check,0);
-      return ()=>clearTimeout(timer);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      check();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected.length, round, feedback, correct]);
@@ -72,8 +71,10 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   }
   if (finished) {
     return <ScrollView contentContainerStyle={s.container}>
-      <Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! بڕگەکانت پێکەوە بەست</Text>
-      <Text style={s.text}>{rounds.map(item => item.syllables.join(' - ')).join('، ')}</Text>
+      <View style={[s.card,{backgroundColor:'#ecfdf5',borderColor:'#34d399',borderBottomColor:'#059669',paddingVertical:24}]}>
+        <Text style={s.emoji}>🦋 🌟</Text><Text style={s.title}>ئافەرم! بڕگەکانت پێکەوە بەست</Text>
+        <Text style={s.text}>{rounds.map(item => item.syllables.join(' - ')).join(' ، ')}</Text>
+      </View>
       <BackButton fullWidth onPress={onExit}>گەڕانەوە بۆ یارییەکان</BackButton>
     </ScrollView>;
   }
@@ -81,23 +82,28 @@ export const SyllableBuilder: React.FC<{ onExit: () => void }> = ({ onExit }) =>
   const canHearSyllables = round.syllables.every(text => soundService.canSpeak(text));
   const full = selected.length === round.syllables.length;
   return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpHint text={exerciseHelp.syllables} />
-    <Text style={s.title}>بڕگەکان پێکەوە ببەستە</Text><Text style={s.text}>{kurdishDigits(index + 1)} / {kurdishDigits(rounds.length)}</Text>
-    <View style={s.card}>
-      <Text style={s.emoji}>{round.word.imageEmoji}</Text>
-      <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={() => void soundService.speakWord(round.word.word)}><Text style={s.text}>وشەکە ببیستە</Text></TouchableOpacity>
-      <Text accessibilityLiveRegion="polite" style={[s.glyph, { minHeight: 44, writingDirection: 'rtl' }]}>{assembled || '…'}</Text>
+    <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',backgroundColor:'#ffffff',borderRadius:24,borderWidth:3,borderBottomWidth:6,borderColor:'#34d399',borderBottomColor:'#059669',paddingHorizontal:14,paddingVertical:10}}>
+      <Text style={[s.title,{flex:1,textAlign:'right',fontSize:19}]}>بڕگەکان پێکەوە ببەستە</Text>
+      <View style={{backgroundColor:'#d1fae5',borderRadius:16,borderWidth:2,borderColor:'#34d399',paddingHorizontal:10,paddingVertical:4}}><Text style={[s.text,{color:'#065f46',fontFamily:'IBMPlexSansArabic_700Bold'}]}>{index + 1} / {rounds.length}</Text></View>
+    </View>
+    <View style={[s.card,{backgroundColor:'#ecfdf5',borderColor:'#34d399',borderBottomColor:'#059669'}]}>
+      <View style={{backgroundColor:'#ffffff',borderRadius:28,borderWidth:4,borderColor:'#6ee7b7',padding:14,minWidth:116,alignItems:'center'}}><Text style={[s.emoji,{fontSize:68}]}>{round.word.imageEmoji}</Text></View>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="وشەکە ببیستە" style={s.secondary} onPress={() => void soundService.speakWord(round.word.word)}><Text style={s.text}>🔊 وشەکە ببیستە</Text></TouchableOpacity>
+      <View style={{backgroundColor:'#ffffff',borderRadius:22,borderWidth:3,borderBottomWidth:6,borderColor:correct?'#34d399':'#6ee7b7',borderBottomColor:'#059669',paddingHorizontal:22,paddingVertical:8,minWidth:180,alignItems:'center'}}>
+        <Text accessibilityLiveRegion="polite" style={[s.glyph, { minHeight: 48, writingDirection: 'rtl', color: correct ? '#065f46' : '#1e1b4b' }]}>{assembled || '…'}</Text>
+      </View>
       <Text style={s.text}>وشەکە {round.syllables.length} بڕگەیە؛ بە ڕیز هەڵیانبژێرە</Text>
       <View style={s.row}>{round.tiles.map(tile => {
         const used = selected.includes(tile.id);
         return <TouchableOpacity key={tile.id} accessibilityRole="button" accessibilityLabel={`بڕگەی ${tile.id + 1}: ${tile.text}`} disabled={used || correct}
-          style={[s.tile, (used || correct) && s.disabled]} onPress={() => { setFeedback(''); setSelected(previous => [...previous, tile.id]); if (soundService.canSpeak(tile.text)) void soundService.speakWord(tile.text); }}>
+          style={[s.tile, { minWidth: 88, minHeight: 82 }, (used || correct) && s.disabled]} onPress={() => { setFeedback(''); setSelected(previous => [...previous, tile.id]); if (soundService.canSpeak(tile.text)) void soundService.speakWord(tile.text); }}>
           <Text style={s.glyph}>{tile.text}</Text></TouchableOpacity>;
       })}</View>
-      {!!feedback && <Text accessibilityLiveRegion="polite" style={s.text}>{feedback}</Text>}
+      {!!feedback && <Text accessibilityLiveRegion="polite" style={[s.text,{fontFamily:'IBMPlexSansArabic_700Bold',color:correct?'#047857':'#be123c'}]}>{feedback}</Text>}
       {canHearSyllables && <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={() => void soundService.speakPhrases(round.syllables)}><Text style={s.text}>گوێ لە بڕگەکان بگرە</Text></TouchableOpacity>}
     </View>
     {correct
-      ? <TouchableOpacity accessibilityRole="button" style={s.button} onPress={next}><Text style={s.buttonText}>{index + 1 === rounds.length ? 'تەواو بکەم ✓' : 'وشەی دواتر ←'}</Text></TouchableOpacity>
+      ? <TouchableOpacity accessibilityRole="button" style={[s.button,{backgroundColor:'#34d399',borderColor:'#a7f3d0',borderBottomColor:'#047857'}]} onPress={next}><Text style={[s.buttonText,{color:'#064e3b'}]}>{index + 1 === rounds.length ? 'تەواو بکەم ✓' : 'وشەی دواتر ←'}</Text></TouchableOpacity>
       : <TouchableOpacity accessibilityRole="button" disabled={!full} style={[s.button, !full && s.disabled]} onPress={check}><Text style={s.buttonText}>پشکنین ✓</Text></TouchableOpacity>}
     {!correct && <View style={s.row}>
       <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={undo}><Text style={s.text}>بڕگەی پێشوو ↶</Text></TouchableOpacity>

@@ -14,6 +14,8 @@ import { VocabularyGame } from '../vocabulary/VocabularyGame';
 import { VOCAB_TEXT } from '../vocabulary/vocabText';
 import { dueWordCount } from '../../data/vocabulary';
 import { learningStyles as baseLearningStyles } from '../learning/learningStyles';
+import { nextLetterCheck } from '../../services/letterChecks';
+import { LetterListeningCheck } from '../learning/LetterListeningCheck';
 
 export const DailyPracticeScreen: React.FC = () => {
   const s = useThemeStyles(baseLearningStyles);
@@ -22,16 +24,18 @@ export const DailyPracticeScreen: React.FC = () => {
   const [assessing,setAssessing]=useState(false);
   const [practicing,setPracticing]=useState(false);
   const [reviewingWords,setReviewingWords]=useState(false);
+  const [checkingLetter,setCheckingLetter]=useState<string|null>(null);
 
   useEffect(() => {
-    if (!assessing && !practicing && !reviewingWords) return;
+    if (!assessing && !practicing && !reviewingWords && !checkingLetter) return;
     return registerBackHandler(() => {
-      if (assessing) setAssessing(false);
+      if (checkingLetter) setCheckingLetter(null);
+      else if (assessing) setAssessing(false);
       else if (practicing) setPracticing(false);
       else setReviewingWords(false);
       return true;
     });
-  }, [assessing, practicing, reviewingWords, registerBackHandler]);
+  }, [assessing, practicing, reviewingWords, checkingLetter, registerBackHandler]);
 
   const plan=personalPractice(currentProfile);
   const openTask=(task:typeof plan[number])=>{
@@ -40,6 +44,8 @@ export const DailyPracticeScreen: React.FC = () => {
     setRoute(task.kind==='writing'?'writing':'letter-detail');
   };
   const dueWordsNow=dueWordCount(currentProfile);
+  const dueCheck=nextLetterCheck(currentProfile);
+  if(checkingLetter)return <LetterListeningCheck key={checkingLetter} letterId={checkingLetter} onExit={()=>setCheckingLetter(null)}/>;
   if(reviewingWords)return <VocabularyGame start="review" onExit={()=>setReviewingWords(false)} />;
   if(assessing)return <StartingAssessment onExit={()=>setAssessing(false)} />;
   if(practicing)return <LetterPractice mode="review" onComplete={()=>{completeDailyPractice();}} onExit={()=>setPracticing(false)} />;
@@ -55,6 +61,7 @@ export const DailyPracticeScreen: React.FC = () => {
       :<TouchableOpacity accessibilityRole="button" accessibilityLabel="سەرەتا پیتێک لە ڕێڕەوی فێربوون هەڵبژێرە" style={local.play} onPress={()=>setRoute('alphabet')}><View style={local.playIcon}><Play size={44} color="#ffffff" fill="#ffffff"/></View></TouchableOpacity>}
       {plan.length>1&&<View style={local.tiles}>{plan.slice(1).map(task=><TouchableOpacity key={task.letter.id} accessibilityRole="button" accessibilityLabel={`وانەی پیتی ${task.letter.glyph}`} style={local.tile} onPress={()=>openTask(task)}><Text style={[s.glyph,{fontSize:46}]}>{task.letter.glyph}</Text></TouchableOpacity>)}</View>}
       <View style={local.tiles}>
+        {dueCheck&&<TouchableOpacity accessibilityRole="button" accessibilityLabel="یاریی گوێگرتن بێ نموونە" style={[local.tile,local.game]} onPress={()=>setCheckingLetter(dueCheck.id)}><CharacterPicture symbol="🎧" size={58} animate={false}/></TouchableOpacity>}
         {plan.length>0&&<TouchableOpacity accessibilityRole="button" accessibilityLabel="یاریی پێداچوونەوە" style={[local.tile,local.game]} onPress={()=>setPracticing(true)}><CharacterPicture symbol="🎮" size={58} animate={false}/></TouchableOpacity>}
         {dueWordsNow>0&&<TouchableOpacity accessibilityRole="button" accessibilityLabel={`${VOCAB_TEXT.review}. ${VOCAB_TEXT.reviewHint(dueWordsNow)}`} style={[local.tile,local.game]} onPress={()=>setReviewingWords(true)}><CharacterPicture symbol="🍎" size={58} animate={false}/></TouchableOpacity>}
       </View>

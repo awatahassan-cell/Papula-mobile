@@ -72,25 +72,32 @@ export const WordBuilder: React.FC<{ onExit:()=>void; initialWords?:LearningWord
   };
   if(!word)return <View style={s.container}><Text style={s.text}>وشەکان ئامادە نین</Text><BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton></View>;
   if(finished)return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.emoji}></Text><Text style={s.title}>ئافەرم! وشەکانت دروست کرد</Text>
-    <Text style={s.text}>{queue.map(item=>item.word).join('، ')}</Text>
+    <View style={[s.card,{backgroundColor:'#ecfdf5',borderColor:'#34d399',borderBottomColor:'#059669',paddingVertical:24}]}>
+      <Text style={s.emoji}>🦋 🌟</Text><Text style={s.title}>ئافەرم! وشەکانت دروست کرد</Text>
+      <Text style={[s.glyph,{fontSize:28}]}>{queue.map(item=>item.word).join(' ، ')}</Text>
+    </View>
     {onComplete ? <TouchableOpacity accessibilityRole="button" style={s.button} onPress={onComplete}><Text style={s.buttonText}>چیرۆکەکەم ببینم</Text></TouchableOpacity> : <BackButton fullWidth onPress={onExit}>گەڕانەوە بۆ یارییەکان</BackButton>}
   </ScrollView>;
   return <ScrollView ref={scroll} contentContainerStyle={s.container}><HelpHint text={exerciseHelp.word} />
-    <Text style={s.title}>وشە دروست بکەم</Text><Text style={s.text}>{round+1} / {queue.length}</Text>
+    <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',backgroundColor:'#ffffff',borderRadius:24,borderWidth:3,borderBottomWidth:6,borderColor:'#fbbf24',borderBottomColor:'#d97706',paddingHorizontal:14,paddingVertical:10}}>
+      <Text style={[s.title,{flex:1,textAlign:'right',fontSize:19}]}>وشە دروست بکەم</Text>
+      <View style={{backgroundColor:'#fef3c7',borderRadius:16,borderWidth:2,borderColor:'#fbbf24',paddingHorizontal:10,paddingVertical:4}}><Text style={[s.text,{color:'#78350f',fontFamily:'IBMPlexSansArabic_700Bold'}]}>{round+1} / {queue.length}</Text></View>
+    </View>
     <View style={s.card}>
-      <Text style={s.emoji}>{word.imageEmoji}</Text>
-      <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>void soundService.speakWord(word.word)}><Text style={s.text}>وشەکە ببیستە</Text></TouchableOpacity>
-      <Text accessibilityLiveRegion="polite" style={[s.glyph,{fontSize:Math.max(24,40-word.units.length*2),minHeight:44,writingDirection:'rtl'}]}>{assembled||'…'}</Text>
+      <View style={{backgroundColor:'#ffffff',borderRadius:28,borderWidth:4,borderColor:'#fcd34d',padding:14,minWidth:116,alignItems:'center'}}><Text style={[s.emoji,{fontSize:68}]}>{word.imageEmoji}</Text></View>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="وشەکە ببیستە" style={s.secondary} onPress={()=>void soundService.speakWord(word.word)}><Text style={s.text}>🔊 وشەکە ببیستە</Text></TouchableOpacity>
+      <View style={{backgroundColor:'#ffffff',borderRadius:22,borderWidth:3,borderBottomWidth:6,borderColor:correct?'#34d399':'#fcd34d',borderBottomColor:correct?'#059669':'#d97706',paddingHorizontal:22,paddingVertical:8,minWidth:180,alignItems:'center'}}>
+        <Text accessibilityLiveRegion="polite" style={[s.glyph,{fontSize:Math.max(26,42-word.units.length*2),minHeight:48,writingDirection:'rtl',color:correct?'#065f46':'#1e1b4b'}]}>{assembled||'…'}</Text>
+      </View>
       <Text style={s.text}>پیتەکان بە ڕیز هەڵبژێرە</Text>
       <View style={s.row}>{bank.map(tile=>{
         const isVowel=KURDISH_VOWELS.includes(tile.glyph);
         return <TouchableOpacity key={tile.id} accessibilityRole="button" accessibilityLabel={`پیتی ${tile.glyph}، دانەی ${tile.id+1}`}
-          disabled={selected.includes(tile.id)||!!feedback} style={[s.tile,isVowel&&{borderColor:'#d97706',backgroundColor:'#fffbeb'},(selected.includes(tile.id)||!!feedback)&&s.disabled]} onPress={()=>choose(tile.id)}><Text style={s.glyph}>{tile.glyph}</Text></TouchableOpacity>;
+          disabled={selected.includes(tile.id)||!!feedback} style={[s.tile,{minWidth:80,minHeight:80},isVowel&&{borderColor:'#f59e0b',borderBottomColor:'#b45309',backgroundColor:'#fffbeb'},(selected.includes(tile.id)||!!feedback)&&s.disabled]} onPress={()=>choose(tile.id)}><Text style={[s.glyph,{fontSize:38}]}>{tile.glyph}</Text></TouchableOpacity>;
       })}</View>
-      {!!feedback && <Text accessibilityLiveRegion="polite" style={s.text}>{feedback}</Text>}
+      {!!feedback && <Text accessibilityLiveRegion="polite" style={[s.text,{fontFamily:'IBMPlexSansArabic_700Bold',color:correct?'#047857':'#be123c'}]}>{feedback}</Text>}
     </View>
-    {correct?<TouchableOpacity accessibilityRole="button" style={s.button} onPress={advance}><Text style={s.buttonText}>{round+1===queue.length?'تەواو بکەم ✓':'وشەی دواتر ←'}</Text></TouchableOpacity>
+    {correct?<TouchableOpacity accessibilityRole="button" style={[s.button,{backgroundColor:'#34d399',borderColor:'#a7f3d0',borderBottomColor:'#047857'}]} onPress={advance}><Text style={[s.buttonText,{color:'#064e3b'}]}>{round+1===queue.length?'تەواو بکەم ✓':'وشەی دواتر ←'}</Text></TouchableOpacity>
       :<TouchableOpacity accessibilityRole="button" disabled={selected.length!==word.units.length||!!feedback} style={[s.button,(selected.length!==word.units.length||!!feedback)&&s.disabled]} onPress={check}><Text style={s.buttonText}>پشکنینی وشەکەم ✓</Text></TouchableOpacity>}
     {!correct && <View style={s.row}>
       <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>{locked.current=false;setFeedback('');setSelected(previous=>previous.slice(0,-1));}}><Text style={s.text}>پیتی پێشوو ↶</Text></TouchableOpacity>

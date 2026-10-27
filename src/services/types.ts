@@ -143,6 +143,8 @@ export interface LessonProgress {
 
 export interface DayLog { seconds: number; lessons: number; stars: number; }
 export interface ChildProfile {
+  /** First unassisted listening answer per local day; separate from finishing a guided lesson. */
+  letterChecks?: Record<string, { passDates: string[]; lastAttemptDate: string }>;
   playJourneys?: Record<string,{rounds:('sound'|'picture'|'missing')[];completedAt?:string}>;
   gardenQuest?: { steps: ('listen' | 'find' | 'build' | 'write' | 'story')[]; flowerSpot?: number };
   gardenQuests?: Record<string, { steps: ('listen' | 'find' | 'build' | 'write' | 'story')[]; flowerSpot?: number }>;

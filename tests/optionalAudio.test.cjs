@@ -32,7 +32,7 @@ assert.ok(seen.size>=8,'most sentences should be reachable in the checks, got '+
 const ids=p=>p.batches.map(b=>digest(b.map(i=>i.key).join('\n')));
 const before=ids(plan(base)),after=ids(plan(all));
 assert.ok(before.every(id=>after.includes(id)),'adding optional narration changed an existing batch (would re-buy audio)');
-assert.ok(all.filter(e=>e.optional).every(e=>['syllable','tip','vocabulary','adventure','guide'].includes(e.category)));
+assert.ok(all.filter(e=>e.optional).every(e=>['syllable','tip','vocabulary','adventure','guide','freeplay'].includes(e.category)));
 assert.ok(after.length>before.length);
 // syllables are requested alone so they are read as a bare sound
 for(const b of plan(all).batches)if(b.some(e=>e.category==='syllable'))assert.equal(b.length,1);

@@ -26,6 +26,7 @@ for(const [letterIndex,letter] of allLetters.entries())test(`journey ${letter.id
   if(name.endsWith('/soundService'))return{soundService:{speakWord:(text,opts)=>{speech.push(text);if(opts?.onEnd)pending.push(opts.onEnd);return Promise.resolve();},stopSpeaking:async()=>{},playCorrect(){},playEncouragingTryAgain(){}}};
   if(name.endsWith('/letterStories'))return{getLetterStory:()=>({id:'story-dal'})};
   if(name.endsWith('/LetterIntro'))return{LetterIntro:'LetterIntro'};
+  if(name.endsWith('/LetterListeningCheck'))return{LetterListeningCheck:'ListeningCheck'};
   return load(path.resolve('src/features/adventure',name+'.ts'));
  },(fn,ms)=>{const id=++timerId;timers.set(id,fn);return id;},id=>timers.delete(id));
  const render=()=>{si=ri=ci=0;return module.exports.PlayPilotJourney({letterId:letter.id});};
@@ -44,6 +45,9 @@ for(const [letterIndex,letter] of allLetters.entries())test(`journey ${letter.id
  for(const [round,answer] of [[1,content.rounds[1].answer],[2,letter.id]]){button(tree,'بڕۆین بۆ هەنگاوی دواتر').props.onPress();tree=render();focusNow();finishSpeech();tree=render();option(tree,answer).props.onPress();tree=render();}
  assert.equal(store.currentProfile.stars,2);assert.equal(records.length,4);
  button(tree,'بڕۆین بۆ هەنگاوی دواتر').props.onPress();tree=render();focusNow();finishSpeech();tree=render();
+ assert.equal(tree.type,'ListeningCheck','a fresh unassisted check follows the guided journey');
+ assert.equal(tree.props.letterId,letter.id);
+ tree.props.onExit();tree=render();focusNow();finishSpeech();tree=render();
  assert.ok(button(tree,'مەشقی نووسین'));assert.ok(button(tree,'چیرۆکی پیتەکە'));
  button(tree,'گوڵەکەم بچێنم').props.onPress();tree=render();assert.equal(garden.gardenProgress(store.currentProfile,letter.id).flowerSpot,0);
  button(tree,'باغەکەم ببینم').props.onPress();assert.equal(store.route,'garden');cleanup();
