@@ -13,7 +13,7 @@ import { SPOKEN_GUIDES } from '../../data/spokenGuides';
 import { mockLetters } from '../../data/mockLetters';
 
 type Letter = (typeof mockLetters)[number];
-const REPEATS = 3, SAFETY_MS = 7000;
+const REPEATS = 3, SAFETY_MS = 7000, RED = '#dc2626';
 
 /**
  * The start of a letter's journey, all by ear: the letter is said a few times, then «the letter is in these words»
@@ -83,9 +83,9 @@ export function LetterIntro({ letter, onDone }: { letter: Letter; onDone: () => 
       <View style={s.dots}>{[0, 1, 2].map(i => <View key={i} style={[s.dot, { backgroundColor: stage === 'words' || i < heard ? c.mint : c.edge }]} />)}</View>
     </View>
     {stage === 'letter'
-      ? <Animated.View style={[s.bigCard, { backgroundColor: c.paper, borderColor: c.mint, transform: [{ scale: pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] }) }] }]}><Text style={[s.huge, { color: c.ink }]}>{letter.glyph}</Text></Animated.View>
+      ? <Animated.View style={[s.bigCard, { backgroundColor: c.paper, borderColor: c.mint, transform: [{ scale: pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] }) }] }]}><Text style={[s.huge, { color: RED }]}>{letter.glyph}</Text></Animated.View>
       : <>
-        <View style={[s.smallCard, { backgroundColor: c.paper, borderColor: c.mint }]}><Text style={[s.mid, { color: c.ink }]}>{letter.glyph}</Text></View>
+        <View style={[s.smallCard, { backgroundColor: c.paper, borderColor: c.mint }]}><Text style={[s.mid, { color: RED }]}>{letter.glyph}</Text></View>
         <View style={s.grid}>{words.map((item, i) => <TactileButton key={item.id} accessibilityRole="button" accessibilityLabel={item.word} onPress={() => { stopAll(); setCurrent(i); void soundService.speakWord(item.word); }}
           style={[s.word, { backgroundColor: c.paper, borderColor: current === i ? '#f59e0b' : c.edge }, current === i && s.on]}>
           <CharacterPicture symbol={item.picture} size={72} animate={false} /><Text style={[s.wordText, { color: c.ink }]}>{item.word}</Text></TactileButton>)}</View>
