@@ -69,7 +69,9 @@ function writeModule(records) {
 
 async function main() {
   // A focused UI update need not buy unrelated optional syllables/feedback.
-  const entries = catalog().filter(entry => !process.argv.includes('--required-only') || !entry.optional);
+  const category = process.argv.find(arg => arg.startsWith('--category='))?.slice('--category='.length);
+  const entries = catalog().filter(entry => (!process.argv.includes('--required-only') || !entry.optional) && (!category || entry.category === category));
+  if (!entries.length) throw Error('No audio entries match the requested category.');
   const { batches, derived } = plan(entries);
   fs.mkdirSync(directory, { recursive: true });
   const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : { voiceId: DEFAULT_VOICE, model: MODEL, createdAt: new Date().toISOString(), batches: {}, records: {} };

@@ -1,11 +1,12 @@
 import { finishPlayPilotRound, PlayPilotStep } from '../services/playPilot';
 import { finishGardenStep, plantGardenFlower, GardenStep } from '../services/gardenQuest';
 import { advanceWriting, writingMastered, skillAttempt, readingPracticeStories } from '../services/foundationalLearning';
+import { applyLetterCheck } from '../services/letterChecks';
+import { applyPracticeResult } from '../services/practiceResult';
 import { applyLessonStep, completedLetterIds, isLessonUnlocked, nextLessonLetter, reconcileLessons } from '../services/lessonPath';
 import { usePathname, useRouter } from 'expo-router';
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState, ReactNode } from 'react';
-import { LEARNING_WORDS, learningActivity, localDay, logDay, updateReview, personalStories } from '../services/learningEngine';
-import { knownWordId, isVocabId } from '../data/vocabulary';
+import { learningActivity, localDay, logDay, updateReview, personalStories } from '../services/learningEngine';
 import { QUEST_REWARD } from '../data/quests';
 import { stickerIdsFor } from '../data/mockStickers';
 import { REWARDS } from '../services/rewards';
@@ -66,6 +67,7 @@ export interface AppContextType {
   switchProfile: (profileId: string) => void;
   createProfile: (profile: Omit<ChildProfile, 'id' | 'stars' | 'streakDays' | 'lastActiveDate' | 'masteredLetterIds' | 'inProgressLetterIds' | 'readStoryIds' | 'unlockedStickerIds' | 'savedWords' | 'dailyPracticeCompletedToday'>) => void;
   completePlayPilotRound: (step: PlayPilotStep, letterId?: string) => void;
+  recordLetterCheck: (letterId: string, correct: boolean) => void;
   completeGardenTask: (step: GardenStep, letterId?: string) => void;
   plantQuestFlower: (spot: number, letterId?: string) => void;
   updateCurrentProfile: (updates: Partial<ChildProfile>) => void;
@@ -594,24 +596,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const recordPracticeResult = (letterIds: string[], correct: boolean, wordId?: string, skill?: LearningSkill, helped=false) => {
     const base=learningActivity(ensureMissionsForToday(profileRef.current));
-    const reviews={...base.letterReviews};
-    for(const id of new Set(letterIds)) {
-      if(mockLetters.some(letter=>letter.id===id)) reviews[id]=updateReview(reviews[id],correct);
-    }
-    const validWord=correct && wordId && LEARNING_WORDS.some(word=>word.id===wordId);
-    const first=!!validWord && !base.learnedWordIds?.includes(wordId!);
-    const domain=skill || (wordId?'word':'recognition');
-    const reviewable=!!wordId && knownWordId(wordId);
-    const firstPicture=correct && reviewable && isVocabId(wordId) && !base.wordReviews?.[wordId!];
-    updateCurrentProfile(evaluateStreak({...base,letterReviews:reviews,
-      wordReviews:reviewable?{...base.wordReviews,[wordId!]:updateReview(base.wordReviews?.[wordId!],correct)}:base.wordReviews,
-      skillProgress:{...base.skillProgress,[domain]:skillAttempt(base.skillProgress?.[domain],correct,helped)},
-      learnedWordIds:first?[...(base.learnedWordIds||[]),wordId!]:base.learnedWordIds,
-      stars:base.stars+(first||firstPicture?1:0),
-    }));
+    updateCurrentProfile(evaluateStreak(applyPracticeResult(base,letterIds,correct,wordId,skill,helped)));
   };
 
   const completePlayPilotRound = (step: PlayPilotStep, letterId?: string) => {const next=finishPlayPilotRound(profileRef.current,step,letterId);if(next!==profileRef.current)updateCurrentProfile(next);};
+  const recordLetterCheck = (letterId: string, correct: boolean) => {
+    const before = profileRef.current;
+    const next = applyLetterCheck(before, letterId, correct);
+    if (next !== before) updateCurrentProfile(evaluateStreak(learningActivity(next)));
+  };
   const completeGardenTask = (step: GardenStep, letterId = 'ba') => { const next = finishGardenStep(profileRef.current, step, letterId); if (next !== profileRef.current) updateCurrentProfile(next); };
   const plantQuestFlower = (spot: number, letterId = 'ba') => { const next = plantGardenFlower(profileRef.current, spot, letterId); if (next !== profileRef.current) updateCurrentProfile(next); };
   const feedPet = () => {
@@ -776,6 +769,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         createProfile,
         updateCurrentProfile,
         completePlayPilotRound,
+        recordLetterCheck,
         completeGardenTask,
         plantQuestFlower,
         parentSettings,

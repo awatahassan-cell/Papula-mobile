@@ -1,6 +1,6 @@
 import { kurdishDigits } from '../../services/rewards';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Easing, Platform, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Animated, Easing, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useReducedMotion } from '../../components/Motion';
 import { BackButton } from '../../components/BackButton';
@@ -13,7 +13,7 @@ import { LearningWord, shuffled } from '../../services/learningEngine';
 import { completedLetterIds } from '../../services/lessonPath';
 import { mockLetters } from '../../data/mockLetters';
 import { pairWords, trainWords } from '../../services/freePlay';
-import { BUBBLE_COLOURS, Finish, K, PALETTE, PlayHeader, Tile, canSay, say, sayLetter, useStop } from './playKit';
+import { BUBBLE_COLOURS, Finish, GameGuide, K, PALETTE, PlayHeader, Tile, canSay, say, sayLetter, useStop } from './playKit';
 import { FREE_PLAY_TEXT as T } from './freePlayText';
 
 type Props = { onExit: () => void };
@@ -26,30 +26,33 @@ export const PairsGame: React.FC<Props> = ({ onExit }) => {
   const cards = useMemo(() => shuffled(words.flatMap(word => [{ key: `${word.id}-p`, word, pic: true }, { key: `${word.id}-w`, word, pic: false }])), [words]);
   const [open, setOpen] = useState<string[]>([]);
   const [done, setDone] = useState<string[]>([]);
+  const openCards = useRef<string[]>([]);
   const missed = useRef<string[]>([]), timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useStop(); useEffect(() => () => clearTimeout(timer.current), []);
-  const reset = () => { clearTimeout(timer.current); setOpen([]); setDone([]); missed.current = []; setRun(r => r + 1); };
+  const reset = () => { clearTimeout(timer.current); openCards.current = []; setOpen([]); setDone([]); missed.current = []; setRun(r => r + 1); };
   if (words.length && done.length === words.length * 2) return <Finish onAgain={reset} onExit={onExit} />;
   const flip = (key: string) => {
-    if (open.length >= 2 || open.includes(key) || done.includes(key)) return;
+    if (openCards.current.length >= 2 || openCards.current.includes(key) || done.includes(key)) return;
     const card = cards.find(item => item.key === key)!;
     say(card.word.word);
-    const now = [...open, key];
+    const now = [...openCards.current, key]; openCards.current = now;
     setOpen(now);
     if (now.length < 2) return;
     const [a, b] = now.map(k => cards.find(item => item.key === k)!);
     if (a.word.id === b.word.id) {
-      // Only a pair found on the first try counts as practice; recordPracticeResult gives the one star for a new word.
-      if (!missed.current.includes(a.word.id)) recordPracticeResult(a.word.letterIds, true, a.word.id, 'word', false);
+      // The cards read themselves aloud: this is supported practice, not independent word reading.
+      if (!missed.current.includes(a.word.id)) recordPracticeResult([], true, undefined, 'word', true);
       soundService.playCorrect();
-      timer.current = setTimeout(() => { setDone(list => [...list, ...now]); setOpen([]); }, 700);
+      timer.current = setTimeout(() => { setDone(list => [...list, ...now]); openCards.current = []; setOpen([]); }, 700);
     } else {
+      for (const card of [a, b]) if (!missed.current.includes(card.word.id)) recordPracticeResult([], false, undefined, 'word', true);
       missed.current.push(a.word.id, b.word.id);
       soundService.playEncouragingTryAgain();
-      timer.current = setTimeout(() => setOpen([]), 1100);
+      timer.current = setTimeout(() => { openCards.current = []; setOpen([]); }, 1100);
     }
   };
   return <ScrollView contentContainerStyle={K.page}>
+    <GameGuide game="pairs"/>
     <View style={K.row}>{cards.map((card, i) => {
       const shown = open.includes(card.key) || done.includes(card.key), tone = BUBBLE_COLOURS[i % BUBBLE_COLOURS.length];
       const finished = done.includes(card.key);
@@ -66,7 +69,8 @@ const ROUNDS = 6;
 const BUBBLE = 92;
 const LEFTS = ['0%', '16%', '32%', '48%', '64%', '72%'];
 /** The sky takes the space left under the header and above the back button and tab bar. */
-const skyHeight = (windowHeight: number) => Math.max(380, Math.min(660, windowHeight - 350));
+// Reserve the guide's 44 px touch target and the extra 10 px gap too.
+const skyHeight = (windowHeight: number) => Math.max(326, Math.min(606, windowHeight - 404));
 type Letter = (typeof mockLetters)[number];
 /** One coloured bubble rising slowly from the bottom edge of the sky and starting over when it leaves the top; with reduced motion it just sits still. */
 const Bubble: React.FC<{ letter: Letter; index: number; state: 'idle' | 'caught' | 'wrong'; height: number; onPress: () => void }> = ({ letter, index, state, height, onPress }) => {
@@ -79,7 +83,7 @@ const Bubble: React.FC<{ letter: Letter; index: number; state: 'idle' | 'caught'
     const travel = height + BUBBLE, duration = 11000 + index * 1400;
     const run = (from: number) => {
       y.setValue(from);
-      Animated.timing(y, { toValue: -BUBBLE, duration: duration * (from + BUBBLE) / travel, easing: Easing.linear, useNativeDriver: Platform.OS !== 'web', isInteraction: false })
+      Animated.timing(y, { toValue: -BUBBLE, duration: duration * (from + BUBBLE) / travel, easing: Easing.linear, useNativeDriver: false, isInteraction: false }) // JS-driven so the tap area follows the bubble
         .start(({ finished }) => { if (alive && finished) run(height); });
     };
     run(height - (index * travel) / 6.5);
@@ -100,24 +104,26 @@ export const CatchGame: React.FC<Props> = ({ onExit }) => {
   const [run, setRun] = useState(0), [round, setRound] = useState(0), [caught, setCaught] = useState(false), [wrong, setWrong] = useState<string[]>([]);
   const targets = useMemo(() => { const order = shuffled(letters); return Array.from({ length: ROUNDS }, (_, i) => order[i % order.length]); }, [run, letters]); // eslint-disable-line react-hooks/exhaustive-deps
   const missed = useRef(false), timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const accepted = useRef(false);
   const sky = skyHeight(useWindowDimensions().height);
   const target = targets[round];
   const options = useMemo(() => target ? shuffled([target, ...shuffled(letters.filter(letter => letter.id !== target.id)).slice(0, 5)]) : [], [target, letters]);
   useStop(); useEffect(() => () => clearTimeout(timer.current), []);
-  useEffect(() => { if (target) sayLetter(target.glyph); }, [target, round]);
   if (round >= ROUNDS) return <Finish onAgain={() => { setRun(r => r + 1); setRound(0); }} onExit={onExit} />;
   const tap = (id: string) => {
-    if (caught || wrong.includes(id)) return;
+    if (accepted.current || caught || wrong.includes(id)) return;
     if (id === target.id) {
-      if (!missed.current) recordPracticeResult([id], true, undefined, 'recognition', false);
+      accepted.current = true;
+      if (!missed.current) recordPracticeResult([id], true, undefined, 'recognition', true);
       setCaught(true); soundService.playCorrect();
-      timer.current = setTimeout(() => { setCaught(false); setWrong([]); missed.current = false; setRound(r => r + 1); }, 900);
+      timer.current = setTimeout(() => { accepted.current = false; setCaught(false); setWrong([]); missed.current = false; setRound(r => r + 1); }, 900);
     } else {
-      if (!missed.current) recordPracticeResult([target.id], false, undefined, 'recognition', false);
+      if (!missed.current) recordPracticeResult([target.id], false, undefined, 'recognition', true);
       missed.current = true; setWrong(list => [...list, id]); soundService.playEncouragingTryAgain();
     }
   };
   return <ScrollView contentContainerStyle={K.page}>
+    <GameGuide game="catch" target={target.glyph} letter/>
     <PlayHeader tone="amber" label={T.catch.ask} onSpeak={() => sayLetter(target.glyph)} counter={`${kurdishDigits(round + 1)} / ${kurdishDigits(ROUNDS)}`}>
       <Text style={[K.target, { color: PALETTE.rose.lip, backgroundColor: PALETTE.rose.soft, borderColor: PALETTE.rose.face }]}>{target.glyph}</Text>
     </PlayHeader>
@@ -137,19 +143,21 @@ export const TrainGame: React.FC<Props> = ({ onExit }) => {
   const word = queue[index];
   const bank = useMemo(() => word ? shuffled(word.units.map((glyph, id) => ({ glyph, id }))) : [], [word]);
   const [usedIds, setUsedIds] = useState<number[]>([]), missed = useRef(false);
+  const cursor = useRef(0), pickedIds = useRef<number[]>([]);
   useStop();
-  useEffect(() => { if (word) say(word.word); }, [word]);
   if (!word) return <Finish onAgain={() => { setRun(r => r + 1); setIndex(0); setFilled(0); setUsedIds([]); }} onExit={onExit} />;
   const complete = filled === word.units.length;
   const tap = (tile: { glyph: string; id: number }) => {
-    if (complete || usedIds.includes(tile.id)) return;
-    if (tile.glyph === word.units[filled]) {
-      setUsedIds(list => [...list, tile.id]); setFilled(filled + 1); sayLetter(tile.glyph);
-      if (filled + 1 === word.units.length) { recordPracticeResult(word.letterIds, !missed.current, word.id, 'word', false); soundService.playCorrect(); say(word.word); }
-    } else { missed.current = true; setWrong(tile.id); soundService.playEncouragingTryAgain(); setTimeout(() => setWrong(null), 500); }
+    if (cursor.current >= word.units.length || pickedIds.current.includes(tile.id)) return;
+    if (tile.glyph === word.units[cursor.current]) {
+      pickedIds.current = [...pickedIds.current, tile.id]; cursor.current++;
+      setWrong(null); setUsedIds(pickedIds.current); setFilled(cursor.current); sayLetter(tile.glyph);
+      if (cursor.current === word.units.length) { if (!missed.current) recordPracticeResult(word.letterIds, true, word.id, 'word', false); soundService.playCorrect(); say(word.word); }
+    } else { if (!missed.current) recordPracticeResult(word.letterIds, false, word.id, 'word', false); missed.current = true; setWrong(tile.id); soundService.playEncouragingTryAgain(); }
   };
-  const next = () => { setUsedIds([]); missed.current = false; setFilled(0); setIndex(index + 1); };
+  const next = () => { cursor.current = 0; pickedIds.current = []; setWrong(null); setUsedIds([]); missed.current = false; setFilled(0); setIndex(index + 1); };
   return <ScrollView contentContainerStyle={K.page}>
+    <GameGuide game="train" target={word.word}/>
     <PlayHeader tone="amber" label={word.word} onSpeak={() => say(word.word)} counter={`${kurdishDigits(index + 1)} / ${kurdishDigits(queue.length)}`}>
       <CharacterPicture symbol="🚂" size={64} />
     </PlayHeader>
@@ -158,6 +166,7 @@ export const TrainGame: React.FC<Props> = ({ onExit }) => {
       <View style={K.row}>{word.units.map((glyph, i) => <View key={i} style={[K.tile, local.slot, i < filled && { backgroundColor: PALETTE.emerald.soft, borderColor: PALETTE.emerald.face, borderStyle: 'solid' }]}>{i < filled && <Text style={K.glyph}>{glyph}</Text>}</View>)}</View>
       <View style={K.row}>{bank.map(tile => <Tile key={tile.id} tone="amber" label={tile.glyph} state={wrong === tile.id ? 'wrong' : 'idle'} disabled={usedIds.includes(tile.id)} onPress={() => tap(tile)}
         style={usedIds.includes(tile.id) ? { opacity: 0.25 } : undefined}><Text style={K.glyph}>{tile.glyph}</Text></Tile>)}</View>
+      {complete && <Text accessibilityLabel={word.word} style={[K.glyph, { writingDirection: 'rtl' }]}>{word.word}</Text>}
       {complete && <Text accessibilityLiveRegion="polite" style={K.cheer}>{T.right}</Text>}
       {complete && <TouchableOpacity accessibilityRole="button" accessibilityLabel={T.next} style={[K.big, { backgroundColor: PALETTE.emerald.face, borderBottomColor: PALETTE.emerald.lip }]} onPress={next}><Text style={[K.bigText, { color: PALETTE.emerald.ink }]}>{T.next}</Text></TouchableOpacity>}
     </LinearGradient>

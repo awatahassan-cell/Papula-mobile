@@ -18,6 +18,8 @@ import { playPilotProgress, PLAY_PILOT_LETTER, PLAY_PILOT_STEPS } from '../../se
 import { getLetterStory } from '../../data/letterStories';
 import { PLAY_PILOT_TEXT as T } from './playPilotText';
 import { playJourneyContent } from './playJourneyContent';
+import { canCheckLetter } from '../../services/letterChecks';
+import { LetterListeningCheck } from '../learning/LetterListeningCheck';
 
 /** Narration that neither finishes nor fails (a call, a lost audio session) must not leave the child unable to answer. */
 const WATCH_LIMIT_MS=12000;
@@ -98,9 +100,12 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
   const [index,setIndex]=useState(()=>startAtBeginning?0:isLessonComplete(currentProfile,letterId)?3:playPilotProgress(currentProfile,letterId).length);
   const [showIntro]=useState(()=>playPilotProgress(currentProfile,letterId).length===0&&!isLessonComplete(currentProfile,letterId));
   const [phase,setPhase]=useState<'watch'|'play'|'won'>('watch');
+  const [checkRequested,setCheckRequested]=useState(()=>!startAtBeginning&&isLessonComplete(currentProfile,letterId)&&canCheckLetter(currentProfile,letterId));
+  const [checkDismissed,setCheckDismissed]=useState(false);
   const [mistakes,setMistakes]=useState(0),[demoVersion,setDemoVersion]=useState(0),[error,setError]=useState(false);
   const token=useRef(0),locked=useRef(false),nextLock=useRef(false),timer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined),guard=useRef<ReturnType<typeof setTimeout>|undefined>(undefined);
   const done=index>=rounds.length,round=rounds[Math.min(index,2)];
+  const checking=done&&checkRequested&&!checkDismissed;
   const planted=gardenProgress(currentProfile,letterId).flowerSpot!==undefined;
   const beginner=currentProfile.ageGroup!=='7-8'||currentProfile.placement?.recommendedLevel===1;
   const twoChoices=beginner||mistakes>=2;
@@ -117,7 +122,7 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
       void soundService.speakWord(parts[i],{onEnd:()=>{if(active===token.current)timer.current=setTimeout(()=>run(i+1),i+1<parts.length?450:0);},onError:()=>{if(active!==token.current)return;setError(true);if(!done){locked.current=false;setPhase('play');}}});
     };run(0);
   },[done,instruction,intro,demoVersion]);
-  useFocusEffect(useCallback(()=>{narrate();return()=>{token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();};},[narrate]));
+  useFocusEffect(useCallback(()=>{if(checking)return;narrate();return()=>{token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();};},[narrate,checking]));
   const pick=(id:string)=>{
     if(phase!=='play'||locked.current)return;
     locked.current=true;
@@ -125,8 +130,9 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
     if(id!==round.answer){Promise.resolve().then(()=>{locked.current=false;});setMistakes(n=>n+1);soundService.playEncouragingTryAgain();void soundService.speakWord(T.retry);if(mistakes+1>=2)setDemoVersion(n=>n+1);return;}
     locked.current=true;nextLock.current=false;token.current++;clearTimeout(timer.current);clearTimeout(guard.current);setPhase('won');completePlayPilotRound(PLAY_PILOT_STEPS[index],letterId);soundService.playCorrect();void soundService.speakWord(T.success);
   };
-  const advance=()=>{if(phase!=='won'||nextLock.current)return;nextLock.current=true;token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();locked.current=false;setPhase('watch');setMistakes(0);setIndex(n=>n+1);};
+  const advance=()=>{if(phase!=='won'||nextLock.current)return;nextLock.current=true;token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();locked.current=false;setPhase('watch');setMistakes(0);if(index===2&&canCheckLetter(currentProfile,letterId))setCheckRequested(true);setIndex(n=>n+1);};
   const fill=accentFill(c,isNight);
+  if(checking)return <LetterListeningCheck letterId={letterId} onExit={()=>setCheckDismissed(true)}/>;
   return <View testID="play-pilot-journey" style={[s.page,{backgroundColor:c.background},compact&&{padding:8,gap:6}]}>
     <HelpHint text={instruction}/>
     <View style={[s.header,compact&&{height:40}]}><View style={s.dots}>{PLAY_PILOT_STEPS.map((step,i)=><View key={step} style={[s.dot,{backgroundColor:i<index||(i===index&&phase==='won')?c.mint:c.edge}]}/>)}</View><TactileButton accessibilityRole="button" accessibilityLabel="ڕێنماییەکە دووبارە ببیستە" onPress={narrate} style={[s.audio,{backgroundColor:c.lavender}]}><Volume2 size={27} color={c.mint}/></TactileButton></View>

@@ -106,8 +106,8 @@ export const MatchGameScreen: React.FC = () => {
   let tileIndex = 0;
 
   return (
-    <ScrollView contentContainerStyle={[s.container, { paddingTop: 8, paddingBottom: 14 }, tablet && { maxWidth: pageMax }]}><HelpHint text={sectionIntroductions['match-game']} />
-      {dueCount > 0 && <TouchableOpacity accessibilityRole="button" accessibilityLabel={MENU_TEXT.review} onPress={() => { void soundService.stopSpeaking(); setRoute('daily-practice'); }} style={[candyCard.big, candyCard.review, { backgroundColor: tiles[3 % tiles.length].face, borderBottomColor: tiles[3 % tiles.length].lip }]}>
+    <ScrollView contentContainerStyle={[s.container, { paddingTop: 8, paddingBottom: 18 }, tablet && { maxWidth: pageMax }]}><HelpHint text={sectionIntroductions['match-game']} />
+      {dueCount > 0 && <TouchableOpacity accessibilityRole="button" accessibilityLabel={MENU_TEXT.review} onPress={() => { void soundService.stopSpeaking(); setRoute('daily-practice'); }} style={[candyCard.big, candyCard.review, { backgroundColor: tiles[3 % tiles.length].face, borderColor: tiles[3 % tiles.length].lip, borderBottomColor: tiles[3 % tiles.length].lip }]}>
         <View style={[candyCard.bigIcon, { backgroundColor: tiles[3 % tiles.length].chip }]}><CharacterPicture symbol="🌱" size={56} animate={false} /></View>
         <View style={candyCard.body}><Text style={[candyCard.bigTitle, { color: tiles[3 % tiles.length].ink }]}>{MENU_TEXT.review}</Text><Text style={[candyCard.hint, { color: tiles[3 % tiles.length].ink }]}>{MENU_TEXT.reviewHint(dueCount)}</Text></View>
       </TouchableOpacity>}
@@ -117,31 +117,35 @@ export const MatchGameScreen: React.FC = () => {
           const candy = tiles[(i + 1) % tiles.length];
           return <TouchableOpacity key={id} accessibilityRole="button" accessibilityLabel={item.title}
             onPress={() => { void soundService.stopSpeaking(); setMode(item.id as GameMode); }}
-            style={[candyCard.big, tablet && { flex: 1 }, { backgroundColor: candy.face, borderBottomColor: candy.lip }]}>
-            <View style={[candyCard.bigIcon, { backgroundColor: candy.chip }]}><CharacterPicture symbol={item.icon} size={56} animate={false} /></View>
+            style={[candyCard.big, tablet && { flex: 1 }, { backgroundColor: candy.face, borderColor: candy.lip, borderBottomColor: candy.lip }]}>
+            <View style={[candyCard.bigIcon, { backgroundColor: candy.chip }]}><CharacterPicture symbol={item.icon} size={58} animate={false} /></View>
             <Text style={[candyCard.bigTitle, { color: candy.ink }]}>{item.title}</Text>
           </TouchableOpacity>;
         })}
       </View>
-      <View accessible accessibilityLabel={FREE_PLAY_TILE.title} style={candyCard.divider}><Text style={candyCard.dividerEmoji}>🦋</Text></View>
+      <View accessible accessibilityLabel={FREE_PLAY_TILE.title} style={candyCard.divider}>
+        <View style={candyCard.dividerPill}><Text style={candyCard.dividerEmoji}>🦋</Text><Text style={candyCard.dividerTitle}>{FREE_PLAY_TILE.title}</Text></View>
+      </View>
       <View style={candyCard.freeGrid}>
         {freePlayStates(currentProfile, text => soundService.canSpeak(text)).map(game => {
           const text = FREE_PLAY_TEXT[game.id], look = FREE_ICONS[game.id], p = PALETTE[look.tone];
           return <TouchableOpacity key={game.id} accessibilityRole="button" accessibilityState={{ disabled: !game.open }}
             accessibilityLabel={game.open ? text.title : `${text.title}. ${game.missing > 0 ? FREE_PLAY_TEXT.locked(game.missing) : FREE_PLAY_TEXT.notReady}`}
             onPress={() => { if (!game.open) return; void soundService.stopSpeaking(); setMode(game.id); }}
-            style={[candyCard.freeTile, { backgroundColor: p.soft, borderColor: p.face, borderBottomColor: p.lip }, !game.open && { opacity: 0.5 }]}>
-            <CharacterPicture symbol={game.open ? look.icon : '🔒'} size={64} animate={false} />
+            style={[candyCard.freeTile, { backgroundColor: p.soft, borderColor: p.face, borderBottomColor: p.lip }, !game.open && { opacity: 0.55 }]}>
+            <View style={[candyCard.freeIconWrap, { backgroundColor: '#ffffffcc', borderColor: p.face }]}>
+              <CharacterPicture symbol={game.open ? look.icon : '🔒'} size={58} animate={false} />
+            </View>
             <Text numberOfLines={1} style={[candyCard.freeTitle, { color: p.ink }]}>{game.open || game.missing === 0 ? text.title : `+${kurdishDigits(game.missing)}`}</Text>
           </TouchableOpacity>;
         })}
       </View>
       <TouchableOpacity accessibilityRole="button" accessibilityState={{ expanded: showAll }} accessibilityLabel={MENU_TEXT.more} onPress={() => setShowAll(v => !v)} style={candyCard.more}>
-        <Text style={candyCard.moreText}>{MENU_TEXT.more}</Text>{showAll ? <ChevronUp size={22} color="#475569" /> : <ChevronDown size={22} color="#475569" />}
+        <Text style={candyCard.moreText}>{MENU_TEXT.more}</Text>{showAll ? <ChevronUp size={22} color="#3b0764" /> : <ChevronDown size={22} color="#3b0764" />}
       </TouchableOpacity>
       {showAll && GAME_SECTIONS.map((section) => (
         <View key={section.level} style={candyCard.section}>
-          <Text style={candyCard.sectionHeader}>{section.level}</Text>
+          <View style={candyCard.sectionBadge}><Text style={candyCard.sectionHeader}>{section.level}</Text></View>
           <View style={tablet ? { flexDirection: 'row', flexWrap: 'wrap', gap: 12 } : { gap: 10 }}>
             {section.items.map((item) => {
               const candy = tiles[tileIndex++ % tiles.length];
@@ -151,7 +155,7 @@ export const MatchGameScreen: React.FC = () => {
                   style={[
                     candyCard.tile,
                     tablet && { width: '48%' },
-                    { backgroundColor: candy.face, borderBottomColor: candy.lip },
+                    { backgroundColor: candy.face, borderColor: candy.lip, borderBottomColor: candy.lip },
                   ]}
                 >
                   <TouchableOpacity
@@ -165,7 +169,7 @@ export const MatchGameScreen: React.FC = () => {
                     }}
                   >
                     <View style={[candyCard.icon, { backgroundColor: candy.chip }]}>
-                      <CharacterPicture symbol={item.icon} size={40} animate={false} />
+                      <CharacterPicture symbol={item.icon} size={42} animate={false} />
                     </View>
                     <View style={candyCard.body}>
                       <Text style={[candyCard.title, { color: candy.ink }]}>{item.title}</Text>
@@ -192,25 +196,29 @@ export const MatchGameScreen: React.FC = () => {
 
 // Macaron tiles shared with the home screen: soft colour, dark ink, a darker lip that sinks when pressed.
 const candyCard = StyleSheet.create({
-  section: { width: '100%', gap: 8, marginTop: 2 },
-  review: { minHeight: 96, flexDirection: 'row', justifyContent: 'flex-start', gap: 12 },
-  big: { minHeight: 132, borderRadius: 28, borderBottomWidth: 6, padding: 14, alignItems: 'center', justifyContent: 'center', gap: 10 },
-  bigIcon: { width: 84, height: 84, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
-  bigTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, textAlign: 'center' },
-  more: { minHeight: 48, borderRadius: 18, borderWidth: 2, borderColor: '#cbd5e1', paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, alignSelf: 'center' },
-  moreText: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 15, color: '#475569' },
-  divider: { alignItems: 'center', marginTop: 6, borderTopWidth: 2, borderTopColor: '#e2e8f0', paddingTop: 6 },
-  dividerEmoji: { fontSize: 28 },
+  section: { width: '100%', gap: 10, marginTop: 4 },
+  review: { minHeight: 98, flexDirection: 'row', justifyContent: 'flex-start', gap: 12 },
+  big: { minHeight: 138, borderRadius: 30, borderWidth: 3, borderBottomWidth: 8, padding: 14, alignItems: 'center', justifyContent: 'center', gap: 10 },
+  bigIcon: { width: 86, height: 86, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
+  bigTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 21, textAlign: 'center' },
+  more: { minHeight: 50, borderRadius: 22, borderWidth: 3, borderBottomWidth: 6, borderColor: '#a78bfa', borderBottomColor: '#6d28d9', backgroundColor: '#ede9fe', paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, alignSelf: 'center', marginTop: 4 },
+  moreText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16, color: '#3b0764' },
+  divider: { alignItems: 'center', marginTop: 6, paddingTop: 4 },
+  dividerPill: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#fef3c7', borderRadius: 20, borderWidth: 2.5, borderBottomWidth: 5, borderColor: '#fbbf24', borderBottomColor: '#d97706', paddingHorizontal: 16, paddingVertical: 5 },
+  dividerEmoji: { fontSize: 24 },
+  dividerTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16, color: '#78350f' },
   freeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'center' },
-  freeTile: { width: '47%', flexGrow: 1, minHeight: 124, borderRadius: 26, borderWidth: 4, borderBottomWidth: 8, alignItems: 'center', justifyContent: 'center', gap: 4, padding: 8 },
-  freeTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 15, textAlign: 'center' },
+  freeTile: { width: '47%', flexGrow: 1, minHeight: 132, borderRadius: 28, borderWidth: 4, borderBottomWidth: 8, alignItems: 'center', justifyContent: 'center', gap: 6, padding: 10 },
+  freeIconWrap: { width: 74, height: 74, borderRadius: 24, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  freeTitle: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16, textAlign: 'center' },
   sectionGap: { marginTop: 10 },
-  sectionHeader: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#1e293b', textAlign: 'right', paddingHorizontal: 4 },
-  tile: { minHeight: 72, borderRadius: 24, borderBottomWidth: 4, paddingVertical: 10, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  sectionBadge: { alignSelf: 'flex-end', backgroundColor: '#ffffff', borderRadius: 16, borderWidth: 2, borderBottomWidth: 4, borderColor: '#cbd5e1', paddingHorizontal: 12, paddingVertical: 4 },
+  sectionHeader: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16, color: '#1e293b', textAlign: 'right' },
+  tile: { minHeight: 78, borderRadius: 26, borderWidth: 3, borderBottomWidth: 7, paddingVertical: 10, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },
   mainAction: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 12 },
-  icon: { width: 54, height: 54, borderRadius: 18, backgroundColor: '#ffffff25', alignItems: 'center', justifyContent: 'center' },
+  icon: { width: 56, height: 56, borderRadius: 20, backgroundColor: '#ffffff25', alignItems: 'center', justifyContent: 'center' },
   body: { flex: 1, minWidth: 0 },
   title: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 17, color: '#ffffff', textAlign: 'right' },
   hint: { fontFamily: 'IBMPlexSansArabic_400Regular', fontSize: 12, color: '#ffffff', textAlign: 'right', marginTop: 1 },
-  speakBtn: { width: 38, height: 38, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  speakBtn: { width: 40, height: 40, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
 });

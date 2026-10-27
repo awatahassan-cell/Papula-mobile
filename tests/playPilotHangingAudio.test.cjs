@@ -25,6 +25,7 @@ const allLetters=catalogLoad(path.resolve('src/data/mockLetters.ts')).mockLetter
   if(name.endsWith('/useAppStore'))return{useAppStore:()=>store};
   if(name.endsWith('/soundService'))return{soundService:{speakWord:(text)=>{speech.push(text);return Promise.resolve();},stopSpeaking:async()=>{},playCorrect(){},playEncouragingTryAgain(){}}};
   if(name.endsWith('/letterStories'))return{getLetterStory:()=>({id:'story-dal'})};
+  if(name.endsWith('/LetterListeningCheck'))return{LetterListeningCheck:'ListeningCheck'};
   return load(path.resolve('src/features/adventure',name+'.ts'));
  },(fn,ms)=>{const id=++timerId;timers.set(id,fn);return id;},id=>timers.delete(id));
  const render=()=>{si=ri=ci=0;return module.exports.PlayPilotJourney({letterId:letter.id});};

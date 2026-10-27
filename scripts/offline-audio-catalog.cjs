@@ -77,6 +77,7 @@ function catalog() {
   for (const text of VOCAB_TEXTS) addExtra(text, 'vocabulary');
   for (const text of ADVENTURE_TEXTS) addExtra(text, 'adventure');
   for (const text of GUIDE_TEXTS) addExtra(text, 'guide');
+  for (const text of Object.values(data('features/freeplay/freePlayText.ts').FREE_PLAY_GUIDES)) addExtra(text, 'freeplay');
   return [...entries.values()];
 }
 
