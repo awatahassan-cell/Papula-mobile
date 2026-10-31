@@ -50,5 +50,5 @@ for(const [letterIndex,letter] of allLetters.entries())test(`journey ${letter.id
  tree.props.onExit();tree=render();focusNow();finishSpeech();tree=render();
  assert.ok(button(tree,'مەشقی نووسین'));assert.ok(button(tree,'چیرۆکی پیتەکە'));
  button(tree,'گوڵەکەم بچێنم').props.onPress();tree=render();assert.equal(garden.gardenProgress(store.currentProfile,letter.id).flowerSpot,0);
- button(tree,'باغەکەم ببینم').props.onPress();assert.equal(store.route,'garden');cleanup();
+ button(tree,'باخچەکەم ببینم').props.onPress();assert.equal(store.route,'garden');cleanup();
 });

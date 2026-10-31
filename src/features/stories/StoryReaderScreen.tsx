@@ -12,7 +12,7 @@ import { Text, InlineText } from '../../components/RTLText';
 import { StoryVoiceRecorder } from './StoryVoiceRecorder';
 import { HelpHint } from '../../components/HelpButton';
 import { exerciseHelp } from '../../services/exerciseHelp';
-import { androidLetterHighlightRuns } from '../../services/letterHighlight';
+import { androidLetterHighlightRuns, LETTER_HIGHLIGHT_COLOR } from '../../services/letterHighlight';
 import {
   Play,
   Pause,
@@ -194,7 +194,7 @@ export const StoryReaderScreen: React.FC = () => {
             <View style={styles.completedBookCheck}><Check size={18} color={styles.completionBadgeText.color}/></View>
           </View>
           <View style={styles.completionActions}>
-            {targetLetter&&<TouchableOpacity accessibilityRole="button" accessibilityLabel={story.journeyLetterId ? 'گەڕانەوە بۆ باغ و ڕوواندنی گوڵ' : `بەردەوام بە لە وانەی پیتی ${targetLetter.glyph}`} onPress={continueLesson} style={styles.completionPrimary}><View style={styles.completionActionIcon}><Shapes size={23} color="#ffffff"/></View><Text style={styles.completionPrimaryText}>{story.journeyLetterId?'با گوڵەکەم بڕوێنم':'بەردەوام بە لە وانەکە'}</Text><ArrowLeft size={20} color="#ffffff"/></TouchableOpacity>}
+            {targetLetter&&<TouchableOpacity accessibilityRole="button" accessibilityLabel={story.journeyLetterId ? 'گەڕانەوە بۆ باخ و ڕوواندنی گوڵ' : `بەردەوام بە لە وانەی پیتی ${targetLetter.glyph}`} onPress={continueLesson} style={styles.completionPrimary}><View style={styles.completionActionIcon}><Shapes size={23} color="#ffffff"/></View><Text style={styles.completionPrimaryText}>{story.journeyLetterId?'با گوڵەکەم بڕوێنم':'بەردەوام بە لە وانەکە'}</Text><ArrowLeft size={20} color="#ffffff"/></TouchableOpacity>}
             {!story.journeyLetterId && <BackButton fullWidth onPress={()=>setRoute('stories')}>گەڕانەوە بۆ چیرۆکەکان</BackButton>}
           </View>
         </View>
@@ -417,7 +417,7 @@ const baseStyles = StyleSheet.create({
   storyParagraphSplit:{fontSize:34,lineHeight:62},
   backToLesson:{minHeight:44,flexDirection:'row',alignItems:'center',gap:5,paddingHorizontal:4,marginBottom:12},
   backText:{fontSize:14,color:'#657d79',fontFamily:'IBMPlexSansArabic_600SemiBold'},
-  targetGlyph: { color: '#ea580c' },
+  targetGlyph: { color: LETTER_HIGHLIGHT_COLOR },
   container: {
     padding: 16,
     paddingBottom: 40,

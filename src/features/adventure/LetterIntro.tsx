@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Play, Volume2 } from 'lucide-react-native';
 import { Text } from '../../components/RTLText';
+import { HighlightedWord } from '../../components/HighlightedWord';
+import { LETTER_HIGHLIGHT_COLOR } from '../../services/letterHighlight';
 import { CharacterPicture } from '../../components/CharacterPicture';
 import { TactileButton } from '../../components/TactileButton';
 import { useReducedMotion } from '../../components/Motion';
@@ -13,7 +15,7 @@ import { SPOKEN_GUIDES } from '../../data/spokenGuides';
 import { mockLetters } from '../../data/mockLetters';
 
 type Letter = (typeof mockLetters)[number];
-const REPEATS = 3, SAFETY_MS = 7000, RED = '#dc2626';
+const REPEATS = 3, SAFETY_MS = 7000, RED = LETTER_HIGHLIGHT_COLOR;
 
 /**
  * The start of a letter's journey, all by ear: the letter is said a few times, then «the letter is in these words»
@@ -88,7 +90,7 @@ export function LetterIntro({ letter, onDone }: { letter: Letter; onDone: () => 
         <View style={[s.smallCard, { backgroundColor: c.paper, borderColor: c.mint }]}><Text style={[s.mid, { color: RED }]}>{letter.glyph}</Text></View>
         <View style={s.grid}>{words.map((item, i) => <TactileButton key={item.id} accessibilityRole="button" accessibilityLabel={item.word} onPress={() => { stopAll(); setCurrent(i); void soundService.speakWord(item.word); }}
           style={[s.word, { backgroundColor: c.paper, borderColor: current === i ? '#f59e0b' : c.edge }, current === i && s.on]}>
-          <CharacterPicture symbol={item.picture} size={72} animate={false} /><Text style={[s.wordText, { color: c.ink }]}>{item.word}</Text></TactileButton>)}</View>
+          <CharacterPicture symbol={item.picture} size={72} animate={false} /><HighlightedWord word={item.word} glyph={letter.glyph} style={[s.wordText, { color: c.ink }]}/></TactileButton>)}</View>
       </>}
     {play}
   </ScrollView>;

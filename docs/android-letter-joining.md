@@ -17,3 +17,9 @@ Raster comparisons are diagnostic, not pixel-equality assertions: color boundari
 `scripts/android-text-probe/cases.cjs` generates the probe input in ignored `work/joining-probe/`. Compile the Java source against the installed Android SDK, convert it using d8, then run it via app_process with arguments: font path, cases JSON path, output PNG path. The probe initializes system fonts because app_process bypasses normal Zygote preloading.
 
 This verifies Android shaping with the actual font and equivalent metric/color spans. Full in-app navigation, line wrapping and screen-reader behavior should also be checked after installing the updated APK.
+
+## Shared red word highlighting — 2026-10-28
+
+`HighlightedWord` now uses the same joining-context renderer for the new letter introduction, guided lesson example/recognition words, and the writing celebration. Previously the introduction did not highlight the target inside words, and the guided lesson changed the color of the entire word. Only matching letters (including their combining marks) now turn red, using `#dc2626`; the story reader uses the same color. Inline spans change foreground color only and inherit the surrounding word's font and size. Authored spelling, spoken text and accessibility labels remain unchanged. Natural non-joining boundaries after letters such as د and ا remain intact.
+
+Regression tests cover Android, iOS and web rendering, repeated targets, combining marks, heh variants, compound وو, and words without a match. In the subsequent APK build session on 2026-10-28, the red native shaping probe was compiled again and run on the connected RMX5051 using the bundled bold font. Its rendered output was visually inspected: the red target retained the connected forms in یاری, دیاری, منداڵ, پەپوولە, گەڵاوێژگان, بێری, کوردی and سیری. This checks native shaping and foreground color; it does not replace full in-app navigation, wrapping and accessibility checks of the new screens.

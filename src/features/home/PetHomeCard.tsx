@@ -15,11 +15,11 @@ export function PetHomeCard() {
   const tile = tileSet(isNight)[1];
   const stage = petStage(petFed(currentProfile));
   const hasNew = unseenButterflies(currentProfile).length > 0;
-  return <TactileButton accessibilityRole="button" accessibilityLabel="باغەکەم" onPress={() => setRoute('garden')}
+  return <TactileButton accessibilityRole="button" accessibilityLabel="باخچەکەم" onPress={() => setRoute('garden')}
     style={[s.card, { backgroundColor: tile.face, borderBottomColor: tile.lip }]}>
     <PetArt stage={stage} mood={petMood(currentProfile)} size={84} />
     <View style={s.body}>
-      <Text style={[s.title, { color: tile.ink }]}>باغەکەم</Text>
+      <Text style={[s.title, { color: tile.ink }]}>باخچەکەم</Text>
     </View>
     {hasNew && <View accessibilityElementsHidden importantForAccessibility="no" style={s.dot} />}
   </TactileButton>;

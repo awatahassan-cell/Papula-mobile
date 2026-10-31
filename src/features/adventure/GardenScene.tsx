@@ -9,7 +9,7 @@ import { useAppearance } from '../../theme/useAppearance';
 export function GardenScene({ progress = 0, flowerSpot, onPlant }: { progress?: number; flowerSpot?: number; onPlant?: (spot: number) => void }) {
   const {isNight, colors} = useAppearance();
   return <View style={[s.scene, {backgroundColor: isNight ? '#153d59' : '#c9efff', borderColor: colors.edge, direction: 'ltr'}]}>
-    <Svg accessible accessibilityRole="image" accessibilityLabel="باغی پەپوولە، پرد و سێ شوێنی گوڵ" width="100%" height="100%" viewBox="0 0 340 240" preserveAspectRatio="none">
+    <Svg accessible accessibilityRole="image" accessibilityLabel="باخی پەپوولە، پرد و سێ شوێنی گوڵ" width="100%" height="100%" viewBox="0 0 340 240" preserveAspectRatio="none">
       <Circle cx="49" cy="40" r="22" fill={isNight ? '#fff2bd' : '#ffda58'} />
       <Path d="M204 48 C204 33 221 29 231 38 C245 22 265 32 263 45 C286 44 286 61 273 62 H207 C194 62 193 51 204 48" fill={isNight ? '#b9dce5' : '#fff'} opacity=".86" />
       <Path d="M0 132 Q80 88 172 135 Q262 95 340 135 V240 H0Z" fill={isNight ? '#286854' : '#8cdb8e'} />

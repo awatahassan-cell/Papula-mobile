@@ -3,7 +3,7 @@ export const HOME_TEXT = {
   hearMe: 'پەپوولە، دەست لێ بدە بۆ گوێگرتن',
   play: 'بەردەوام بین',
   playLabel: (name: string) => `بەردەوامبوون لە گەشتی پیتی ${name}`,
-  allDone: 'باغەکەم ببینم',
+  allDone: 'باخچەکەم ببینم',
   allDoneTitle: 'هەموو گەشتەکانت تەواو کرد!',
   strip: 'ڕێڕەوی گوڵەکانم',
   wake: 'پەپوولە بەخەبەر بێنە',

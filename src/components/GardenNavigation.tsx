@@ -12,7 +12,7 @@ const tabs = [
   { route: 'home', label: 'گەشتەکەم', Icon: Compass },
   { route: 'alphabet', label: 'ڕێڕەو', Icon: Route },
   { route: 'match-game', label: 'یاری', Icon: Puzzle },
-  { route: 'garden', label: 'باغەکەم', Icon: Flower2 },
+  { route: 'garden', label: 'باخچەکەم', Icon: Flower2 },
   { route: 'stories', label: 'چیرۆک', Icon: BookOpen },
 ] as const;
 

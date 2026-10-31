@@ -1,3 +1,5 @@
+export const LETTER_HIGHLIGHT_COLOR = '#dc2626';
+
 /** Color ranges only: preserve every original character, space, and joining boundary. */
 export function letterHighlightRuns(text: string, glyph?: string): { text: string; target: boolean }[] {
   if (!glyph) return [{ text, target: false }];

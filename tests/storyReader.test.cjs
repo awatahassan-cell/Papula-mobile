@@ -36,8 +36,8 @@ let returnedLetter=null,returnRoute=null;store.setSelectedLetter=letter=>returne
 tree=render();
 const letterParagraph=nodes(tree).find(n=>n.props.testID==='story-paragraph');
 assert.equal(content(letterParagraph),story.pages[0].textKu,'highlighting preserves exact RTL sentence');
-assert.ok(nodes(letterParagraph).some(n=>Object.assign({},...(Array.isArray(n.props.style)?n.props.style:[n.props.style])).color==='#ea580c'&&content(n)==='د'),'all target-letter fragments use the highlight');
-for(const node of nodes(letterParagraph).filter(n=>n.props.style?.color==='#ea580c')) assert.deepEqual(node.props.style,{color:'#ea580c'},'target spans change foreground color only; font metrics and text direction inherit from the paragraph');
+assert.ok(nodes(letterParagraph).some(n=>Object.assign({},...(Array.isArray(n.props.style)?n.props.style:[n.props.style])).color==='#dc2626'&&content(n)==='د'),'all target-letter fragments are red');
+for(const node of nodes(letterParagraph).filter(n=>n.props.style?.color==='#dc2626')) assert.deepEqual(node.props.style,{color:'#dc2626'},'target spans change foreground color only; font metrics and text direction inherit from the paragraph');
 nodes(tree).find(n=>n.props.accessibilityLabel==='گەڕانەوە بۆ وانەی پیتی د').props.onPress();
 assert.equal(returnedLetter.id,'dal');assert.equal(returnRoute,'letter-detail');
 console.log('PASS: target-letter highlighting preserves Kurdish text and returns to the matching letter lesson.');

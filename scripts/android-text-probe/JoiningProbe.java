@@ -21,7 +21,7 @@ public class JoiningProbe {
         builder.append(run.getString(mode==2?"displayText":"text"));int end=builder.length();
         builder.setSpan(new TypefaceSpan(face),start,end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.setSpan(new AbsoluteSizeSpan(64),start,end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        if(run.getBoolean("target"))builder.setSpan(new ForegroundColorSpan(0xffea580c),start,end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if(run.getBoolean("target"))builder.setSpan(new ForegroundColorSpan(0xffdc2626),start,end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
       }
       text=builder;
     }

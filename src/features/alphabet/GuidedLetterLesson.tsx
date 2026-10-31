@@ -5,6 +5,7 @@ import { LetterFormsLesson } from '../learning/LetterFormsLesson';
 import React, { useEffect, useRef, useState } from 'react';
 import { Image, View, ScrollView, StyleSheet } from 'react-native';
 import { Text } from '../../components/RTLText';
+import { HighlightedWord } from '../../components/HighlightedWord';
 import { Volume2, Headphones, Shapes, Images, Target, PencilLine, Check, Sparkles, Sprout, BookOpen, ArrowLeft } from 'lucide-react-native';
 import { LetterItem } from '../../services/types';
 import { soundService } from '../../services/soundService';
@@ -21,13 +22,9 @@ const titles = ['گوێ بگرە', 'شێوەکانی پیت', 'وشەکان بب
 const REQUIRED_LISTENS = 5;
 const kurdishNumber = (value: number) => String(value).replace(/[0-9]/g, (digit) => '٠١٢٣٤٥٦٧٨٩'[Number(digit)]);
 
-// The data uses both Kurdish heh forms. Highlight either without changing the word.
 const WordWithLetter: React.FC<{ word: string; glyph: string }> = ({ word, glyph }) => {
   const styles = useThemeStyles(baseStyles);
-  const matchWord = word.replace(/ھ/g, 'ه');
-  const matchGlyph = glyph.replace(/ھ/g, 'ه');
-  const index = matchWord.indexOf(matchGlyph);
-  return <Text style={[styles.word, index >= 0 && styles.highlight]} accessibilityLabel={word}>{word}</Text>;
+  return <HighlightedWord word={word} glyph={glyph} style={styles.word}/>;
 };
 
 export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter }) => {
@@ -390,7 +387,6 @@ const baseStyles = StyleSheet.create({
   caption: { fontFamily: 'IBMPlexSansArabic_600SemiBold', fontSize: 16, color: '#334155', textAlign: 'center' },
   rain: { fontSize: 46, marginVertical: 2 },
   word: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 38, color: '#1e293b', writingDirection: 'rtl' },
-  highlight: { color: '#b45309' },
   listen: { minHeight: 52, minWidth: 140, padding: 12, borderRadius: 20, flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fde68a' },
   listenText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 18, color: '#78350f' },
   choices: { flexDirection: 'row', gap: 12, width: '100%' },

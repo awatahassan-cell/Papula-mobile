@@ -42,7 +42,7 @@
     "web": "expo start --web",
     "test:writing": "node --test tests/wordWriting.test.cjs tests/writingRubric.test.cjs tests/writingScorer.test.cjs tests/writingProgress.test.cjs tests/speechCancellation.test.cjs",
     "test:audio": "node --test tests/optionalAudio.test.cjs tests/offlineAudio.test.cjs tests/speechCancellation.test.cjs tests/storyReader.test.cjs",
-    "test:learning": "node --test tests/accessibility.test.cjs tests/syllables.test.cjs tests/learningEngine.test.cjs tests/audioCache.test.cjs tests/writingProgress.test.cjs tests/speechCancellation.test.cjs tests/learningScreens.test.cjs tests/storyReader.test.cjs tests/foundationalLearning.test.cjs tests/letterChecks.test.cjs tests/letterListeningCheck.test.cjs tests/practiceResult.test.cjs tests/freePlayLearning.test.cjs",
+    "test:learning": "node --test tests/accessibility.test.cjs tests/syllables.test.cjs tests/learningEngine.test.cjs tests/audioCache.test.cjs tests/writingProgress.test.cjs tests/speechCancellation.test.cjs tests/learningScreens.test.cjs tests/storyReader.test.cjs tests/foundationalLearning.test.cjs tests/letterChecks.test.cjs tests/letterListeningCheck.test.cjs tests/practiceResult.test.cjs tests/freePlayLearning.test.cjs tests/letterHighlight.test.cjs tests/highlightedWord.test.cjs tests/letterIntro.test.cjs",
     "lint": "expo lint"
   },
   "private": true

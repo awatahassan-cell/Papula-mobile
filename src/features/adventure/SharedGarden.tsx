@@ -38,9 +38,9 @@ export function SharedGarden({profile,onOpen,onPlant}:{profile:ChildProfile;onOp
         </Svg>;
         return onOpen?<TactileButton key={letter.id} testID={`garden-flower-${letter.id}`} accessibilityRole="button" accessibilityLabel={`گوڵی پیتی ${letter.name}`} onPress={()=>onOpen(letter.id)} style={s.flower}>{bloom}</TactileButton>:<View key={letter.id} testID={`garden-flower-${letter.id}`} accessible accessibilityLabel={`گوڵی پیتی ${letter.name}`} style={s.flower}>{bloom}</View>;
       })}
-      {!flowers.length&&<View style={s.empty}><Text style={[s.emptyText,{color:c.ink}]}>باغەکەت چاوەڕێی یەکەم گوڵەکەتە 🌱</Text></View>}
+      {!flowers.length&&<View style={s.empty}><Text style={[s.emptyText,{color:c.ink}]}>باخچەکەت چاوەڕێی یەکەم گوڵەکەتە 🌱</Text></View>}
     </View>
-    {onPlant&&<TactileButton accessibilityRole="button" accessibilityLabel="گوڵەکەم لە باغەکەم بچێنم" onPress={onPlant} style={[s.plant,{backgroundColor:accentFill(c,isNight),borderBottomColor:c.mintDark}]}><Text style={s.plantText}>گوڵەکەم لە باغەکەم بچێنم 🌸</Text></TactileButton>}
+    {onPlant&&<TactileButton accessibilityRole="button" accessibilityLabel="گوڵەکەم لە باخچەکەم بچێنم" onPress={onPlant} style={[s.plant,{backgroundColor:accentFill(c,isNight),borderBottomColor:c.mintDark}]}><Text style={s.plantText}>گوڵەکەم لە باخچەکەم بچێنم 🌸</Text></TactileButton>}
   </View>;
 }
 const s=StyleSheet.create({garden:{width:'100%',borderWidth:2,borderRadius:28,overflow:'hidden'},sky:{height:110},mascot:{position:'absolute',right:20,top:6},count:{position:'absolute',left:15,bottom:17,borderRadius:15,paddingHorizontal:12,paddingVertical:6},countText:{fontSize:16,fontWeight:'700'},field:{flexDirection:'row',flexWrap:'wrap',paddingHorizontal:8,paddingBottom:12,minHeight:112},flower:{width:'20%',height:100,alignItems:'center',justifyContent:'center'},empty:{minHeight:112,width:'100%',alignItems:'center',justifyContent:'center',padding:14},emptyText:{fontSize:17,lineHeight:29,textAlign:'center'},plant:{margin:12,minHeight:58,borderRadius:21,borderBottomWidth:5,padding:12,alignItems:'center',justifyContent:'center'},plantText:{fontSize:17,lineHeight:29,fontWeight:'700',color:'#fff',textAlign:'center'}});
