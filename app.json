@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.papoole.kids",
+      "bundleIdentifier": "com.papula.kids",
       "icon": {
         "light": "./assets/icon.png",
         "dark": "./assets/icon-dark.png",
@@ -16,7 +16,7 @@
       }
     },
     "android": {
-      "package": "com.papoole.kids",
+      "package": "com.papula.kids",
       "adaptiveIcon": {
         "backgroundColor": "#5a74f0",
         "foregroundImage": "./assets/android-icon-foreground.png",
