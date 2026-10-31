@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "پەپوولە",
-    "slug": "papoole",
+    "slug": "papula",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -53,6 +53,6 @@
         }
       ]
     ],
-    "scheme": "papoole"
+    "scheme": "papula"
   }
 }

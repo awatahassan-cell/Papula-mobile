@@ -1,5 +1,5 @@
 /**
- * Kurdish Sorani UI Strings for Papoole (پەپوولە)
+ * Kurdish Sorani UI Strings for Papula (پەپوولە)
  * Centralized string dictionary for child-friendly Kurdish learning.
  * Configurable for future dialects (e.g. Kurmanji in Latin script).
  */

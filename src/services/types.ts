@@ -1,5 +1,5 @@
 /**
- * Domain types and repository interfaces for Papoole (Kurdish Kids App)
+ * Domain types and repository interfaces for Papula (Kurdish Kids App)
  * Designed for Phase 1 (mock data) and seamless Phase 2 (backend API swap).
  */
 

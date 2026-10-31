@@ -1,4 +1,4 @@
-# پەپوولە (Papoole) - Kurdish (Sorani) Kids Mobile App (React Native)
+# پەپوولە (Papula) - Kurdish (Sorani) Kids Mobile App (React Native)
 
 ئەپڵیکەیشنی فێرکاری مۆبایل بۆ منداڵانی کورد (سۆرانی) تەمەن ٣ بۆ ٨ ساڵ، دروستکراو بە تەکنەلۆژیای **React Native** و **Expo**.
 
