@@ -70,4 +70,6 @@ tab('stories', 'چیرۆکەکان', '📖', storyGroups);
 const total = tabs.reduce((n, t) => n + t.groups.reduce((m, g) => m + g.items.length, 0), 0);
 const html = fs.readFileSync(path.join(__dirname, 'voice-review-template.html'), 'utf8').replace('__DATA__', JSON.stringify(tabs).replace(/<\//g, '<\\/'));
 fs.writeFileSync(path.join(root, 'app-voice-review.html'), html);
+const live = fs.readFileSync(path.join(__dirname, 'voice-review-artifact-template.html'), 'utf8').replace('__DATA__', JSON.stringify(tabs).replace(/<\//g, '<\\/'));
+fs.writeFileSync(path.join(root, 'app-voice-review-live.html'), live);
 console.log(total, 'lines;', tabs.map(t => `${t.id}:${t.groups.length}`).join(' '));

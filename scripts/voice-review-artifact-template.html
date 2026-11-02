@@ -1,0 +1,195 @@
+<title>ڕیڤیوی دەنگ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap">
+<style>
+/* Layout: sticky header with tabs and progress, then collapsible groups of lines; one line = text, voice status, two big buttons. */
+:root{
+  --bg:#f6f4ff; --card:#ffffff; --ink:#1e1b4b; --mut:#6b6894; --line:#e4defa;
+  --pri:#6d4ae8; --pri-ink:#ffffff;
+  --ok:#10b981; --ok-soft:#e8fbf3; --ed:#f59e0b; --ed-soft:#fff6e0;
+  --rec-bg:#e0f2fe; --rec-ink:#0369a1; --no-bg:#fee2e2; --no-ink:#b91c1c; --red:#dc2626;
+  --shadow:0 2px 12px rgba(109,74,232,.14);
+  --font:"Vazirmatn","Noto Naskh Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14122b; --card:#1d1a3d; --ink:#ece9ff; --mut:#a09dc8; --line:#34306a;
+  --pri:#8b6dff; --pri-ink:#12102a; --ok:#34d399; --ok-soft:#0f2e28; --ed:#fbbf24; --ed-soft:#33280d;
+  --rec-bg:#0c2f46; --rec-ink:#7dd3fc; --no-bg:#3b1620; --no-ink:#fca5a5; --red:#f87171; --shadow:0 2px 12px rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14122b; --card:#1d1a3d; --ink:#ece9ff; --mut:#a09dc8; --line:#34306a;
+  --pri:#8b6dff; --pri-ink:#12102a; --ok:#34d399; --ok-soft:#0f2e28; --ed:#fbbf24; --ed-soft:#33280d;
+  --rec-bg:#0c2f46; --rec-ink:#7dd3fc; --no-bg:#3b1620; --no-ink:#fca5a5; --red:#f87171; --shadow:0 2px 12px rgba(0,0,0,.4); color-scheme:dark}
+*{box-sizing:border-box;font-family:var(--font);-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--ink);padding-block:0 92px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--card);z-index:10}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);box-shadow:var(--shadow);margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:10px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px))}
+.top h1{font-size:17px;margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sync{font-size:12px;font-weight:600;color:var(--mut)}.sync.ok{color:var(--ok)}.sync.bad{color:var(--no-ink)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.tab{flex:1 0 auto;padding:9px 13px;border-radius:14px;border:2px solid var(--line);background:var(--card);font-weight:800;font-size:14px;color:var(--mut);white-space:nowrap}
+.tab.on{background:var(--pri);border-color:var(--pri);color:var(--pri-ink)}
+.tools{display:flex;gap:6px;align-items:center}
+.tools input{flex:1;min-width:0;padding:9px 12px;border:2px solid var(--line);border-radius:12px;font-size:15px;background:var(--bg);color:var(--ink)}
+.pill{padding:8px 11px;border-radius:999px;border:2px solid var(--line);background:var(--card);font-weight:700;font-size:13px;color:var(--mut)}
+.pill.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.bar{height:6px;border-radius:6px;background:var(--line);margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.stat{font-size:12px;color:var(--mut);margin-top:4px}
+.wrap{max-width:760px;margin:10px auto 0}
+details.g{background:var(--card);border-radius:20px;margin-bottom:10px;border:2px solid var(--line);overflow:hidden}
+details.g[data-done="1"]{border-color:var(--ok)}
+summary{list-style:none;display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;font-weight:800}
+summary::-webkit-details-marker{display:none}
+.big{font-size:34px;font-weight:800;color:var(--red);min-width:44px;text-align:center;line-height:1.2}
+.gt{flex:1;font-size:16px;min-width:0}.gc{font-size:12px;font-weight:700;color:var(--mut);background:var(--bg);padding:4px 9px;border-radius:999px}
+.gc.full{background:var(--ok-soft);color:var(--ok)}
+.it{padding:12px 14px;border-top:1px solid var(--line);display:grid;gap:8px}
+.it.ok{background:var(--ok-soft)}.it.ed{background:var(--ed-soft)}
+.line{display:flex;gap:10px;align-items:center}
+.pic{font-size:30px}
+.txt{flex:1;min-width:0;font-size:21px;line-height:1.75;font-weight:600;overflow-wrap:anywhere}
+.txt .old{display:block;font-size:14px;font-weight:400;color:var(--mut);text-decoration:line-through}
+.meta{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px;background:var(--bg);color:var(--mut)}
+.tag.r{background:var(--rec-bg);color:var(--rec-ink)}.tag.n{background:var(--no-bg);color:var(--no-ink)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.acts button{padding:13px 8px;border-radius:14px;border:2px solid var(--line);background:var(--card);font-size:16px;font-weight:800;color:var(--mut)}
+.acts .ok.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.acts .ed.on{background:var(--ed);border-color:var(--ed);color:#1c1300}
+textarea{width:100%;min-height:70px;padding:10px;border:2px solid var(--ed);border-radius:14px;font-size:19px;background:var(--card);color:var(--ink)}
+.hint{font-size:12px;color:var(--ed)}
+.foot{position:fixed;bottom:0;left:0;right:0;background:var(--card);box-shadow:0 -2px 12px rgba(109,74,232,.14);padding:9px max(16px,env(safe-area-inset-right,0px)) calc(9px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;gap:8px}
+.go{flex:1;padding:13px;border:0;border-radius:14px;background:var(--pri);color:var(--pri-ink);font-weight:800;font-size:15px}
+.go.fast{background:var(--ed);color:#1c1300}
+.go.sec{background:var(--card);color:var(--pri);border:2px solid var(--pri)}
+.empty{padding:40px 10px;text-align:center;color:var(--mut)}
+#modal,#quick{position:fixed;inset:0;display:none;z-index:20}
+#modal{background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:12px}
+#modal>div{background:var(--card);border-radius:22px;padding:14px;width:100%;max-width:680px;max-height:92vh;display:flex;flex-direction:column;gap:8px}
+#modal textarea{flex:1;min-height:300px;font-size:14px;border-color:var(--line)}
+#quick{background:var(--bg);flex-direction:column;gap:12px;padding:max(14px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(14px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+#quick .qh{display:flex;justify-content:space-between;align-items:center;font-weight:800}
+#quick .qc{flex:1;min-height:0;background:var(--card);border-radius:28px;border:3px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center;overflow:auto}
+#quick .qpic{font-size:70px;line-height:1.1}#quick .qt{font-size:30px;line-height:1.7;font-weight:700;overflow-wrap:anywhere}#quick .qctx{font-size:13px;color:var(--mut)}
+#quick .qa{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#quick .qa button{padding:18px 8px;border-radius:18px;border:0;font-size:19px;font-weight:800}
+#quick .qa .a{background:var(--ok);color:#fff}#quick .qa .b{background:var(--ed);color:#1c1300}
+#quick .qs{padding:12px;border-radius:14px;border:2px solid var(--line);background:var(--card);font-weight:800;color:var(--mut)}
+#quick textarea{font-size:22px;min-height:100px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+<div class="top">
+ <h1><span>ڕیڤیوی دەنگ و نووسین</span><span class="sync" id="sync">…</span></h1>
+ <div class="tabs" id="tabs"></div>
+ <div class="tools"><input id="q" type="search" placeholder="گەڕان لە نووسینەکان…"><button class="pill" id="fu">ڕیڤیونەکراو</button></div>
+ <div class="bar"><i id="bar"></i></div><div class="stat" id="stat"></div>
+</div>
+<div class="wrap" id="list"></div>
+<div class="foot"><button class="go fast" id="fast">ڕیڤیوی خێرا ⚡</button><button class="go sec" id="copy">کۆپی</button></div>
+<div id="modal"><div><b>پشکنین: ئەمە کۆپی بکە ئەگەر پێویست بوو</b><textarea id="ta" readonly></textarea><button class="go" id="cp">کۆپی</button><button class="go sec" id="cl">داخستن</button></div></div>
+<div id="quick"><div class="qh"><span id="qn"></span><button class="qs" id="qx">داخستن ✕</button></div>
+ <div class="qc"><div class="qctx" id="qctx"></div><div class="qpic" id="qpic"></div><div class="qt" id="qt"></div><textarea id="qta" hidden></textarea></div>
+ <div class="qa"><button class="a" id="qa">✓ باشە</button><button class="b" id="qb">✎ گۆڕین</button></div>
+ <button class="qs" id="qs">تێپەڕە ←</button></div>
+<script>
+const TABS=__DATA__;
+const LS='papula_voice_review_v2';
+// st[tabId]["group.item"] = {s:'ok'|'ed', n:newText, o:originalText}
+let st={};try{st=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){}
+TABS.forEach(t=>{st[t.id]=st[t.id]||{}});
+const $=s=>document.querySelector(s);
+const esc=x=>String(x).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+TABS.forEach(t=>t.groups.forEach((g,gi)=>g.items.forEach((it,i)=>{it.tabId=t.id;it.key=gi+'.'+i;it.ctx=g.title||'';it.tab=t.title})));
+let tabId=TABS[0].id,query='',onlyNew=false,dbm=null;
+const all=()=>TABS.flatMap(t=>t.groups.flatMap(g=>g.items));
+const rec=it=>st[it.tabId][it.key]||{};
+const status=it=>rec(it).s||'';
+function totals(items){let ok=0,ed=0;items.forEach(i=>{const s=status(i);if(s==='ok')ok++;if(s==='ed')ed++});return{ok,ed,n:items.length}}
+
+// ---- saving: this browser at once, the shared store shortly after ----
+const dirty=new Set();let timer=null,writing=false;
+function setSync(text,cls){const e=$('#sync');e.textContent=text;e.className='sync '+(cls||'')}
+function persist(it){
+  try{localStorage.setItem(LS,JSON.stringify(st))}catch(e){}
+  if(!dbm){setSync('لەم ئامێرەدا پاشەکەوت دەکرێت');return}
+  dirty.add(it.tabId);setSync('دەپارێزرێت…');clearTimeout(timer);timer=setTimeout(flush,700);
+}
+async function flush(){
+  if(writing){timer=setTimeout(flush,400);return}
+  writing=true;
+  try{for(const id of [...dirty]){dirty.delete(id);await dbm.doc('review/'+id).set({items:st[id],updatedAt:Date.now()})}setSync('پاشەکەوتکرا ✓','ok')}
+  catch(e){setSync('پاشەکەوت نەکرا، لەم ئامێرەدا ماوەتەوە','bad')}
+  writing=false;
+}
+async function loadRemote(){
+  try{
+    const c=window.claude&&await window.claude.use('db');if(!c){setSync('لەم ئامێرەدا پاشەکەوت دەکرێت');return}
+    dbm=c;let found=0;
+    for(const t of TABS){const snap=await dbm.doc('review/'+t.id).get();if(snap.exists){const d=snap.data();if(d&&d.items){st[t.id]={...st[t.id],...d.items};found++}}}
+    try{localStorage.setItem(LS,JSON.stringify(st))}catch(e){}
+    setSync(found?'پاشەکەوتکراو گەڕایەوە ✓':'ئامادەیە','ok');render();
+  }catch(e){setSync('لەم ئامێرەدا پاشەکەوت دەکرێت')}
+}
+
+// ---- screens ----
+function head(){
+  const a=totals(all());$('#bar').style.width=(100*(a.ok+a.ed)/a.n)+'%';
+  $('#stat').textContent=`بینراو ${a.ok+a.ed} لە ${a.n} • باشە ${a.ok} • گۆڕانکاری ${a.ed}`;
+  $('#tabs').innerHTML='';
+  TABS.forEach(t=>{const x=totals(t.groups.flatMap(g=>g.items));const b=document.createElement('button');b.className='tab'+(t.id===tabId?' on':'');
+    b.textContent=`${t.icon} ${t.title} ${x.ok+x.ed}/${x.n}`;b.onclick=()=>{tabId=t.id;render()};$('#tabs').appendChild(b)});
+}
+const match=it=>!query||(it.text+' '+it.ctx+' '+(rec(it).n||'')).toLowerCase().includes(query);
+function render(){
+  head();const t=TABS.find(x=>x.id===tabId),list=$('#list');list.innerHTML='';let shown=0;
+  t.groups.forEach(g=>{
+    const items=g.items.filter(it=>match(it)&&(!onlyNew||!status(it)));if(!items.length)return;shown++;
+    const x=totals(g.items),d=document.createElement('details');d.className='g';d.dataset.done=x.ok+x.ed===x.n?'1':'0';
+    if(query||onlyNew||t.groups.length===1)d.open=true;
+    d.innerHTML=`<summary>${g.big?`<span class="big">${esc(g.big)}</span>`:''}<span class="gt">${esc(g.title)}</span><span class="gc ${x.ok+x.ed===x.n?'full':''}">${x.ok+x.ed}/${x.n}</span></summary>`;
+    items.forEach(it=>{
+      const s=rec(it),r=document.createElement('div');r.className='it '+(s.s||'');
+      r.innerHTML=`<div class="line">${it.pic?`<span class="pic">${it.pic}</span>`:''}<div class="txt">${s.s==='ed'&&s.n?'<span class="old"></span>'+esc(s.n):esc(it.text)}</div></div>
+      <div class="meta">${it.tag?`<span class="tag">${esc(it.tag)}</span>`:''}<span class="tag ${it.rec?'r':'n'}">${it.rec?'🔊 تۆمارکراوە':'بێ دەنگی تۆمارکراو'}</span></div>
+      <div class="acts"><button class="ok ${s.s==='ok'?'on':''}">✓ باشە</button><button class="ed ${s.s==='ed'?'on':''}">✎ گۆڕانکاری</button></div>`;
+      if(s.s==='ed'&&s.n)r.querySelector('.old').textContent=it.text;
+      r.querySelector('.ok').onclick=()=>{if(s.s==='ok')delete st[it.tabId][it.key];else st[it.tabId][it.key]={s:'ok'};persist(it);keep()};
+      r.querySelector('.ed').onclick=()=>{
+        if(r.querySelector('textarea'))return;
+        const ta=document.createElement('textarea');ta.id='ta-'+it.tabId+'-'+it.key;ta.value=s.n||it.text;
+        const h=document.createElement('div');h.className='hint';h.textContent=it.rec?'ئەگەر نووسینەکە بگۆڕدرێت، دەنگەکەشی دەبێت دووبارە تۆمار بکرێتەوە.':'';
+        r.insertBefore(ta,r.querySelector('.acts'));r.insertBefore(h,r.querySelector('.acts'));ta.focus();
+        ta.onblur=()=>{const v=ta.value.trim();if(v&&v!==it.text)st[it.tabId][it.key]={s:'ed',n:v,o:it.text};else if(s.s==='ed')delete st[it.tabId][it.key];persist(it);keep()};
+      };
+      d.appendChild(r);
+    });
+    list.appendChild(d);
+  });
+  if(!shown)list.innerHTML='<div class="empty">هیچ نووسینێک نییە</div>';
+}
+function keep(){const open=[...document.querySelectorAll('details.g')].map(x=>x.open),y=scrollY;render();[...document.querySelectorAll('details.g')].forEach((x,i)=>{if(open[i])x.open=true});scrollTo(0,y)}
+$('#q').oninput=e=>{query=e.target.value.trim().toLowerCase();render()};
+$('#fu').onclick=e=>{onlyNew=!onlyNew;e.currentTarget.classList.toggle('on',onlyNew);render()};
+$('#copy').onclick=()=>{
+  const lines=[];all().forEach(it=>{const s=rec(it);if(s.s==='ed')lines.push(`[${it.tab} / ${it.ctx}]\nپێشوو: ${it.text}\nنوێ: ${s.n}${it.rec?'\n(دەنگی تۆمارکراوی هەیە، دەبێت دووبارە تۆمار بکرێتەوە)':''}\n`)});
+  const a=totals(all());
+  $('#ta').value=(lines.length?`ئەمانە بگۆڕە:\n\n${lines.join('\n')}`:'هیچ گۆڕانکارییەک نییە.')+`\nکورتە: ${a.ok} باشە، ${a.ed} گۆڕانکاری، ${a.n-a.ok-a.ed} نەبینراو.`;
+  $('#modal').style.display='flex'};
+$('#cl').onclick=()=>{$('#modal').style.display='none'};
+$('#cp').onclick=()=>{const t=$('#ta');t.select();try{navigator.clipboard.writeText(t.value).catch(()=>document.execCommand('copy'))}catch(e){document.execCommand('copy')}};
+// quick review: one big card at a time, in the open tab
+let queue=[],qi=0;
+function qshow(){
+  const it=queue[qi];if(!it){$('#quick').style.display='none';render();return}
+  $('#qn').textContent=`${qi+1} / ${queue.length}`;$('#qctx').textContent=it.ctx+(it.tag?' • '+it.tag:'');
+  $('#qpic').textContent=it.pic||'';$('#qt').textContent=it.text;$('#qta').hidden=true;$('#qb').textContent='✎ گۆڕین';$('#qa').hidden=false;
+}
+$('#fast').onclick=()=>{const t=TABS.find(x=>x.id===tabId);queue=t.groups.flatMap(g=>g.items).filter(it=>!status(it)&&match(it));qi=0;if(!queue.length)return;$('#quick').style.display='flex';qshow()};
+$('#qa').onclick=()=>{const it=queue[qi];st[it.tabId][it.key]={s:'ok'};persist(it);qi++;qshow()};
+$('#qb').onclick=()=>{const it=queue[qi],ta=$('#qta');
+  if(ta.hidden){ta.value=it.text;ta.hidden=false;ta.focus();$('#qb').textContent='✓ پاشەکەوت';$('#qa').hidden=true;return}
+  const v=ta.value.trim();st[it.tabId][it.key]=v&&v!==it.text?{s:'ed',n:v,o:it.text}:{s:'ok'};persist(it);qi++;qshow()};
+$('#qs').onclick=()=>{qi++;qshow()};
+$('#qx').onclick=()=>{$('#quick').style.display='none';render()};
+render();loadRemote();
+</script>
