@@ -1,0 +1,166 @@
+﻿ژمارە,ئیمۆجی,ناوی ئینگلیزی,وشە/مانای کوردی,کۆدی یونیکۆد,ناوی فایلی پێشنیارکراو,ژمارەی بەکارهێنان,لە کوێ بەکار دێت,وێنەی ئێستا
+1,⭐,White Medium Star,ئەستێرە / ئەستێرەی زیرەکی,U+2B50,001-white-medium-star.svg,37,DailyMissionsComponent، DailyMissionsRewardCelebration، DayDone، MatchGameScreen,هەیە
+2,🦋,Butterfly,پەپوولە / پەپوولەی ڕەنگین,U+1F98B,002-butterfly.svg,28,FreePlayGames، GardenCollectionScreen، GardenScreen، LetterPractice,هەیە
+3,🍎,Red Apple,هەنار / سێو,U+1F34E,003-red-apple.svg,11,DailyPracticeScreen، MatchGameScreen، letterStories، mockLetters,هەیە
+4,🦁,Lion Face,شێر,U+1F981,004-lion-face.svg,11,OnboardingScreen، ParentDashboardScreen، StorySequence، letterStories,هەیە
+5,🌳,Deciduous Tree,دار,U+1F333,005-deciduous-tree.svg,10,StorySequence، foundationalLearning، learningEngine، letterStories,هەیە
+6,☀,Black Sun With Rays,خۆر / خۆری گەش,U+2600,006-black-sun-with-rays.svg,9,StorySequence، foundationalLearning، learningEngine، mockLetters,هەیە
+7,🐻,Bear Face,ورچ / ورچی میهرەبان,U+1F43B,007-bear-face.svg,8,OnboardingScreen، ParentDashboardScreen، StorySequence، letterStories,هەیە
+8,🥖,Baguette Bread,نان / سەمون,U+1F956,008-baguette-bread.svg,8,foundationalLearning، learningEngine، letterStories، mockLetters,هەیە
+9,🌙,Crescent Moon,شەو,U+1F319,009-crescent-moon.svg,8,DayDone، StorySequence، foundationalLearning، learningEngine,هەیە
+10,🍯,Honey Pot,هەنگوین / هەنگوینی شاخ,U+1F36F,010-honey-pot.svg,8,GardenScreen، StorySequence، gardenText، mockLetters,هەیە
+11,🦊,Fox Face,ڕێوی زرنگ,U+1F98A,011-fox-face.svg,8,OnboardingScreen، ParentDashboardScreen، StorySequence، mockStickers,هەیە
+12,🌧,Cloud With Rain,باران,U+1F327,012-cloud-with-rain.svg,7,StorySequence، foundationalLearning، learningEngine، letterStories,هەیە
+13,🐟,Fish,حەوز / ماسی,U+1F41F,013-fish.svg,7,foundationalLearning، learningEngine، letterStories، mockLetters,هەیە
+14,🦌,Deer,ئاسک / غەزال / ئاسکی چاوگەش,U+1F98C,014-deer.svg,6,StorySequence، letterStories، mockLetters، mockStickers,هەیە
+15,🐰,Rabbit Face,کەرۆشک / کەروێشک,U+1F430,015-rabbit-face.svg,6,OnboardingScreen، ParentDashboardScreen، letterStories، mockLetters,هەیە
+16,🐱,Cat Face,پشیلە,U+1F431,016-cat-face.svg,6,learningEngine، mockLetters، vocabulary,هەیە
+17,👑,Crown,تاج / تاجی پالەوان,U+1F451,017-crown.svg,5,PetArt، mockBadges، mockLetters، mockStickers,هەیە
+18,🌸,Cherry Blossom,جوان,U+1F338,018-cherry-blossom.svg,5,HomeHero، SharedGarden، letterStories، mockLetters,هەیە
+19,🏡,House With Garden,دێ / ماڵ / ڤیللا / باغ,U+1F3E1,019-house-with-garden.svg,5,letterStories، mockLetters,هەیە
+20,🥛,Glass Of Milk,پڕ / جام / شیر,U+1F95B,020-glass-of-milk.svg,5,mockLetters، vocabulary,هەیە
+21,🎮,Video Game,یاری,U+1F3AE,021-video-game.svg,5,DailyPracticeScreen، DayDone، mockLetters، mockMissions,هەیە
+22,🪨,Rock,بەرد,U+1FAA8,022-rock.svg,4,mockLetters، mockStories,هەیە
+23,💧,Droplet,ئاو,U+1F4A7,023-droplet.svg,4,learningEngine، mockLetters، vocabulary,هەیە
+24,👁,Eye,چاو,U+1F441,024-eye.svg,4,FreePlayMore، MatchGameScreen، mockLetters,هەیە
+25,⚽,Soccer Ball,تۆپ,U+26BD,025-soccer-ball.svg,3,letterStories، mockLetters,هەیە
+26,🍋,Lemon,لێمۆ,U+1F34B,026-lemon.svg,3,letterStories، mockLetters، vocabulary,هەیە
+27,🌼,Blossom,نێرگز / یاسەمین,U+1F33C,027-blossom.svg,3,letterStories، mockLetters,هەیە
+28,🍌,Banana,مۆز,U+1F34C,028-banana.svg,3,letterStories، mockLetters، vocabulary,هەیە
+29,🐘,Elephant,فیل,U+1F418,029-elephant.svg,3,letterStories، mockLetters، vocabulary,هەیە
+30,✏,Pencil,قەڵەم,U+270F,030-pencil.svg,3,MatchGameScreen، letterStories، mockLetters,هەیە
+31,🔥,Fire,ئاگر / مەشخەڵی نەورۆز,U+1F525,031-fire.svg,3,mockBadges، mockLetters، mockStickers,هەیە
+32,🖼,Frame With Picture,وێنە,U+1F5BC,032-frame-with-picture.svg,3,FreePlayMore، MatchGameScreen، mockLetters,هەیە
+33,🐶,Dog Face,سەگ,U+1F436,033-dog-face.svg,3,mockLetters، vocabulary,هەیە
+34,☁,Cloud,لۆکە / هەور,U+2601,034-cloud.svg,3,StorySequence، mockLetters,هەیە
+35,🌹,Rose,گوڵ / گوڵەباخ,U+1F339,035-rose.svg,3,mockLetters، mockStickers، mockStories,هەیە
+36,🐭,Mouse Face,مشک,U+1F42D,036-mouse-face.svg,3,StorySequence، vocabulary,هەیە
+37,🪟,Window,پەردە,U+1FA9F,037-window.svg,2,letterStories، mockLetters,هەیە
+38,🔔,Bell,زەنگ,U+1F514,038-bell.svg,2,letterStories، mockLetters,هەیە
+39,❄,Snowflake,بەفر,U+2744,039-snowflake.svg,2,letterStories، mockLetters,هەیە
+40,🛤,Railway Track,ڕێگا,U+1F6E4,040-railway-track.svg,2,letterStories، mockLetters,هەیە
+41,🤝,Handshake,یارمەتی,U+1F91D,041-handshake.svg,2,letterStories، mockLetters,هەیە
+42,💐,Bouquet,عەتر,U+1F490,042-bouquet.svg,2,letterStories، mockLetters,هەیە
+43,👓,Eyeglasses,عەینەک,U+1F453,043-eyeglasses.svg,2,letterStories، mockLetters,هەیە
+44,🚪,Door,دەرگا / ژوور,U+1F6AA,044-door.svg,2,mockLetters,هەیە
+45,🍇,Grapes,ڕەز / ترێ,U+1F347,045-grapes.svg,2,mockLetters، vocabulary,هەیە
+46,🫐,Blueberries,توو / هەنجیر,U+1FAD0,046-blueberries.svg,2,mockLetters,هەیە
+47,🍬,Candy,شەکەر / حەلاوە,U+1F36C,047-candy.svg,2,mockLetters,هەیە
+48,👧,Girl,کچ,U+1F467,048-girl.svg,2,learningEngine، mockLetters,هەیە
+49,🍒,Cherries,گێلاس,U+1F352,049-cherries.svg,2,mockLetters، vocabulary,هەیە
+50,👂,Ear,گوێ,U+1F442,050-ear.svg,2,MatchGameScreen، mockLetters,هەیە
+51,🕊,Dove Of Peace,کۆتر / کۆتر دەفڕێت,U+1F54A,051-dove-of-peace.svg,2,mockLetters، vocabulary,هەیە
+52,🏠,House Building,خانوو,U+1F3E0,052-house-building.svg,2,learningEngine، mockLetters,هەیە
+53,🍽,Fork And Knife With Plate,قاپ,U+1F37D,053-fork-and-knife-with-plate.svg,2,mockLetters، quests,هەیە
+54,⛰,Mountain,چیای بەرز,U+26F0,054-mountain.svg,2,StorySequence، mockStickers,هەیە
+55,🚀,Rocket,فڕۆکەی خەیاڵ,U+1F680,055-rocket.svg,2,mockStickers، strings,هەیە
+56,🐑,Sheep,مەڕ,U+1F411,056-sheep.svg,2,vocabulary,هەیە
+57,🐴,Horse Face,ئەسپ / ئەسپ ڕادەکات,U+1F434,057-horse-face.svg,2,vocabulary,هەیە
+58,🐔,Chicken,مریشک,U+1F414,058-chicken.svg,2,vocabulary,هەیە
+59,🥚,Egg,هێلکە,U+1F95A,059-egg.svg,2,vocabulary,هەیە
+60,❤,Heavy Black Heart,دڵ,U+2764,060-heavy-black-heart.svg,1,mockLetters,هەیە
+61,✋,Raised Hand,دەست,U+270B,061-raised-hand.svg,1,mockLetters,هەیە
+62,🐍,Snake,مار,U+1F40D,062-snake.svg,1,mockLetters,هەیە
+63,🌤,White Sun With Small Cloud,ئاسمانی شین,U+1F324,063-white-sun-with-small-cloud.svg,1,mockLetters,هەیە
+64,🐪,Dromedary Camel,وشتر,U+1F42A,064-dromedary-camel.svg,1,mockLetters,هەیە
+65,✌,Victory Hand,دوو,U+270C,065-victory-hand.svg,1,mockLetters,هەیە
+66,🔴,Large Red Circle,سوور,U+1F534,066-large-red-circle.svg,1,mockLetters,هەیە
+67,🎎,Japanese Dolls,بووک,U+1F38E,067-japanese-dolls.svg,1,mockLetters,هەیە
+68,⛄,Snowman Without Snow,زستان,U+26C4,068-snowman-without-snow.svg,1,mockLetters,هەیە
+69,🪙,Coin,زێڕ,U+1FA99,069-coin.svg,1,mockLetters,هەیە
+70,🐠,Tropical Fish,ماسی,U+1F420,070-tropical-fish.svg,1,mockLetters,هەیە
+71,🌕,Full Moon Symbol,مانگ,U+1F315,071-full-moon-symbol.svg,1,mockLetters,هەیە
+72,💅,Nail Polish,نینۆک,U+1F485,072-nail-polish.svg,1,mockLetters,هەیە
+73,🦶,Foot,پێ,U+1F9B6,073-foot.svg,1,mockLetters,هەیە
+74,🛋,Couch And Lamp,لێفە,U+1F6CB,074-couch-and-lamp.svg,1,mockLetters,هەیە
+75,🧣,Scarf,شاڵ,U+1F9E3,075-scarf.svg,1,mockLetters,هەیە
+76,🕳,Hole,چاڵ,U+1F573,076-hole.svg,1,mockLetters,هەیە
+77,🐓,Rooster,کەڵەشێر,U+1F413,077-rooster.svg,1,mockLetters,هەیە
+78,🐥,Front-Facing Baby Chick,جووجەڵە,U+1F425,078-front-facing-baby-chick.svg,1,mockLetters,هەیە
+79,☕,Hot Beverage,چای,U+2615,079-hot-beverage.svg,1,mockLetters,هەیە
+80,☂,Umbrella,چەتر,U+2602,080-umbrella.svg,1,mockLetters,هەیە
+81,🥒,Cucumber,خەیار,U+1F952,081-cucumber.svg,1,mockLetters,هەیە
+82,7⃣,Digit Seven + Combining Enclosing Keycap,حەوت,U+0037 U+20E3,082-digit-seven-combining-enclosing-keycap.svg,1,mockLetters,نییە
+83,🦔,Hedgehog,ژوژک,U+1F994,083-hedgehog.svg,1,mockLetters,هەیە
+84,🔢,Input Symbol For Numbers,ژمارە,U+1F522,084-input-symbol-for-numbers.svg,1,mockLetters,هەیە
+85,✈,Airplane,فڕۆکە,U+2708,085-airplane.svg,1,mockLetters,هەیە
+86,🖌,Lower Left Paintbrush,فڵچە,U+1F58C,086-lower-left-paintbrush.svg,1,mockLetters,هەیە
+87,🎬,Clapper Board,ڤیدیۆ,U+1F3AC,087-clapper-board.svg,1,mockLetters,هەیە
+88,🚐,Minibus,ڤان,U+1F690,088-minibus.svg,1,mockLetters,هەیە
+89,🪿,Goose,قاز,U+1FABF,089-goose.svg,1,mockLetters,هەیە
+90,🐎,Horse,غار,U+1F40E,090-horse.svg,1,mockLetters,هەیە
+91,🛒,Shopping Trolley,عەرەبانە,U+1F6D2,091-shopping-trolley.svg,1,mockLetters,هەیە
+92,🐄,Cow,مانگا,U+1F404,092-cow.svg,1,vocabulary,هەیە
+93,🧀,Cheese Wedge,پەنیر,U+1F9C0,093-cheese-wedge.svg,1,vocabulary,هەیە
+94,🍚,Cooked Rice,برنج,U+1F35A,094-cooked-rice.svg,1,vocabulary,هەیە
+95,🍖,Meat On Bone,گۆشت,U+1F356,095-meat-on-bone.svg,1,vocabulary,هەیە
+96,🍰,Shortcake,کێک,U+1F370,096-shortcake.svg,1,vocabulary,هەیە
+97,🍵,Teacup Without Handle,چا,U+1F375,097-teacup-without-handle.svg,1,vocabulary,هەیە
+98,🍊,Tangerine,پرتەقاڵ,U+1F34A,098-tangerine.svg,1,vocabulary,هەیە
+99,🍉,Watermelon,شووتی,U+1F349,099-watermelon.svg,1,vocabulary,هەیە
+100,🥕,Carrot,گەزەر,U+1F955,100-carrot.svg,1,vocabulary,هەیە
+101,🍅,Tomato,تەماتە,U+1F345,101-tomato.svg,1,vocabulary,هەیە
+102,🥔,Potato,پتاتە,U+1F954,102-potato.svg,1,vocabulary,هەیە
+103,✍,Writing Hand,,U+270D,103-writing-hand.svg,15,GuidedLetterLesson، WordWritingScreen، WritingScreen، mockBadges,هەیە
+104,📖,Open Book,,U+1F4D6,104-open-book.svg,13,DayDone، GardenCollectionScreen، StickersAlbumScreen، StorySequence,هەیە
+105,🌟,Glowing Star,,U+1F31F,105-glowing-star.svg,10,DailyMissionsComponent، LetterPractice، StartingSoundGame، SyllableBuilder,هەیە
+106,🔊,Speaker With Three Sound Waves,,U+1F50A,106-speaker-with-three-sound-waves.svg,9,LetterPractice، MatchGameScreen، StartingSoundGame، StorySequence,هەیە
+107,🌷,Tulip,,U+1F337,107-tulip.svg,6,StorySequence، foundationalLearning، learningEngine، letterStories,هەیە
+108,💤,Sleeping Symbol,,U+1F4A4,108-sleeping-symbol.svg,5,GardenScreen، HomeHero، PetArt، StorySequence,هەیە
+109,💗,Growing Heart,,U+1F497,109-growing-heart.svg,5,GardenScreen، PetArt، gardenText، homeText,هەیە
+110,✨,Sparkles,,U+2728,110-sparkles.svg,5,PlayPilotJourney، StorySequence، learningEngine، strings,هەیە
+111,🌱,Seedling,,U+1F331,111-seedling.svg,5,DailyPracticeScreen، DayDone، HomeHero، MatchGameScreen,هەیە
+112,🐢,Turtle,,U+1F422,112-turtle.svg,3,StorySequence، mockStories,هەیە
+113,🐜,Ant,,U+1F41C,113-ant.svg,3,StorySequence، mockStories,هەیە
+114,🧺,Basket,,U+1F9FA,114-basket.svg,3,FreePlayMore، MatchGameScreen، quests,هەیە
+115,🧒,Child,,U+1F9D2,115-child.svg,3,learningEngine، vocabulary,هەیە
+116,🐬,Dolphin,,U+1F42C,116-dolphin.svg,3,OnboardingScreen، ParentDashboardScreen، types,هەیە
+117,📝,Memo,,U+1F4DD,117-memo.svg,3,WordWritingScreen، writingText,هەیە
+118,🧸,Teddy Bear,,U+1F9F8,118-teddy-bear.svg,2,letterStories,هەیە
+119,📚,Books,,U+1F4DA,119-books.svg,2,mockBadges، strings,هەیە
+120,🔖,Bookmark,,U+1F516,120-bookmark.svg,2,mockMissions,هەیە
+121,😴,Sleeping Face,,U+1F634,121-sleeping-face.svg,2,mockStories,هەیە
+122,🗺,World Map,,U+1F5FA,122-world-map.svg,2,mockStories، quests,هەیە
+123,🌈,Rainbow,,U+1F308,123-rainbow.svg,2,mockStories,هەیە
+124,🌾,Ear Of Rice,,U+1F33E,124-ear-of-rice.svg,2,StorySequence، mockStories,هەیە
+125,🐾,Paw Prints,,U+1F43E,125-paw-prints.svg,2,quests، vocabulary,هەیە
+126,🔍,Left-Pointing Magnifying Glass,,U+1F50D,126-left-pointing-magnifying-glass.svg,2,FreePlayMore، MatchGameScreen,هەیە
+127,🚂,Steam Locomotive,,U+1F682,127-steam-locomotive.svg,2,FreePlayGames، MatchGameScreen,هەیە
+128,🎵,Musical Note,,U+1F3B5,128-musical-note.svg,2,MatchGameScreen، StorySequence,هەیە
+129,🧭,Compass,,U+1F9ED,129-compass.svg,2,DailyPracticeScreen، MatchGameScreen,هەیە
+130,🔒,Lock,,U+1F512,130-lock.svg,2,MatchGameScreen، strings,هەیە
+131,🎯,Direct Hit,,U+1F3AF,131-direct-hit.svg,2,DailyPracticeScreen، strings,هەیە
+132,🎧,Headphone,,U+1F3A7,132-headphone.svg,2,DailyPracticeScreen، strings,هەیە
+133,🛏,Bed,,U+1F6CF,133-bed.svg,2,StorySequence، learningEngine,هەیە
+134,💬,Speech Balloon,,U+1F4AC,134-speech-balloon.svg,2,StorySequence,هەیە
+135,🐇,Rabbit,,U+1F407,135-rabbit.svg,2,StorySequence,هەیە
+136,↔,Left Right Arrow,,U+2194,136-left-right-arrow.svg,2,VocabularyGame,نییە
+137,🎁,Wrapped Present,,U+1F381,137-wrapped-present.svg,1,DailyMissionsRewardCelebration,هەیە
+138,👕,T-Shirt,,U+1F455,138-t-shirt.svg,1,letterStories,هەیە
+139,🐦,Bird,,U+1F426,139-bird.svg,1,letterStories,هەیە
+140,🎖,Military Medal,,U+1F396,140-military-medal.svg,1,mockBadges,هەیە
+141,🏅,Sports Medal,,U+1F3C5,141-sports-medal.svg,1,mockBadges,هەیە
+142,🥇,First Place Medal,,U+1F947,142-first-place-medal.svg,1,mockBadges,هەیە
+143,🌵,Cactus,,U+1F335,143-cactus.svg,1,mockStories,هەیە
+144,🥊,Boxing Glove,,U+1F94A,144-boxing-glove.svg,1,mockStories,هەیە
+145,🏕,Camping,,U+1F3D5,145-camping.svg,1,mockStories,هەیە
+146,🌑,New Moon Symbol,,U+1F311,146-new-moon-symbol.svg,1,mockStories,هەیە
+147,💨,Dash Symbol,,U+1F4A8,147-dash-symbol.svg,1,mockStories,هەیە
+148,🍃,Leaf Fluttering In Wind,,U+1F343,148-leaf-fluttering-in-wind.svg,1,mockStories,هەیە
+149,🏊,Swimmer,,U+1F3CA,149-swimmer.svg,1,mockStories,هەیە
+150,✂,Black Scissors,,U+2702,150-black-scissors.svg,1,mockStories,هەیە
+151,🌿,Herb,,U+1F33F,151-herb.svg,1,vocabulary,هەیە
+152,📒,Ledger,,U+1F4D2,152-ledger.svg,1,GuidedLetterLesson,هەیە
+153,🃏,Playing Card Black Joker,,U+1F0CF,153-playing-card-black-joker.svg,1,MatchGameScreen,هەیە
+154,🫧,Bubbles,,U+1FAE7,154-bubbles.svg,1,MatchGameScreen,هەیە
+155,🧩,Jigsaw Puzzle Piece,,U+1F9E9,155-jigsaw-puzzle-piece.svg,1,MatchGameScreen,هەیە
+156,🌲,Evergreen Tree,,U+1F332,156-evergreen-tree.svg,1,StorySequence,هەیە
+157,👉,White Right Pointing Backhand Index,,U+1F449,157-white-right-pointing-backhand-index.svg,1,StorySequence,هەیە
+158,🌌,Milky Way,,U+1F30C,158-milky-way.svg,1,StorySequence,هەیە
+159,🏁,Chequered Flag,,U+1F3C1,159-chequered-flag.svg,1,StorySequence,هەیە
+160,🦗,Cricket,,U+1F997,160-cricket.svg,1,StorySequence,هەیە
+161,🏃,Runner,,U+1F3C3,161-runner.svg,1,StorySequence,هەیە
+162,💛,Yellow Heart,,U+1F49B,162-yellow-heart.svg,1,StorySequence,هەیە
+163,⚪,Medium White Circle,,U+26AA,163-medium-white-circle.svg,1,QuestGame,هەیە
+164,🎉,Party Popper,,U+1F389,164-party-popper.svg,1,strings,هەیە
+165,👏,Clapping Hands Sign,,U+1F44F,165-clapping-hands-sign.svg,1,strings,هەیە
