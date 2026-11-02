@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ckb" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ڕیڤیوی دەنگ و نووسینی پەپوولە</title>
+<style>
+:root{--bg:#f6f4ff;--card:#fff;--ink:#1e1b4b;--mut:#6b6894;--line:#e4defa;--pri:#6d4ae8;--ok:#10b981;--okbg:#d1fae5;--ed:#f59e0b;--edbg:#fef3c7}
+*{box-sizing:border-box;font-family:system-ui,"Noto Naskh Arabic","Segoe UI",Tahoma,sans-serif;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);padding-bottom:84px}
+.top{position:sticky;top:0;z-index:5;background:#fff;box-shadow:0 2px 12px #6d4ae822;padding:10px 12px 8px}
+.top h1{font-size:17px;margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.tab{flex:1 0 auto;padding:9px 14px;border-radius:14px;border:2px solid var(--line);background:#fff;font-weight:800;font-size:14px;color:var(--mut);white-space:nowrap}
+.tab.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.tools{display:flex;gap:6px;align-items:center}
+.tools input{flex:1;min-width:0;padding:9px 12px;border:2px solid var(--line);border-radius:12px;font-size:15px;background:#fff}
+.pill{padding:8px 11px;border-radius:999px;border:2px solid var(--line);background:#fff;font-weight:700;font-size:13px;color:var(--mut)}
+.pill.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.bar{height:6px;border-radius:6px;background:var(--line);margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#10b981,#34d399);width:0;transition:width .3s}
+.stat{font-size:12px;color:var(--mut);margin-top:4px}
+.wrap{max-width:760px;margin:0 auto;padding:10px 10px 0}
+details.g{background:var(--card);border-radius:20px;margin-bottom:10px;border:2px solid var(--line);overflow:hidden}
+details.g[data-done="1"]{border-color:#a7f3d0}
+summary{list-style:none;display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;font-weight:800}
+summary::-webkit-details-marker{display:none}
+.big{font-size:34px;font-weight:900;color:#dc2626;min-width:44px;text-align:center;line-height:1}
+.gt{flex:1;font-size:16px}.gc{font-size:12px;font-weight:700;color:var(--mut);background:var(--bg);padding:4px 9px;border-radius:999px}
+.gc.full{background:var(--okbg);color:#047857}
+.it{padding:12px 14px;border-top:1px solid var(--line);display:grid;gap:8px}
+.it.ok{background:#f0fdf8}.it.ed{background:#fffbeb}
+.line{display:flex;gap:10px;align-items:center}
+.pic{font-size:30px}
+.txt{flex:1;font-size:21px;line-height:1.75;font-weight:600;word-break:break-word}
+.txt .old{display:block;font-size:14px;font-weight:400;color:var(--mut);text-decoration:line-through}
+.meta{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px;background:var(--bg);color:var(--mut)}
+.tag.r{background:#e0f2fe;color:#0369a1}.tag.n{background:#fee2e2;color:#b91c1c}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.acts button{padding:13px 8px;border-radius:14px;border:2px solid var(--line);background:#fff;font-size:16px;font-weight:800;color:var(--mut)}
+.acts .ok.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.acts .ed.on{background:var(--ed);border-color:var(--ed);color:#fff}
+textarea{width:100%;min-height:70px;padding:10px;border:2px solid var(--ed);border-radius:14px;font-size:19px;background:#fff}
+.hint{font-size:12px;color:#b45309}
+.foot{position:fixed;bottom:0;inset-inline:0;background:#fff;box-shadow:0 -2px 12px #6d4ae822;padding:9px 10px;display:flex;gap:8px}
+.go{flex:1;padding:13px;border:0;border-radius:14px;background:var(--pri);color:#fff;font-weight:800;font-size:15px}
+.go.sec{background:#fff;color:var(--pri);border:2px solid var(--pri)}
+.go.fast{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+.empty{padding:40px 10px;text-align:center;color:var(--mut)}
+#modal,#quick{position:fixed;inset:0;display:none;z-index:20}
+#modal{background:#0008;align-items:center;justify-content:center;padding:12px}
+#modal>div{background:#fff;border-radius:22px;padding:14px;width:100%;max-width:680px;max-height:92vh;display:flex;flex-direction:column;gap:8px}
+#modal textarea{flex:1;min-height:320px;font-size:14px;border-color:var(--line)}
+#quick{background:linear-gradient(#ede9fe,#fff);flex-direction:column;padding:14px;gap:12px}
+#quick .qh{display:flex;justify-content:space-between;align-items:center;font-weight:800}
+#quick .qc{flex:1;background:#fff;border-radius:28px;border:3px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center;overflow:auto}
+#quick .qpic{font-size:70px}#quick .qt{font-size:30px;line-height:1.7;font-weight:700}#quick .qctx{font-size:13px;color:var(--mut)}
+#quick .qa{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#quick .qa button{padding:18px 8px;border-radius:18px;border:0;font-size:19px;font-weight:900}
+#quick .qa .a{background:var(--ok);color:#fff}#quick .qa .b{background:var(--ed);color:#fff}
+#quick .qs{padding:12px;border-radius:14px;border:2px solid var(--line);background:#fff;font-weight:800;color:var(--mut)}
+#quick textarea{font-size:22px;min-height:100px}
+</style></head><body>
+<div class="top">
+ <h1><span>ڕیڤیوی دەنگ و نووسین</span><span class="pill" id="pct"></span></h1>
+ <div class="tabs" id="tabs"></div>
+ <div class="tools"><input id="q" type="search" placeholder="گەڕان لە نووسینەکان…"><button class="pill" id="fu">ڕیڤیونەکراو</button></div>
+ <div class="bar"><i id="bar"></i></div><div class="stat" id="stat"></div>
+</div>
+<div class="wrap" id="list"></div>
+<div class="foot"><button class="go fast" id="fast">ڕیڤیوی خێرا ⚡</button><button class="go" id="copy">کۆپی گۆڕانکارییەکان</button></div>
+<div id="modal"><div><b>ئەمە کۆپی بکە و بۆ Claude بنێرەوە</b><textarea id="ta" readonly></textarea><button class="go" id="cp">کۆپی</button><button class="go sec" id="cl">داخستن</button></div></div>
+<div id="quick"><div class="qh"><span id="qn"></span><button class="qs" id="qx">داخستن ✕</button></div>
+ <div class="qc"><div class="qctx" id="qctx"></div><div class="qpic" id="qpic"></div><div class="qt" id="qt"></div><textarea id="qta" style="display:none;width:100%"></textarea></div>
+ <div class="qa"><button class="a" id="qa">✓ باشە</button><button class="b" id="qb">✎ گۆڕین</button></div>
+ <button class="qs" id="qs">تێپەڕە ←</button></div>
+<script>
+const TABS=__DATA__;
+const KEY='papula_voice_review_v1';
+let st={};try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+const $=s=>document.querySelector(s);
+const esc=x=>String(x).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+// stable ids: tab|group|text (the same sentence in two places is reviewed twice, on purpose)
+TABS.forEach(t=>t.groups.forEach((g,gi)=>g.items.forEach((it,i)=>{it.id=t.id+'|'+gi+'|'+it.text;it.ctx=(g.title||'');it.tab=t.title})));
+let tabId=TABS[0].id,query='',onlyNew=false;
+const all=()=>TABS.flatMap(t=>t.groups.flatMap(g=>g.items));
+const status=it=>(st[it.id]||{}).s||'';
+function totals(items){let ok=0,ed=0;items.forEach(i=>{const s=status(i);if(s==='ok')ok++;if(s==='ed')ed++});return{ok,ed,n:items.length}}
+function head(){
+ const a=totals(all());$('#pct').textContent=Math.round(100*(a.ok+a.ed)/a.n)+'٪';
+ $('#bar').style.width=(100*(a.ok+a.ed)/a.n)+'%';
+ $('#stat').textContent=`بینراو ${a.ok+a.ed} لە ${a.n} • باشە ${a.ok} • گۆڕانکاری ${a.ed}`;
+ $('#tabs').innerHTML='';
+ TABS.forEach(t=>{const x=totals(t.groups.flatMap(g=>g.items));const b=document.createElement('button');b.className='tab'+(t.id===tabId?' on':'');
+  b.textContent=`${t.icon} ${t.title} ${x.ok+x.ed}/${x.n}`;b.onclick=()=>{tabId=t.id;render()};$('#tabs').appendChild(b)});
+}
+function match(it){return !query||(it.text+' '+it.ctx+' '+((st[it.id]||{}).n||'')).toLowerCase().includes(query)}
+function render(){
+ head();const t=TABS.find(x=>x.id===tabId);const list=$('#list');list.innerHTML='';let shown=0;
+ t.groups.forEach(g=>{
+  const items=g.items.filter(it=>match(it)&&(!onlyNew||!status(it)));if(!items.length)return;shown++;
+  const x=totals(g.items),d=document.createElement('details');d.className='g';d.dataset.done=x.ok+x.ed===x.n?'1':'0';
+  if(query||onlyNew||t.groups.length===1)d.open=true;
+  d.innerHTML=`<summary>${g.big?`<span class="big">${esc(g.big)}</span>`:''}<span class="gt">${esc(g.title)}</span><span class="gc ${x.ok+x.ed===x.n?'full':''}">${x.ok+x.ed}/${x.n}</span></summary>`;
+  items.forEach(it=>{
+   const s=st[it.id]||{},r=document.createElement('div');r.className='it '+(s.s||'');
+   const shown_=s.s==='ed'&&s.n?`<span class="old"></span>${esc(s.n)}`:esc(it.text);
+   r.innerHTML=`<div class="line">${it.pic?`<span class="pic">${it.pic}</span>`:''}<div class="txt">${shown_}</div></div>
+   <div class="meta">${it.tag?`<span class="tag">${esc(it.tag)}</span>`:''}<span class="tag ${it.rec?'r':'n'}">${it.rec?'🔊 تۆمارکراوە':'بێ دەنگی تۆمارکراو'}</span></div>
+   <div class="acts"><button class="ok ${s.s==='ok'?'on':''}">✓ باشە</button><button class="ed ${s.s==='ed'?'on':''}">✎ گۆڕانکاری</button></div>`;
+   if(s.s==='ed'&&s.n)r.querySelector('.old').textContent=it.text;
+   r.querySelector('.ok').onclick=()=>{if(s.s==='ok')delete st[it.id];else st[it.id]={s:'ok'};save();keep(d);};
+   r.querySelector('.ed').onclick=()=>{
+    if(r.querySelector('textarea'))return;
+    const ta=document.createElement('textarea');ta.value=s.n||it.text;
+    const h=document.createElement('div');h.className='hint';h.textContent=it.rec?'ئەگەر نووسینەکە بگۆڕدرێت، دەنگەکەشی دەبێت دووبارە تۆمار بکرێتەوە.':'';
+    r.insertBefore(ta,r.querySelector('.acts'));r.insertBefore(h,r.querySelector('.acts'));ta.focus();
+    ta.onblur=()=>{const v=ta.value.trim();if(v&&v!==it.text)st[it.id]={s:'ed',n:v};else if(s.s==='ed')delete st[it.id];save();keep(d)};
+   };
+   d.appendChild(r);
+  });
+  list.appendChild(d);
+ });
+ if(!shown)list.innerHTML='<div class="empty">هیچ نووسینێک نییە</div>';
+}
+function keep(d){const open=[...document.querySelectorAll('details.g')].map(x=>x.open);const y=scrollY;render();[...document.querySelectorAll('details.g')].forEach((x,i)=>{if(open[i])x.open=true});scrollTo(0,y)}
+$('#q').oninput=e=>{query=e.target.value.trim().toLowerCase();render()};
+$('#fu').onclick=e=>{onlyNew=!onlyNew;e.target.classList.toggle('on',onlyNew);render()};
+$('#copy').onclick=()=>{
+ const lines=[];all().forEach(it=>{const s=st[it.id];if(s&&s.s==='ed')lines.push(`[${it.tab} / ${it.ctx}]\nپێشوو: ${it.text}\nنوێ: ${s.n}${it.rec?'\n(دەنگی تۆمارکراوی هەیە، دەبێت دووبارە تۆمار بکرێتەوە)':''}\n`)});
+ const a=totals(all());
+ $('#ta').value=(lines.length?`ئەمانە بگۆڕە:\n\n${lines.join('\n')}`:'هیچ گۆڕانکارییەک نییە.')+`\nکورتە: ${a.ok} باشە، ${a.ed} گۆڕانکاری، ${a.n-a.ok-a.ed} نەبینراو.`;
+ $('#modal').style.display='flex'};
+$('#cl').onclick=()=>$('#modal').style.display='none';
+$('#cp').onclick=()=>{const t=$('#ta');t.select();try{navigator.clipboard.writeText(t.value)}catch(e){document.execCommand('copy')}};
+// quick review: one big card at a time, in the open tab
+let queue=[],qi=0;
+function qshow(){
+ const it=queue[qi];if(!it){$('#quick').style.display='none';render();return}
+ $('#qn').textContent=`${qi+1} / ${queue.length}`;$('#qctx').textContent=it.ctx+(it.tag?' • '+it.tag:'');
+ $('#qpic').textContent=it.pic||'';$('#qt').textContent=it.text;$('#qta').style.display='none';$('#qb').textContent='✎ گۆڕین';$('#qa').style.display='';
+}
+$('#fast').onclick=()=>{const t=TABS.find(x=>x.id===tabId);queue=t.groups.flatMap(g=>g.items).filter(it=>!status(it)&&match(it));qi=0;if(!queue.length){alert('هەموو ئەم بەشە بینراوە');return}$('#quick').style.display='flex';qshow()};
+$('#qa').onclick=()=>{st[queue[qi].id]={s:'ok'};save();qi++;qshow()};
+$('#qb').onclick=()=>{const it=queue[qi],ta=$('#qta');
+ if(ta.style.display==='none'){ta.value=it.text;ta.style.display='block';ta.focus();$('#qb').textContent='✓ پاشەکەوت';$('#qa').style.display='none';return}
+ const v=ta.value.trim();st[it.id]=v&&v!==it.text?{s:'ed',n:v}:{s:'ok'};save();qi++;qshow()};
+$('#qs').onclick=()=>{qi++;qshow()};
+$('#qx').onclick=()=>{$('#quick').style.display='none';render()};
+render();
+</script></body></html>

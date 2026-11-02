@@ -7,5 +7,7 @@ export function introWords(letter: (typeof mockLetters)[number], canSpeak: (text
   const own = letter.exampleWords.map(item => ({ id: item.id, word: item.word, picture: item.imageEmoji }));
   const more = LEARNING_WORDS.filter(item => item.letterIds.includes(letter.id)).map(item => ({ id: item.id, word: item.word, picture: item.imageEmoji }));
   const seen = new Set<string>();
-  return [...own, ...more].filter(item => !!item.picture && canSpeak(item.word) && !seen.has(item.word) && !!seen.add(item.word)).slice(0, INTRO_WORD_COUNT);
+  const all = [...own, ...more].filter(item => !!item.picture && !seen.has(item.word) && !!seen.add(item.word));
+  // Words with a recording come first; silent ones only fill the list up to five so the child still sees five words.
+  return [...all.filter(item => canSpeak(item.word)), ...all.filter(item => !canSpeak(item.word))].slice(0, INTRO_WORD_COUNT);
 }

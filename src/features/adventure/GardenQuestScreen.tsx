@@ -122,7 +122,7 @@ export function LegacyGardenQuest({letterId}:{letterId:string}) {
         <Text style={[s.prompt,{color:c.ink}]}>{text}</Text>
         {intro?<QuestAction label="با گەشتەکە دەست پێ بکەین" onPress={()=>setIntro(false)}/>:stage===5?<>
           {progress.flowerSpot===undefined?<Text style={[s.small,{color:c.muted}]}>دەست لە دوگمەی چاندنی گوڵەکەت بدە.</Text>:<View style={[s.keepsake,{backgroundColor:c.leaf}]}><Leaf color={c.mint} size={28}/><Text style={[s.prompt,{color:c.ink}]}>{`گوڵی «${letter.glyph}» لە باخەکەت ڕوا!`}</Text></View>}
-          <BackButton fullWidth onPress={()=>setRoute('home')}>گەڕانەوە بۆ ماڵەوە</BackButton>
+          <BackButton fullWidth onPress={()=>setRoute('home')}>گەڕانەوە بۆ سەرەتا</BackButton>
           <QuestAction label="با زیاتر یاری بکەین" onPress={()=>setPractice('free')}/>
         </>:won?<QuestAction label="بڕۆین بۆ ئەرکی دواتر" onPress={next}/>:<>
           {stage===0&&<>

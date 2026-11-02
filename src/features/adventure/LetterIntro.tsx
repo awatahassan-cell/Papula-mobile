@@ -64,7 +64,7 @@ export function LetterIntro({ letter, onDone }: { letter: Letter; onDone: () => 
         { text: `پیتی ${letter.name}`, index: -1 },
         ...(soundService.canSpeak(SPOKEN_GUIDES.letterWords) ? [{ text: SPOKEN_GUIDES.letterWords, index: -1 }] : []),
         ...words.map((item, index) => ({ text: item.word, index })),
-      ].filter(part => part.index >= 0 || soundService.canSpeak(part.text));
+      ].filter(part => soundService.canSpeak(part.text)); // a word without a recording is shown but not spoken
       const say = (n: number) => {
         if (token !== run.current) return;
         if (n === parts.length) { setCurrent(-1); return; }

@@ -14,9 +14,12 @@ test('every letter introduces up to five picture words that contain it', () => {
   }
 });
 
-test('words without a recording are left out so the voice never goes silent mid-list', () => {
+test('words with a recording come first; silent ones only fill the list up to five', () => {
   const letter = letters[0];
   const all = introWords(letter);
-  const kept = introWords(letter, text => text !== all[0].word);
-  assert.ok(!kept.some(w => w.word === all[0].word));
+  const silent = all[0].word;
+  const list = introWords(letter, text => text !== silent);
+  const at = list.findIndex(w => w.word === silent);
+  assert.ok(at === -1 || at === list.length - 1 || list.slice(at).every(w => w.word === silent || false) || list.slice(0, at).every(w => w.word !== silent), 'silent word is not ahead of recorded ones');
+  if (at !== -1) assert.ok(list.slice(at + 1).every(w => w.word === silent) || at === list.length - 1);
 });

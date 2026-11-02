@@ -113,7 +113,7 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
   const options=twoChoices?round.options.filter(item=>item.id===round.answer||item.id===round.options.find(other=>other.id!==round.answer)!.id):round.options;
   const instruction=done?(planted?T.planted:T.done):round.instruction;
   const intro=index===0&&showIntro;
-  const [listening,setListening]=useState(()=>index===0&&showIntro); // the letter is introduced by ear before the first round
+  const [listening,setListening]=useState(()=>index===0); // the letter is introduced by ear before the first round
   const narrate=useCallback(()=>{
     if(listening)return;
     // A changed demo request intentionally replays the sample; store ticks do not.
