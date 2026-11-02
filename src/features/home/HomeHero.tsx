@@ -12,7 +12,8 @@ import { GOLD } from '../../theme/tokens';
 import { soundService } from '../../services/soundService';
 import { sectionIntroductions } from '../../services/sectionIntroductions';
 import { gardenProgress } from '../../services/gardenQuest';
-import { nextLessonLetter } from '../../services/lessonPath';
+import { nextLessonLetter, nextLetterWaits } from '../../services/lessonPath';
+import { DayDone } from './DayDone';
 import { mockLetters } from '../../data/mockLetters';
 import { needsWelcomeBack } from '../../data/garden';
 import { HOME_TEXT as T } from './homeText';
@@ -28,6 +29,7 @@ export function HomeHero() {
   const sleeping = needsWelcomeBack(currentProfile);
   const [greeted, setGreeted] = useState(false); // the welcome stays on screen after the friend wakes up
   const { colors: c, isNight } = useAppearance();
+  const waits = nextLetterWaits(currentProfile);
   const current = nextLessonLetter(currentProfile);
   const next = current || mockLetters[mockLetters.length - 1];
   const strip = useMemo(() => {
@@ -44,13 +46,13 @@ export function HomeHero() {
       <View style={[s.bubble, { backgroundColor: c.paper, borderColor: c.edge }]}>{sleeping ? <Text style={s.zzz}>💤</Text> : <Volume2 size={26} color={GOLD.starInk} strokeWidth={2.6} />}</View>
     </TactileButton>
     {(sleeping || greeted) && <View style={[s.say, { backgroundColor: c.paper, borderColor: c.edge }]}><Text style={[s.sayText, { color: c.ink }]}>{greeted ? T.welcomeBack : T.sleeping}</Text></View>}
-    <Breathe style={s.full}>
+    {waits ? <DayDone /> : <Breathe style={s.full}>
       <TactileButton accessibilityRole="button" accessibilityLabel={current ? T.playLabel(next.name) : T.allDone} onPress={go} style={s.play}>
         <View style={s.letterTile}><Text style={s.letter}>{current ? next.glyph : '🌸'}</Text></View>
         <View style={s.flex}><Text style={s.playText}>{current ? T.play : T.allDone}</Text></View>
         <View style={s.round}><Play size={34} color="#ffffff" fill="#ffffff" /></View>
       </TactileButton>
-    </Breathe>
+    </Breathe>}
     <View accessible accessibilityLabel={T.strip} style={s.strip}>
       {strip.map(item => <View key={item.letter.id} style={[s.slot, item.now && s.slotNow, { backgroundColor: item.now ? GOLD.soft : c.paper, borderColor: item.now ? GOLD.border : c.edge }]}>
         {item.planted ? <Text style={s.slotPic}>🌸</Text> : item.now ? <Text style={s.slotGlyph}>{item.letter.glyph}</Text> : <Text style={[s.slotPic, s.dim]}>🌱</Text>}

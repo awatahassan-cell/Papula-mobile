@@ -10,3 +10,11 @@ export const HOME_TEXT = {
   sleeping: 'پەپوولە خەوتووە. دەست لێ بدە تا بەخەبەر بێتەوە',
   welcomeBack: 'بەخێربێیتەوە! زۆر بیرم دەکردیت 💗',
 };
+
+/** Accessibility labels only: the "today's letter is done" card is all pictures. */
+export const DAY_DONE_TEXT = {
+  todayLetter: (name: string) => `پیتی ئەمڕۆ: ${name}`,
+  games: 'یاری بکە',
+  story: 'چیرۆکی پیتی ئەمڕۆ',
+  review: 'پیتەکانی پێشوو دووبارە بکەرەوە',
+};

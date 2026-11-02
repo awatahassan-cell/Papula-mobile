@@ -35,6 +35,7 @@ test('spoken instructions gate listening; cancelled speech cannot pass; the real
     if(name.endsWith('/PlayPilotJourney'))return{PlayPilotJourney:'Pilot'};
     if(name.endsWith('/playPilot'))return load(path.resolve(__dirname,'../src/services/playPilot.ts'));
     if(name.endsWith('/JourneyPractice'))return{JourneyPractice:'Practice'};
+    if(name.endsWith('/DayDone'))return{DayDone:'DayDone'};
     if(name.endsWith('/SharedGarden'))return{SharedGarden:'SharedGarden'};
     if(name.endsWith('/GardenScene'))return{GardenScene:'Scene'};
     if(name.endsWith('/soundService'))return{soundService:{speakWord:(value,opts)=>{speech.push(value);callbacks.push(opts);return Promise.resolve();},stopSpeaking:async()=>{},playCorrect(){},playEncouragingTryAgain(){}}};

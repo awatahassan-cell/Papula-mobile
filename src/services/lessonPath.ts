@@ -12,12 +12,29 @@ export const isLessonComplete = (profile: ChildProfile, id: string) => {
 /** Letters whose lesson is complete by any route: the flower journey, the old lesson, or writing mastery. */
 export const completedLetterIds = (profile: ChildProfile): string[] => mockLetters.filter(letter => isLessonComplete(profile, letter.id)).map(letter => letter.id);
 
-export function lessonPath(profile: ChildProfile) {
+const dayOf = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+/** The day a lesson was first finished (flower journey or old lesson), or undefined when unknown. */
+export function completedDay(profile: ChildProfile, id: string): string | undefined {
+  const stamps = [profile.playJourneys?.[id]?.completedAt, profile.lessonProgress?.[id]?.completedAt].filter((stamp): stamp is string => !!stamp && !Number.isNaN(new Date(stamp).getTime()));
+  return stamps.length ? dayOf(new Date(stamps.sort()[0])) : undefined;
+}
+/** The letter the child finished today, if any. A child learns at most one new letter a day. */
+export const todaysLetter = (profile: ChildProfile, now = new Date()) => {
+  const today = dayOf(now);
+  return mockLetters.find(letter => isLessonComplete(profile, letter.id) && completedDay(profile, letter.id) === today);
+};
+/** True while the next new letter waits for tomorrow because today's letter is already done. */
+export const nextLetterWaits = (profile: ChildProfile, now = new Date()) =>
+  !!todaysLetter(profile, now) && mockLetters.some(letter => !isLessonComplete(profile, letter.id));
+
+export function lessonPath(profile: ChildProfile, now = new Date()) {
   const first = mockLetters.findIndex(letter => !isLessonComplete(profile, letter.id));
+  const waiting = nextLetterWaits(profile, now);
   return mockLetters.map((letter, index) => ({
     letter, index,
     status: isLessonComplete(profile, letter.id) ? 'completed' as const
       : index === first ? 'current' as const : 'locked' as const,
+    waiting: index === first && waiting,
   }));
 }
 

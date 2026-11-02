@@ -11,7 +11,8 @@ import { accentFill } from '../../theme/appearance';
 import { useResponsive } from '../../theme/responsive';
 import { useAppStore } from '../../store/useAppStore';
 import { gardenProgress, gardenChallenge, GARDEN_STEPS } from '../../services/gardenQuest';
-import { isLessonUnlocked, nextLessonLetter } from '../../services/lessonPath';
+import { isLessonUnlocked, nextLessonLetter, nextLetterWaits } from '../../services/lessonPath';
+import { DayDone } from '../home/DayDone';
 import { getLetterStory } from '../../data/letterStories';
 import { mockLetters } from '../../data/mockLetters';
 import { soundService } from '../../services/soundService';
@@ -29,6 +30,7 @@ const tasks=[{title:'دەنگی پیت',Icon:Headphones},{title:'وێنەکە ب
 export function GardenQuestScreen() {
   const {currentProfile,selectedLetter,setSelectedLetter,setRoute}=useAppStore();
   const letterId=selectedLetter?.id || nextLessonLetter(currentProfile)?.id || mockLetters[0].id;
+  if(nextLetterWaits(currentProfile)&&letterId===nextLessonLetter(currentProfile)?.id) return <View style={{padding:24,gap:20}}><DayDone/></View>;
   if(!isLessonUnlocked(currentProfile,letterId)) return <View style={{padding:24,gap:20}}><HelpHint text={QUEST_TEXT.locked}/><Text>{QUEST_TEXT.locked}</Text><BackButton onPress={()=>{setSelectedLetter(nextLessonLetter(currentProfile)||mockLetters[0]);setRoute('garden-quest');}}>گەشتی ئێستام بکەمەوە</BackButton></View>;
   return <PlayPilotJourney key={`${currentProfile.id}:${letterId}`} letterId={letterId}/>;
 }
