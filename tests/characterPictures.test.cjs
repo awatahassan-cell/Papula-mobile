@@ -18,7 +18,7 @@ test('decorative animation stops off-screen, in the background and with reduced 
  const react={memo:fn=>fn,useState:fn=>[fn()],useContext:()=>navigation,useEffect:fn=>focus=fn,createElement:(type,props,...children)=>({type,props:{...props,children}})};react.default=react;
  const native={Animated:{Value:function(){return value;},View:'AnimatedView',timing(){},sequence(){},loop:()=>({start(){starts++},stop(){stops++}})},AppState:{currentState:'active',addEventListener:(_,fn)=>{listener=fn;return{remove(){removed++}};}},Easing:{inOut(){},sin:0},Platform:{OS:'android'},StyleSheet:{absoluteFill:{}},View:'View'};
  const mod={exports:{}};
- new Function('exports','require',ts.transpileModule(fs.readFileSync('src/components/CharacterPicture.tsx','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.React}}).outputText)(mod.exports,name=>name==='react'?react:name==='react-native'?native:name==='expo-router/react-navigation'?{NavigationContext:{}}:name==='react-native-svg'?{SvgXml:'SvgXml'}:name.endsWith('/pictures')?{pictureFor}:name.endsWith('/characters')?load(path.resolve('src/art/characters.ts')):{useReducedMotion:()=>reduced});
+ new Function('exports','require',ts.transpileModule(fs.readFileSync('src/components/CharacterPicture.tsx','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.React}}).outputText)(mod.exports,name=>name==='react'?react:name==='react-native'?native:name==='expo-router/react-navigation'?{NavigationContext:{}}:name==='react-native-svg'?{SvgXml:'SvgXml'}:name.endsWith('/rasterPictures')?{rasterFor:()=>undefined}:name.endsWith('/pictures')?{pictureFor}:name.endsWith('/characters')?load(path.resolve('src/art/characters.ts')):{useReducedMotion:()=>reduced});
  const render=props=>{mod.exports.CharacterPicture({symbol:'🦊',size:84,...props});return focus();};
  let cleanup=render();assert.equal(starts,1);listener('background');assert.ok(stops>=1);listener('active');assert.equal(starts,2);cleanup();assert.equal(removed,1);
  reduced=true;cleanup=render();assert.equal(starts,2);cleanup();
@@ -26,4 +26,14 @@ test('decorative animation stops off-screen, in the background and with reduced 
  cleanup=render({animate:false});assert.equal(starts,2);cleanup();
  let focused=false;navigation={isFocused:()=>focused,addListener:(event,fn)=>{events[event]=fn;return()=>delete events[event];}};
  cleanup=render();assert.equal(starts,2,'hidden routes stay still');focused=true;events.focus();assert.equal(starts,3);events.blur();assert.ok(stops>=3);cleanup();assert.deepEqual(events,{});
+});
+
+test('every painted picture file belongs to a numbered emoji and is a real PNG', () => {
+  const dir = path.join(__dirname, '../assets/pictures'), index = JSON.parse(fs.readFileSync(path.join(dir, 'index.json'), 'utf8'));
+  const generated = fs.readFileSync(path.join(__dirname, '../src/art/rasterPictures.ts'), 'utf8');
+  for (const name of fs.readdirSync(dir).filter(n => n.endsWith('.png'))) {
+    assert.ok(index[name.slice(0, 3)], `${name} has no emoji in index.json`);
+    assert.ok(generated.includes(name), `${name} is missing from src/art/rasterPictures.ts (run scripts/build-raster-pictures.cjs)`);
+    assert.equal(fs.readFileSync(path.join(dir, name)).subarray(1, 4).toString(), 'PNG');
+  }
 });

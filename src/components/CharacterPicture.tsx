@@ -1,8 +1,9 @@
 import React, { memo, useContext, useEffect, useState } from 'react';
-import { Animated, AppState, Easing, Platform, StyleSheet, View } from 'react-native';
+import { Animated, AppState, Easing, Image, Platform, StyleSheet, View } from 'react-native';
 import { NavigationContext } from 'expo-router/react-navigation';
 import { SvgXml } from 'react-native-svg';
 import { pictureFor } from '../art/pictures';
+import { rasterFor } from '../art/rasterPictures';
 import { CHARACTER_LAYERS } from '../art/characters';
 import { useReducedMotion } from './Motion';
 
@@ -13,6 +14,7 @@ export const CharacterPicture=memo(function CharacterPicture({symbol,size=64,ani
   const [value]=useState(()=>new Animated.Value(0));
   const layer=CHARACTER_LAYERS[symbol.replace(/️/g,'').trim()];
   const xml=pictureFor(symbol);
+  const raster=rasterFor(symbol);
   useEffect(()=>{
     let loop:Animated.CompositeAnimation|undefined;
     const stop=()=>{loop?.stop();value.setValue(0);};
@@ -23,10 +25,12 @@ export const CharacterPicture=memo(function CharacterPicture({symbol,size=64,ani
     const sub=AppState.addEventListener('change',state=>state==='active'?resume():stop());
     return()=>{sub.remove();focus?.();blur?.();stop();};
   },[animate,layer,navigation,reduced,size,value]);
-  if(!xml)return null;
+  if(!xml&&!raster)return null;
+  // A painted picture, when there is one, takes the place of the drawn vector (it keeps no moving layers, so it stays still).
+  if(raster)return <View pointerEvents="none" accessible={false} importantForAccessibility="no" style={{width:size,height:size}}><Image source={raster} style={{width:size,height:size}} resizeMode="contain" accessible={false}/></View>;
   const transform=layer?.motion==='flap'?[{scaleX:value.interpolate({inputRange:[0,1],outputRange:[1,.84]})}]:layer?.motion==='step'?[{translateY:value.interpolate({inputRange:[0,1],outputRange:[0,-size*.014]})}]:[{rotate:value.interpolate({inputRange:[0,1],outputRange:['0deg',layer?'3deg':'1.5deg']})}];
   return <View pointerEvents="none" accessible={false} importantForAccessibility="no" style={{width:size,height:size}}>
-    <Animated.View style={[StyleSheet.absoluteFill,{transform}]}><SvgXml xml={layer?.moving||xml} width={size} height={size}/></Animated.View>
+    <Animated.View style={[StyleSheet.absoluteFill,{transform}]}><SvgXml xml={layer?.moving||xml||""} width={size} height={size}/></Animated.View>
     {layer&&<SvgXml xml={layer.front} width={size} height={size} style={StyleSheet.absoluteFill}/>}
   </View>;
 });
