@@ -55,7 +55,7 @@ export const K = StyleSheet.create({
   guideText: { fontFamily: 'IBMPlexSansArabic_700Bold', color: '#78350f', fontSize: 15 },
   head: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderRadius: 28, borderWidth: 4, borderBottomWidth: 7, backgroundColor: '#ffffff', width: '100%' },
   prompt: { flex: 1, minWidth: 0, alignItems: 'center' },
-  target: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 42, lineHeight: 56, textAlign: 'center', minWidth: 76, borderRadius: 20, borderWidth: 3, borderBottomWidth: 5, paddingHorizontal: 12 },
+  target: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 42, lineHeight: 72, textAlign: 'center', minWidth: 76, borderRadius: 20, borderWidth: 3, borderBottomWidth: 5, paddingHorizontal: 12 },
   countBadge: { borderRadius: 16, borderWidth: 2, paddingHorizontal: 10, paddingVertical: 4 },
   count: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 16, color: '#334155', textAlign: 'center' },
   speaker: { width: 64, height: 64, borderRadius: 24, borderBottomWidth: 6, alignItems: 'center', justifyContent: 'center' },
@@ -64,7 +64,7 @@ export const K = StyleSheet.create({
   bigText: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 20, textAlign: 'center' },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'center', width: '100%' },
   tile: { minWidth: 78, minHeight: 78, borderRadius: 24, borderWidth: 4, borderBottomWidth: 7, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10 },
-  glyph: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 40, lineHeight: 56, textAlign: 'center', color: '#1e1b4b' },
+  glyph: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 40, lineHeight: 72, textAlign: 'center', color: '#1e1b4b' },
   cheer: { fontFamily: 'IBMPlexSansArabic_700Bold', fontSize: 22, textAlign: 'center', color: '#047857' },
 });
 

@@ -60,11 +60,11 @@ export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:
       <View style={{backgroundColor:'#ede9fe',borderRadius:16,borderWidth:2,borderColor:'#a78bfa',paddingHorizontal:10,paddingVertical:4}}><Text style={[s.text,{color:'#4c1d95',fontFamily:'IBMPlexSansArabic_700Bold'}]}>{index+1} / {rounds.length}</Text></View>
     </View>
     <View style={[s.card,{backgroundColor:'#f5f3ff',borderColor:'#a78bfa',borderBottomColor:'#6d28d9'}]}>
-      {mode==='similar' && <><View style={{backgroundColor:'#ffffff',borderRadius:28,borderWidth:4,borderColor:'#c4b5fd',paddingHorizontal:28,paddingVertical:10}}><Text style={[s.glyph,{fontSize:54,lineHeight:72}]}>{round.target.glyph}</Text></View><Text style={s.text}>شێوە و خاڵەکانی ئەم پیتە سەیر بکە</Text></>}
+      {mode==='similar' && <><View style={{backgroundColor:'#ffffff',borderRadius:28,borderWidth:4,borderColor:'#c4b5fd',paddingHorizontal:28,paddingTop:6,paddingBottom:18}}><Text style={[s.glyph,{fontSize:54,lineHeight:96}]}>{round.target.glyph}</Text></View><Text style={s.text}>شێوە و خاڵەکانی ئەم پیتە سەیر بکە</Text></>}
       <TouchableOpacity accessibilityRole="button" accessibilityLabel="دەنگەکە ببیستە" style={s.button} onPress={()=>void soundService.speakWord(`پیتی ${round.target.name}`)}><Text style={s.buttonText}>🔊 دەنگەکە ببیستە</Text></TouchableOpacity>
       <Text style={s.text}>{mode==='similar'?'کامەیان هەمان پیتە؟':'کام پیتت بیست؟'}</Text>
       <View style={s.row}>{round.options.map(letter=><TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`پیتی ${letter.glyph}`}
-        disabled={selected!==null} style={[s.tile,{minWidth:92,minHeight:92},selected===letter.id&&(correct?s.correct:s.retry)]} onPress={()=>choose(letter.id)}><Text style={[s.glyph,{fontSize:44,lineHeight:62}]}>{letter.glyph}</Text></TouchableOpacity>)}</View>
+        disabled={selected!==null} style={[s.tile,{minWidth:92,minHeight:104,paddingBottom:16},selected===letter.id&&(correct?s.correct:s.retry)]} onPress={()=>choose(letter.id)}><Text style={[s.glyph,{fontSize:44,lineHeight:78}]}>{letter.glyph}</Text></TouchableOpacity>)}</View>
       {selected && <Text accessibilityLiveRegion="polite" style={[s.text,{fontFamily:'IBMPlexSansArabic_700Bold',color:correct?'#047857':'#be123c'}]}>{correct?'ئافەرم! پیتی دروستت دۆزییەوە':'باشە، جارێکی تر گوێ بگرە و هەوڵ بدە'}</Text>}
     </View>
     {correct?<TouchableOpacity accessibilityRole="button" style={[s.button,{backgroundColor:'#34d399',borderColor:'#a7f3d0',borderBottomColor:'#047857'}]} onPress={next}><Text style={[s.buttonText,{color:'#064e3b'}]}>{index+1===rounds.length?'تەواو بکەم ✓':'پیتی دواتر ←'}</Text></TouchableOpacity>
