@@ -15,7 +15,8 @@ import { SPOKEN_GUIDES } from '../../data/spokenGuides';
 import { mockLetters } from '../../data/mockLetters';
 
 type Letter = (typeof mockLetters)[number];
-const REPEATS = 3, SAFETY_MS = 7000, RED = LETTER_HIGHLIGHT_COLOR;
+// Calm reading for small children: a clear rest after every word and after each time the letter is said.
+const REPEATS = 3, SAFETY_MS = 8000, LETTER_PAUSE_MS = 1000, WORD_PAUSE_MS = 1400, RED = LETTER_HIGHLIGHT_COLOR;
 
 /**
  * The start of a letter's journey, all by ear: the letter is said a few times, then «the letter is in these words»
@@ -41,12 +42,12 @@ export function LetterIntro({ letter, onDone }: { letter: Letter; onDone: () => 
   }, [reduced, pulse]);
 
   /** Says one thing and carries on when it ends; a missing or stuck recording never holds the child up. */
-  const speak = (token: number, text: string, options: Record<string, unknown>, next: () => void) => {
+  const speak = (token: number, text: string, options: Record<string, unknown>, next: () => void, pause: number) => {
     if (token !== run.current) return;
     let moved = false;
     const go = () => { if (moved || token !== run.current) return; moved = true; next(); };
-    later(go, SAFETY_MS);
-    void soundService.speakWord(text, { ...options, onEnd: () => later(go, 350), onError: go });
+    later(go, SAFETY_MS + pause);
+    void soundService.speakWord(text, { ...options, onEnd: () => later(go, pause), onError: go });
   };
   useEffect(() => {
     stopAll();
@@ -56,7 +57,7 @@ export function LetterIntro({ letter, onDone }: { letter: Letter; onDone: () => 
         if (token !== run.current) return;
         if (n === REPEATS) { setStage('words'); return; }
         setHeard(n + 1);
-        speak(token, letter.glyph, { letterName: letter.name }, () => say(n + 1));
+        speak(token, letter.glyph, { letterName: letter.name }, () => say(n + 1), LETTER_PAUSE_MS);
       };
       later(() => say(0), 400);
     } else {
@@ -69,9 +70,9 @@ export function LetterIntro({ letter, onDone }: { letter: Letter; onDone: () => 
         if (token !== run.current) return;
         if (n === parts.length) { setCurrent(-1); return; }
         setCurrent(parts[n].index);
-        speak(token, parts[n].text, {}, () => say(n + 1));
+        speak(token, parts[n].text, {}, () => say(n + 1), WORD_PAUSE_MS);
       };
-      later(() => say(0), 300);
+      later(() => say(0), 700);
     }
     return stopAll;
   }, [stage, again]); // eslint-disable-line react-hooks/exhaustive-deps
