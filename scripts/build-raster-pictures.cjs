@@ -1,11 +1,11 @@
-// Turns assets/pictures/NNN-name.png into src/art/rasterPictures.ts. NNN is the number in app-emoji-list.html;
+// Turns assets/pictures/NNN-name.webp (or .png) into src/art/rasterPictures.ts. NNN is the number in app-emoji-list.html;
 // assets/pictures/index.json says which emoji that number is. Drop a new PNG in the folder and run this script.
 const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const dir = path.join(root, 'assets/pictures');
 const index = JSON.parse(fs.readFileSync(path.join(dir, 'index.json'), 'utf8'));
-const files = fs.readdirSync(dir).filter(name => /^\d{3}-.+\.png$/.test(name)).sort();
+const files = fs.readdirSync(dir).filter(name => /^\d{3}-.+\.(webp|png)$/.test(name)).sort();
 const lines = [];
 for (const name of files) {
   const emoji = index[name.slice(0, 3)];

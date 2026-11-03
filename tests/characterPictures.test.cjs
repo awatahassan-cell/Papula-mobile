@@ -28,12 +28,12 @@ test('decorative animation stops off-screen, in the background and with reduced 
  cleanup=render();assert.equal(starts,2,'hidden routes stay still');focused=true;events.focus();assert.equal(starts,3);events.blur();assert.ok(stops>=3);cleanup();assert.deepEqual(events,{});
 });
 
-test('every painted picture file belongs to a numbered emoji and is a real PNG', () => {
+test('every painted picture file belongs to a numbered emoji and is a real WebP or PNG', () => {
   const dir = path.join(__dirname, '../assets/pictures'), index = JSON.parse(fs.readFileSync(path.join(dir, 'index.json'), 'utf8'));
   const generated = fs.readFileSync(path.join(__dirname, '../src/art/rasterPictures.ts'), 'utf8');
-  for (const name of fs.readdirSync(dir).filter(n => n.endsWith('.png'))) {
+  for (const name of fs.readdirSync(dir).filter(n => /\.(webp|png)$/.test(n))) {
     assert.ok(index[name.slice(0, 3)], `${name} has no emoji in index.json`);
     assert.ok(generated.includes(name), `${name} is missing from src/art/rasterPictures.ts (run scripts/build-raster-pictures.cjs)`);
-    assert.equal(fs.readFileSync(path.join(dir, name)).subarray(1, 4).toString(), 'PNG');
+    const head = fs.readFileSync(path.join(dir, name)); assert.ok(name.endsWith('.png') ? head.subarray(1, 4).toString() === 'PNG' : head.subarray(0, 4).toString() === 'RIFF' && head.subarray(8, 12).toString() === 'WEBP', name);
   }
 });
