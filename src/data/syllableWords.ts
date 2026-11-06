@@ -24,6 +24,9 @@ export const SYLLABLE_WORDS: { word: string; syllables: string[] }[] = [
   { word: 'نینۆک', syllables: ['نی', 'نۆک'] },
   { word: 'خەیار', syllables: ['خە', 'یار'] },
   { word: 'قەڵەم', syllables: ['قە', 'ڵەم'] },
+  { word: 'قەیماغ', syllables: ['قەی', 'ماغ'] },
+  { word: 'سپێناغ', syllables: ['سپێ', 'ناغ'] },
+  { word: 'عەلی', syllables: ['عە', 'لی'] },
   { word: 'عەرەبانە', syllables: ['عە', 'رە', 'با', 'نە'] },
   { word: 'هەنجیر', syllables: ['هەن', 'جیر'] },
   { word: 'فڕۆکە', syllables: ['فڕۆ', 'کە'] },
@@ -38,5 +41,8 @@ export const SYLLABLE_WORDS: { word: string; syllables: string[] }[] = [
   { word: 'یاسەمین', syllables: ['یا', 'سە', 'مین'] },
   { word: 'یارمەتی', syllables: ['یار', 'مە', 'تی'] },
   { word: 'هەنگوین', syllables: ['هەن', 'گوین'] },
+  { word: 'قەیماغ', syllables: ['قەی', 'ماغ'] },
+  { word: 'سپێناغ', syllables: ['سپێ', 'ناغ'] },
+  { word: 'عەلی', syllables: ['عە', 'لی'] },
   { word: 'عەرەبانە', syllables: ['عە', 'رە', 'با', 'نە'] },
 ];
