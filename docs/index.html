@@ -1,447 +1,125 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html lang="ckb" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>پەپوولە | Papula - فێربوونی ئەلفوبێ و نووسینی زمانی کوردی بۆ منداڵان</title>
-  <meta name="description" content="ئەپی فێربوونی ئەلفوبێی کوردی بۆ منداڵان: پیتی ڕۆژانە، یاری، چیرۆک و باخچەی پەپوولە. بێ ئینتەرنێت و بێ ڕیکلام. Papula: the Kurdish alphabet for kids. One letter a day, games, stories and a butterfly garden. Offline, no ads.">
-  <meta name="theme-color" content="#4361EE">
-  <link rel="canonical" href="https://papulakids.com/">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Papula (پەپوولە)">
-  <meta property="og:title" content="پەپوولە | Papula - فێربوونی ئەلفوبێ و نووسینی زمانی کوردی بۆ منداڵان">
-  <meta property="og:description" content="ئەپی فێربوونی ئەلفوبێی کوردی بۆ منداڵان: پیتی ڕۆژانە، یاری، چیرۆک و باخچەی پەپوولە. بێ ئینتەرنێت و بێ ڕیکلام.">
-  <meta property="og:url" content="https://papulakids.com/">
-  <meta property="og:image" content="https://papulakids.com/assets/og-ku.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <meta name="description" content="ئەپڵیکەیشنی پەپوولە: فێربوونی ٣٤ پیتی کوردی، نووسین بە پەنجە، زیاتر لە ١٦٥ وێنەی سێ ڕەهەندی و دەنگی ئۆفلاین بۆ منداڵان بە فۆنتی ڕەسەنی IBM Plex Sans Arabic.">
-  <link rel="icon" type="image/png" href="assets/favicon.png">
-
-  <!-- Official Font: IBM Plex Sans Arabic -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-en="Papula: the Kurdish alphabet for kids">پەپوولە: ئەلفوبێی کوردی بۆ منداڵان</title>
+<meta name="description" content="ئەپی فێربوونی ئەلفوبێی کوردی بۆ منداڵان: پیتی ڕۆژانە، یاری، چیرۆک و باخچەی پەپوولە. بێ ڕیکلام و بێ ئینتەرنێت. Papula: the Kurdish alphabet for kids. One letter a day, games, stories and a butterfly garden. Offline, no ads.">
+<meta name="theme-color" content="#dff1ff">
+<link rel="canonical" href="https://papulakids.com/">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<link rel="preload" href="assets/fonts/IBMPlexSansArabic_700Bold.ttf" as="font" type="font/ttf" crossorigin>
+<meta property="og:type" content="website"><meta property="og:site_name" content="Papula (پەپوولە)">
+<meta property="og:title" content="پەپوولە: ئەلفوبێی کوردی بۆ منداڵان"><meta property="og:description" content="ئەپی فێربوونی ئەلفوبێی کوردی بۆ منداڵان: پیتی ڕۆژانە، یاری، چیرۆک و باخچەی پەپوولە. بێ ڕیکلام و بێ ئینتەرنێت.">
+<meta property="og:url" content="https://papulakids.com/"><meta property="og:image" content="https://papulakids.com/assets/og-ku.jpg"><meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="styles.css">
 </head>
-<body>
-
-  <!-- Sticky Frosted Header -->
-  <header class="site-header">
-    <div class="container nav-inner">
-      <a href="index.html" class="brand-badge">
-        <div class="brand-icon-wrap">
-          <img src="assets/icon.png" alt="Papula Icon">
-        </div>
-        <div>
-          <span class="brand-title">پەپوولە</span>
-          <span class="brand-tag">Papula: Kurdish for Kids</span>
-        </div>
-      </a>
-
-      <nav>
-        <ul class="nav-menu">
-          <li><a href="#home" class="active" data-lang="ku">سەرەکی</a><a href="#home" class="active" data-lang="en" style="display:none;">Home</a></li>
-          <li><a href="#alphabet" data-lang="ku">پیتەکان</a><a href="#alphabet" data-lang="en" style="display:none;">Alphabet</a></li>
-          <li><a href="#features" data-lang="ku">تایبەتمەندییەکان</a><a href="#features" data-lang="en" style="display:none;">Features</a></li>
-          <li><a href="#safety" data-lang="ku">ئاسایشی خێزان</a><a href="#safety" data-lang="en" style="display:none;">Safety</a></li>
-          <li><a href="privacy.html" data-lang="ku">سیاسەتی تایبەتمەندی</a><a href="privacy.html" data-lang="en" style="display:none;">Privacy Policy</a></li>
-          <li><a href="terms.html" data-lang="ku">مەرجەکان</a><a href="terms.html" data-lang="en" style="display:none;">Terms</a></li>
-        </ul>
-      </nav>
-
-      <div class="nav-controls">
-        <div class="lang-toggle">
-          <button class="lang-btn active" data-set-lang="ku">کوردی</button>
-          <button class="lang-btn" data-set-lang="en">English</button>
-        </div>
-        <a href="privacy.html" class="btn-cta" style="padding: 10px 22px; font-size: 0.92rem;">
-          <span data-lang="ku">سیاسەتی تایبەتمەندی</span>
-          <span data-lang="en" style="display:none;">Privacy Policy</span>
-        </a>
-        <button class="mobile-toggle" aria-label="Toggle navigation">☰</button>
-      </div>
+<body><header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><img src="assets/icon.png" alt="" width="46" height="46"><span>پەپوولە</span></a>
+  <nav class="nav" aria-label="Main"><a href="#how"><span data-en="How it works" >چۆن کار دەکات</span></a><a href="#games"><span data-en="Games" >یارییەکان</span></a><a href="#garden"><span data-en="Garden" >باخچە</span></a><a href="#alphabet"><span data-en="Alphabet" >ئەلفوبێ</span></a><a href="#parents"><span data-en="Parents" >دایک و باوک</span></a><a href="#faq"><span data-en="FAQ" >پرسیار</span></a></nav>
+  <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="ku" aria-pressed="true">کوردی</button><button type="button" data-lang="en" aria-pressed="false">English</button></div>
+  <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.papula.kids"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 2.8v18.4c0 .6.7 1 1.2.7l15-9.2c.5-.3.5-1 0-1.3L6.2 2.1C5.7 1.8 5 2.2 5 2.8z"/></svg><span>Google Play</span></a>
+  <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false"><span></span></button>
+</div></header>
+<main>
+<section class="hero" id="top">
+  <div class="cloud" style="top:70px;inset-inline-start:-40px"></div><div class="cloud" style="top:260px;inset-inline-end:-60px;width:150px"></div>
+  <span class="glyph" style="font-size:34rem;inset-inline-start:-4rem;top:-4rem" aria-hidden="true">ب</span>
+  <span class="glyph" style="font-size:22rem;inset-inline-end:30%;bottom:-6rem" aria-hidden="true">پ</span>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="pill"><i></i><span data-en="No ads · No internet needed · Ages 3 to 8" >بێ ڕیکلام · بێ ئینتەرنێت · بۆ ٣ بۆ ٨ ساڵ</span></span>
+      <h1 data-en="Learn Kurdish letters through <em>play and joy</em>">فێربوونی ئەلفوبێی کوردی بە <em>یاری و شادی</em></h1>
+      <p class="lead" data-en="One letter a day. Papula says it three times, shows five picture words, then come games, stories and a butterfly garden." >هەر ڕۆژە پیتێک. پەپوولە پیتەکە سێ جار دەڵێت، پێنج وشەی وێنەدار نیشان دەدات، و دواتر یاری و چیرۆک و باخچەی پەپوولە دێت.</p>
+      <div class="cta"><a class="btn btn-gold" href="https://play.google.com/store/apps/details?id=com.papula.kids"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 2.8v18.4c0 .6.7 1 1.2.7l15-9.2c.5-.3.5-1 0-1.3L6.2 2.1C5.7 1.8 5 2.2 5 2.8z"/></svg><span><span data-en="Get it on Google Play" >داگرتن لە Google Play</span></span></a><a class="btn btn-ghost" href="#how"><span data-en="See how it works" >بزانە چۆنە</span></a></div>
+      <ul class="badges"><li><span data-en="34 Kurdish letters" >٣٤ پیتی کوردی</span></li><li><span data-en="Clear Kurdish voice" >دەنگی کوردیی ڕوون</span></li><li><span data-en="Guided by voice and pictures" >ڕێنمایی بە دەنگ و وێنە</span></li></ul>
     </div>
-  </header>
-
-  <!-- Hero Section with Glowing Canvas -->
-  <section id="home" class="hero-section">
-    <div class="hero-glow-1"></div>
-    <div class="hero-glow-2"></div>
-
-    <div class="container hero-layout">
-      <!-- Left Content -->
-      <div class="hero-text-block">
-        <div class="hero-pill-tag">
-          <span class="sparkle">✨</span>
-          <span data-lang="ku">پەروەردەیی، ئۆفلاین و پارێزراو بۆ منداڵان</span>
-          <span data-lang="en" style="display:none;">Designed for Families • 100% Offline & Ad-Free</span>
-        </div>
-
-        <h1 class="hero-h1">
-          <span data-lang="ku">فێربوونی شازی ئەلفوبێ لەگەڵ <span class="gradient-text">پەپوولە</span></span>
-          <span data-lang="en" style="display:none;">Master the Kurdish Alphabet with <span class="gradient-text">Papula</span></span>
-        </h1>
-
-        <p class="hero-lead">
-          <span data-lang="ku">
-            گەشتێکی کەیفخۆش، ئارام و دەوڵەمەند بۆ فێربوونی ٣٤ پیتی کوردی، نووسینی دروست بە پەنجە، فەرهەنگێکی سێ ڕەهەندی لە ١٦٥+ وێنەی کارتۆنی، و دەنگی ئۆفلاین بە فۆنتی فەرمیی <strong>IBM Plex Sans Arabic</strong>.
-          </span>
-          <span data-lang="en" style="display:none;">
-            An enchanting, research-backed journey teaching children all 34 Kurdish alphabet letters, stroke-by-stroke writing, 165+ playful 3D clay toys, and native offline voice narration.
-          </span>
-        </p>
-
-        <div class="hero-actions">
-          <a href="#download" class="btn-cta">
-            <span>📱</span>
-            <span data-lang="ku">داگرتن لە Google Play</span>
-            <span data-lang="en" style="display:none;">Get on Google Play</span>
-          </a>
-          <a href="#alphabet" class="btn-secondary">
-            <span>🎨</span>
-            <span data-lang="ku">تەختەی پیتەکان ببینە</span>
-            <span data-lang="en" style="display:none;">Explore Letters</span>
-          </a>
-        </div>
-
-        <div class="hero-metrics">
-          <div>
-            <div class="metric-num">٣٤</div>
-            <div class="metric-label" data-lang="ku">پیتی تەواوی کوردی</div>
-            <div class="metric-label" data-lang="en" style="display:none;">Kurdish Letters</div>
-          </div>
-          <div>
-            <div class="metric-num">١٦٥+</div>
-            <div class="metric-label" data-lang="ku">وێنەی 3D شاز</div>
-            <div class="metric-label" data-lang="en" style="display:none;">3D Clay Pictures</div>
-          </div>
-          <div>
-            <div class="metric-num">٠٪</div>
-            <div class="metric-label" data-lang="ku">ڕیکلام یان داتا</div>
-            <div class="metric-label" data-lang="en" style="display:none;">Zero Tracking / Ads</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right 3D Centerpiece Showcase -->
-      <div class="hero-stage">
-        <div class="stage-card">
-          <img src="assets/002-butterfly.webp" alt="3D Papula Butterfly" class="butterfly-hero-img">
-          <span class="stage-badge">پەپوولەی فێرکار</span>
-          <h3 class="stage-title">پەپوولە • Papula</h3>
-          <p style="color: var(--ink-secondary); font-size: 0.95rem; margin-top: 4px;">هاوڕێی شیرین و دەنگخۆشی منداڵان</p>
-        </div>
-
-        <!-- Floating Chips -->
-        <div class="floating-chip chip-1">
-          <img src="assets/003-red-apple.webp" alt="Apple">
-          <div>
-            <div style="font-size: 0.82rem; color: var(--ink-muted);">پیتەکە: <strong>س</strong></div>
-            <div style="color: var(--coral);">سێو 🍎</div>
-          </div>
-        </div>
-
-        <div class="floating-chip chip-2">
-          <img src="assets/015-rabbit-face.webp" alt="Rabbit">
-          <div>
-            <div style="font-size: 0.82rem; color: var(--ink-muted);">پیتەکە: <strong>ک</strong></div>
-            <div style="color: var(--primary);">کەروێشک 🐰</div>
-          </div>
-        </div>
-      </div>
+    <div class="stage">
+      <div class="phone tilt"><div class="screen"><img class="on" src="assets/app/home.webp" alt="سکرین شۆتی پەڕەی سەرەکی" width="600" height="1298"><img class="" src="assets/app/words.webp" alt="سکرین شۆتی وشەکان" width="600" height="1298"><img class="" src="assets/app/games.webp" alt="سکرین شۆتی یارییەکان" width="600" height="1298"><img class="" src="assets/app/garden.webp" alt="سکرین شۆتی باخچە" width="600" height="1298"><img class="" src="assets/app/stories.webp" alt="سکرین شۆتی چیرۆک" width="600" height="1298"></div></div>
+      <img class="float " src="assets/pics/butterfly.webp" alt="" width="256" height="256" style="s:150px;inset-block-start:2%;inset-inline-end:-2%;r:-8deg;t:7s">
+      <img class="float " src="assets/pics/white-medium-star.webp" alt="" width="256" height="256" style="s:96px;inset-block-start:16%;inset-inline-start:2%;d:.6s;t:5s">
+      <img class="float hide-s" src="assets/pics/red-apple.webp" alt="" width="256" height="256" style="s:116px;inset-block-end:14%;inset-inline-start:-2%;d:1.1s;r:-10deg">
+      <img class="float hide-s" src="assets/pics/elephant.webp" alt="" width="256" height="256" style="s:150px;inset-block-end:2%;inset-inline-end:0%;d:.3s;t:8s">
+      <img class="float hide-s" src="assets/pics/rainbow.webp" alt="" width="256" height="256" style="s:130px;inset-block-end:34%;inset-inline-end:-7%;d:.9s;t:9s">
     </div>
-  </section>
+  </div>
+  <div class="wave"></div>
+</section>
 
-  <!-- Google Families Safety Ribbon -->
-  <section id="safety" class="safety-ribbon">
-    <div class="container safety-ribbon-grid">
-      <div class="safety-feature">
-        <div class="shield-bubble">🛡️</div>
-        <div>
-          <h4 data-lang="ku">متمانەپێکراو بۆ خێزان</h4>
-          <h4 data-lang="en" style="display:none;">Designed for Families</h4>
-          <p data-lang="ku">گونجاو لەگەڵ بنەماکانی COPPA و گووگڵ پلەی</p>
-          <p data-lang="en" style="display:none;">Strict compliance with Google Play Families & COPPA</p>
-        </div>
-      </div>
+<section class="stats"><div class="wrap"><ul class="reveal">
+  <li><b>٣٤</b><span><span data-en="Kurdish letters" >پیتی کوردی</span></span></li><li><b>٧</b><span><span data-en="colourful games" >یاریی ڕەنگاوڕەنگ</span></span></li><li><b>١٦٥</b><span><span data-en="cartoon pictures" >وێنەی کارتۆنی</span></span></li><li><b>٢٥</b><span><span data-en="butterflies to collect" >پەپوولەی کۆکراوە</span></span></li></ul></div></section>
 
-      <div class="safety-feature">
-        <div class="shield-bubble">🚫</div>
-        <div>
-          <h4 data-lang="ku">سەدا سەد بێ ڕیکلام</h4>
-          <h4 data-lang="en" style="display:none;">100% Ad-Free</h4>
-          <p data-lang="ku">هیچ ڕیکلامێکی بێزارکەر نایەتە سەر شاشە</p>
-          <p data-lang="en" style="display:none;">Zero commercial advertisements or popups</p>
-        </div>
-      </div>
+<section class="sec day" id="how"><div class="wrap">
+  <div class="head-center reveal"><span class="eyebrow"><span data-en="A day with Papula" >ڕۆژێک لەگەڵ پەپوولە</span></span><h2><span data-en="Five short steps, every day" >پێنج هەنگاوی کورت، هەموو ڕۆژێک</span></h2><p class="sub"><span data-en="No long sessions. One letter, calm and unhurried, so learning stays something children love." >ڕۆژانە دەیان خولەک نییە. یەک پیت، هێمن و بێ پەلە، بۆ ئەوەی فێربوون خۆشەویست بێت.</span></p></div>
+  <div class="day-grid">
+    <div class="steps" role="tablist"><button class="step" type="button" role="tab" style="--c:#6d4ae8" aria-selected="false"><span class="n" data-en="1">١</span><span><h3><span data-en="Today&#x27;s letter" >پیتی ئەمڕۆ</span></h3><p><span data-en="Only one new letter opens each day, shown big and clear." >هەر ڕۆژ تەنها یەک پیتی نوێ دەکرێتەوە. پیتەکە گەورە و ڕوون نیشان دەدرێت.</span></p></span></button><button class="step" type="button" role="tab" style="--c:#ff5d73" aria-selected="false"><span class="n" data-en="2">٢</span><span><h3><span data-en="Said three times, then five words" >پیتەکە سێ جار، و پێنج وشە</span></h3><p><span data-en="Papula says the letter three times, then shows five picture words that contain it." >پەپوولە پیتەکە هێمنانە سێ جار دەڵێت، پاشان پێنج وشەی وێنەدار نیشان دەدات کە ئەو پیتەیان تێدایە.</span></p></span></button><button class="step" type="button" role="tab" style="--c:#2dd4a0" aria-selected="false"><span class="n" data-en="3">٣</span><span><h3><span data-en="Practice" >ڕاهێنان</span></h3><p><span data-en="Find the letter, pick the picture and finish the word. Mistakes are never punished." >پیتەکە لە نێو چەند پیتێکدا بدۆزەوە، وێنەکە هەڵبژێرە، و وشەکە تەواو بکە. هەڵە هیچ سزایەکی نییە.</span></p></span></button><button class="step" type="button" role="tab" style="--c:#ffb020" aria-selected="false"><span class="n" data-en="4">٤</span><span><h3><span data-en="Games and stories" >یاری و چیرۆک</span></h3><p><span data-en="Seven games and illustrated stories for the letters and words the child has learned." >حەوت یاری و چیرۆکی وێنەدار بۆ ئەو پیت و وشانەی منداڵ فێری بووە.</span></p></span></button><button class="step" type="button" role="tab" style="--c:#4cb5ff" aria-selected="false"><span class="n" data-en="5">٥</span><span><h3><span data-en="The garden grows" >باخچە گەورە دەبێت</span></h3><p><span data-en="Every letter grows a flower and unlocks a new butterfly. Tomorrow brings a new letter." >هەر پیتێک گوڵێک دەڕوێنێت و پەپوولەیەکی نوێ دەکاتەوە. سبەی پیتێکی نوێ چاوەڕێیە.</span></p></span></button></div>
+    <div class="day-phone"><div class="phone "><div class="screen"><img class="" src="assets/app/home.webp" alt="سکرین شۆتی پیتی ئەمڕۆ" width="600" height="1298"><img class="" src="assets/app/words.webp" alt="سکرین شۆتی پێنج وشە" width="600" height="1298"><img class="" src="assets/app/practice.webp" alt="سکرین شۆتی ڕاهێنان" width="600" height="1298"><img class="" src="assets/app/games.webp" alt="سکرین شۆتی یارییەکان" width="600" height="1298"><img class="" src="assets/app/garden.webp" alt="سکرین شۆتی باخچە" width="600" height="1298"></div></div></div>
+  </div>
+</div></section>
 
-      <div class="safety-feature">
-        <div class="shield-bubble">🔒</div>
-        <div>
-          <h4 data-lang="ku">بێ کۆکردنەوەی داتا</h4>
-          <h4 data-lang="en" style="display:none;">Zero Data Tracking</h4>
-          <p data-lang="ku">هیچ زانیارییەکی کەسی منداڵ کۆناکرێتەوە</p>
-          <p data-lang="en" style="display:none;">No analytics or personal data collected</p>
-        </div>
-      </div>
+<section class="sec games" id="games"><div class="wrap">
+  <div class="head-center reveal"><span class="eyebrow"><span data-en="Play and practice" >یاری و مەشق</span></span><h2><span data-en="Seven colourful games" >حەوت یاریی ڕەنگاوڕەنگ</span></h2><p class="sub"><span data-en="Games only use letters and words the child has already learned, and mistakes are never punished." >یارییەکان تەنها ئەو پیت و وشانە بەکار دەهێنن کە منداڵ پێشتر فێری بووە، و هەڵە هیچ سزایەکی نییە.</span></p></div>
+  <div class="game-grid"><article class="game reveal" style="--bg:#dff3ff;--lip:#7cc8f4"><img src="assets/pics/bubbles.webp" alt="" width="256" height="256" loading="lazy"><h3><span data-en="Pop the bubbles" >بڵق بتەقێنە</span></h3><p><span data-en="Pop the bubble with the right letter." >بڵقی پیتی ڕاست بگرە.</span></p></article><article class="game reveal" style="--bg:#efe7ff;--lip:#b9a2ff"><img src="assets/pics/rabbit-face.webp" alt="" width="256" height="256" loading="lazy"><h3><span data-en="Memory cards" >کارتی جووت</span></h3><p><span data-en="Match each picture with its word." >وێنە و وشەکەی بدۆزەوە.</span></p></article><article class="game reveal" style="--bg:#e4e8ff;--lip:#a3b1ff"><img src="assets/pics/red-apple.webp" alt="" width="256" height="256" loading="lazy"><h3><span data-en="Letter and picture" >پیت و وێنە</span></h3><p><span data-en="Connect each letter to its picture." >پیتەکە بگەیەنە بە وێنەکەی.</span></p></article><article class="game reveal" style="--bg:#ffe6ec;--lip:#ffa3b8"><img src="assets/pics/eye.webp" alt="" width="256" height="256" loading="lazy"><h3><span data-en="Odd letter out" >پیتی جیاواز</span></h3><p><span data-en="Spot the letter that is different." >ئەو پیتە بدۆزەوە کە جیاوازە.</span></p></article><article class="game reveal" style="--bg:#dcf9ea;--lip:#7fdcae"><img src="assets/pics/basket.webp" alt="" width="256" height="256" loading="lazy"><h3><span data-en="Letter basket" >سەبەتەی پیت</span></h3><p><span data-en="Move the basket and catch the letter." >سەبەتە بجوڵێنە و پیتەکە بگرە.</span></p></article><article class="game reveal" style="--bg:#fff1c9;--lip:#f2c75a"><img src="assets/pics/jigsaw-puzzle-piece.webp" alt="" width="256" height="256" loading="lazy"><h3><span data-en="Missing letter" >پیتی ونبوو</span></h3><p><span data-en="Fill in the letter that is missing." >پیتی ونبووی وشەکە دابنێ.</span></p></article><article class="game wide reveal" style="--bg:#ffe3d1;--lip:#ffae7a"><div><h3><span data-en="Word train" >شەمەندەفەری وشە</span></h3><p><span data-en="Put the letters in order to build the word." >پیتەکان بە ڕیز دابنێ تا وشەکە دروست ببێت.</span></p></div><img src="assets/pics/steam-locomotive.webp" alt="" width="256" height="256" loading="lazy"></article></div>
+  <p class="note"><span data-en="Games unlock one by one as letters are learned." >یارییەکان بە فێربوونی پیتەکان دەکرێنەوە، یەکە یەکە.</span></p>
+</div></section>
 
-      <div class="safety-feature">
-        <div class="shield-bubble">📶</div>
-        <div>
-          <h4 data-lang="ku">ئۆفلاین و سەربەخۆ</h4>
-          <h4 data-lang="en" style="display:none;">100% Offline</h4>
-          <p data-lang="ku">تەواوی دەنگ و وێنەکان بە بێ ئینتەرنێت کاردەکەن</p>
-          <p data-lang="en" style="display:none;">Play anywhere without requiring an internet connection</p>
-        </div>
-      </div>
-    </div>
-  </section>
+<section class="sec garden" id="garden"><div class="wrap garden-grid">
+  <div class="scene reveal" aria-hidden="true"><div class="hill b"></div><div class="hill"></div>
+    <img class="float " src="assets/pics/butterfly.webp" alt="" width="256" height="256" style="s:130px;inset-block-start:9%;inset-inline-start:12%;r:-10deg;t:6s">
+    <img class="float " src="assets/pics/cherry-blossom.webp" alt="" width="256" height="256" style="s:96px;inset-block-end:16%;inset-inline-start:14%;d:.4s">
+    <img class="float " src="assets/pics/tulip.webp" alt="" width="256" height="256" style="s:110px;inset-block-end:10%;inset-inline-start:42%;d:.8s">
+    <img class="float " src="assets/pics/seedling.webp" alt="" width="256" height="256" style="s:84px;inset-block-end:15%;inset-inline-end:14%;d:1.2s">
+    <img class="float " src="assets/pics/deciduous-tree.webp" alt="" width="256" height="256" style="s:170px;inset-block-end:24%;inset-inline-end:6%;t:9s">
+    <img class="float " src="assets/pics/white-medium-star.webp" alt="" width="256" height="256" style="s:70px;inset-block-start:12%;inset-inline-end:16%;d:.2s;t:4.5s">
+    <img class="float " src="assets/pics/sparkles.webp" alt="" width="256" height="256" style="s:70px;inset-block-start:38%;inset-inline-start:46%;d:.7s;t:5s">
+  </div>
+  <div class="reveal"><span class="eyebrow"><span data-en="The butterfly garden" >باخچەی پەپوولە</span></span><h2><span data-en="Learning grows a garden" >فێربوون، باخچەیەک گەورە دەکات</span></h2>
+    <p class="sub"><span data-en="Every finished letter grows a flower. Stars unlock new butterflies and a little friend grows up." >هەر پیتێک تەواو بکرێت گوڵێک دەڕوێت. ئەستێرەکان پەپوولەی نوێ دەکەنەوە و هاوڕێیەکی بچووک گەورە دەبێت.</span></p>
+    <ul class="list">
+      <li><img src="assets/pics/butterfly.webp" alt="" width="52" height="52" loading="lazy"><div><b><span data-en="25 butterflies to collect" >٢٥ پەپوولە بۆ کۆکردنەوە</span></b><span><span data-en="Unlocked with stars, letters and days of learning." >بە ئەستێرە، پیت و ڕۆژانی فێربوون دەکرێنەوە.</span></span></div></li>
+      <li><img src="assets/pics/sleeping-face.webp" alt="" width="52" height="52" loading="lazy"><div><b><span data-en="A friend who sleeps and welcomes you back" >هاوڕێیەک کە دەخەوێت و بەخێرهاتنت دەکات</span></b><span><span data-en="If a child is away for a few days the friend falls asleep, then greets them warmly when they return. No guilt." >ئەگەر منداڵ چەند ڕۆژێک نەهات، هاوڕێکەی دەخەوێت. کە گەڕایەوە بەخێری دەهێنێتەوە، بێ تانە.</span></span></div></li>
+      <li><img src="assets/pics/first-place-medal.webp" alt="" width="52" height="52" loading="lazy"><div><b><span data-en="Stickers and medals" >ستیکەر و میدالیا</span></b><span><span data-en="Rewards are only for learning and practising." >خەڵات تەنها بۆ فێربوون و ڕاهێنانە.</span></span></div></li>
+    </ul></div>
+</div></section>
 
-  <!-- Interactive Kurdish Alphabet Explorer -->
-  <section id="alphabet" class="alphabet-showcase-section">
-    <div class="container">
-      <div class="section-intro">
-        <span class="section-label" data-lang="ku">ئەزموونی فێرکاری</span>
-        <span class="section-label" data-lang="en" style="display:none;">Interactive Phonics</span>
-        <h2 class="section-heading" data-lang="ku">تەختەی پیتە گەوهەرییەکان</h2>
-        <h2 class="section-heading" data-lang="en" style="display:none;">Kurdish Alphabet Explorer</h2>
-        <p class="section-desc" data-lang="ku">
-          کرتە لەسەر هەر پیتێک بکە تا وێنەی سێ ڕەهەندی و وشە کوردییەکەی بە شێوازێکی شاز ببینیت!
-        </p>
-        <p class="section-desc" data-lang="en" style="display:none;">
-          Tap any Kurdish letter below to inspect its 3D illustrated word and pronunciation example.
-        </p>
-      </div>
+<section class="sec alpha" id="alphabet"><div class="wrap">
+  <div class="head-center reveal"><span class="eyebrow"><span data-en="The Kurdish alphabet" >ئەلفوبێی کوردی</span></span><h2><span data-en="Tap any letter" >لەسەر هەر پیتێک بکە</span></h2><p class="sub"><span data-en="Each letter has its own word and picture, the same ones children learn in the app." >هەر پیتێک وشەیەک و وێنەیەکی خۆی هەیە، هەمان ئەوانەی لە ئەپەکەدا فێر دەبن.</span></p></div>
+  <div class="alpha-wrap">
+    <div class="tiles" id="tiles" role="group" aria-label="Letters"></div>
+    <aside class="inspect" aria-live="polite"><div class="big" id="inspectLetter">ب</div><img id="inspectImg" src="assets/letters/012-cloud-with-rain.webp" alt="" width="190" height="190"><h3 id="inspectWord">باران</h3><p id="inspectEn">Rain</p></aside>
+  </div>
+</div></section>
 
-      <!-- Alphabet Tiles Grid (Populated dynamically) -->
-      <div id="alphabetTiles" class="alphabet-grid"></div>
+<section class="sec parents" id="parents"><div class="wrap">
+  <div class="head-center reveal"><span class="eyebrow"><span data-en="For parents" >بۆ دایک و باوک</span></span><h2><span data-en="Safe to play, easy to trust" >بە دڵنیایی یاری بکات</span></h2><p class="sub"><span data-en="Papula is made for families. It has no ads, no accounts and no tracking." >پەپوولە بۆ خێزان دروست کراوە. هیچ ڕیکلام، ئەکاونت یان شوێنپێهەڵگرتنێکی نییە.</span></p></div>
+  <div class="promises"><div class="promise reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></div><h3><span data-en="No ads" >بێ ڕیکلام</span></h3><p><span data-en="There are no ads and no outside links in the app." >هیچ ڕیکلام و بەستەرێکی دەرەکی لە ئەپەکەدا نییە.</span></p></div><div class="promise reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.2a10.5 10.5 0 0 1 14 0M8.5 15.6a5.5 5.5 0 0 1 7 0"/><circle cx="12" cy="19" r="1" fill="#fff"/><path d="M3 3l18 18"/></svg></div><h3><span data-en="Works offline" >بێ ئینتەرنێت</span></h3><p><span data-en="Once installed, the voices, pictures and stories are inside the app." >دوای دابەزاندن، دەنگ و وێنە و چیرۆکەکان لە ناو ئەپەکەدان.</span></p></div><div class="promise reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/><path d="M3 3l18 18"/></svg></div><h3><span data-en="No accounts, no tracking" >بێ ئەکاونت و شوێنپێهەڵگرتن</span></h3><p><span data-en="No email, phone number, location or device ID is asked for." >ئیمەیڵ، ژمارە، شوێن و ناسنامەی ئامێر داوا ناکرێت.</span></p></div><div class="promise reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.8" r="1.3" fill="#fff"/></svg></div><h3><span data-en="A parent area" >بەشی دایک و باوک</span></h3><p><span data-en="Opened with a maths question: a daily time limit and a bedtime lock." >بە پرسیارێکی بیرکاری دەکرێتەوە: سنووری کاتی بەکارهێنان و کاتی خەوتن.</span></p></div><div class="promise reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div><h3><span data-en="Voice stays on the device" >دەنگ لەسەر ئامێر دەمێنێتەوە</span></h3><p><span data-en="A child&#x27;s recorded reading is never sent anywhere." >تۆماری خوێندنەوەی منداڵ بۆ هیچ شوێنێک نانێردرێت.</span></p></div><div class="promise reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg></div><h3><span data-en="No pressure" >بێ فشار</span></h3><p><span data-en="One new letter a day. Mistakes cost nothing, and if a child is away the friend simply sleeps." >ڕۆژانە یەک پیتی نوێ. هەڵە سزای نییە و ئەگەر چەند ڕۆژێک نەهات، هاوڕێکەی تەنها دەخەوێت.</span></p></div></div>
+  <p class="more"><a class="btn btn-gold" href="privacy.html"><span data-en="Read the privacy policy" >سیاسەتی تایبەتمەندی بخوێنەوە</span></a></p>
+</div></section>
 
-      <!-- Live Inspector Bar -->
-      <div class="letter-inspect-box">
-        <div class="inspect-left">
-          <div id="inspectLetter" class="inspect-big-letter">ب</div>
-          <div class="inspect-text">
-            <h4 id="inspectWord">باران</h4>
-            <p id="inspectEn">Rain</p>
-          </div>
-        </div>
-        <img id="inspectImg" src="assets/letters/012-cloud-with-rain.webp" alt="Rain" class="inspect-3d-img">
-      </div>
-    </div>
-  </section>
+<section class="sec" id="faq"><div class="wrap">
+  <div class="head-center reveal"><span class="eyebrow"><span data-en="Questions" >پرسیارە باوەکان</span></span><h2><span data-en="Answers to what parents ask" >وەڵامی ئەوەی دەتەوێت بیزانیت</span></h2></div>
+  <div class="faq-list"><details class="reveal"><summary><span data-en="What age is it for?" >ئەپەکە بۆ چ تەمەنێکە؟</span></summary><p><span data-en="Children aged 3 to 8. Everything is guided by voice and pictures, so a child who cannot read yet can still use it." >بۆ منداڵانی ٣ بۆ ٨ ساڵ. هەموو شتێک بە دەنگ و وێنە ڕێنمایی دەکرێت، بۆیە منداڵی نەخوێندەواریش دەتوانێت بەکاری بهێنێت.</span></p></details><details class="reveal"><summary><span data-en="Does it need the internet?" >پێویستی بە ئینتەرنێت هەیە؟</span></summary><p><span data-en="No. After installing, all the voices, pictures and stories are on the phone." >نەخێر. دوای دابەزاندن، هەموو دەنگ و وێنە و چیرۆکەکان لەسەر مۆبایلەکەن.</span></p></details><details class="reveal"><summary><span data-en="Is it free?" >بێ بەرامبەرە؟</span></summary><p><span data-en="Yes, it is free for now and has no ads." >بەڵێ، ئێستا بێ بەرامبەرە و هیچ ڕیکلامێکی نییە.</span></p></details><details class="reveal"><summary><span data-en="Where is my child&#x27;s data kept?" >داتای منداڵ لە کوێ دەمێنێتەوە؟</span></summary><p><span data-en="Only on your phone. Nothing is sent to a server. To remove everything, clear the app&#x27;s data or uninstall the app." >تەنها لەسەر مۆبایلەکە. هیچ زانیارییەک بۆ سێرڤەر نانێردرێت. بۆ سڕینەوەی هەموو شتێک، داتای ئەپەکە بسڕەوە یان ئەپەکە لاببە.</span></p></details><details class="reveal"><summary><span data-en="How can I limit screen time?" >چۆن دەتوانم کاتی بەکارهێنان سنووردار بکەم؟</span></summary><p><span data-en="In the parent area (the settings icon). It opens with a maths question, and you can set a time limit and a bedtime lock." >لە بەشی دایک و باوک (ئایکۆنی ڕێکخستن). بە پرسیارێکی بیرکاری دەکرێتەوە و دەتوانیت سنووری کات و کاتی خەوتن دابنێیت.</span></p></details><details class="reveal"><summary><span data-en="Is it on iPhone?" >لەسەر ئایفۆن هەیە؟</span></summary><p><span data-en="It is on Google Play for Android now. An iPhone version comes later." >ئێستا لە Google Play بۆ ئەندرۆید بەردەستە. وەشانی ئایفۆن دواتر.</span></p></details></div>
+</div></section>
 
-  <!-- Features Section -->
-  <section id="features" class="features-container">
-    <div class="container">
-      <div class="section-intro">
-        <span class="section-label" data-lang="ku">بۆچی پەپوولە؟</span>
-        <span class="section-label" data-lang="en" style="display:none;">Core Pillars</span>
-        <h2 class="section-heading" data-lang="ku">سیستەمێکی فێرکاریی دەوڵەمەند و شیرین</h2>
-        <h2 class="section-heading" data-lang="en" style="display:none;">Pedagogical Excellence for Children</h2>
-        <p class="section-desc" data-lang="ku">
-          هەموو یاری و بەشێکی بەرنامەکە بە مەبەستی فێربوونێکی خۆڕسک و بێ ماندووبوون دروستکراوە.
-        </p>
-        <p class="section-desc" data-lang="en" style="display:none;">
-          Engineered from the ground up for early language acquisition, visual association, and fine motor skills.
-        </p>
-      </div>
-
-      <div class="features-grid">
-        <!-- Feature 1 -->
-        <div class="delight-card c-blue">
-          <div class="card-top-icon">
-            <img src="assets/001-white-medium-star.webp" alt="Letter Writing">
-          </div>
-          <h3 class="card-heading" data-lang="ku">نووسینی پیتەکان بە پەنجە</h3>
-          <h3 class="card-heading" data-lang="en" style="display:none;">Tactile Letter Tracing</h3>
-          <p class="card-desc" data-lang="ku">
-            منداڵ هێڵ و خاڵەکانی هەر ٣٤ پیتەکە بە پەنجە دەکێشێت بە سیستەمی Scoring کە هەڵەکان ڕاست دەکاتەوە و پاداشتی ئەستێرەی پێدەبەخشێت.
-          </p>
-          <p class="card-desc" data-lang="en" style="display:none;">
-            Interactive guides support all Kurdish letter forms with accurate dot placements, rubrics, and joyful star rewards.
-          </p>
-        </div>
-
-        <!-- Feature 2 -->
-        <div class="delight-card c-coral">
-          <div class="card-top-icon">
-            <img src="assets/015-rabbit-face.webp" alt="3D Clay Pictures">
-          </div>
-          <h3 class="card-heading" data-lang="ku">١٦٥+ وێنەی کارتۆنی 3D</h3>
-          <h3 class="card-heading" data-lang="en" style="display:none;">165+ 3D Clay Toy Icons</h3>
-          <p class="card-desc" data-lang="ku">
-            کۆمەڵە وێنەیەکی سێ ڕەهەندی دەستکردی ناوازە کە هەم لەسەر شاشەی مۆبایل قەشەنگە و هەم بە فۆرماتی سووکی WebP قەبارەی ئەپەکەی کەم کردووەتەوە.
-          </p>
-          <p class="card-desc" data-lang="en" style="display:none;">
-            Custom 3D clay vinyl toys illustrating each Kurdish vocabulary word, optimized into ultra-lightweight WebP assets.
-          </p>
-        </div>
-
-        <!-- Feature 3 -->
-        <div class="delight-card c-mint">
-          <div class="card-top-icon">
-            <img src="assets/011-fox-face.webp" alt="Kurdish Narration">
-          </div>
-          <h3 class="card-heading" data-lang="ku">خوێندنەوەی هێمن و ئۆفلاین</h3>
-          <h3 class="card-heading" data-lang="en" style="display:none;">Calm Native Kurdish Speech</h3>
-          <p class="card-desc" data-lang="ku">
-            دەنگی فەرمی بە کاتی وەستانی پێوانەیی (١.٤ چرکە لەنێوان وشەکاندا) بۆ ئەوەی منداڵ بە بێ پەلەپەل و دڵەڕاوکێ گوێبیستی دەربڕینەکان بێت.
-          </p>
-          <p class="card-desc" data-lang="en" style="display:none;">
-            Calm pacing with 1.4-second rest pauses between vocabulary words to maximize phonetic clarity and attention.
-          </p>
-        </div>
-
-        <!-- Feature 4 -->
-        <div class="delight-card c-sun">
-          <div class="card-top-icon">
-            <img src="assets/029-elephant.webp" alt="One Letter A Day">
-          </div>
-          <h3 class="card-heading" data-lang="ku">سیستەمی یەک پیتی ڕۆژانە</h3>
-          <h3 class="card-heading" data-lang="en" style="display:none;">One Letter A Day Habit</h3>
-          <p class="card-desc" data-lang="ku">
-            بۆ پاراستنی چاو و دەروونی منداڵ لە ماندووبوون لەسەر شاشە؛ ڕۆژانە یەک پیتی نوێ دەکرێتەوە و دواتر منداڵ دەچێتە باخچەی پاداشت و یارییەکان.
-          </p>
-          <p class="card-desc" data-lang="en" style="display:none;">
-            Thoughtfully limits cognitive fatigue by pacing progression to one new letter per local day, guiding children toward games and story reviews.
-          </p>
-        </div>
-      </div>
-
-      <!-- Google Play Certification Box -->
-      <div class="certification-panel">
-        <div class="cert-grid">
-          <div>
-            <span class="section-label" style="background:#ECFDF5; color:#059669;">سەلامەتیی فەرمی گووگڵ • Official Compliance</span>
-            <h3 style="font-size: 2rem; font-weight: 800; color: var(--ink-primary); margin: 14px 0 10px;">
-              پارێزراو بۆ خێزان و بەستراو بە یاساکانی Google Play
-            </h3>
-            <p style="color: var(--ink-secondary); font-size: 1.1rem; line-height: 1.8;">
-              ئەپڵیکەیشنی «پەپوولە» بە فەرمی بەپێی سیاسەتە نوێیەکانی گووگڵ بۆ ئەپڵیکەیشنی منداڵان و خێزان (Families Policy) بیناکراوە:
-            </p>
-
-            <ul class="cert-checklist">
-              <li>
-                <span class="tick">✓</span>
-                <span><strong>بێ هەژمار و تۆماربوون:</strong> منداڵ پێویستی بە دروستکردنی هیچ ئەکاونت و داخڵکردنی ئیمەیڵێک نییە.</span>
-              </li>
-              <li>
-                <span class="tick">✓</span>
-                <span><strong>پارێزراوی تەواوی مایکرۆفۆن:</strong> مایکرۆفۆن تەنها لەسەر خودی مۆبایلەکە لە کاتی ڕاستەقینەدا بۆ مەشقی دەنگ بەکاردێت و دەنگ لە هیچ کوێ پاشەکەوت ناکرێت.</span>
-              </li>
-              <li>
-                <span class="tick">✓</span>
-                <span><strong>دەروازەی دایک و باوک (Parental Gate):</strong> هیچ بەستەرێکی دەرەکی ناکرێتەوە بەبێ پرسیارێکی ژمێریاری کە تەنها گەورەکان دەتوانن وەڵامی بدەنەوە.</span>
-              </li>
-              <li>
-                <span class="tick">✓</span>
-                <span><strong>داتای لۆکاڵ لەسەر مۆبایلەکەت:</strong> هەموو ئەستێرە و سەرکەوتنەکانی منداڵەکە تەنها لەسەر مۆبایلەکەت دەمێننەوە و پەیوەندی بە هیچ سێرڤەرێکەوە نییە.</span>
-              </li>
-            </ul>
-          </div>
-
-          <div class="cert-card-right">
-            <img src="assets/icon.png" alt="Papula Icon" style="width: 104px; height: 104px; margin: 0 auto 16px; border-radius: 24px; box-shadow: var(--shadow-sm);">
-            <h4 style="font-size: 1.4rem; font-weight: 800; color: var(--ink-primary); margin-bottom: 6px;">پەپوولە (Papula)</h4>
-            <p style="color: var(--primary); font-weight: 600; font-size: 0.95rem; margin-bottom: 24px;">وەشانی ١.٠.٠ • <code>com.papula.kids</code></p>
-            <a href="privacy.html" class="btn-cta" style="width: 100%; margin-bottom: 12px; justify-content: center;">سیاسەتی تایبەتمەندی (Privacy)</a>
-            <a href="terms.html" class="btn-secondary" style="width: 100%; justify-content: center;">مەرجەکانی بەکارهێنان (Terms)</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Screenshots -->
-  <section id="screens" class="section" style="padding: 70px 0;">
-    <div class="container" style="text-align:center;">
-      <span class="section-label"><span data-lang="ku">سکرین شۆتەکان</span><span data-lang="en" style="display:none;">Screenshots</span></span>
-      <h2 class="section-heading" style="margin-top:10px;"><span data-lang="ku">بزانە ئەپەکە چۆنە</span><span data-lang="en" style="display:none;">See how it looks</span></h2>
-      <div class="shots-row">
-        <figure class="shot"><img data-lang="ku" src="assets/screens/ku-1.webp" alt="سکرین شۆتی پەپوولە 1" loading="lazy" width="270" height="480"><img data-lang="en" style="display:none;" src="assets/screens/en-1.webp" alt="Papula screenshot 1" loading="lazy" width="270" height="480"></figure>
-        <figure class="shot"><img data-lang="ku" src="assets/screens/ku-2.webp" alt="سکرین شۆتی پەپوولە 2" loading="lazy" width="270" height="480"><img data-lang="en" style="display:none;" src="assets/screens/en-2.webp" alt="Papula screenshot 2" loading="lazy" width="270" height="480"></figure>
-        <figure class="shot"><img data-lang="ku" src="assets/screens/ku-3.webp" alt="سکرین شۆتی پەپوولە 3" loading="lazy" width="270" height="480"><img data-lang="en" style="display:none;" src="assets/screens/en-3.webp" alt="Papula screenshot 3" loading="lazy" width="270" height="480"></figure>
-        <figure class="shot"><img data-lang="ku" src="assets/screens/ku-4.webp" alt="سکرین شۆتی پەپوولە 4" loading="lazy" width="270" height="480"><img data-lang="en" style="display:none;" src="assets/screens/en-4.webp" alt="Papula screenshot 4" loading="lazy" width="270" height="480"></figure>
-        <figure class="shot"><img data-lang="ku" src="assets/screens/ku-5.webp" alt="سکرین شۆتی پەپوولە 5" loading="lazy" width="270" height="480"><img data-lang="en" style="display:none;" src="assets/screens/en-5.webp" alt="Papula screenshot 5" loading="lazy" width="270" height="480"></figure>
-        <figure class="shot"><img data-lang="ku" src="assets/screens/ku-6.webp" alt="سکرین شۆتی پەپوولە 6" loading="lazy" width="270" height="480"><img data-lang="en" style="display:none;" src="assets/screens/en-6.webp" alt="Papula screenshot 6" loading="lazy" width="270" height="480"></figure>
-        <figure class="shot"><img data-lang="ku" src="assets/screens/ku-7.webp" alt="سکرین شۆتی پەپوولە 7" loading="lazy" width="270" height="480"><img data-lang="en" style="display:none;" src="assets/screens/en-7.webp" alt="Papula screenshot 7" loading="lazy" width="270" height="480"></figure>
-        <figure class="shot"><img data-lang="ku" src="assets/screens/ku-8.webp" alt="سکرین شۆتی پەپوولە 8" loading="lazy" width="270" height="480"><img data-lang="en" style="display:none;" src="assets/screens/en-8.webp" alt="Papula screenshot 8" loading="lazy" width="270" height="480"></figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Download Section -->
-  <section id="download" class="section" style="background: linear-gradient(135deg, var(--primary-soft) 0%, #FFFFFF 100%); padding: 80px 0;">
-    <div class="container" style="text-align: center; max-width: 760px;">
-      <span class="section-label">داگرتنی بێبەرامبەر</span>
-      <h2 class="section-heading" style="margin-top: 10px;">ئامادەیت منداڵەکەت بە چێژ و شادی فێری کوردی بێت؟</h2>
-      <p class="section-desc" style="margin-bottom: 36px;">
-        ئەپڵیکەیشنی پەپوولە بە بێ هیچ بەرامبەرێک و بێ هیچ ڕیکلامێک بۆ تەواوی منداڵانی کورد لە هەموو جیهاندا دروستکراوە.
-      </p>
-
-      <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-        <a href="https://play.google.com/store/apps/details?id=com.papula.kids" class="btn-cta" style="padding: 15px 34px; font-size: 1.1rem;">
-          <span>📱</span>
-          <span>Google Play Store</span>
-        </a>
-        <a href="mailto:support@papulakids.com" class="btn-secondary" style="padding: 15px 30px;">
-          <span>✉️</span>
-          <span>پەیوەندی بە پەرەپێدەر</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-cols">
-        <div>
-          <div class="brand-badge" style="color: #FFFFFF;">
-            <div class="brand-icon-wrap" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2);">
-              <img src="assets/icon.png" alt="Papula Logo">
-            </div>
-            <div>
-              <span class="brand-title" style="color: #FFFFFF;">پەپوولە</span>
-              <span class="brand-tag" style="color: #94A3B8;">Papula Kids</span>
-            </div>
-          </div>
-          <p class="footer-desc">
-            پڕۆژەیەکی پەروەردەیی تایبەت بە فێربوونی پیت، دەنگ و نووسینی زمانی کوردی بۆ منداڵان بە ستانداردی جیهانی و فۆنتی فەرمیی IBM Plex Sans Arabic.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="footer-head">بەستەرە سەرەکییەکان</h4>
-          <ul class="footer-nav">
-            <li><a href="#home">پەڕەی سەرەکی</a></li>
-            <li><a href="#alphabet">تەختەی پیتەکان</a></li>
-            <li><a href="#features">تایبەتمەندییەکان</a></li>
-            <li><a href="privacy.html">سیاسەتی تایبەتمەندی (Privacy Policy)</a></li>
-            <li><a href="terms.html">مەرجەکانی بەکارهێنان (Terms of Service)</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 class="footer-head">ئاسایش و پەرەپێدەر</h4>
-          <ul class="footer-nav">
-            <li>پەرەپێدەر: Awata Hassan</li>
-            <li>پاکێج: <code>com.papula.kids</code></li>
-            <li>یاسای پاراستنی منداڵان: COPPA & GDPR-K</li>
-            <li>ئیمەیڵ: <a href="mailto:support@papulakids.com">support@papulakids.com</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-bottom-bar">
-        <div>&copy; ٢٠٢٦ پەپوولە (Papula: Kurdish for Kids). هەموو مافەکان پارێزراون.</div>
-        <div>Typography: IBM Plex Sans Arabic &bull; Google Play Families Approved</div>
-      </div>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
+<section class="get"><div class="wrap"><div class="get-card reveal">
+  <img class="float hide-s" src="assets/pics/butterfly.webp" alt="" width="256" height="256" style="s:120px;inset-block-start:8%;inset-inline-start:6%;r:-10deg">
+  <img class="float hide-s" src="assets/pics/white-medium-star.webp" alt="" width="256" height="256" style="s:86px;inset-block-end:10%;inset-inline-start:14%;d:.5s">
+  <img class="float hide-s" src="assets/pics/lion-face.webp" alt="" width="256" height="256" style="s:120px;inset-block-end:8%;inset-inline-end:8%;d:.8s">
+  <img class="float hide-s" src="assets/pics/crown.webp" alt="" width="256" height="256" style="s:90px;inset-block-start:10%;inset-inline-end:14%;d:.2s">
+  <h2><span data-en="Let your child start today" >با منداڵەکەت ئەمڕۆ دەست پێ بکات</span></h2>
+  <p><span data-en="Papula is free and has no ads. One letter, every day." >پەپوولە بێ بەرامبەرە و بێ ڕیکلامە. یەک پیت، ڕۆژانە.</span></p>
+  <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.papula.kids"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 2.8v18.4c0 .6.7 1 1.2.7l15-9.2c.5-.3.5-1 0-1.3L6.2 2.1C5.7 1.8 5 2.2 5 2.8z"/></svg><span><span data-en="Get it on Google Play" >داگرتن لە Google Play</span></span></a>
+</div></div></section>
+</main>
+<footer class="foot"><div class="wrap">
+  <div class="foot-grid">
+    <div><a class="brand" href="index.html"><img src="assets/icon.png" alt="" width="46" height="46"><span>پەپوولە</span></a>
+      <p data-en="The Kurdish alphabet for kids: a letter a day, games, stories and a butterfly garden. No ads, no internet needed." >ئەلفوبێی کوردی بۆ منداڵان: پیتی ڕۆژانە، یاری، چیرۆک و باخچەی پەپوولە. بێ ڕیکلام و بێ ئینتەرنێت.</p></div>
+    <div><h4><span data-en="Site" >ماڵپەڕ</span></h4><a href="index.html#how"><span data-en="How it works" >چۆن کار دەکات</span></a><a href="index.html#games"><span data-en="Games" >یارییەکان</span></a><a href="index.html#parents"><span data-en="Parents" >دایک و باوک</span></a><a href="index.html#faq"><span data-en="FAQ" >پرسیار</span></a></div>
+    <div><h4><span data-en="Legal and contact" >یاسایی و پەیوەندی</span></h4><a href="privacy.html"><span data-en="Privacy policy" >سیاسەتی تایبەتمەندی</span></a><a href="terms.html"><span data-en="Terms of use" >مەرجەکانی بەکارهێنان</span></a><a href="mailto:support@papulakids.com">support@papulakids.com</a><a href="https://play.google.com/store/apps/details?id=com.papula.kids">Google Play</a></div>
+  </div>
+  <div class="legal"><span dir="ltr">© <span id="year">2026</span> Papula · Awata Hassan</span><span>com.papula.kids</span></div>
+</div></footer>
+<script src="script.js"></script>
+</body></html>

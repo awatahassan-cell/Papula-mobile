@@ -1,9 +1,5 @@
-// ==========================================================================
-// Papula (پەپوولە) - Interactive Engine
-// Kurdish Alphabet Explorer, Bilingual Modes, and Navigation
-// ==========================================================================
-
-// Kurdish Alphabet Showcase Data (Letter, Example Word, English, 3D Picture)
+// Papula website: language switch, rotating phone, day-of-learning steps, alphabet explorer, small motion.
+// The ALPHABET_DATA block below is rebuilt from the app's own letters by scripts/build-site-alphabet.cjs.
 const ALPHABET_DATA = {
   "ئـ": { word: "ئاو", en: "Water", img: "assets/letters/023-droplet.webp" },
   "ا": { word: "ئاگر", en: "Fire", img: "assets/letters/031-fire.webp" },
@@ -41,124 +37,86 @@ const ALPHABET_DATA = {
   "ێ": { word: "سێو", en: "Tasty Apple", img: "assets/letters/003-red-apple.webp" }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  // 1. Interactive Alphabet Explorer
-  const tilesContainer = document.getElementById('alphabetTiles');
-  const inspectLetter = document.getElementById('inspectLetter');
-  const inspectWord = document.getElementById('inspectWord');
-  const inspectEn = document.getElementById('inspectEn');
-  const inspectImg = document.getElementById('inspectImg');
+(function () {
+  'use strict';
+  var doc = document, root = doc.documentElement;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.classList.add('js');
 
-  if (tilesContainer) {
-    const letters = Object.keys(ALPHABET_DATA);
-    tilesContainer.innerHTML = '';
+  /* ---------- Language: every element with data-en keeps its Kurdish original in data-ku ---------- */
+  var nodes = doc.querySelectorAll('[data-en]');
+  nodes.forEach(function (el) { el.setAttribute('data-ku', el.innerHTML); });
+  function setLang(lang) {
+    root.lang = lang === 'en' ? 'en' : 'ckb';
+    root.dir = lang === 'en' ? 'ltr' : 'rtl';
+    nodes.forEach(function (el) { el.innerHTML = el.getAttribute(lang === 'en' ? 'data-en' : 'data-ku'); });
+    doc.querySelectorAll('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === lang)); });
+    doc.querySelectorAll('[data-only]').forEach(function (el) { el.hidden = el.dataset.only !== lang; });
+    doc.querySelectorAll('img[data-src-en]').forEach(function (img) { img.src = lang === 'en' ? img.dataset.srcEn : img.dataset.srcKu; });
+    var t = doc.querySelector('title');
+    if (t && t.dataset.en) t.textContent = lang === 'en' ? t.dataset.en : t.dataset.ku;
+    try { localStorage.setItem('papula_lang', lang); } catch (e) {}
+    renderInspect();
+  }
+  var title = doc.querySelector('title');
+  if (title && title.dataset.en) title.dataset.ku = title.textContent;
+  var saved = 'ku';
+  try { saved = localStorage.getItem('papula_lang') || 'ku'; } catch (e) {}
 
-    letters.forEach((char, index) => {
-      const tile = document.createElement('div');
-      tile.className = 'letter-tile' + (index === 2 ? ' active' : ''); // 'ب' active by default
-      tile.innerHTML = `<span class="char">${char}</span>`;
+  /* ---------- Mobile menu ---------- */
+  var menu = doc.querySelector('.menu-btn'), nav = doc.querySelector('.nav');
+  if (menu && nav) {
+    menu.addEventListener('click', function () { var o = nav.classList.toggle('open'); menu.setAttribute('aria-expanded', String(o)); });
+    nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') { nav.classList.remove('open'); menu.setAttribute('aria-expanded', 'false'); } });
+  }
 
-      tile.addEventListener('click', () => {
-        document.querySelectorAll('.letter-tile').forEach(t => t.classList.remove('active'));
-        tile.classList.add('active');
+  /* ---------- Hero phone: screens fade into each other ---------- */
+  var shots = doc.querySelectorAll('.stage .screen img');
+  if (shots.length > 1 && !reduce) {
+    var i = 0;
+    setInterval(function () { shots[i].classList.remove('on'); i = (i + 1) % shots.length; shots[i].classList.add('on'); }, 3200);
+  }
 
-        const item = ALPHABET_DATA[char];
-        if (item) {
-          inspectLetter.textContent = char;
-          inspectWord.textContent = item.word;
-          inspectEn.textContent = item.en;
-          inspectImg.src = item.img;
-          inspectImg.alt = item.word;
+  /* ---------- A day with Papula: pick a step, the phone shows it ---------- */
+  var steps = doc.querySelectorAll('.step'), dayShots = doc.querySelectorAll('.day-phone .screen img');
+  function pick(n) {
+    steps.forEach(function (s, k) { s.setAttribute('aria-selected', String(k === n)); });
+    dayShots.forEach(function (im, k) { im.classList.toggle('on', k === n); });
+  }
+  steps.forEach(function (s, k) { s.addEventListener('click', function () { pick(k); stopAuto(); }); s.addEventListener('mouseenter', function () { pick(k); }); });
+  var auto = null, cur = 0;
+  function stopAuto() { if (auto) { clearInterval(auto); auto = null; } }
+  if (steps.length) { pick(0); if (!reduce) auto = setInterval(function () { cur = (cur + 1) % steps.length; pick(cur); }, 4200); }
 
-          // Gentle animation
-          inspectImg.style.transform = 'scale(0.8) rotate(-8deg)';
-          setTimeout(() => {
-            inspectImg.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            inspectImg.style.transform = 'scale(1) rotate(0deg)';
-          }, 30);
-        }
+  /* ---------- Alphabet explorer ---------- */
+  var box = doc.getElementById('tiles'), bigEl = doc.getElementById('inspectLetter'), wordEl = doc.getElementById('inspectWord'), enEl = doc.getElementById('inspectEn'), imgEl = doc.getElementById('inspectImg');
+  var current = 'ب';
+  function renderInspect() {
+    if (!box || !ALPHABET_DATA[current]) return;
+    var d = ALPHABET_DATA[current];
+    bigEl.textContent = current; wordEl.textContent = d.word; enEl.textContent = d.en;
+    imgEl.src = d.img; imgEl.alt = d.word;
+    box.querySelectorAll('.tile').forEach(function (t) { t.setAttribute('aria-pressed', String(t.textContent === current)); });
+  }
+  if (box) {
+    Object.keys(ALPHABET_DATA).forEach(function (ch) {
+      var b = doc.createElement('button'); b.type = 'button'; b.className = 'tile'; b.textContent = ch; b.setAttribute('aria-label', ch + ' - ' + ALPHABET_DATA[ch].word);
+      b.addEventListener('click', function () {
+        current = ch; renderInspect();
+        if (!reduce) { imgEl.style.transform = 'scale(.7) rotate(-8deg)'; setTimeout(function () { imgEl.style.transform = ''; }, 30); }
       });
-
-      tilesContainer.appendChild(tile);
+      box.appendChild(b);
     });
   }
 
-  // 2. Language Switcher (Kurdish / English)
-  const savedLang = localStorage.getItem('papula_lang') || 'ku';
-  applyLanguage(savedLang);
+  /* ---------- Reveal on scroll (content stays visible if this never runs) ---------- */
+  var rev = doc.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0.12 });
+    rev.forEach(function (el) { io.observe(el); });
+  } else { rev.forEach(function (el) { el.classList.add('in'); }); }
 
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const lang = btn.getAttribute('data-set-lang');
-      applyLanguage(lang);
-    });
-  });
-
-  // 3. Tab Switcher for Legal Pages (Privacy Policy & Terms)
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-tab');
-      tabBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      document.querySelectorAll('.tab-content').forEach(panel => {
-        panel.style.display = panel.id === targetId ? 'block' : 'none';
-      });
-    });
-  });
-
-  // 4. Mobile Navigation Menu Toggle
-  const mobileToggle = document.querySelector('.mobile-toggle');
-  const navMenu = document.querySelector('.nav-menu');
-
-  if (mobileToggle && navMenu) {
-    mobileToggle.addEventListener('click', () => {
-      const isOpen = navMenu.style.display === 'flex';
-      navMenu.style.display = isOpen ? 'none' : 'flex';
-      if (!isOpen) {
-        navMenu.style.flexDirection = 'column';
-        navMenu.style.position = 'absolute';
-        navMenu.style.top = '86px';
-        navMenu.style.left = '20px';
-        navMenu.style.right = '20px';
-        navMenu.style.background = '#FFFFFF';
-        navMenu.style.padding = '20px';
-        navMenu.style.boxShadow = '0 16px 36px rgba(0,0,0,0.12)';
-        navMenu.style.borderRadius = '24px';
-        navMenu.style.border = '1px solid #E2D9CE';
-      }
-    });
-  }
-});
-
-function applyLanguage(lang) {
-  localStorage.setItem('papula_lang', lang);
-  const html = document.documentElement;
-
-  if (lang === 'en') {
-    html.setAttribute('lang', 'en');
-    html.setAttribute('dir', 'ltr');
-  } else {
-    html.setAttribute('lang', 'ku');
-    html.setAttribute('dir', 'rtl');
-  }
-
-  // Update button active class
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    if (btn.getAttribute('data-set-lang') === lang) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
-  });
-
-  // Show/Hide translated elements
-  document.querySelectorAll('[data-lang]').forEach(el => {
-    if (el.getAttribute('data-lang') === lang) {
-      el.style.display = el.tagName === 'SPAN' ? 'inline' : (el.tagName === 'DIV' || el.tagName === 'P' || el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3' ? 'block' : '');
-    } else {
-      el.style.display = 'none';
-    }
-  });
-}
+  doc.querySelectorAll('.lang button').forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.lang); }); });
+  var y = doc.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+  setLang(saved);
+})();
