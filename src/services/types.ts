@@ -44,7 +44,7 @@ export interface LetterItem {
   soundPlaceholder: string;
   phoneticAudioFreq?: number; // fallback synthetic frequency
   forms: LetterForms;
-  exampleWords: [ExampleWord, ExampleWord, ExampleWord];
+  exampleWords: ExampleWord[];
   isHeavySound?: boolean; // e.g. ڕ and ڵ
   strokeGuide?: StrokeGuide;
 }
