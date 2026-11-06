@@ -129,8 +129,8 @@ First release: one new letter a day, seven games, illustrated stories, a butterf
 - جۆر: App (free)
 - تاگەکان: Education, Educational games, Kids learning, Language learning
 - ئیمەیڵی پەیوەندی: support@papulakids.com
-- ماڵپەڕ: https://papulakids.com
-- لینکی سیاسەتی تایبەتمەندی: https://papulakids.com/privacy
+- ماڵپەڕ: https://paupla.chimanova.com
+- لینکی سیاسەتی تایبەتمەندی: https://paupla.chimanova.com/privacy
 - پەرەپێدەر: Awata Hassan
 
 

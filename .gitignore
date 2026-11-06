@@ -56,3 +56,4 @@ build-status.txt
 # Local inspection outputs and generated export directories
 /work/
 /screen*.png
+*.zip
