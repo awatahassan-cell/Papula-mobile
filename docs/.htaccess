@@ -1,31 +1,20 @@
-# Apache configuration for Papula website (paupla.chimanova.com)
+# Hostinger / Apache / LiteSpeed Configuration for Papula (paupla.chimanova.com)
+
+DirectoryIndex index.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
 
-  # Redirect /privacy to /privacy.html and /terms to /terms.html if requested without extension
+  # Serve .html if accessed without extension (e.g., /privacy -> /privacy.html)
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME}\.html -f
-  RewriteRule ^(.*)$ $1.html [L]
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.+?)/?$ $1.html [L]
 </IfModule>
 
-# MIME Types for WebP and Fonts
+# MIME Types for WebP and modern web fonts
 <IfModule mod_mime.c>
   AddType image/webp .webp
   AddType font/ttf .ttf
   AddType font/woff .woff
   AddType font/woff2 .woff2
-</IfModule>
-
-# Browser Caching
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresDefault "access plus 1 month"
-  ExpiresByType text/html "access plus 0 seconds"
-  ExpiresByType text/css "access plus 1 year"
-  ExpiresByType application/javascript "access plus 1 year"
-  ExpiresByType image/webp "access plus 1 year"
-  ExpiresByType image/png "access plus 1 year"
-  ExpiresByType font/ttf "access plus 1 year"
 </IfModule>
