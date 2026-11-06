@@ -15,7 +15,7 @@ const avatars = [
   { emoji: '🦊', label: 'ڕێوی' },
   { emoji: '🐻', label: 'ورچ' },
   { emoji: '🦁', label: 'شێر' },
-  { emoji: '🐰', label: 'کەرۆشک' },
+  { emoji: '🐰', label: 'کەروێشک' },
   { emoji: '🐬', label: 'دۆلفین' },
 ];
 

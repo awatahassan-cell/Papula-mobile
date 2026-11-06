@@ -37,9 +37,9 @@ export const storyNarration: Record<string, StoryDirection> = {
   'alfube-nwe-19': plan('منداڵەکە بە خۆشی باسی چاندنی دار دەکات؛ دایک بە نەرمی داوای گەڕانەوە دەکات.', page(['excited'], [cue('ـ ئۆی، نازی،', 'pause')])),
   'alfube-nwe-20': plan('چاندنی دار و بانگی دایک؛ گۆڕینی دەنگ لەنێوان منداڵی خەریک و دایکی بانگکەر.', page(['playful'], [cue('ـ وەرە نازی،', 'pause'), cue('ـ وا دێم دایە،', 'pause', 'excited')])),
   'alfube-nwe-21': plan('خۆشەویستی بۆ مەڕە زەردەکە؛ بانگکردنی یارییانە و بەڵێنی ئاودان.', page(['playful'], [cue('ئەم مەڕە زەردە،'), cue('وا دەڕۆم ئاوی دەدەم،', 'pause')])),
-  'alfube-nwe-22': plan('مێوژفرۆش و منداڵ؛ بانگی بازاڕ، داوای منداڵ و وەڵامی گەرم.', page(['playful'], [cue('ـ مام ژۆراب،', 'pause', 'excited'), cue('ـ زوو وەرە زەینەب،', 'pause')])),
+  'alfube-nwe-22': plan('مێوژفرۆش و منداڵ؛ بانگی بازاڕ، داوای منداڵ و وەڵامی گەرم.', page(['playful'], [cue('ـ مام زۆراب،', 'pause', 'excited'), cue('ـ زوو وەرە زەینەب،', 'pause')])),
   'alfube-nwe-23': plan('دیارییەکی نوێ بۆ زەینەب؛ بانگی خۆش و خۆشحاڵی لە سوپاسکردندا.', page([], [cue('ـ مامە بەبەی بۆ ناردووم؟', 'pause'), cue('بژی دایە،', 'excited')])),
-  'alfube-nwe-24': plan('خۆشی بە باران و گەشەی دار؛ پاشان سەرنج بۆ چوونی مام ژۆراب.', page(['excited'], [cue('ئەمرۆ ئاو زۆر دەبێت،', 'pause'), cue('بنواڕە مام ژۆراب،', 'pause', 'playful')])),
+  'alfube-nwe-24': plan('خۆشی بە باران و گەشەی دار؛ پاشان سەرنج بۆ چوونی مام زۆراب.', page(['excited'], [cue('ئەمرۆ ئاو زۆر دەبێت،', 'pause'), cue('بنواڕە مام زۆراب،', 'pause', 'playful')])),
   'alfube-nwe-25': plan('بینینی تەیارە و دۆزینەوەی لە ناو داران؛ بانگهێشت بۆ یاری و کێبڕکێ.', page(['excited'], [cue('تەیارەی واتان دیوە؟', 'pause', 'playful'), cue('ئازاد تۆ دەتوانی', 'pause', 'playful')])),
   'alfube-nwe-26': plan('دەستگرتن لە ئازاردانی تەیر؛ سەرنجڕاکێشان، سەرسوڕمان، پاشان ئاگادارکردنەوەی جدی.', page([], [cue('ـ ئای، ئای، ئازاد،', 'pause'), cue('ـ وەس بە دارا،', 'pause')])),
   'alfube-nwe-27': plan('داوای سێ سێو؛ ژماردنی ڕوون و کۆتایییەکی یارییانە.', page(['playful'], [cue('ـ ڕاوەستە نەسرین،', 'pause'), cue('ئەوە سێوێ،'), cue('ـ بەسە، بەسە،', 'pause', 'playful')])),
@@ -154,7 +154,7 @@ const miniStories: Record<string, StoryDirection> = {
   va: mini('دانانی گوڵ لە ڤازە؛ هێمنی و چێژ لە ڕازاندنەوە.', undefined, 'playful', undefined),
   qaf: mini('کێشانی قەلا بە قەلەم؛ سەرنج، شادیی داهێنان و ڕێکخستن.', undefined, 'playful', undefined),
   ghayn: mini('غونچە دەبێتە گوڵ؛ سەرنج، چاوەڕوانی و سەرسوڕمانی ڕۆژی دواتر.', undefined, undefined, 'excited'),
-  ayn: mini('دۆزینەوەی عەینەک، گەڕاندنەوە و سوپاسی عومەر؛ گەرم و میهرەبان.', 'playful', undefined, undefined),
+  ayn: mini('دۆزینەوەی چاویلکە، گەڕاندنەوە و سوپاسی عومەر؛ گەرم و میهرەبان.', 'playful', undefined, undefined),
   ha_hawa: mini('هانا هەنار لەگەڵ هێمن دابەش دەکات؛ میهرەبانی و هاوڕێیەتی.', undefined, undefined, 'playful'),
 };
 for (const [letterId, direction] of Object.entries(miniStories)) {

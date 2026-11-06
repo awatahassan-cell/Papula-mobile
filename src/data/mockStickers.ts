@@ -16,5 +16,5 @@ export const mockStickers: StickerItem[] = [
   { id: 'stk-honey', nameKu: 'هەنگوینی شاخ', emoji: '🍯', unlockedAtStars: 76, category: 'nature' },
   { id: 'stk-star', nameKu: 'ئەستێرەی زیرەکی', emoji: '⭐', unlockedAtStars: 94, category: 'space' },
   { id: 'stk-rocket', nameKu: 'فڕۆکەی خەیاڵ', emoji: '🚀', unlockedAtStars: 114, category: 'space' },
-  { id: 'stk-crown', nameKu: 'تاجی پالەوان', emoji: '👑', unlockedAtStars: 135, category: 'kurdish_culture' },
+  { id: 'stk-crown', nameKu: 'تاجی پاڵەوان', emoji: '👑', unlockedAtStars: 135, category: 'kurdish_culture' },
 ];

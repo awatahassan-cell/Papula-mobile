@@ -82,7 +82,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'alif',
     glyph: 'ا',
-    name: 'ئا',
+    name: 'ئا: بزوێنی درێژ',
     soundPlaceholder: '/audio/letters/alif.mp3',
     phoneticAudioFreq: 460,
     forms: { isolated: 'ا', initial: 'ا', medial: 'ـا', final: 'ـا' },
@@ -130,7 +130,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'waw_kurt',
     glyph: 'و',
-    name: 'ووی کورت',
+    name: 'ووی کوورت',
     soundPlaceholder: '/audio/letters/waw_kurt.mp3',
     phoneticAudioFreq: 1020,
     forms: { isolated: 'و', initial: 'و', medial: 'ـو', final: 'ـو' },
@@ -167,7 +167,7 @@ export const mockLetters: LetterItem[] = [
   {
     id: 'sar_e',
     glyph: 'ە',
-    name: 'بزوێن (ئە)',
+    name: 'بزوێنی کورت (ئە)',
     soundPlaceholder: '/audio/letters/sar_e.mp3',
     phoneticAudioFreq: 1000,
     forms: { isolated: 'ە', initial: 'ە', medial: 'ـە', final: 'ـە' },
@@ -546,9 +546,9 @@ export const mockLetters: LetterItem[] = [
       },
       {
         id: 'ee_3',
-        word: 'دێ',
+        word: 'لادێ',
         meaningEn: 'Green Village',
-        meaningKu: 'دێی سەوز',
+        meaningKu: 'لادێی سەوز',
         imageEmoji: '🏡',
         soundPlaceholder: '/audio/words/de.mp3',
         verifiedByTeacher: true,
@@ -685,9 +685,9 @@ export const mockLetters: LetterItem[] = [
       },
       {
         id: 'sh_2',
-        word: 'شەکەر',
+        word: 'شەکر',
         meaningEn: 'Sugar',
-        meaningKu: 'شەکەری شیرین',
+        meaningKu: 'شەکری شیرین',
         imageEmoji: '🍬',
         soundPlaceholder: '/audio/words/shakar.mp3',
         verifiedByTeacher: true,
@@ -766,9 +766,9 @@ export const mockLetters: LetterItem[] = [
     exampleWords: [
       {
         id: 'l_1',
-        word: 'لێمۆ',
+        word: 'لیمۆ',
         meaningEn: 'Lemon',
-        meaningKu: 'لێمۆی زەرد',
+        meaningKu: 'لیمۆی زەرد',
         imageEmoji: '🍋',
         soundPlaceholder: '/audio/words/lemo.mp3',
         verifiedByTeacher: true,
@@ -841,9 +841,9 @@ export const mockLetters: LetterItem[] = [
     exampleWords: [
       {
         id: 'k_1',
-        word: 'کەرۆشک',
+        word: 'کەروێشک',
         meaningEn: 'Rabbit',
-        meaningKu: 'کەرۆشکی سپی',
+        meaningKu: 'کەروێشکی سپی',
         imageEmoji: '🐰',
         soundPlaceholder: '/audio/words/karoshk.mp3',
         verifiedByTeacher: true,
@@ -1072,10 +1072,10 @@ export const mockLetters: LetterItem[] = [
       },
       {
         id: 'h2_2',
-        word: 'حەلاوە',
-        meaningEn: 'Sweets / Candy',
-        meaningKu: 'حەلاوەی شیرین',
-        imageEmoji: '🍬',
+        word: 'حەوشە',
+        meaningEn: 'Yard',
+        meaningKu: 'حەوشەی ماڵ',
+        imageEmoji: '🏠',
         soundPlaceholder: '/audio/words/halawa.mp3',
         verifiedByTeacher: true,
       },
@@ -1248,10 +1248,10 @@ export const mockLetters: LetterItem[] = [
     exampleWords: [
       {
         id: 'gh_1',
-        word: 'غەزال',
-        meaningEn: 'Little Gazelle',
-        meaningKu: 'غەزالی بچووک',
-        imageEmoji: '🦌',
+        word: 'غاز',
+        meaningEn: 'Goose',
+        meaningKu: 'غازی سپی',
+        imageEmoji: '🪿',
         soundPlaceholder: '/audio/words/ghazal.mp3',
         verifiedByTeacher: true,
       },
@@ -1285,9 +1285,9 @@ export const mockLetters: LetterItem[] = [
     exampleWords: [
       {
         id: 'ay_1',
-        word: 'عەینەک',
-        meaningEn: 'Glasses',
-        meaningKu: 'عەینەکی چاو',
+        word: 'عەبا',
+        meaningEn: 'Cloak',
+        meaningKu: 'عەبای گەرم',
         imageEmoji: '👓',
         soundPlaceholder: '/audio/words/aynak.mp3',
         verifiedByTeacher: true,
