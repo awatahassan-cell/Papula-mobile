@@ -7,9 +7,10 @@ const distDir = path.join(root, 'dist-website');
 
 console.log('Building website distribution package in:', distDir);
 
-if (!fs.existsSync(distDir)) {
-  fs.mkdirSync(distDir, { recursive: true });
+if (fs.existsSync(distDir)) {
+  fs.rmSync(distDir, { recursive: true, force: true });
 }
+fs.mkdirSync(distDir, { recursive: true });
 
 // Copy website assets
 function copyRecursive(src, dest) {
