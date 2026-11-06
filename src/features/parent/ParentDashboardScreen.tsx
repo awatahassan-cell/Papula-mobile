@@ -19,6 +19,8 @@ import { BedtimeSettings } from '../../components/BedtimeSettings';
 
 const tabs=[{id:'progress',label:'پێشکەوتن',Icon:TrendingUp},{id:'colors',label:'ڕەنگەکان',Icon:Palette},{id:'settings',label:'ڕێکخستن',Icon:SlidersHorizontal}] as const;
 const voices=[{id:'Papula',voiceId:'tkI70vi7ETrk5NakcLUP',label:'دەنگی پەپوولە'}];
+/** The subscription card is hidden while the app is free and has no real billing: a payment screen that cannot charge breaks Google Play's policies. */
+const PAID_PLANS_ENABLED = false;
 export const ParentDashboardScreen:React.FC=()=>{
   const s=useThemeStyles(baseStyles);
   const {colors:c}=useAppearance();
@@ -67,7 +69,7 @@ export const ParentDashboardScreen:React.FC=()=>{
       <View style={s.sheet}>{heading(Volume2,'دەنگ و گوێگرتن','دەنگەکان بۆ منداڵەکەت ڕێک بخەن.')}<View style={s.toggle}><View style={s.copy}><Text style={s.settingTitle}>دەنگەکانی یاری</Text><Text style={s.hint}>دەنگی ئافەرم و چالاکییەکان</Text></View><Switch accessibilityLabel="دەنگەکانی یاری" value={parentSettings.soundFxEnabled} onValueChange={value=>updateParentSettings({soundFxEnabled:value})} trackColor={{false:c.edge,true:c.mint}}/></View><Text style={s.settingTitle}>بەرزی دەنگی خوێندنەوە</Text><View style={s.pills}>{[0,.25,.5,.75,1].map(value=><TouchableOpacity accessibilityRole="radio" accessibilityLabel={`بەرزی دەنگ ${value*100}٪`} accessibilityState={{checked:parentSettings.narrationVolume===value}} aria-checked={parentSettings.narrationVolume===value} key={value} onPress={()=>updateParentSettings({narrationVolume:value})} style={[s.pill,parentSettings.narrationVolume===value&&s.pillActive]}><Text style={[s.pillText,parentSettings.narrationVolume===value&&s.pillTextActive]}>{value*100}٪</Text></TouchableOpacity>)}</View><Text style={s.settingTitle}>دەنگی خوێنەر</Text><View style={s.voiceList}>{voices.map(item=><TouchableOpacity key={item.id} accessibilityRole="button" accessibilityState={{selected:voice===item.id}} onPress={()=>{setVoice(item.id);soundService.setVoice(item.id,item.voiceId);void soundService.speakWord('سڵاو هاوڕێی شیرینم، بەخێربێیت بۆ پەپوولە.',{voiceId:item.voiceId});}} style={[s.voiceOption,voice===item.id&&s.profileActive]}><Volume2 size={19} color={c.mint}/><Text style={s.profileName}>{item.label}</Text>{voice===item.id&&<Check size={17} color={c.mint}/>}</TouchableOpacity>)}</View>
         <Text style={s.hint}>{bundledCount} دەنگی پەپوولە لە ناو ئەپەکەدان؛ بەبێ ئینتەرنێت گوێیان لێ بگرە.</Text>
       </View>
-      <View style={s.membership}><Star size={26} color={c.coralDark}/><Text style={s.sectionTitle}>پەپوولە پڵەس</Text><Text style={s.hint}>{parentSettings.isSubscribed?'ئابوونەکەت چالاکە':'چیرۆک و چالاکیی زیاتر بۆ گەشتی فێربوون'}</Text><TouchableOpacity accessibilityRole="button" onPress={()=>setPaywallOpen(true)} style={s.primary}><Text style={s.primaryText}>{parentSettings.isSubscribed?'بەڕێوەبردنی ئابوونە':'بینینی پلانەکان'}</Text></TouchableOpacity></View>
+      {PAID_PLANS_ENABLED&&<View style={s.membership}><Star size={26} color={c.coralDark}/><Text style={s.sectionTitle}>پەپوولە پڵەس</Text><Text style={s.hint}>{parentSettings.isSubscribed?'ئابوونەکەت چالاکە':'چیرۆک و چالاکیی زیاتر بۆ گەشتی فێربوون'}</Text><TouchableOpacity accessibilityRole="button" onPress={()=>setPaywallOpen(true)} style={s.primary}><Text style={s.primaryText}>{parentSettings.isSubscribed?'بەڕێوەبردنی ئابوونە':'بینینی پلانەکان'}</Text></TouchableOpacity></View>}
     </>}
   </ScrollView>;
 };

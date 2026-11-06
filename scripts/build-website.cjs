@@ -23,7 +23,7 @@ function copyRecursive(src, dest) {
       if (!fs.existsSync(destPath)) fs.mkdirSync(destPath, { recursive: true });
       copyRecursive(srcPath, destPath);
     } else {
-      if (entry.name.endsWith('.md') || entry.name.endsWith('.txt')) continue;
+      if (entry.name.endsWith('.md') || (entry.name.endsWith('.txt') && entry.name !== 'robots.txt')) continue;
       fs.copyFileSync(srcPath, destPath);
       console.log('  Copied:', entry.name);
     }
