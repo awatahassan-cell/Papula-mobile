@@ -1,9 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
 const srcDir = path.join(root, 'docs');
 const distDir = path.join(root, 'dist-website');
+const zipFile = path.join(root, 'paupla-website.zip');
 
 console.log('Building website distribution package in:', distDir);
 
@@ -33,3 +35,16 @@ function copyRecursive(src, dest) {
 
 copyRecursive(srcDir, distDir);
 console.log('\n[SUCCESS] Production website build ready in /dist-website!');
+
+// Create standard Unix zip using tar (forward slashes for Linux hosts like Hostinger/cPanel)
+console.log('\nCreating standard Unix paupla-website.zip...');
+if (fs.existsSync(zipFile)) {
+  fs.unlinkSync(zipFile);
+}
+try {
+  execSync(`tar -a -c -f "${zipFile}" *`, { cwd: distDir, stdio: 'inherit' });
+  const stat = fs.statSync(zipFile);
+  console.log(`[SUCCESS] paupla-website.zip created (${(stat.size / 1024 / 1024).toFixed(2)} MB) with forward slashes (/)!`);
+} catch (err) {
+  console.error('[ERROR] Failed to create zip with tar:', err.message);
+}

@@ -1,0 +1,20 @@
+# Hostinger / Apache / LiteSpeed Configuration for Papula (paupla.chimanova.com)
+
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Serve .html if accessed without extension (e.g., /privacy -> /privacy.html)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.+?)/?$ $1.html [L]
+</IfModule>
+
+# MIME Types for WebP and modern web fonts
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType font/ttf .ttf
+  AddType font/woff .woff
+  AddType font/woff2 .woff2
+</IfModule>
