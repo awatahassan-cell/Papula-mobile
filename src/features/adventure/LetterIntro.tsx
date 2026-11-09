@@ -67,7 +67,7 @@ export function LetterIntro({ letter, onDone }: { letter: Letter; onDone: () => 
       <TactileButton accessibilityRole="button" accessibilityLabel="دووبارە ببیستە" onPress={replay} style={[s.round, { backgroundColor: c.sky }]}><Volume2 size={30} color={c.mint} /></TactileButton>
     </View>
     {<>
-        <View style={[s.smallCard, { backgroundColor: c.paper, borderColor: c.mint }]}><Text style={[s.mid, { color: RED }]}>{letter.glyph}</Text></View>
+        <TactileButton accessibilityRole="button" accessibilityLabel={letter.name} onPress={() => { stopAll(); setCurrent(-1); void soundService.speakWord(letter.glyph, { letterName: letter.name }); }} style={[s.smallCard, { backgroundColor: c.paper, borderColor: c.mint }]}><Text style={[s.mid, { color: RED }]}>{letter.glyph}</Text></TactileButton>
         <View style={s.grid}>{words.map((item, i) => <TactileButton key={item.id} accessibilityRole="button" accessibilityLabel={item.word} onPress={() => { stopAll(); setCurrent(i); void soundService.speakWord(item.word, { playbackRate: SLOW_WORD_RATE }); }}
           style={[s.word, { backgroundColor: c.paper, borderColor: current === i ? '#f59e0b' : c.edge }, current === i && s.on]}>
           <CharacterPicture symbol={item.picture} size={72} animate={false} /><HighlightedWord word={item.word} glyph={letter.glyph} style={[s.wordText, { color: c.ink }]}/></TactileButton>)}</View>
