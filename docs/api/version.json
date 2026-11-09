@@ -1,13 +1,14 @@
 {
-  "latestVersionCode": 3,
-  "latestVersionName": "1.0.2",
+  "latestVersionCode": 4,
+  "latestVersionName": "1.0.3",
   "minSupportedVersionCode": 1,
   "title": "وەشانێکی نوێی پەپوولە بەردەستە! 🦋",
   "message": "تایبەتمەندی و پیت و یاریی نوێ بۆ پەپوولە زیاد کراوە. تکایە ئەپەکە نوێ بکەرەوە بۆ ئەزموونێکی باشتر.",
   "releaseNotes": [
+    "سیستەمی نوێکردنەوەی خۆکار لە ناو خودی ئەپ (In-App Update)",
+    "پشکنینی نوێکردنەوە لە بەشی ڕێکخستنی دایک و باوک",
     "فێربوونی پیتە نوێیەکان و وشەی دەوڵەمەندتر",
-    "کوالیتی بەرزتری دەنگ و ڕێنماییە ئۆفلاینەکان",
-    "خێراتربوونی ئەپڵیکەیشن و کارکردنی پارێزراو بۆ منداڵان"
+    "کوالیتی بەرزتری دەنگ و ڕێنماییە ئۆفلاینەکان"
   ],
   "playStoreUrl": "https://play.google.com/store/apps/details?id=com.papula.kids",
   "isMandatory": false
