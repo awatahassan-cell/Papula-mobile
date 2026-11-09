@@ -39,7 +39,7 @@ tab('letters', 'پیتەکان', '🔤', mockLetters.map(letter => {
 
 // 2. Sentences and instructions, by kind.
 const sentenceKinds = [
-  ['guide', 'ڕێنمایی شاشەکان'], ['freeplay', 'ڕێنمایی یاریی ئازاد'], ['adventure', 'ماجەرا و گەشتی پیت'],
+  ['guide', 'ڕێنمایی شاشەکان'], ['freeplay', 'ڕێنمایی یاریی ئازاد'], ['adventure', 'یاری و گەشتی پیت'],
   ['tip', 'ئافەرین و ڕێنمایی نووسین'], ['writing', 'نووسین'], ['lesson', 'وانە'], ['preview', 'بەخێربێن'],
 ];
 tab('sentences', 'ڕستە و ڕێنمایی', '💬', [
