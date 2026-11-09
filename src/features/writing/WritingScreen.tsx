@@ -20,6 +20,7 @@ import { StarRating } from '../../components/StarRating';
 import { mockLetters } from '../../data/mockLetters';
 import { getKurdishStrokeGuide } from '../../data/kurdishLetterGuides';
 import { soundService } from '../../services/soundService';
+import { rubricNarration } from '../../services/writingRubric';
 import { TracingScoreResult } from '../../services/tracingScorer';
 import { resamplePolyline } from '../../services/pathSimilarity';
 import { StrokePoint, WritingMode } from '../../services/types';
@@ -210,6 +211,12 @@ export const WritingScreen: React.FC = () => {
   const changeMode=(next:WritingMode)=>{stopDemo();void soundService.stopSpeaking();setMode(next);setResult(null);clear();usedHelp.current=false;attemptStarted.current=Date.now();};
   useLayoutEffect(() => { changeModeRef.current = changeMode; });
   const showDetails = detailsFor !== null && detailsFor === result;
+  // A result that needs another try says its advice aloud at once (the child may not read it), without opening the details.
+  useEffect(() => {
+    if (!result?.rubric || result.rubric.passes) return;
+    const narration = rubricNarration(result.rubric, result.stars);
+    if (narration.every(text => soundService.canSpeak(text))) void soundService.speakPhrases(narration);
+  }, [result]);
   // Passing a step moves the child on by itself after a moment; the buttons in the result still work at once.
   useEffect(() => {
     if (!result?.mastered || mode === 'independent' || showDetails) return;

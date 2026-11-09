@@ -39,8 +39,8 @@ export const RUBRIC_SENTENCES = {
   misplaced: 'خاڵەکە لە شوێنی خۆی نییە؛ نموونەکە ببینە.',
   duplicate: 'خاڵێکی زیادە نووسراوە.',
   steadiness: 'بە هێواشی و بە یەک جووڵە بنووسە.',
-  sizeSmall: 'پیتەکەت زۆر بچووکە؛ گەورەتر بینووسە.',
-  sizeBig: 'پیتەکە زۆر گەورەیە؛ بچووکتر بینووسە.',
+  sizeSmall: 'گەورەتر بینووسە.',
+  sizeBig: 'بچووکتر بینووسە.',
   flowRtl: 'لە ڕاستەوە دەست پێ بکە.',
   flowTtb: 'لە سەرەوە دەست پێ بکە.',
   flowOrder: 'سەرەتا پیتەکە بنووسە، پاشان خاڵەکان.',
@@ -174,7 +174,7 @@ export function buildWritingRubric(guide: StrokeGuide, raw: StrokePoint[][], ali
     tidiness: tidiness < 80 ? [T.tidiness] : [],
   };
   const scores: Record<RubricId, number> = { shape, parts, steadiness, size, flow, tidiness };
-  const order: RubricId[] = ['parts', 'shape', 'size', 'tidiness', 'steadiness', 'flow'];
+  const order: RubricId[] = ['parts', 'size', 'shape', 'tidiness', 'steadiness', 'flow'];
   const criteria = (Object.keys(scores) as RubricId[]).map(id => ({ id, labelKu: RUBRIC_LABELS[id], score: Math.round(scores[id]), status: status(scores[id]), tipKu: tips[id].join(' ') || undefined }));
   const overall = Math.round(criteria.reduce((sum, c) => sum + c.score * WEIGHTS[c.id], 0));
   const passes = tracing.mastered && missing.length === 0 && misplaced.length === 0 && duplicates === 0 && parts >= 80 && size >= 60 && tidiness >= 55 && overall >= 75;

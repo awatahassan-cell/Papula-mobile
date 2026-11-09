@@ -29,7 +29,7 @@ for(const [id,guide] of Object.entries(KURDISH_STROKE_GUIDES)){
   // too small / too big
   const small=perfect.map(s=>s.map(p=>({x:50+(p.x-50)*0.35,y:50+(p.y-50)*0.35})));
   const rs=f.assessWriting(guide,small,'independent');
-  assert.equal(rs.mastered,false,`${id}: tiny writing passed`);assert.ok(crit(rs,'size').score<60,`${id}: size`);assert.ok(rs.rubric.tipsKu.some(t=>t.includes('بچووک')),`${id}: tiny tip`);checks+=3;
+  assert.equal(rs.mastered,false,`${id}: tiny writing passed`);assert.ok(crit(rs,'size').score<60,`${id}: size`);assert.ok(rs.rubric.tipsKu.some(t=>t.includes('گەورەتر')),`${id}: tiny tip`);checks+=3;
 
   const flags=markFlags(guide);
   const marks=flags.filter(Boolean).length;
