@@ -1,7 +1,7 @@
 // Child-facing narration for each main destination. Lessons/readers have their own guidance.
 export const sectionIntroductions: Record<string, string> = {
   home: 'سڵاو! دوگمەی بەردەوام بین بدە. یاری و نووسین و چیرۆک لێرەن.',
-  garden: 'ئەمە باغەکەتە! هەر گەشتێک تەواو بکەیت، گوڵێک دەڕوێت. هاوڕێکەت لێرەیە، خۆراکی بدەرێ.',
+  garden: 'ئەمە باخچەکەتە! هەر گەشتێک تەواو بکەیت، گوڵێک دەڕوێت. هاوڕێکەت لێرەیە، خۆراکی بدەرێ.',
   alphabet: 'ئەمە ڕێگای فێربوونە. پیتە کراوەکە هەڵبژێرە و بڕۆ.',
   stories: 'با چیرۆک بخوێنینەوە! گوێ بگرە، یان خۆت بیخوێنەوە.',
   'match-game': 'با یاری بکەین! یارییەک هەڵبژێرە.',
