@@ -69,6 +69,7 @@ function runtime() {
     '../data/mockLetters': { mockLetters: [] },
     './audioCache': { audioCacheKey: keyFor },
     './storyPlayback': {},
+    './dynamicSentences': { dynamicParts: () => null },
     'react-native': { Platform: platform },
     'expo-file-system': {},
     'expo-speech': { stop() {}, speak() { throw Error('Device speech must not be invoked'); } },

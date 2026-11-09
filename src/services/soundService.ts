@@ -1,4 +1,5 @@
 import { OFFLINE_AUDIO, OfflineTrack } from '../data/offlineAudio';
+import { dynamicParts } from './dynamicSentences';
 import { mockLetters } from '../data/mockLetters';
 import { audioCache, audioCacheKey, bytesToBase64, base64ToBytes } from './audioCache';
 import { Platform } from 'react-native';
@@ -194,6 +195,8 @@ class MobileSoundService {
 
   /** True when a recording for exactly this text ships in the app (syllables and handwriting tips are optional). */
   public canSpeak(text: string): boolean {
+    const dynamic = dynamicParts(text);
+    if (dynamic) return dynamic.every(part => part.kind === 'letter' || this.canSpeak(part.text));
     return OFFLINE_AUDIO[audioCacheKey(text, this.selectedVoiceId)] !== undefined;
   }
 
@@ -213,6 +216,7 @@ class MobileSoundService {
 
   private async speakSequence(chunks: NarrationChunk[], options: SpeechOptions, pauseMs: number, rate: number) {
     if (this.learningPaused) { options.onError?.(); return; }
+    chunks = chunks.flatMap(chunk => dynamicParts(chunk.text)?.map(({ text, narrationText }) => ({ text, narrationText })) ?? [chunk]);
     const stopping = this.stopSpeaking();
     const token = this.storyGeneration;
     await stopping;
@@ -264,6 +268,8 @@ class MobileSoundService {
     }
     const letter = mockLetters.find(item => text.trim() === item.glyph || text.trim() === `پیتی ${item.name}`);
     if (opts.letterName || letter) return this.speakLetter(opts.letterName || letter!.name, opts);
+    const dynamic = dynamicParts(text);
+    if (dynamic) return this.speakSequence(dynamic.map(({ text: part, narrationText }) => ({ text: part, narrationText })), opts, 350, opts.playbackRate ?? CHILD_NARRATION_RATE);
     return this.speakChunk(text, options);
   }
 
