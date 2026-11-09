@@ -11,6 +11,7 @@ const cleanWord = text => text.replace(/\uFE0F/gu, '').replace(/^[\p{P}\p{S}]+|[
 /**
  * Words children learn (example words and learning words) are best recorded ALONE: a word cut out of a long
  * batch recording is only 0.1–0.5 s long, clipped at its edges and spoken in the rhythm of a list or sentence.
+ * `--standalone-all` records every word AND every sentence as its own clip (no slicing at all).
  * `--standalone-words` records each of these words as its own clip (a few hundred short requests).
  */
 function standaloneTargets() {
@@ -21,8 +22,8 @@ function standaloneTargets() {
   return new Set([...mockLetters.flatMap(letter => letter.exampleWords.map(item => item.word)), ...LEARNING_WORDS.map(item => item.word)]);
 }
 
-function plan(entries, standalone = null) {
-  const primary = entries.filter(item => item.category !== 'word');
+function plan(entries, standalone = null, all = false) {
+  const primary = entries.filter(item => item.category !== 'word').map(item => all && item.category !== 'letter' && item.category !== 'syllable' ? { ...item, standalone: true } : item);
   const words = new Map();
   // Optional entries never become the parent of a word: that would move an already-bought word into a new batch.
   for (const entry of primary.filter(item => !item.optional)) for (const match of entry.text.matchAll(/\S+/gu)) {
@@ -33,7 +34,7 @@ function plan(entries, standalone = null) {
   const derived = [], generate = primary.filter(item => !item.optional), optional = primary.filter(item => item.optional);
   for (const entry of entries.filter(item => item.category === 'word')) {
     const parent = words.get(entry.text);
-    if (standalone?.has(entry.text)) generate.push({ ...entry, standalone: true });
+    if (all || standalone?.has(entry.text)) generate.push({ ...entry, standalone: true });
     else if (parent) derived.push({ entry, parent }); else generate.push(entry);
   }
   generate.push(...optional);
@@ -86,8 +87,9 @@ async function main() {
   const category = process.argv.find(arg => arg.startsWith('--category='))?.slice('--category='.length);
   const entries = catalog().filter(entry => (!process.argv.includes('--required-only') || !entry.optional) && (!category || entry.category === category));
   if (!entries.length) throw Error('No audio entries match the requested category.');
+  const all = process.argv.includes('--standalone-all');
   const standalone = process.argv.includes('--standalone-words') ? standaloneTargets() : null;
-  const { batches, derived } = plan(entries, standalone);
+  const { batches, derived } = plan(entries, standalone, all);
   fs.mkdirSync(directory, { recursive: true });
   const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : { voiceId: DEFAULT_VOICE, model: MODEL, createdAt: new Date().toISOString(), batches: {}, records: {} };
   // Already recorded under an earlier batching; a standalone word counts only if its record is itself standalone.
