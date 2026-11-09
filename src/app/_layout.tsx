@@ -23,6 +23,8 @@ import { TopHeader } from '../components/TopHeader';
 import { ParentGateModal } from '../components/ParentGateModal';
 import { DailyMissionsRewardCelebration } from '../components/DailyMissionsRewardCelebration';
 import { PaywallModal } from '../features/paywall/PaywallModal';
+import { InAppUpdateModal } from '../components/InAppUpdateModal';
+import { updateService } from '../services/updateService';
 import { BigButton } from '../components/BigButton';
 import { GardenNavigation } from '../components/GardenNavigation';
 import { GardenPageHeader } from '../components/GardenPageHeader';
@@ -64,7 +66,22 @@ const MainRouter: React.FC = () => {
     allMissionsCelebrationOpen,
     setAllMissionsCelebrationOpen,
     profiles,
+    setUpdateConfig,
+    setUpdateModalOpen,
   } = useAppStore();
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    const timer = setTimeout(() => {
+      void updateService.checkRemoteUpdate(false).then((result) => {
+        if (result.hasUpdate && result.config) {
+          setUpdateConfig(result.config);
+          setUpdateModalOpen(true);
+        }
+      });
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, [isHydrated, setUpdateConfig, setUpdateModalOpen]);
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -144,6 +161,7 @@ const MainRouter: React.FC = () => {
 
 
       {/* Global Modals */}
+      <InAppUpdateModal />
       <ParentGateModal />
       <PaywallModal />
       <ReactionOverlay />

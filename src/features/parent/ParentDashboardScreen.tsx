@@ -5,7 +5,7 @@ import {View,ScrollView,StyleSheet,Switch} from 'react-native';
 import {Text,TextInput} from '../../components/RTLText';
 import { BRAND } from '../../theme/tokens';
 import { PapulaMascot } from '../../components/PapulaMascot';
-import {ShieldCheck,TrendingUp,Palette,SlidersHorizontal,Check,Plus,Clock,Volume2,Moon,BookOpen,Star,Users,Sun,Clock3} from 'lucide-react-native';
+import {ShieldCheck,TrendingUp,Palette,SlidersHorizontal,Check,Plus,Clock,Volume2,Moon,BookOpen,Star,Users,Sun,Clock3,Download} from 'lucide-react-native';
 import {useAppStore} from '../../store/useAppStore';
 import {useAppearance,useThemeStyles} from '../../theme/useAppearance';
 import {appearanceThemes,normalizeAppearanceMode,normalizeAppearanceTheme} from '../../theme/appearance';
@@ -16,6 +16,7 @@ import {soundService} from '../../services/soundService';
 
 import {lessonPath} from '../../services/lessonPath';
 import { BedtimeSettings } from '../../components/BedtimeSettings';
+import { updateService, CURRENT_VERSION_NAME, CURRENT_VERSION_CODE } from '../../services/updateService';
 
 const tabs=[{id:'progress',label:'پێشکەوتن',Icon:TrendingUp},{id:'colors',label:'ڕەنگەکان',Icon:Palette},{id:'settings',label:'ڕێکخستن',Icon:SlidersHorizontal}] as const;
 const voices=[{id:'Papula',voiceId:'tkI70vi7ETrk5NakcLUP',label:'دەنگی پەپوولە'}];
@@ -24,12 +25,14 @@ const PAID_PLANS_ENABLED = false;
 export const ParentDashboardScreen:React.FC=()=>{
   const s=useThemeStyles(baseStyles);
   const {colors:c}=useAppearance();
-  const {currentProfile,profiles,switchProfile,createProfile,parentSettings,updateParentSettings,setPaywallOpen,setRoute}=useAppStore();
+  const {currentProfile,profiles,switchProfile,createProfile,parentSettings,updateParentSettings,setPaywallOpen,setRoute,setUpdateConfig,setUpdateModalOpen}=useAppStore();
   const [tab,setTab]=useState<'progress'|'colors'|'settings'>('progress');
   const [weekly,setWeekly]=useState<WeeklyStats|null>(null);
   const [adding,setAdding]=useState(false),[name,setName]=useState(''),[avatar,setAvatar]=useState('🦋');
   const [voice,setVoice]=useState(soundService.getVoice());
   const bundledCount=soundService.getBundledAudioCount();
+  const [checkingUpdate,setCheckingUpdate]=useState(false);
+  const [updateFeedback,setUpdateFeedback]=useState<string|null>(null);
   useEffect(()=>{let active=true;void progressRepo.getWeeklyStats(currentProfile.id).then(value=>{if(active)setWeekly(value);}).catch(()=>{});return()=>{active=false;};},[currentProfile.id,currentProfile.screenTimeLog]);
   useEffect(()=>()=>{void soundService.stopSpeaking();},[]);
   const finished=lessonPath(currentProfile).filter(item=>item.status==='completed').length;

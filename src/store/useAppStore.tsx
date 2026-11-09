@@ -15,6 +15,7 @@ import { normalizeCheckpoint } from '../services/learningContinuation';
 import { mockLetters } from '../data/mockLetters';
 import { authRepo, lettersRepo, progressRepo, storiesRepo, writingRepo } from '../services/repositories';
 import { soundService } from '../services/soundService';
+import { UpdateConfig } from '../services/updateService';
 import { ChildProfile, DailyMission, LetterItem, LetterScoreRecord, ParentSettings, StoryItem, WritingMode, LearningSkill, LessonStep, LearningCheckpoint } from '../services/types';
 import { generateDailyMissions, getTodayDateString } from '../data/mockMissions';
 import { defaultStrings, LocaleStrings } from '../theme/strings';
@@ -83,6 +84,10 @@ export interface AppContextType {
 
   paywallOpen: boolean;
   setPaywallOpen: (open: boolean) => void;
+  updateModalOpen: boolean;
+  setUpdateModalOpen: (open: boolean) => void;
+  updateConfig: UpdateConfig | null;
+  setUpdateConfig: (config: UpdateConfig | null) => void;
 
   addStars: (amount: number) => void;
   masterLetter: (letterId: string) => void;
@@ -202,6 +207,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [parentGateOpen, setParentGateOpen] = useState(false);
   const [parentGateCallback, setParentGateCallback] = useState<(() => void) | null>(null);
   const [paywallOpen, setPaywallOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [updateConfig, setUpdateConfig] = useState<UpdateConfig | null>(null);
   const [allMissionsCelebrationOpen, setAllMissionsCelebrationOpen] = useState(false);
 
   const [isStreakActiveToday, setIsStreakActiveToday] = useState(false);
