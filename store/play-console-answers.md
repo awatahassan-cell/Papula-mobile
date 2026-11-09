@@ -13,8 +13,8 @@
 | بێ پارە یان پارەدار | Free (بێ پارە) |
 | پەرەپێدەر | Awata Hassan |
 | ئیمەیڵی پەیوەندی | support@papulakids.com |
-| ماڵپەڕ | https://paupla.chimanova.com |
-| سیاسەتی تایبەتمەندی | https://paupla.chimanova.com/privacy |
+| ماڵپەڕ | https://papula.chimanova.com |
+| سیاسەتی تایبەتمەندی | https://papula.chimanova.com/privacy |
 
 ## ٢. App content
 
