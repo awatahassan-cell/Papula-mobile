@@ -16,7 +16,7 @@ import { mockLetters } from '../../data/mockLetters';
 
 type Letter = (typeof mockLetters)[number];
 // Calm reading for small children: a clear rest after every word and after each time the letter is said.
-const REPEATS = 3, SAFETY_MS = 8000, LETTER_PAUSE_MS = 1000, WORD_PAUSE_MS = 1400, RED = LETTER_HIGHLIGHT_COLOR;
+const REPEATS = 3, SAFETY_MS = 8000, LETTER_PAUSE_MS = 1000, WORD_PAUSE_MS = 1900, SLOW_WORD_RATE = 0.78, RED = LETTER_HIGHLIGHT_COLOR;
 
 /**
  * The start of a letter's journey, all by ear: the letter is said a few times, then «the letter is in these words»
@@ -70,7 +70,7 @@ export function LetterIntro({ letter, onDone }: { letter: Letter; onDone: () => 
         if (token !== run.current) return;
         if (n === parts.length) { setCurrent(-1); return; }
         setCurrent(parts[n].index);
-        speak(token, parts[n].text, {}, () => say(n + 1), WORD_PAUSE_MS);
+        speak(token, parts[n].text, parts[n].index >= 0 ? { playbackRate: SLOW_WORD_RATE } : {}, () => say(n + 1), WORD_PAUSE_MS);
       };
       later(() => say(0), 700);
     }
@@ -89,7 +89,7 @@ export function LetterIntro({ letter, onDone }: { letter: Letter; onDone: () => 
       ? <Animated.View style={[s.bigCard, { backgroundColor: c.paper, borderColor: c.mint, transform: [{ scale: pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] }) }] }]}><Text style={[s.huge, { color: RED }]}>{letter.glyph}</Text></Animated.View>
       : <>
         <View style={[s.smallCard, { backgroundColor: c.paper, borderColor: c.mint }]}><Text style={[s.mid, { color: RED }]}>{letter.glyph}</Text></View>
-        <View style={s.grid}>{words.map((item, i) => <TactileButton key={item.id} accessibilityRole="button" accessibilityLabel={item.word} onPress={() => { stopAll(); setCurrent(i); void soundService.speakWord(item.word); }}
+        <View style={s.grid}>{words.map((item, i) => <TactileButton key={item.id} accessibilityRole="button" accessibilityLabel={item.word} onPress={() => { stopAll(); setCurrent(i); void soundService.speakWord(item.word, { playbackRate: SLOW_WORD_RATE }); }}
           style={[s.word, { backgroundColor: c.paper, borderColor: current === i ? '#f59e0b' : c.edge }, current === i && s.on]}>
           <CharacterPicture symbol={item.picture} size={72} animate={false} /><HighlightedWord word={item.word} glyph={letter.glyph} style={[s.wordText, { color: c.ink }]}/></TactileButton>)}</View>
       </>}

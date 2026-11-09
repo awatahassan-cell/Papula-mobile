@@ -13,6 +13,7 @@ import { CONFUSABLE_GROUPS, shuffled, normalizedWord } from '../../services/lear
 import { startingSoundWords } from '../../services/foundationalLearning';
 import { useAppStore } from '../../store/useAppStore';
 import { learningStyles as baseLearningStyles } from './learningStyles';
+const SLOW_WORD_RATE=0.78; // each word is spoken calmly and on its own
 
 export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
   const s = useThemeStyles(baseLearningStyles);
@@ -33,8 +34,15 @@ export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setHeard(true);
     const active=++token.current;
-    void soundService.speakWord(round.word.word,{onEnd:()=>{if(active===token.current)setHeard(true);}});
+    void soundService.speakWord(round.word.word,{playbackRate:SLOW_WORD_RATE,onEnd:()=>{if(active===token.current)setHeard(true);}});
   },[index,round,finished]);
+  // After an answer the word is read once more, slowly and on its own, so the child hears it with the sound they chose.
+  useEffect(()=>{
+    if(answer===null||!round)return;
+    const active=++token.current;
+    const timer=setTimeout(()=>{if(active===token.current)void soundService.speakWord(round.word.word,{playbackRate:SLOW_WORD_RATE});},1300);
+    return()=>clearTimeout(timer);
+  },[answer]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(()=>()=>{token.current++;void soundService.stopSpeaking();},[]);
   if(finished)return <View style={s.container}><View style={[s.card,{backgroundColor:'#ecfdf5',borderColor:'#34d399',borderBottomColor:'#059669',paddingVertical:24}]}><Text style={s.emoji}>🦋 🌟</Text><Text style={s.title}>دەنگی سەرەتای وشەکانت دۆزییەوە</Text></View><BackButton fullWidth onPress={onExit}>گەڕانەوە</BackButton></View>;
   if(!round)return null;
@@ -45,7 +53,7 @@ export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
     </View>
     <View style={[s.card,{backgroundColor:'#f0f9ff',borderColor:'#38bdf8',borderBottomColor:'#0284c7'}]}>
       <View style={{backgroundColor:'#ffffff',borderRadius:28,borderWidth:4,borderColor:'#7dd3fc',padding:14,minWidth:116,alignItems:'center'}}><Text style={[s.emoji,{fontSize:68}]}>{round.word.imageEmoji}</Text></View>
-      <TouchableOpacity accessibilityRole="button" accessibilityLabel="وشەکە ببیستە" style={s.button} onPress={()=>{const active=++token.current;void soundService.speakWord(round.word.word,{onEnd:()=>{if(active===token.current)setHeard(true);}});}}><Text style={s.buttonText}>🔊 وشەکە ببیستە</Text></TouchableOpacity>
+      <TouchableOpacity accessibilityRole="button" accessibilityLabel="وشەکە ببیستە" style={s.button} onPress={()=>{const active=++token.current;void soundService.speakWord(round.word.word,{playbackRate:SLOW_WORD_RATE,onEnd:()=>{if(active===token.current)setHeard(true);}});}}><Text style={s.buttonText}>🔊 وشەکە ببیستە</Text></TouchableOpacity>
       {help && <View style={{backgroundColor:'#ffffff',borderRadius:20,borderWidth:3,borderColor:'#fbbf24',paddingHorizontal:18,paddingVertical:6}}><Text style={s.glyph}>{round.word.word}</Text></View>}
       <TouchableOpacity accessibilityRole="button" style={s.secondary} onPress={()=>{setHelp(true);setHeard(true);}}><Text style={s.text}>وشەکە ببینم؛ یارمەتی دەوێت</Text></TouchableOpacity>
       <View style={s.row}>{round.options.map(letter=><TouchableOpacity key={letter.id} accessibilityRole="button" accessibilityLabel={`دەنگی سەرەتای پیتی ${letter.glyph}`} disabled={!heard||answer!==null} style={[s.tile,{minWidth:88,minHeight:88},!heard&&s.disabled,answer===letter.id&&(correct?s.correct:s.retry)]} onPress={()=>{if(locked.current)return;locked.current=true;setAnswer(letter.id);recordPracticeResult([round.target.id],letter.id===round.target.id,undefined,'phonics',help);if(letter.id===round.target.id)soundService.playCorrect();else soundService.playEncouragingTryAgain();}}><Text style={[s.glyph,{fontSize:42,lineHeight:58}]}>{letter.glyph}</Text></TouchableOpacity>)}</View>
