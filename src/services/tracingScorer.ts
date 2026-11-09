@@ -78,7 +78,7 @@ export function evaluateTracing(
       averageDeviation: 0,
       accuracyRatio: 0,
       lengthRatio: 0,
-      feedbackKu: 'پەنجەت بەسەر هێڵەکاندا بخشێنە بۆ نووسین ✍️',
+      feedbackKu: 'بە پەنجەت بینووسە ✍️',
       dtw: pathSim.dtw,
       hausdorff: pathSim.hausdorff,
       breakdown: {
@@ -101,31 +101,31 @@ export function evaluateTracing(
 
   if (pathSim.isTooShort) {
     stars = 1;
-    feedbackKu = 'تەنها چەند خاڵێک یان هێڵێکی کورت بوو! دەبێت تەواوی پیتەکە بنووسیت ✍️';
+    feedbackKu = 'هێشتا ماوە! هەموو پیتەکە بنووسە ✍️';
   } else if (score >= 82 && pathSim.coverageRatio >= 0.85 && pathSim.minStrokeCoverage >= 0.8 && pathSim.pathAdherenceRatio >= 0.85 && pathSim.strayRatio <= 0.1 && pathSim.lengthRatio <= 1.65) {
     stars = 3;
     if (pathSim.averageDeviation <= 4.0) {
-      feedbackKu = 'دەستەکانت زێڕینن! تەواو لەسەر هێڵە سەرەکییەکە نووسیت ⭐⭐⭐';
+      feedbackKu = 'دەستت زێڕینە! زۆر جوان بوو ⭐⭐⭐';
     } else {
-      feedbackKu = 'زۆر نایابە! بە شێوەیەکی ناوازە لەسەر ڕێڕەوی پیتەکە بوو ⭐⭐⭐';
+      feedbackKu = 'نایابە! زۆر جوان نووسیت ⭐⭐⭐';
     }
   } else if (score >= 55 && pathSim.coverageRatio >= 0.50) {
     stars = 2;
     if (pathSim.minStrokeCoverage < 0.8) {
-      feedbackKu = 'باشە! هەموو هێڵ و خاڵەکانی پیتەکە تەواو بکە، پاشان دووبارە تاقی بکەرەوە ✍️';
+      feedbackKu = 'باشە! هەموو پیتەکە بنووسە، پاشان دووبارە تاقی بکەرەوە ✍️';
     } else if (pathSim.coverageRatio < 0.65) {
-      feedbackKu = 'زۆر باشە! لەسەر هێڵەکە بوویت، تەواوی پیتەکە تەواو بکە ⭐⭐';
+      feedbackKu = 'زۆر باشە! پیتەکە تەواو بکە ⭐⭐';
     } else {
-      feedbackKu = 'دەستت خۆش بێت! کەمێک لادانت هەبوو، زیاتر ڕێکی بخە ⭐⭐';
+      feedbackKu = 'دەستت خۆش! کەمێک ڕێکتر بنووسە ⭐⭐';
     }
   } else {
     stars = 1;
     if (pathSim.coverageRatio < 0.50) {
-      feedbackKu = 'هێڵەکان تەواو بکە و بەسەر تەواوی ڕێڕەوی پیتەکەدا بخشێنە ✍️';
+      feedbackKu = 'هەموو هێڵەکان بنووسە ✍️';
     } else if (pathSim.strayRatio > 0.35) {
-      feedbackKu = 'هەوڵبدە لەسەر هێڵی سەرەکی پیتەکە بڕۆیت و دەرنەچیت ✍️';
+      feedbackKu = 'لەسەر هێڵەکە بڕۆ و دەرمەچۆ ✍️';
     } else {
-      feedbackKu = 'هەنگاو بە هەنگاو فێر دەبیت! جارێکی تر لەسەر خەت تاقی بکەرەوە ⭐';
+      feedbackKu = 'هێواش هێواش فێر دەبیت! دووبارە تاقی بکەرەوە ⭐';
     }
   }
 

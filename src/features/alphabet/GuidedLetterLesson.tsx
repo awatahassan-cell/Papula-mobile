@@ -71,7 +71,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
   const example = letter.exampleWords[wordIndex];
   const practiceWord = letter.exampleWords[round];
   const guide = getKurdishStrokeGuide(letter.id) || getKurdishStrokeGuide(letter.glyph) || letter.strokeGuide;
-  const writingInstruction = guide?.instructionKu || 'دەست لە پیشاندان بدە، پاشان بە پەنجە بنووسە';
+  const writingInstruction = guide?.instructionKu || 'پیشاندان بدە، پاشان بنووسە';
   useEffect(() => {
     saveCheckpoint?.({ kind: 'lesson', contentId: letter.id, step, wordIndex, round, listenCount });
     // Store callbacks change with profile updates; only actual screen progress should checkpoint.
@@ -81,7 +81,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
   useEffect(() => {
     const attemptRef = listeningAttempt;
     let active = true;
-    if(step===0) {void soundService.speakWord(reviewing ? 'با دەست بکەین بە پێداچوونەوەی پیتەکە.' : 'پەپوولە ئەمڕۆ پیتێکی تازەی بۆ هێناون و ئەویش بریتییە لە', {onEnd:()=>{if (!active) return; void soundService.speakWord(`پیتی ${letter.name}`, {onEnd:()=>{if (active) void soundService.speakWord('تۆش بە جوانی پێنج جار گوێ بگرە و بیڵێرەوە.');}});}});}
+    if(step===0) {void soundService.speakWord(reviewing ? 'با دەست بکەین بە پێداچوونەوەی پیتەکە.' : 'پەپوولە ئەمڕۆ پیتێکی تازەی هێناوە:', {onEnd:()=>{if (!active) return; void soundService.speakWord(`پیتی ${letter.name}`, {onEnd:()=>{if (active) void soundService.speakWord('تۆش گوێ بگرە و بیڵێرەوە.');}});}});}
     else void soundService.speakWord(titles[step]);
     return ()=>{active = false; attemptRef.current++; void soundService.stopSpeaking();};
   }, [step,letter.name,reviewing]);
@@ -157,7 +157,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
       }});
       return;
     }
-    const text = step === 0 ? `پیتی ${letter.name}` : step === 1 ? 'شێوە و خاڵەکانی پیتەکە لە وشەدا سەیر بکە.' : step === 2 ? example.word
+    const text = step === 0 ? `پیتی ${letter.name}` : step === 1 ? 'سەیری شێوەی پیتەکە لە وشەدا بکە.' : step === 2 ? example.word
       : step === 3 ? `وشەی ${practiceWord.word}. پیتی ${letter.name} بدۆزەوە.` : writingInstruction;
     void soundService.speakWord(text, { onEnd: () => {
     } });
@@ -172,7 +172,7 @@ export const GuidedLetterLesson: React.FC<{ letter: LetterItem }> = ({ letter })
   return (
     <View style={styles.screen}>
     <ScrollView ref={scrollRef} contentContainerStyle={styles.container}>
-      <HelpHint key={step} text={step===0?'تۆش بە جوانی پێنج جار گوێ بگرە و بیڵێرەوە.':step===1?'شێوە و خاڵەکانی پیتەکە لە وشەدا سەیر بکە.':step===3?`وشەی ${practiceWord.word}. پیتی ${letter.name} بدۆزەوە.`:step===4?writingInstruction:titles[step]} />
+      <HelpHint key={step} text={step===0?'تۆش گوێ بگرە و بیڵێرەوە.':step===1?'سەیری شێوەی پیتەکە لە وشەدا بکە.':step===3?`وشەی ${practiceWord.word}. پیتی ${letter.name} بدۆزەوە.`:step===4?writingInstruction:titles[step]} />
       <View style={styles.journey} accessibilityRole="progressbar" accessibilityLabel="هەنگاوەکانی وانە" accessibilityValue={{min:1,max:5,now:step+1}}>
         {titles.map((title,index)=>{
           const stepDone = passedLetter || index < step || !!checklist[index]?.done;
