@@ -56,8 +56,6 @@ function catalog() {
     }
     visit(ast);
   }
-  const maxComponents = Math.max(...Object.values(data('data/kurdishLetterGuides.ts').KURDISH_STROKE_GUIDES).map(guide => new Set(guide.componentIds || []).size));
-  for (let dots = 1; dots <= maxComponents; dots++) addWord(`بەشە سەرەکییەکەت نووسیوە؛ ${dots} خاڵ یان نیشانەی بچووک ماوە. نموونەکە سەیر بکە و تەواوی بکە ✍️`, 'writing');
   addWord('ئافەرم! تەواو فێری نووسینی پیتی', 'writing');
   addWord('بوویت.', 'writing');
   addWord('وشەی', 'lesson');
@@ -68,7 +66,11 @@ function catalog() {
   // Optional narration is appended last and flagged, so existing recordings and batches are never reshuffled.
   const { SYLLABLE_TEXTS, TIP_TEXTS, VOCAB_TEXTS, ADVENTURE_TEXTS, GUIDE_TEXTS } = data('data/narratedExtras.ts');
   const required = new Set(entries.keys());
+  const { dynamicParts } = data('services/dynamicSentences.ts');
   const addExtra = (text, category) => {
+    // A sentence with a changing word/letter is recorded as its fixed pieces only; the word keeps its own recording.
+    const dynamic = dynamicParts(text);
+    if (dynamic) { for (const part of dynamic) if (part.kind === 'fixed') addExtra(part.text, category); return; }
     const key = keyFor(text);
     if (!required.has(key)) { add(text, text, category); entries.get(key).optional = true; } // already narrated: keep that recording
   };

@@ -58,7 +58,7 @@ export function skillSummary(profile:ChildProfile) {
 export function readingPracticeStories(profile:ChildProfile) {
   const sentences=[['دار','دار هەیە.','🌳'],['نان','نان هەیە.','🥖'],['گوڵ','گوڵ هەیە.','🌷'],['ماسی','ماسی هەیە.','🐟'],['باران','باران دەبارێت.','🌧️'],['خۆر','خۆر دەرکەوت.','☀️'],['مانگ','مانگ دەرکەوت.','🌙']];
   return sentences.filter(([,text])=>readableText(text,profile)).map(([word,text,emoji])=>({
-    id:'read-'+word,titleKu:'خۆم دەخوێنمەوە: '+word,titleEn:'Reading practice',practiceMode:'read' as const,level:1 as const,durationMinutes:1,isPremium:false,coverEmoji:emoji,coverThemeColor:'#ecfdf5',summaryKu:'دەقێکی کورت بە پیت و وشە ناسراوەکان',
+    id:'read-'+word,titleKu:'خۆم دەخوێنمەوە: '+word,titleEn:'Reading practice',practiceMode:'read' as const,level:1 as const,durationMinutes:1,isPremium:false,coverEmoji:emoji,coverThemeColor:'#ecfdf5',summaryKu:'دەقێکی کورت',
     pages:[{pageNumber:1,textKu:text,illustrationTheme:emoji,illustrationSvgId:'read-'+word,audioDurationMs:0,wordTimings:[]}],
     quiz:{questionKu:'چیمان لەم ڕستەیەدا خوێندەوە؟',options:shuffled([word,...LEARNING_WORDS.filter(w=>w.word!==word&&w.units.length<=3).slice(0,2).map(w=>w.word)]).map(item=>({id:item,textKu:item,imageEmoji:LEARNING_WORDS.find(w=>w.word===item)?.imageEmoji||'📖',isCorrect:item===word}))},
   }));

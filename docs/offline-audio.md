@@ -62,3 +62,13 @@ The syllable game (🔊 on every syllable tile and «گوێ لە بڕگەکان 
   The generator only requests batches that are not yet in `manifest.records`; optional entries are queued last, so no earlier batch changes (`tests/optionalAudio.test.cjs` enforces this). Syllables are requested one at a time so they are read as a bare sound.
 - Listen to the new syllables before shipping: a bare two-letter string can be read as a letter name or a word. Replace any that sound wrong by changing its text in `narratedExtras` (or spelling it with a vowel mark) and regenerating.
 - When you change a rubric sentence or syllable, regenerate; the old recording is simply not found and the button disappears until then.
+
+## Recording every word on its own
+
+```
+node scripts/generate-offline-audio.cjs --standalone-all-words --generate
+node scripts/generate-offline-audio.cjs --finalize
+```
+
+Each word becomes its own clip (no slicing from long recordings) and the new fixed sentences are recorded in the same run.
+Existing clips are never re-requested; an interrupted run resumes where it stopped.

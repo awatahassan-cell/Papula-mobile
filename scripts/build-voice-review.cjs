@@ -24,22 +24,21 @@ const tabs = [];
 const tab = (id, title, icon, groups) => tabs.push({ id, title, icon, groups: groups.filter(g => g.items.length) });
 const item = (text, extra = {}) => ({ text, rec: rec(text), ...extra });
 
-// 1. Letters: the name and its picture words.
-tab('letters', 'پیتەکان', '🔤', mockLetters.map(letter => {
-  const guide = getKurdishStrokeGuide(letter.glyph);
+// 1. Letters: the name and its picture words. The writing instruction is the same for every letter, so it is listed once at the top.
+const writingGuides = [...new Set(mockLetters.map(letter => getKurdishStrokeGuide(letter.glyph)?.instructionKu).filter(Boolean))];
+tab('letters', 'پیتەکان', '🔤', [{ title: 'ڕێنمایی نووسین (هەموو پیتەکان)', items: writingGuides.map(text => item(text, { tag: 'یەک ڕستە بۆ هەموو پیتەکان' })) }, ...mockLetters.map(letter => {
   return {
     title: `پیتی ${letter.name}`, big: letter.glyph,
     items: [
       { text: `پیتی ${letter.name}`, rec: rec(letter.name), tag: 'ناوی پیت' },
       ...letter.exampleWords.map(w => item(w.word, { tag: 'وشەی نموونە', pic: w.imageEmoji })),
-      ...(guide ? [item(guide.instructionKu, { tag: 'ڕێنمایی نووسین' })] : []),
     ],
   };
-}));
+})]);
 
 // 2. Sentences and instructions, by kind.
 const sentenceKinds = [
-  ['guide', 'ڕێنمایی شاشەکان'], ['freeplay', 'ڕێنمایی یاریی ئازاد'], ['adventure', 'ماجەرا و گەشتی پیت'],
+  ['guide', 'ڕێنمایی شاشەکان'], ['freeplay', 'ڕێنمایی یاریی ئازاد'], ['adventure', 'یاری و گەشتی پیت'],
   ['tip', 'ئافەرین و ڕێنمایی نووسین'], ['writing', 'نووسین'], ['lesson', 'وانە'], ['preview', 'بەخێربێن'],
 ];
 tab('sentences', 'ڕستە و ڕێنمایی', '💬', [

@@ -20,6 +20,7 @@ import { StarRating } from '../../components/StarRating';
 import { mockLetters } from '../../data/mockLetters';
 import { getKurdishStrokeGuide } from '../../data/kurdishLetterGuides';
 import { soundService } from '../../services/soundService';
+import { rubricNarration } from '../../services/writingRubric';
 import { TracingScoreResult } from '../../services/tracingScorer';
 import { resamplePolyline } from '../../services/pathSimilarity';
 import { StrokePoint, WritingMode } from '../../services/types';
@@ -194,11 +195,11 @@ export const WritingScreen: React.FC = () => {
       if (evaluated.mastered) {
         soundService.playCorrect();
         void soundService.speakWord(confirmed?`ئافەرم! تەواو فێری نووسینی پیتی ${letter.name} بوویت.`:'ئافەرم! ئەم مەشقەت بە باشی تەواو کرد.', {
-          onEnd: () => { void soundService.speakWord('با بگەڕێینەوە بۆ ڕێڕەوی فێربوون.'); },
+          onEnd: () => { void soundService.speakWord('با بگەڕێینەوە.'); },
         });
       } else soundService.playEncouragingTryAgain();
     } catch {
-      setError('ئەنجامەکە هەڵنەگیرا. جارێکی تر تاقی بکەرەوە.');
+      setError('هەڵنەگیرا. دووبارە تاقی بکەرەوە.');
     } finally { checkingRef.current = false; setBusy(false); }
   };
   const selectLetter = (nextIndex: number) => {
@@ -210,6 +211,12 @@ export const WritingScreen: React.FC = () => {
   const changeMode=(next:WritingMode)=>{stopDemo();void soundService.stopSpeaking();setMode(next);setResult(null);clear();usedHelp.current=false;attemptStarted.current=Date.now();};
   useLayoutEffect(() => { changeModeRef.current = changeMode; });
   const showDetails = detailsFor !== null && detailsFor === result;
+  // A result that needs another try says its advice aloud at once (the child may not read it), without opening the details.
+  useEffect(() => {
+    if (!result?.rubric || result.rubric.passes) return;
+    const narration = rubricNarration(result.rubric, result.stars);
+    if (narration.every(text => soundService.canSpeak(text))) void soundService.speakPhrases(narration);
+  }, [result]);
   // Passing a step moves the child on by itself after a moment; the buttons in the result still work at once.
   useEffect(() => {
     if (!result?.mastered || mode === 'independent' || showDetails) return;
@@ -309,7 +316,7 @@ export const WritingScreen: React.FC = () => {
       <Text style={[styles.stepLabel, { color: colors.ink }]}>{MODE_LABELS[['trace','copy','independent'].indexOf(mode)].slice(2)}</Text>
     </View>}
     {split && <Text style={styles.stage}>{STAGE_TITLES[mode]}</Text>}
-    {!focused && <Text style={styles.instruction}>{mode==='trace'?guide?.instructionKu:mode==='copy'?'نموونەکە سەیر بکە و لە بۆردە بەتاڵەکە بینووسە.':'بەبێ ڕێنما پیتەکە بنووسە؛ هەموو هێڵ و خاڵەکانی بیر بکەرەوە.'}</Text>}
+    {!focused && <Text style={styles.instruction}>{mode==='trace'?guide?.instructionKu:mode==='copy'?'نموونەکە ببینە و بینووسە.':'بەبێ نموونە بینووسە. هەموو شتەکان بیر بێنەرەوە.'}</Text>}
     {split ? <View style={styles.split}><View style={styles.splitBoard}>{boardNode}</View><View style={styles.splitControls}>{controlsNode}</View></View> : <>{boardNode}{controlsNode}</>}
     {result && <Modal transparent animationType="fade" visible onRequestClose={() => setResult(null)}>
       <View {...rtlProps} style={[styles.backdrop, rtlLayout]}><ScrollView contentContainerStyle={styles.modalScroll}><View style={styles.modalCard}>

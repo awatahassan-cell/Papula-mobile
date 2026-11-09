@@ -8,8 +8,23 @@ const manifestPath = path.join(directory, 'manifest.json');
 const digest = text => crypto.createHash('sha256').update(text).digest('hex');
 const cleanWord = text => text.replace(/\uFE0F/gu, '').replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '');
 
-function plan(entries) {
-  const primary = entries.filter(item => item.category !== 'word');
+/**
+ * Words children learn (example words and learning words) are best recorded ALONE: a word cut out of a long
+ * batch recording is only 0.1–0.5 s long, clipped at its edges and spoken in the rhythm of a list or sentence.
+ * `--standalone-all-words` records every word as its own clip and leaves sentences as they are.
+ * `--standalone-all` records every word AND every sentence as its own clip (no slicing at all).
+ * `--standalone-words` records each of these words as its own clip (a few hundred short requests).
+ */
+function standaloneTargets() {
+  const { createLoader } = require('./story-narration-catalog.cjs');
+  const load = createLoader();
+  const { mockLetters } = load(path.join(root, 'src/data/mockLetters.ts'));
+  const { LEARNING_WORDS } = load(path.join(root, 'src/services/learningEngine.ts'));
+  return new Set([...mockLetters.flatMap(letter => letter.exampleWords.map(item => item.word)), ...LEARNING_WORDS.map(item => item.word)]);
+}
+
+function plan(entries, standalone = null, all = false, allWords = false) {
+  const primary = entries.filter(item => item.category !== 'word').map(item => all && item.category !== 'letter' && item.category !== 'syllable' ? { ...item, standalone: true } : item);
   const words = new Map();
   // Optional entries never become the parent of a word: that would move an already-bought word into a new batch.
   for (const entry of primary.filter(item => !item.optional)) for (const match of entry.text.matchAll(/\S+/gu)) {
@@ -20,7 +35,8 @@ function plan(entries) {
   const derived = [], generate = primary.filter(item => !item.optional), optional = primary.filter(item => item.optional);
   for (const entry of entries.filter(item => item.category === 'word')) {
     const parent = words.get(entry.text);
-    if (parent) derived.push({ entry, parent }); else generate.push(entry);
+    if (all || allWords || standalone?.has(entry.text)) generate.push({ ...entry, standalone: true });
+    else if (parent) derived.push({ entry, parent }); else generate.push(entry);
   }
   generate.push(...optional);
   // Keep isolated letter sounds in independent requests. Other phrases share
@@ -28,7 +44,7 @@ function plan(entries) {
   const batches = [];
   let batch = [];
   for (const entry of generate) {
-    if (entry.category === 'letter' || entry.category === 'syllable') {
+    if (entry.category === 'letter' || entry.category === 'syllable' || entry.standalone) {
       // Isolated letter sounds and syllables are requested alone so they are read as a bare sound.
       if (batch.length) { batches.push(batch); batch = []; }
       batches.push([entry]);
@@ -72,10 +88,14 @@ async function main() {
   const category = process.argv.find(arg => arg.startsWith('--category='))?.slice('--category='.length);
   const entries = catalog().filter(entry => (!process.argv.includes('--required-only') || !entry.optional) && (!category || entry.category === category));
   if (!entries.length) throw Error('No audio entries match the requested category.');
-  const { batches, derived } = plan(entries);
+  const all = process.argv.includes('--standalone-all');
+  const standalone = process.argv.includes('--standalone-words') ? standaloneTargets() : null;
+  const allWords = process.argv.includes('--standalone-all-words');
+  const { batches, derived } = plan(entries, standalone, all, allWords);
   fs.mkdirSync(directory, { recursive: true });
   const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : { voiceId: DEFAULT_VOICE, model: MODEL, createdAt: new Date().toISOString(), batches: {}, records: {} };
-  const covered = batch => batch.every(item => manifest.records[item.key]); // already recorded under an earlier batching
+  // Already recorded under an earlier batching; a standalone word counts only if its record is itself standalone.
+  const covered = batch => batch.every(item => item.standalone ? manifest.records[item.key]?.standalone : manifest.records[item.key]);
   const pending = batches.filter(batch => { const id = digest(batch.map(item => item.key).join('\n')); return !manifest.batches[id] && !covered(batch) && !fs.existsSync(path.join(directory, id + '.alignment.json')); });
   const characters = pending.reduce((sum, batch) => sum + batch.map(item => item.narrationText).join('\n\n').length, 0);
   console.log(JSON.stringify({ tracks: entries.length, requests: pending.length, characters, derivedWords: derived.length }));
@@ -85,7 +105,7 @@ async function main() {
   const key = process.env.ELEVENLABS_API_KEY || env.match(/^(?:ELEVENLABS_API_KEY|EXPO_PUBLIC_ELEVENLABS_API_KEY)=(.*)$/m)?.[1]?.trim().replace(/^['"]|['"]$/g, '');
   if (pending.length && !key) throw Error('No ElevenLabs key configured');
   const request = async (url, options = {}) => {
-    const response = await fetch('https://api.elevenlabs.io' + url, { ...options, headers: { 'xi-api-key': key, ...options.headers }, signal: AbortSignal.timeout(180000) });
+    const response = await fetch((process.env.ELEVENLABS_API_URL || 'https://api.elevenlabs.io') + url, { ...options, headers: { 'xi-api-key': key, ...options.headers }, signal: AbortSignal.timeout(180000) });
     if (!response.ok) { const body = await response.json().catch(() => ({})); throw Error(`ElevenLabs ${response.status}: ${body.detail?.status || body.detail?.message || 'Request rejected'}`); }
     return response;
   };
@@ -125,9 +145,11 @@ async function main() {
     for (const entry of batch) {
       const mapped = locateWords(entry.text, alignment, cursor);
       cursor = mapped.cursor;
-      const start = Math.max(0, mapped.timings[0].from - 0.015);
-      const end = mapped.timings.at(-1).to;
-      manifest.records[entry.key] = { file, start, end, timings: mapped.timings, category: entry.category };
+      // A word recorded alone gets a little room on both sides so it is never clipped.
+      const alone = entry.standalone === true;
+      const start = Math.max(0, mapped.timings[0].from - (alone ? 0.06 : 0.015));
+      const end = mapped.timings.at(-1).to + (alone ? 0.15 : 0);
+      manifest.records[entry.key] = { file, start, end, timings: mapped.timings, category: entry.category, ...(alone ? { standalone: true } : {}) };
     }
     manifest.batches[id] = { file, bytes: saved.bytes, characters: text.length };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');

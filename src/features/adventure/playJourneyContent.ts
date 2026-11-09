@@ -10,7 +10,7 @@ export function playJourneyContent(letterId:string) {
   const masked=target.word.slice(0,offset)+'▢'+target.word.slice(offset+letter.glyph.length);
   const sound=`گوێ بگرە. پیتی ${letter.glyph} بدۆزەوە و دەستی لێ بدە.`;
   const picture=`${target.word} بدۆزەوە و دەستی لێ بدە.`;
-  const missing=`${target.word}. کام پیت لە وشەکەدا ون بووە؟ پیتی دروست هەڵبژێرە.`;
+  const missing=`${target.word}. کام پیت ون بووە؟`;
   const targetId=letter.id==='dal'?'tree':target.id;
   const rounds=[
     {title:'پیت بدۆزەوە',instruction:sound,options:letters.map(item=>({id:item.id,glyph:item.glyph,label:`پیتی ${item.glyph}`})),answer:letter.id},

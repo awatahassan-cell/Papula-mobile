@@ -8,6 +8,8 @@ node_modules/
 dist/
 web-build/
 dist-website/
+dist-e2e/
+e2e-report/
 expo-env.d.ts
 
 # Native

@@ -30,21 +30,21 @@ const MARK_NEAR = 12;
  * own recorded narration (see src/data/narratedExtras.ts and docs/offline-audio.md).
  */
 export const RUBRIC_SENTENCES = {
-  praise: 'ئافەرم! شێوە، هێڵ، خاڵ و قەبارەی پیتەکەت باشن.',
+  praise: 'ئافەرم! پیتەکەت جوانە.',
   fine: 'باشە!',
   retry: 'جارێکی تر هەوڵ بدە.',
-  shape: 'شێوەی پیتەکە لە نموونەکە جیاوازە؛ نموونەکە سەیر بکە و جارێکی تر بنووسە.',
-  missingBody: 'بەشێکی پیتەکە ماوە؛ هەموو هێڵەکان بنووسە.',
+  shape: 'نموونەکە ببینە و دووبارە بینووسە.',
+  missingBody: 'هێشتا ماوە؛ هەموو پیتەکە بنووسە.',
   missingMark: 'خاڵ یان نیشانەیەک ماوە.',
-  misplaced: 'خاڵ یان نیشانەکە لە شوێنی خۆی نییە؛ سەیری شوێنی لە نموونەکەدا بکە.',
+  misplaced: 'خاڵەکە لە شوێنی خۆی نییە؛ نموونەکە ببینە.',
   duplicate: 'خاڵێکی زیادە نووسراوە.',
-  steadiness: 'هێڵەکان کەمێک لەرزۆکن؛ بە هێواشی و بە یەک جووڵە بنووسە.',
-  sizeSmall: 'پیتەکەت زۆر بچووکە؛ گەورەتر بینووسە.',
-  sizeBig: 'پیتەکەت زۆر گەورەیە؛ بچووکتر بینووسە تا لە بۆردەکە بێت.',
-  flowRtl: 'پیتەکە لە ڕاستەوە بۆ چەپ دەنووسرێت؛ لە لای ڕاستەوە دەست پێ بکە.',
-  flowTtb: 'پیتەکە لە سەرەوە بۆ خوارەوە دەنووسرێت؛ لە سەرەوە دەست پێ بکە.',
-  flowOrder: 'سەرەتا بەشە گەورەکەی پیتەکە بنووسە، پاشان خاڵ و نیشانەکان.',
-  tidiness: 'هێڵی زیادە زۆرە؛ تەنها یەکجار بەسەر هەر هێڵێکدا بڕۆ.',
+  steadiness: 'بە هێواشی و بە یەک جووڵە بنووسە.',
+  sizeSmall: 'گەورەتر بینووسە.',
+  sizeBig: 'بچووکتر بینووسە.',
+  flowRtl: 'لە ڕاستەوە دەست پێ بکە.',
+  flowTtb: 'لە سەرەوە دەست پێ بکە.',
+  flowOrder: 'سەرەتا پیتەکە بنووسە، پاشان خاڵەکان.',
+  tidiness: 'هێڵی زیادە زۆرە؛ یەک جار بڕۆ.',
 } as const;
 const T = RUBRIC_SENTENCES;
 const clamp = (value: number, min = 0, max = 100) => Math.max(min, Math.min(max, value));
@@ -174,7 +174,7 @@ export function buildWritingRubric(guide: StrokeGuide, raw: StrokePoint[][], ali
     tidiness: tidiness < 80 ? [T.tidiness] : [],
   };
   const scores: Record<RubricId, number> = { shape, parts, steadiness, size, flow, tidiness };
-  const order: RubricId[] = ['parts', 'shape', 'size', 'tidiness', 'steadiness', 'flow'];
+  const order: RubricId[] = ['parts', 'size', 'shape', 'tidiness', 'steadiness', 'flow'];
   const criteria = (Object.keys(scores) as RubricId[]).map(id => ({ id, labelKu: RUBRIC_LABELS[id], score: Math.round(scores[id]), status: status(scores[id]), tipKu: tips[id].join(' ') || undefined }));
   const overall = Math.round(criteria.reduce((sum, c) => sum + c.score * WEIGHTS[c.id], 0));
   const passes = tracing.mastered && missing.length === 0 && misplaced.length === 0 && duplicates === 0 && parts >= 80 && size >= 60 && tidiness >= 55 && overall >= 75;
