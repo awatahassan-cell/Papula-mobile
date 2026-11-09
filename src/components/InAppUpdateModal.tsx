@@ -45,7 +45,7 @@ export const InAppUpdateModal: React.FC = () => {
             <View style={[styles.mascotGlow, { backgroundColor: c.leaf }]}>
               <PapulaMascot size={90} mood="happy" />
             </View>
-            <View style={[styles.badge, { backgroundColor: c.mintLight, borderColor: c.mint }]}>
+            <View style={[styles.badge, { backgroundColor: c.leaf, borderColor: c.mint }]}>
               <Sparkles size={14} color={c.mintDark} />
               <Text style={[styles.badgeText, { color: c.mintDark }]}>
                 وەشانی نوێ: {updateConfig.latestVersionName}
