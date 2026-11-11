@@ -1,6 +1,6 @@
 {
   "name": "papulamobile",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "expo-router/entry",
   "dependencies": {
     "@expo-google-fonts/ibm-plex-sans": "^0.4.1",
