@@ -291,7 +291,7 @@ export const StoryReaderScreen: React.FC = () => {
       {/* Story Illustration Card */}
       <View style={[styles.storyArtworkFrame, split && { maxWidth: artSize }]}>
         {currentPage.illustrationImage !== undefined
-          ? <ResponsiveStoryImage source={currentPage.illustrationImage} label={story.titleKu} />
+          ? <ResponsiveStoryImage source={currentPage.illustrationImage} label={story.titleKu} aspectRatio={currentPage.illustrationAspectRatio} />
           : <Text style={styles.illustrationEmoji}>{story.coverEmoji}</Text>}
       </View>
       {currentPage.additionalImages?.map((source, index) => <ResponsiveStoryImage key={index} source={source} label={`${story.titleKu}، وێنەی ${index + 2}`} />)}
@@ -315,7 +315,7 @@ export const StoryReaderScreen: React.FC = () => {
       {/* Story Illustration Card */}
       <View style={styles.storyArtworkFrame}>
         {currentPage.illustrationImage !== undefined
-          ? <ResponsiveStoryImage source={currentPage.illustrationImage} label={story.titleKu} />
+          ? <ResponsiveStoryImage source={currentPage.illustrationImage} label={story.titleKu} aspectRatio={currentPage.illustrationAspectRatio} />
           : <Text style={styles.illustrationEmoji}>{story.coverEmoji}</Text>}
       </View>
       {currentPage.additionalImages?.map((source, index) => <ResponsiveStoryImage key={index} source={source} label={`${story.titleKu}، وێنەی ${index + 2}`} />)}

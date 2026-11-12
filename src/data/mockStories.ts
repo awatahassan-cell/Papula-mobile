@@ -1,4 +1,5 @@
 import { StoryItem } from '../services/types';
+import { storyIllustrations, storyIllustrationAspectRatios } from './storyIllustrations';
 
 /**
  * 3 Interactive Kurdish Sorani illustrated stories with word-level audio timings
@@ -7,6 +8,7 @@ import { StoryItem } from '../services/types';
 export const mockStories: StoryItem[] = [
   {
     id: 'story-butterfly',
+    coverImage: storyIllustrations.butterfly_waking,
     titleKu: 'پەپوولە و باخچەی گوڵەکان',
     titleEn: 'The Butterfly and the Flower Garden',
     level: 1,
@@ -28,6 +30,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 1,
         textKu: 'لە بەیانییەکی زوودا، خۆری زێڕین لە پشتی چیاکانەوە هەڵات.',
         illustrationTheme: 'morning_sun',
+        illustrationImage: storyIllustrations.morning_sun,
+        illustrationAspectRatio: storyIllustrationAspectRatios.morning_sun,
         illustrationSvgId: 'sun',
         audioDurationMs: 4200,
         wordTimings: [
@@ -46,6 +50,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 2,
         textKu: 'پەپوولەیەکی باڵ نەخشین لە خەو ڕابوو و باڵەکانی کردەوە.',
         illustrationTheme: 'butterfly_waking',
+        illustrationImage: storyIllustrations.butterfly_waking,
+        illustrationAspectRatio: storyIllustrationAspectRatios.butterfly_waking,
         illustrationSvgId: 'butterfly',
         audioDurationMs: 4500,
         wordTimings: [
@@ -64,6 +70,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 3,
         textKu: 'پەپوولە فڕی بۆ ناو باخچە و سڵاوی لە هاوڕێکانی کرد.',
         illustrationTheme: 'garden_flying',
+        illustrationImage: storyIllustrations.garden_flying,
+        illustrationAspectRatio: storyIllustrationAspectRatios.garden_flying,
         illustrationSvgId: 'garden',
         audioDurationMs: 4100,
         wordTimings: [
@@ -83,6 +91,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 4,
         textKu: 'هەنگێکی کارامە هات و گوتی: وەرە با پێکەوە شەربەتی گوڵ بنۆشین.',
         illustrationTheme: 'bee_friend',
+        illustrationImage: storyIllustrations.bee_friend,
+        illustrationAspectRatio: storyIllustrationAspectRatios.bee_friend,
         illustrationSvgId: 'bee',
         audioDurationMs: 4900,
         wordTimings: [
@@ -103,6 +113,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 5,
         textKu: 'پەپوولە لەسەر گوڵی سووری بۆنخۆش نیشتەوە و دڵشاد بوو.',
         illustrationTheme: 'rose_resting',
+        illustrationImage: storyIllustrations.rose_resting,
+        illustrationAspectRatio: storyIllustrationAspectRatios.rose_resting,
         illustrationSvgId: 'rose',
         audioDurationMs: 4600,
         wordTimings: [
@@ -121,6 +133,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 6,
         textKu: 'هەموو ڕۆژێک بە دڵخۆشی و یارمەتیدانی یەکتر کۆتایی پێدەهات.',
         illustrationTheme: 'happy_sunset',
+        illustrationImage: storyIllustrations.happy_sunset,
+        illustrationAspectRatio: storyIllustrationAspectRatios.happy_sunset,
         illustrationSvgId: 'sunset',
         audioDurationMs: 4700,
         wordTimings: [
@@ -139,6 +153,7 @@ export const mockStories: StoryItem[] = [
   },
   {
     id: 'story-fox-bear',
+    coverImage: storyIllustrations.forest_bear,
     titleKu: 'ڕێوی زیرەک و ورچە میهرەبانەکە',
     titleEn: 'The Clever Fox and the Kind Bear',
     level: 2,
@@ -160,6 +175,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 1,
         textKu: 'لە دارستانێکی سەوزی ناو کوردستان، ورچێکی گەورە بەدوای هەنگویندا دەگەڕا.',
         illustrationTheme: 'forest_bear',
+        illustrationImage: storyIllustrations.forest_bear,
+        illustrationAspectRatio: storyIllustrationAspectRatios.forest_bear,
         illustrationSvgId: 'bear',
         audioDurationMs: 4800,
         wordTimings: [
@@ -179,6 +196,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 2,
         textKu: 'ڕێوییەکی سورپۆش هات و گوتی: من دەزانم پوورەی هەنگ لە کوێیە!',
         illustrationTheme: 'fox_pointing',
+        illustrationImage: storyIllustrations.fox_pointing,
+        illustrationAspectRatio: storyIllustrationAspectRatios.fox_pointing,
         illustrationSvgId: 'fox',
         audioDurationMs: 4600,
         wordTimings: [
@@ -199,6 +218,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 3,
         textKu: 'هەردووکیان بە یارمەتی یەکتر، هەنگوینێکی شیرینیان بە دەست هێنا.',
         illustrationTheme: 'honey_harvest',
+        illustrationImage: storyIllustrations.honey_harvest,
+        illustrationAspectRatio: storyIllustrationAspectRatios.honey_harvest,
         illustrationSvgId: 'honey',
         audioDurationMs: 4500,
         wordTimings: [
@@ -217,6 +238,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 4,
         textKu: 'ورچ گوتی: نیوەی بۆ تۆ و نیوەی بۆ من، هاوڕێی شیرینم.',
         illustrationTheme: 'sharing',
+        illustrationImage: storyIllustrations.sharing,
+        illustrationAspectRatio: storyIllustrationAspectRatios.sharing,
         illustrationSvgId: 'friendship',
         audioDurationMs: 4400,
         wordTimings: [
@@ -237,6 +260,7 @@ export const mockStories: StoryItem[] = [
   },
   {
     id: 'story-stars-sky',
+    coverImage: storyIllustrations.deer_moon,
     titleKu: 'ئاسکی بچووک و سەفەری ئەستێرەکان',
     titleEn: 'The Little Deer and the Star Journey',
     level: 3,
@@ -258,6 +282,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 1,
         textKu: 'شەو هات و ئاسمانی شین بوو بە بەڕەیەک لە ئەستێرەی پرشنگدار.',
         illustrationTheme: 'starry_night',
+        illustrationImage: storyIllustrations.starry_night,
+        illustrationAspectRatio: storyIllustrationAspectRatios.starry_night,
         illustrationSvgId: 'stars',
         audioDurationMs: 4700,
         wordTimings: [
@@ -278,6 +304,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 2,
         textKu: 'ئاسکە چاوگەش لەسەر لوتکەی گردەکە دانیشتبوو و لە مانگی دەڕوانی.',
         illustrationTheme: 'deer_moon',
+        illustrationImage: storyIllustrations.deer_moon,
+        illustrationAspectRatio: storyIllustrationAspectRatios.deer_moon,
         illustrationSvgId: 'moon',
         audioDurationMs: 4900,
         wordTimings: [
@@ -297,6 +325,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 3,
         textKu: 'مانگ پێی گوت: مەترسە ئاسکی جوان، ڕووناکیم ڕێگات بۆ دەدرەوشێنێتەوە.',
         illustrationTheme: 'moon_speaking',
+        illustrationImage: storyIllustrations.moon_speaking,
+        illustrationAspectRatio: storyIllustrationAspectRatios.moon_speaking,
         illustrationSvgId: 'lantern',
         audioDurationMs: 5000,
         wordTimings: [
@@ -316,6 +346,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 4,
         textKu: 'ئاسکەکە بە دڵێکی ئاسوودە و خەوێکی شیرین لە هێلانەکەی نووست.',
         illustrationTheme: 'sleep_peace',
+        illustrationImage: storyIllustrations.sleep_peace,
+        illustrationAspectRatio: storyIllustrationAspectRatios.sleep_peace,
         illustrationSvgId: 'sleep',
         audioDurationMs: 4700,
         wordTimings: [
@@ -335,6 +367,7 @@ export const mockStories: StoryItem[] = [
   },
   {
     id: 'story-rabbit-turtle',
+    coverImage: storyIllustrations.rabbit_boasting,
     titleKu: 'کەرەوێشکە خێراکە و کیسەڵە ئارامەکە',
     titleEn: 'The Fast Rabbit and the Patient Turtle',
     level: 1,
@@ -356,6 +389,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 1,
         textKu: 'لە ڕۆژێکی خۆشدا، کەرەوێشکە بە شانازییەوە گوتی: من خێراترین ئاژەڵی دارستانم!',
         illustrationTheme: 'rabbit_boasting',
+        illustrationImage: storyIllustrations.rabbit_boasting,
+        illustrationAspectRatio: storyIllustrationAspectRatios.rabbit_boasting,
         illustrationSvgId: 'rabbit',
         audioDurationMs: 5600,
         wordTimings: [
@@ -376,6 +411,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 2,
         textKu: 'کیسەڵە هێمنەکە گوتی: با پێکەوە کێبرکێیەک بکەین تا هێڵی دیاریکراو.',
         illustrationTheme: 'turtle_challenge',
+        illustrationImage: storyIllustrations.turtle_challenge,
+        illustrationAspectRatio: storyIllustrationAspectRatios.turtle_challenge,
         illustrationSvgId: 'turtle',
         audioDurationMs: 5000,
         wordTimings: [
@@ -395,6 +432,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 3,
         textKu: 'کەرەوێشکە بە خێرایی ڕایکرد و لە ناوەڕاستی ڕێگەکەدا خەوت.',
         illustrationTheme: 'rabbit_sleeping',
+        illustrationImage: storyIllustrations.rabbit_sleeping,
+        illustrationAspectRatio: storyIllustrationAspectRatios.rabbit_sleeping,
         illustrationSvgId: 'sleep',
         audioDurationMs: 4400,
         wordTimings: [
@@ -413,6 +452,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 4,
         textKu: 'کیسەڵەکە بە ئارامی و بەبێ وەستان لە هەنگاونان بەردەوام بوو.',
         illustrationTheme: 'turtle_walking',
+        illustrationImage: storyIllustrations.turtle_walking,
+        illustrationAspectRatio: storyIllustrationAspectRatios.turtle_walking,
         illustrationSvgId: 'walk',
         audioDurationMs: 4600,
         wordTimings: [
@@ -432,6 +473,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 5,
         textKu: 'کاتێک کەرەوێشکە بەخەبەر هاتەوە، کیسەڵەکە گەیشتبووە هێڵی کۆتایی!',
         illustrationTheme: 'turtle_winner',
+        illustrationImage: storyIllustrations.turtle_winner,
+        illustrationAspectRatio: storyIllustrationAspectRatios.turtle_winner,
         illustrationSvgId: 'trophy',
         audioDurationMs: 4800,
         wordTimings: [
@@ -449,6 +492,7 @@ export const mockStories: StoryItem[] = [
   },
   {
     id: 'story-rain-rainbow',
+    coverImage: storyIllustrations.cloud_sitting,
     titleKu: 'دڵۆپە باران و پەلکەزێڕینە',
     titleEn: 'The Raindrop and the Rainbow',
     level: 2,
@@ -470,6 +514,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 1,
         textKu: 'دڵۆپە بارانێکی بچووک لەسەر هەورێکی سپی نیشتبووەوە.',
         illustrationTheme: 'cloud_sitting',
+        illustrationImage: storyIllustrations.cloud_sitting,
+        illustrationAspectRatio: storyIllustrationAspectRatios.cloud_sitting,
         illustrationSvgId: 'cloud',
         audioDurationMs: 4100,
         wordTimings: [
@@ -486,6 +532,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 2,
         textKu: 'لەگەڵ شەماڵی بەهاردا، دڵۆپە باران بە نەرمی بەرەو زەوی هات.',
         illustrationTheme: 'rain_falling',
+        illustrationImage: storyIllustrations.rain_falling,
+        illustrationAspectRatio: storyIllustrationAspectRatios.rain_falling,
         illustrationSvgId: 'rain',
         audioDurationMs: 4800,
         wordTimings: [
@@ -505,6 +553,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 3,
         textKu: 'کە تیشکی خۆری زێڕین بەر دڵۆپە ئاوەکە کەوت، ڕووناکی درەوشایەوە.',
         illustrationTheme: 'sun_shining',
+        illustrationImage: storyIllustrations.sun_shining,
+        illustrationAspectRatio: storyIllustrationAspectRatios.sun_shining,
         illustrationSvgId: 'sun',
         audioDurationMs: 5100,
         wordTimings: [
@@ -524,6 +574,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 4,
         textKu: 'لە ناکاو پەلکەزێڕینەیەکی ئاڵوواڵا لە ناو ئاسماندا دروست بوو.',
         illustrationTheme: 'rainbow_appears',
+        illustrationImage: storyIllustrations.rainbow_appears,
+        illustrationAspectRatio: storyIllustrationAspectRatios.rainbow_appears,
         illustrationSvgId: 'rainbow',
         audioDurationMs: 4500,
         wordTimings: [
@@ -542,6 +594,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 5,
         textKu: 'منداڵان بە دڵخۆشییەوە سەیری ڕەنگە جوانەکانی پەلکەزێڕینەیان دەکرد.',
         illustrationTheme: 'children_happy',
+        illustrationImage: storyIllustrations.children_happy,
+        illustrationAspectRatio: storyIllustrationAspectRatios.children_happy,
         illustrationSvgId: 'children',
         audioDurationMs: 4900,
         wordTimings: [
@@ -559,6 +613,7 @@ export const mockStories: StoryItem[] = [
   },
   {
     id: 'story-ant-winter',
+    coverImage: storyIllustrations.ant_summer,
     titleKu: 'مێروولە ئازاکە و زستانی دارستان',
     titleEn: 'The Brave Ant and the Forest Winter',
     level: 2,
@@ -580,6 +635,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 1,
         textKu: 'لە وەرزی هاویندا، مێروولە بچووکەکە سەرقاڵی کۆکردنەوەی دانەوێڵە بوو.',
         illustrationTheme: 'ant_summer',
+        illustrationImage: storyIllustrations.ant_summer,
+        illustrationAspectRatio: storyIllustrationAspectRatios.ant_summer,
         illustrationSvgId: 'ant',
         audioDurationMs: 5100,
         wordTimings: [
@@ -598,6 +655,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 2,
         textKu: 'کوللە سەوزەکە گوتی: وەرە یاری بکەین و گوێ مەدە بە زستان!',
         illustrationTheme: 'grasshopper_play',
+        illustrationImage: storyIllustrations.grasshopper_play,
+        illustrationAspectRatio: storyIllustrationAspectRatios.grasshopper_play,
         illustrationSvgId: 'grasshopper',
         audioDurationMs: 4700,
         wordTimings: [
@@ -618,6 +677,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 3,
         textKu: 'مێروولە گوتی: کاتی کارکردن ئێستایە تا لە زستاندا بێ ماڵ نەبین.',
         illustrationTheme: 'ant_working',
+        illustrationImage: storyIllustrations.ant_working,
+        illustrationAspectRatio: storyIllustrationAspectRatios.ant_working,
         illustrationSvgId: 'grain',
         audioDurationMs: 4900,
         wordTimings: [
@@ -638,6 +699,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 4,
         textKu: 'کە زستانی سارد و بەفر هات، مێروولە لە هێلانە گەرمەکەیدا ئاسوودە بوو.',
         illustrationTheme: 'winter_snow',
+        illustrationImage: storyIllustrations.winter_snow,
+        illustrationAspectRatio: storyIllustrationAspectRatios.winter_snow,
         illustrationSvgId: 'snow',
         audioDurationMs: 5300,
         wordTimings: [
@@ -659,6 +722,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 5,
         textKu: 'کوللەکەش فێربوو کە پاشەکەوت و کۆشش، کلیلی ژیانێکی ئاسوودەیە.',
         illustrationTheme: 'lesson_learned',
+        illustrationImage: storyIllustrations.lesson_learned,
+        illustrationAspectRatio: storyIllustrationAspectRatios.lesson_learned,
         illustrationSvgId: 'nest',
         audioDurationMs: 4850,
         wordTimings: [
@@ -677,6 +742,7 @@ export const mockStories: StoryItem[] = [
   },
   {
     id: 'story-lion-mouse',
+    coverImage: storyIllustrations.lion_sleeping,
     titleKu: 'شێرە بەهێزەکە و مشکە بچووکەکە',
     titleEn: 'The Mighty Lion and the Little Mouse',
     level: 3,
@@ -698,6 +764,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 1,
         textKu: 'شێری پاشای دارستان لە ژێر سێبەری دارێکدا خەوتبوو.',
         illustrationTheme: 'lion_sleeping',
+        illustrationImage: storyIllustrations.lion_sleeping,
+        illustrationAspectRatio: storyIllustrationAspectRatios.lion_sleeping,
         illustrationSvgId: 'lion',
         audioDurationMs: 4200,
         wordTimings: [
@@ -715,6 +783,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 2,
         textKu: 'مشکێکی بچووک بەسەر قاچیدا ڕایکرد و شێرەکە لە خەو ڕابوو.',
         illustrationTheme: 'mouse_running',
+        illustrationImage: storyIllustrations.mouse_running,
+        illustrationAspectRatio: storyIllustrationAspectRatios.mouse_running,
         illustrationSvgId: 'mouse',
         audioDurationMs: 4500,
         wordTimings: [
@@ -734,6 +804,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 3,
         textKu: 'شێرەکە ویستی بیگرێت، بەڵام مشکەکە گوتی: ڕۆژێک دێت یارمەتیت دەدەم!',
         illustrationTheme: 'mouse_spared',
+        illustrationImage: storyIllustrations.mouse_spared,
+        illustrationAspectRatio: storyIllustrationAspectRatios.mouse_spared,
         illustrationSvgId: 'spared',
         audioDurationMs: 5200,
         wordTimings: [
@@ -753,6 +825,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 4,
         textKu: 'پاش ماوەیەک شێرەکە کەوتە ناو داوی ڕاوچییەکەوە و هاواری کرد.',
         illustrationTheme: 'lion_trapped',
+        illustrationImage: storyIllustrations.lion_trapped,
+        illustrationAspectRatio: storyIllustrationAspectRatios.lion_trapped,
         illustrationSvgId: 'trap',
         audioDurationMs: 4800,
         wordTimings: [
@@ -772,6 +846,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 5,
         textKu: 'مشکەکە بە خێرایی هات و بە ددانە تیژەکانی ڕستەکەی بڕییەوە.',
         illustrationTheme: 'mouse_cutting_net',
+        illustrationImage: storyIllustrations.mouse_cutting_net,
+        illustrationAspectRatio: storyIllustrationAspectRatios.mouse_cutting_net,
         illustrationSvgId: 'net_cut',
         audioDurationMs: 4700,
         wordTimings: [
@@ -791,6 +867,8 @@ export const mockStories: StoryItem[] = [
         pageNumber: 6,
         textKu: 'شێرەکە سوپاسی مشکەکەی کرد و بوون بە دوو هاوڕێی بەوەفا.',
         illustrationTheme: 'lion_mouse_friends',
+        illustrationImage: storyIllustrations.lion_mouse_friends,
+        illustrationAspectRatio: storyIllustrationAspectRatios.lion_mouse_friends,
         illustrationSvgId: 'friends',
         audioDurationMs: 4500,
         wordTimings: [

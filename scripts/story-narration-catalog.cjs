@@ -8,7 +8,7 @@ function createLoader() {
   const cache = new Map();
   function load(file) {
     file = path.resolve(file);
-    if (/\.(webp|png|mp3)$/.test(file)) return file;
+    if (/\.(webp|png|jpg|mp3)$/.test(file)) return file;
     if (cache.has(file)) return cache.get(file);
     if (file.endsWith('.json')) return JSON.parse(fs.readFileSync(file, 'utf8'));
     const mod = { exports: {} };

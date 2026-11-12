@@ -166,5 +166,6 @@ export const RASTER: Record<string, ImageSourcePropType> = {
   "⚪": require('../../assets/pictures/163-medium-white-circle.webp'),
   "🎉": require('../../assets/pictures/164-party-popper.webp'),
   "👏": require('../../assets/pictures/165-clapping-hands-sign.webp'),
+  "😢": require('../../assets/pictures/166-sad-child.png'),
 };
 export const rasterFor = (symbol: string): ImageSourcePropType | undefined => RASTER[symbol.replace(/\uFE0F/g, '').trim()];

@@ -19,8 +19,8 @@ export interface CheckUpdateResult {
   message?: string;
 }
 
-export const CURRENT_VERSION_CODE = 4;
-export const CURRENT_VERSION_NAME = '1.0.3';
+export const CURRENT_VERSION_CODE = 6;
+export const CURRENT_VERSION_NAME = '1.0.5';
 export const APP_PACKAGE_NAME = 'com.papula.kids';
 
 export const PRIMARY_CONFIG_URL = 'https://paupla.chimanova.com/api/version.json';

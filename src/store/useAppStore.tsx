@@ -757,6 +757,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   return (
     <AppContext.Provider
       value={{
+        updateModalOpen, setUpdateModalOpen, updateConfig, setUpdateConfig,
         isHydrated, learningPaused, setLearningPaused, loadError, retryLoad, saveCheckpoint, clearCheckpoint, recordScreenTime,
         route,
         setRoute,

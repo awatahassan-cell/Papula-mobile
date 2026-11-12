@@ -66,6 +66,7 @@ export interface StoryQuiz {
 }
 
 export interface StoryPage {
+  illustrationAspectRatio?: number;
   illustrationImage?: number;
   additionalImages?: number[];
   pageNumber: number;
