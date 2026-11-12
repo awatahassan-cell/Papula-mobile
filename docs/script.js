@@ -120,3 +120,15 @@ const ALPHABET_DATA = {
   var y = doc.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
   setLang(saved);
 })();
+
+// The phone download bar shows once the first screen has been scrolled past, and hides again near the end card.
+(function () {
+  var bar = document.getElementById('stick'), hero = document.getElementById('top'), end = document.querySelector('.get');
+  if (!bar || !hero) return;
+  function update() {
+    var past = hero.getBoundingClientRect().bottom < 0;
+    var atEnd = end && end.getBoundingClientRect().top < window.innerHeight * 0.7;
+    bar.classList.toggle('on', past && !atEnd);
+  }
+  window.addEventListener('scroll', update, { passive: true }); window.addEventListener('resize', update); update();
+})();
