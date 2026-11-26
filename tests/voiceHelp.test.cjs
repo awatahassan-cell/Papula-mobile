@@ -18,9 +18,10 @@ test('one voice-help button sits in the page header, follows the focused exercis
     if(name==='lucide-react-native')return{CircleHelp:'HelpIcon'};
     if(name.endsWith('/TactileButton'))return{TactileButton:'Button'};
     if(name.endsWith('/soundService'))return{soundService:{speakWord:async text=>spoken.push(text)}};
-    if(name.endsWith('/useAppStore'))return{useAppStore:()=>({route})};
+    if(name.endsWith('/useAppStore'))return{useAppStore:()=>({route,currentProfile:{}})};
     if(name.endsWith('/exerciseHelp'))return{exerciseHelp:{story:'story-help',letter:'letter-help'}};
-    if(name.endsWith('/sectionIntroductions'))return{sectionIntroductions:{home:'home-intro',stories:'stories-intro'}};
+    if(name.endsWith('/sectionIntroductions')){const sectionIntroductions={home:'home-intro',stories:'stories-intro'};return{sectionIntroductions,introductionFor:(r)=>sectionIntroductions[r]};}
+    if(name.endsWith('/lessonPath'))return{nextLetterWaits:()=>false};
     throw Error(name);
   });
   const {HelpProvider,HelpHint,HelpPill}=mod.exports;

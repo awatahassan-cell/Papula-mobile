@@ -10,7 +10,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { useAppearance } from '../../theme/useAppearance';
 import { GOLD } from '../../theme/tokens';
 import { soundService } from '../../services/soundService';
-import { sectionIntroductions } from '../../services/sectionIntroductions';
+import { introductionFor } from '../../services/sectionIntroductions';
 import { gardenProgress } from '../../services/gardenQuest';
 import { nextLessonLetter, nextLetterWaits } from '../../services/lessonPath';
 import { DayDone } from './DayDone';
@@ -41,7 +41,7 @@ export function HomeHero() {
   const go = () => { void soundService.stopSpeaking(); if (current) { setSelectedLetter(next); setRoute('garden-quest'); } else setRoute('garden'); };
   return <LinearGradient testID="home-hero" colors={sky} style={s.card}>
     <TactileButton accessibilityRole="button" accessibilityLabel={sleeping ? T.wake : T.hearMe}
-      onPress={() => { if (sleeping) { welcomePetBack(); setGreeted(true); } void soundService.speakWord(sectionIntroductions.home); }} style={s.mascot}>
+      onPress={() => { if (sleeping) { welcomePetBack(); setGreeted(true); } void soundService.speakWord(introductionFor('home', waits) || ''); }} style={s.mascot}>
       <PapulaMascot size={150} mood={sleeping ? 'sleepy' : 'happy'} flap={!sleeping} />
       <View style={[s.bubble, { backgroundColor: c.paper, borderColor: c.edge }]}>{sleeping ? <Text style={s.zzz}>💤</Text> : <Volume2 size={26} color={GOLD.starInk} strokeWidth={2.6} />}</View>
     </TactileButton>

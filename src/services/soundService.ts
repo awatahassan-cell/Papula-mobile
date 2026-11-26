@@ -1,6 +1,7 @@
 import { OFFLINE_AUDIO, OfflineTrack } from '../data/offlineAudio';
 import { dynamicParts } from './dynamicSentences';
 import { mockLetters } from '../data/mockLetters';
+import { spokenAs } from '../data/pronunciations';
 import { audioCache, audioCacheKey, bytesToBase64, base64ToBytes } from './audioCache';
 import { Platform } from 'react-native';
 import { createAudioPlayer, AudioPlayer } from 'expo-audio';
@@ -197,7 +198,7 @@ class MobileSoundService {
   public canSpeak(text: string): boolean {
     const dynamic = dynamicParts(text);
     if (dynamic) return dynamic.every(part => part.kind === 'letter' || this.canSpeak(part.text));
-    return OFFLINE_AUDIO[audioCacheKey(text, this.selectedVoiceId)] !== undefined;
+    return OFFLINE_AUDIO[audioCacheKey(spokenAs(text), this.selectedVoiceId)] !== undefined || OFFLINE_AUDIO[audioCacheKey(text, this.selectedVoiceId)] !== undefined;
   }
 
   /** Reads recorded sentences one after another. Resolves false (and plays nothing) unless every one is recorded. */
@@ -306,7 +307,9 @@ class MobileSoundService {
       const word = timings?.find(item => seconds >= item.from && seconds < item.to);
       if (word && generation === this.speechGeneration) opts.onWord?.(word.start,word.end);
     };
-    const bundled = OFFLINE_AUDIO[cacheKey];
+    // A word with a pronunciation hint plays its hinted recording when it exists, otherwise the plain one.
+    const hintedText = spokenAs(narrationText);
+    const bundled = (hintedText !== narrationText ? OFFLINE_AUDIO[audioCacheKey(hintedText, voiceId)] : undefined) ?? OFFLINE_AUDIO[cacheKey];
     if (bundled !== undefined) {
       try { await this.playOfflineTrack(bundled, opts, playbackRate); }
       catch { if (generation === this.speechGeneration) { this.isSpeaking = false; this.activeSpeakingText = null; this.notify(); opts.onError?.(); } }

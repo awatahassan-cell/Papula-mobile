@@ -31,7 +31,8 @@ import { GardenPageHeader } from '../components/GardenPageHeader';
 import { useAppearance } from '../theme/useAppearance';
 import { useResponsive } from '../theme/responsive';
 import { soundService } from '../services/soundService';
-import { sectionIntroductions } from '../services/sectionIntroductions';
+import { introductionFor } from '../services/sectionIntroductions';
+import { nextLetterWaits } from '../services/lessonPath';
 import { useSessionGuard } from '../components/useSessionGuard';
 import { SaveStatusBanner } from '../components/SaveStatusBanner';
 import { HelpProvider } from '../components/HelpButton';
@@ -66,6 +67,7 @@ const MainRouter: React.FC = () => {
     allMissionsCelebrationOpen,
     setAllMissionsCelebrationOpen,
     profiles,
+    currentProfile,
     setUpdateConfig,
     setUpdateModalOpen,
   } = useAppStore();
@@ -95,11 +97,12 @@ const MainRouter: React.FC = () => {
   const isBedtimeActive = session.bedtime;
 
   useEffect(() => {
-    const text = sectionIntroductions[route];
+    // On the home screen the welcome depends on whether today's letter is already done (then there is no continue button to name).
+    const text = introductionFor(route, route === 'home' && currentProfile ? nextLetterWaits(currentProfile) : false);
     if (!isHydrated || !text || session.blocked || exitConfirmOpen) return;
     const timer = setTimeout(() => { void soundService.speakWord(text); }, 200);
     return () => clearTimeout(timer);
-  }, [route, isHydrated, session.blocked, exitConfirmOpen]);
+  }, [route, isHydrated, session.blocked, exitConfirmOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {

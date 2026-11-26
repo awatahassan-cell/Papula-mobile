@@ -14,6 +14,7 @@ function catalog() {
   const { LEARNING_WORDS } = data('services/learningEngine.ts');
   const { learningStoryChunks } = data('services/storyPlayback.ts');
   const { getKurdishStrokeGuide } = data('data/kurdishLetterGuides.ts');
+  const { spokenAs } = data('data/pronunciations.ts');
   const entries = new Map();
   function add(text, narrationText = text, category = 'prompt', literal = false, voiceId = DEFAULT_VOICE) {
     if (!text?.trim()) return;
@@ -25,7 +26,7 @@ function catalog() {
   const addWord = (text, category = 'word') => {
     const letter = mockLetters.find(item => text.trim() === item.glyph || text.trim() === `پیتی ${item.name}`);
     if (letter) { add('پیتی', 'پیتی.', 'letter'); add(letter.name, letter.name, 'letter', true); }
-    else add(text, text, category, mockLetters.some(item => item.name === text));
+    else add(text, spokenAs(text), category, mockLetters.some(item => item.name === text));
   };
   for (const letter of mockLetters) {
     addWord(`پیتی ${letter.name}`);

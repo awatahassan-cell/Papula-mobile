@@ -110,3 +110,10 @@ A word that is in two lists (e.g. «دار» is a picture word and a lesson prom
 `--standalone-all-words` run left it as a slice of a long recording («دار» played 0–0.32 s of a 5-second writing sentence). The generator now also makes
 every single-word entry standalone. `tests/offlineAudio.test.cjs` lists the words still waiting (`PENDING_STANDALONE`, 26 requests / 169 characters):
 run `--standalone-all-words --generate` then `--finalize`, then empty that list.
+
+## Pronunciation hints (2026-11-26)
+
+A bare word is read with the voice's own guesses: «ورچ» came out «وەرچ» and «مریشک» «میریشک». `src/data/pronunciations.ts` (`SPOKEN_AS`) holds the spelling to send to the
+voice for such words (currently `ورچ → وِرچ`, `مریشک → مْریشک`: first guesses, an agent cannot hear them). The catalog records the hinted spelling; the app plays the hinted recording
+when it exists and the plain one otherwise. After recording, ask the owner to listen; if a word is still wrong, change the hint and record that word again.
+The question «کام پیت وون بووە؟» is written with «وون» (the old «ون» was read «ڤون»).

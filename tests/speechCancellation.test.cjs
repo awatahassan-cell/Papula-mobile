@@ -7,6 +7,7 @@ const waits=new Map();let timerId=0;const listeners=[];
 const rates=[];const requests=[];let plays=0;const spoken=[];const cached=new Map();const bodies=[];
 const bundled={};const mocks={
  './storyPlayback':playback,
+ '../data/pronunciations':require('../scripts/story-narration-catalog.cjs').createLoader()(require('path').join(__dirname,'../src/data/pronunciations.ts')),
  './dynamicSentences':require('../scripts/story-narration-catalog.cjs').createLoader()(require('path').join(__dirname,'../src/services/dynamicSentences.ts')),
  '../data/mockLetters':require('../scripts/story-narration-catalog.cjs').createLoader()(require('path').join(__dirname,'../src/data/mockLetters.ts')),
  '../data/offlineAudio':{OFFLINE_AUDIO:new Proxy({}, {get:(_,key)=>bundled[key]===undefined?undefined:{source:bundled[key],start:0,end:100,timings:[]}})},

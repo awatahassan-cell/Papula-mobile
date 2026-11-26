@@ -34,7 +34,9 @@ export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setHeard(true);
     const active=++token.current;
-    void soundService.speakWord(round.word.word,{playbackRate:SLOW_WORD_RATE,onEnd:()=>{if(active===token.current)setHeard(true);}});
+    const sayWord=()=>{if(active!==token.current)return;void soundService.speakWord(round.word.word,{playbackRate:SLOW_WORD_RATE,onEnd:()=>{if(active===token.current)setHeard(true);}});};
+    // The first round tells the task first («listen to the word, which letter does it start with?»), then reads the word.
+    if(index===0&&soundService.canSpeak(exerciseHelp.sound))void soundService.speakWord(exerciseHelp.sound,{onEnd:sayWord,onError:sayWord});else sayWord();
   },[index,round,finished]);
   // After an answer the word is read once more, slowly and on its own, so the child hears it with the sound they chose.
   useEffect(()=>{

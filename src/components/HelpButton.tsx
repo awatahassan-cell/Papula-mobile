@@ -8,7 +8,8 @@ import { accentFill } from '../theme/appearance';
 import { soundService } from '../services/soundService';
 import { useAppStore } from '../store/useAppStore';
 import { exerciseHelp } from '../services/exerciseHelp';
-import { sectionIntroductions } from '../services/sectionIntroductions';
+import { introductionFor, sectionIntroductions } from '../services/sectionIntroductions';
+import { nextLetterWaits } from '../services/lessonPath';
 
 interface Hint { owner: string; text: string; disabled: boolean; }
 interface HelpContextValue { hint: Hint | null; register: (hint: Hint) => () => void; }
@@ -39,10 +40,10 @@ export function HelpHint({ text, disabled = false }: { text: string; disabled?: 
  */
 export function HelpPill({ fallbackText, disabled = false }: { fallbackText?: string; disabled?: boolean }) {
   const { colors, isNight } = useAppearance();
-  const route = useAppStore().route;
+  const { route, currentProfile } = useAppStore();
   const hint = useContext(HelpContext)?.hint;
   const unavailable = disabled || !!hint?.disabled;
-  const text = hint?.text || fallbackText || (route === 'story-reader' ? exerciseHelp.story : route === 'letter-detail' ? exerciseHelp.letter : sectionIntroductions[route] || sectionIntroductions.home);
+  const text = hint?.text || fallbackText || (route === 'story-reader' ? exerciseHelp.story : route === 'letter-detail' ? exerciseHelp.letter : introductionFor(route, route === 'home' && nextLetterWaits(currentProfile)) || sectionIntroductions.home);
   return <TactileButton testID="voice-help-button" accessibilityRole="button" accessibilityLabel="ڕێنمایی دەنگی ببیستە"
     accessibilityState={{ disabled: unavailable }} disabled={unavailable}
     onPress={() => { if (!unavailable) void soundService.speakWord(text); }} style={[styles.button, { backgroundColor: accentFill(colors, isNight), borderBottomColor: colors.mintDark }, unavailable && styles.disabled]}>
