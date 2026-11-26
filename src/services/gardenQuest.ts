@@ -48,15 +48,20 @@ export function plantGardenFlower(profile: ChildProfile, spot: number, letterId 
 
 const normalized = (text: string) => text.replace(/ھ/g, 'ه');
 /** Deterministic choices, stable across resumes. Repeated letters retain individual tile identities. */
-export function gardenChallenge(letterId: string) {
+/** `known`: ids of finished letters; when given, the wrong choices come from them first (a child is not shown letters not yet taught). */
+export function gardenChallenge(letterId: string, known?: string[]) {
   const index = mockLetters.findIndex(letter => letter.id === letterId);
   const letter = mockLetters[index < 0 ? 0 : index];
   const target = letter.exampleWords.find(word => !/\s/u.test(word.word)) || letter.exampleWords[0];
   const others = mockLetters.filter(item => normalized(item.glyph) !== normalized(letter.glyph));
   const rotate = <T,>(items: T[], offset: number) => [...items.slice(offset), ...items.slice(0,offset)];
-  const letters = rotate([others[(Math.max(0,index)+1)%others.length], letter, others[(Math.max(0,index)+2)%others.length]], Math.max(0,index)%3);
+  const knownFirst = known ? [...others.filter(item => known.includes(item.id)), ...others.filter(item => !known.includes(item.id))] : null;
+  const choices = knownFirst ? [knownFirst[0], knownFirst[1]] : [others[(Math.max(0,index)+1)%others.length], others[(Math.max(0,index)+2)%others.length]];
+  const letters = rotate([choices[0], letter, choices[1]], Math.max(0,index)%3);
   const wrong = mockLetters.flatMap(item=>item.exampleWords).filter(item=>item.word!==target.word && !normalized(item.word).includes(normalized(letter.glyph)));
-  const unique = wrong.filter((item,i)=>wrong.findIndex(other=>other.word===item.word)===i);
+  const distinct = wrong.filter((item,i)=>wrong.findIndex(other=>other.word===item.word)===i);
+  const taught = (item: { word: string }) => !known || !wordUnits(item.word).some(unit => mockLetters.some(l => normalized(l.glyph) === normalized(unit) && !known.includes(l.id) && l.id !== letter.id));
+  const unique = known ? [...distinct.filter(taught), ...distinct.filter(item => !taught(item))] : distinct;
   const pictures = rotate([unique[Math.max(0,index)%unique.length],target,unique[(Math.max(0,index)+1)%unique.length]], (Math.max(0,index)+1)%3);
   const tiles = wordUnits(target.word).filter(character=>!/[\s\u200c\u200d]/u.test(character)).map((glyph,id)=>({glyph,id})).reverse();
   return {letter,target,letters,pictures,tiles,word:tiles.slice().reverse().map(tile=>tile.glyph).join('')};

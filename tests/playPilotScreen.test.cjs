@@ -2,7 +2,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const catalogLoad=require('../scripts/story-narration-catalog.cjs').createLoader();
 const allLetters=catalogLoad(path.resolve('src/data/mockLetters.ts')).mockLetters;
 for(const [letterIndex,letter] of allLetters.entries())test(`journey ${letter.id}: gated audio, stable narration, retries, three wins and one flower`,async()=>{
- const content=catalogLoad(path.resolve('src/features/adventure/playJourneyContent.ts')).playJourneyContent(letter.id);
+ const content=catalogLoad(path.resolve('src/features/adventure/playJourneyContent.ts')).playJourneyContent(letter.id,allLetters.slice(0,letterIndex).map(item=>item.id));
  const load=require('../scripts/story-narration-catalog.cjs').createLoader(),service=load(path.resolve('src/services/playPilot.ts')),garden=load(path.resolve('src/services/gardenQuest.ts'));
  const states=[],refs=[],memo=[];let si=0,ri=0,ci=0,focus,lastFocus,cleanup;
  const speech=[],pending=[],timers=new Map(),records=[];let timerId=0;

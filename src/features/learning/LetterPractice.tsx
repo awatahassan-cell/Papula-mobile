@@ -13,17 +13,24 @@ import { soundService } from '../../services/soundService';
 import { useAppStore } from '../../store/useAppStore';
 import { learningStyles as baseLearningStyles } from './learningStyles';
 import { personalPractice } from '../../services/personalPractice';
+import { completedLetterIds, wrongLetters } from '../../services/lessonPath';
 
 export const LetterPractice: React.FC<{ mode:'sound'|'similar'|'review'; onExit:()=>void; onComplete?:()=>void }> = ({mode,onExit,onComplete}) => {
   const s = useThemeStyles(baseLearningStyles);
   const {currentProfile,recordPracticeResult,finishLearningGame}=useAppStore();
   const [rounds]=useState(()=>{
-    const candidates=(mode==='review' ? personalPractice(currentProfile).map(task => task.letter) : reviewPlan(currentProfile,mockLetters.length)).filter(letter=>mode!=='similar'||CONFUSABLE_GROUPS.some(group=>group.includes(letter.id)));
+    const learned=new Set(completedLetterIds(currentProfile));
+    const planned=(mode==='review' ? personalPractice(currentProfile).map(task => task.letter) : reviewPlan(currentProfile,mockLetters.length)).filter(letter=>mode!=='similar'||CONFUSABLE_GROUPS.some(group=>group.includes(letter.id)));
+    // Only finished letters are asked about; a child with none yet keeps the old plan so the game is never empty.
+    const candidates=planned.some(letter=>learned.has(letter.id))?planned.filter(letter=>learned.has(letter.id)):planned;
     return candidates.slice(0,mode==='review'?3:5).map((target,index)=>{
       const family=CONFUSABLE_GROUPS.find(group=>group.includes(target.id));
-      const alternatives=mode==='similar' && family?mockLetters.filter(letter=>family.includes(letter.id)&&letter.id!==target.id):mockLetters.filter(letter=>letter.id!==target.id);
+      const similar=mode==='similar' && family;
+      const alternatives=similar?mockLetters.filter(letter=>family.includes(letter.id)&&letter.id!==target.id):mockLetters.filter(letter=>letter.id!==target.id);
       const optionCount=currentProfile.placement?.recommendedLevel===1||currentProfile.ageGroup==='3-4'?2:mode==='similar'?Math.min(3,alternatives.length+1):3;
-      return {target,options:shuffled([target,...alternatives.slice(index%Math.max(1,alternatives.length-optionCount+2),index%Math.max(1,alternatives.length-optionCount+2)+optionCount-1)])};
+      // Look-alike practice keeps the look-alikes; every other round uses finished letters as the wrong choices.
+      const wrong=similar?alternatives.slice(index%Math.max(1,alternatives.length-optionCount+2),index%Math.max(1,alternatives.length-optionCount+2)+optionCount-1):wrongLetters(currentProfile,target,optionCount-1,family||[]);
+      return {target,options:shuffled([target,...wrong])};
     });
   });
   const [index,setIndex]=useState(0);

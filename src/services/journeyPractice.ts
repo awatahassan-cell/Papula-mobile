@@ -15,7 +15,9 @@ export function journeyPracticePlan(profile:ChildProfile,letterId:string,free=fa
     const missing=Math.max(0,units.findIndex(unit=>normalizedWord(unit)===normalizedWord(letter.glyph)));
     const answer=kind==='missing'?units[missing]:letter.glyph;
     const family=CONFUSABLE_GROUPS.find(group=>group.includes(letter.id));
-    const others=mockLetters.filter(item=>normalizedWord(item.glyph)!==normalizedWord(answer));
+    const taught=(item:{id:string})=>learned.some(done=>done.id===item.id);
+    // Finished letters are offered as the wrong choices first; unfinished ones only fill what is missing.
+    const others=mockLetters.filter(item=>normalizedWord(item.glyph)!==normalizedWord(answer)).sort((a,b)=>Number(taught(b))-Number(taught(a)));
     const alternatives=kind==='similar'&&family?others.filter(item=>family.includes(item.id)):others;
     const distractors=[...alternatives,...others].filter((item,i,all)=>all.findIndex(other=>other.id===item.id)===i).slice(0,2).map(item=>item.glyph);
     const options=[answer,...distractors];

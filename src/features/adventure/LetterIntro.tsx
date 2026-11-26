@@ -15,7 +15,7 @@ import { mockLetters } from '../../data/mockLetters';
 
 type Letter = (typeof mockLetters)[number];
 // Calm reading for small children: a clear rest after every word and after each time the letter is said.
-const SAFETY_MS = 8000, WORD_PAUSE_MS = 1900, SLOW_WORD_RATE = 0.78, RED = LETTER_HIGHLIGHT_COLOR;
+const SAFETY_MS = 8000, WORD_PAUSE_MS = 1900, LETTER_PAUSE_MS = 450, SLOW_WORD_RATE = 0.78, RED = LETTER_HIGHLIGHT_COLOR;
 
 /**
  * The start of a letter's journey, all by ear: the letter is said a few times, then «the letter is in these words»
@@ -53,7 +53,7 @@ export function LetterIntro({ letter, onDone }: { letter: Letter; onDone: () => 
         if (token !== run.current) return;
         if (n === parts.length) { setCurrent(-1); return; }
         setCurrent(parts[n].index);
-        speak(token, parts[n].text, parts[n].index >= 0 ? { playbackRate: SLOW_WORD_RATE } : {}, () => say(n + 1), WORD_PAUSE_MS);
+        speak(token, parts[n].text, parts[n].index >= 0 ? { playbackRate: SLOW_WORD_RATE } : {}, () => say(n + 1), n === 0 ? LETTER_PAUSE_MS : WORD_PAUSE_MS); // «پیتی X» flows almost straight into the sentence
       };
       later(() => say(0), 700);
     }

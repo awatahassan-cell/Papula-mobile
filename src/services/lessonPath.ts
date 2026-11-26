@@ -95,3 +95,26 @@ export function applyLessonStep(profile: ChildProfile, id: string, step: LessonS
   }
   return reconcileLessons({ ...profile, lessonProgress: { ...profile.lessonProgress, [id]: next } });
 }
+
+/** The letters whose lesson the child has finished: games ask only about these. */
+export const learnedLetters = (profile: ChildProfile) => {
+  const done = new Set(completedLetterIds(profile));
+  return mockLetters.filter(letter => done.has(letter.id));
+};
+
+/**
+ * Wrong choices for a letter question. Finished letters come first (look-alikes before the rest); only while the child
+ * knows too few letters is the list topped up with the next letters in the alphabet that look least like the answer.
+ */
+export function wrongLetters(profile: ChildProfile, target: { id: string }, count: number, lookAlikeIds: string[] = []) {
+  const known = learnedLetters(profile).filter(letter => letter.id !== target.id);
+  const byLookAlike = (a: { id: string }, b: { id: string }) => Number(lookAlikeIds.includes(b.id)) - Number(lookAlikeIds.includes(a.id));
+  const chosen = [...known].sort(byLookAlike).slice(0, count);
+  if (chosen.length < count) {
+    const start = Math.max(0, mockLetters.findIndex(letter => letter.id === target.id));
+    const rest = mockLetters.map((_, i) => mockLetters[(start + 1 + i) % mockLetters.length])
+      .filter(letter => letter.id !== target.id && !chosen.some(item => item.id === letter.id) && !lookAlikeIds.includes(letter.id));
+    chosen.push(...rest.slice(0, count - chosen.length));
+  }
+  return chosen;
+}

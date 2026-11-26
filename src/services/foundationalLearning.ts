@@ -39,7 +39,10 @@ export function assessWriting(guide:StrokeGuide, strokes:StrokePoint[][], mode:W
   return {...traced,score:rubric.overall,stars,mastered:rubric.passes,feedbackKu,rubric};
 }
 export function startingSoundWords(profile:ChildProfile,count=5) {
-  const plan=reviewPlan(profile,mockLetters.length).filter(letter=>!['ra','lla_heavy','wwaw','alif'].includes(letter.id));
+  const learned=new Set(completedLetterIds(profile));
+  const all=reviewPlan(profile,mockLetters.length).filter(letter=>!['ra','lla_heavy','wwaw','alif'].includes(letter.id));
+  // Only letters the child has finished are asked about; a child with none yet keeps the old plan so the game is never empty.
+  const plan=all.some(letter=>learned.has(letter.id))?all.filter(letter=>learned.has(letter.id)):all;
   return plan.map(letter=>LEARNING_WORDS.find(word=>normalizedWord(word.units[0])===normalizedWord(letter.glyph))).filter((word):word is typeof LEARNING_WORDS[number]=>!!word).slice(0,count);
 }
 export function readableText(text:string,profile:ChildProfile): boolean {

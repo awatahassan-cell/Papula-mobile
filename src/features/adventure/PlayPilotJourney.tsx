@@ -12,7 +12,7 @@ import { useAppearance } from '../../theme/useAppearance';
 import { accentFill } from '../../theme/appearance';
 import { useAppStore } from '../../store/useAppStore';
 import { soundService } from '../../services/soundService';
-import { isLessonComplete } from '../../services/lessonPath';
+import { completedLetterIds, isLessonComplete } from '../../services/lessonPath';
 import { gardenProgress } from '../../services/gardenQuest';
 import { playPilotProgress, PLAY_PILOT_LETTER, PLAY_PILOT_STEPS } from '../../services/playPilot';
 import { getLetterStory } from '../../data/letterStories';
@@ -94,8 +94,9 @@ function Finale({compact}:{compact:boolean}) {
 
 /** One short, voiced journey for each teaching entry. */
 export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LETTER}:{startAtBeginning?:boolean;letterId?:string}={}) {
-  const {letter,target,masked,rounds}=playJourneyContent(letterId);
   const {currentProfile,recordPracticeResult,completePlayPilotRound,plantQuestFlower,setRoute,setSelectedStory,setSelectedLetter}=useAppStore();
+  const [known]=useState(()=>completedLetterIds(currentProfile)); // fixed for the whole journey so the choices never change under the child
+  const {letter,target,masked,rounds}=playJourneyContent(letterId,known);
   const {colors:c,isNight}=useAppearance();
   const {height,width}=useWindowDimensions();
   const compact=height<760||width>height;

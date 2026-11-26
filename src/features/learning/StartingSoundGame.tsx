@@ -11,6 +11,7 @@ import { mockLetters } from '../../data/mockLetters';
 import { soundService } from '../../services/soundService';
 import { CONFUSABLE_GROUPS, shuffled, normalizedWord } from '../../services/learningEngine';
 import { startingSoundWords } from '../../services/foundationalLearning';
+import { wrongLetters } from '../../services/lessonPath';
 import { useAppStore } from '../../store/useAppStore';
 import { learningStyles as baseLearningStyles } from './learningStyles';
 const SLOW_WORD_RATE=0.78; // each word is spoken calmly and on its own
@@ -21,9 +22,7 @@ export const StartingSoundGame:React.FC<{onExit:()=>void}>=({onExit})=>{
   const [rounds]=useState(()=>startingSoundWords(currentProfile).map(word=>{
     const target=mockLetters.find(letter=>normalizedWord(letter.glyph)===normalizedWord(word.units[0]))!;
     const group=CONFUSABLE_GROUPS.find(g=>g.includes(target.id))||[];
-    const confusable=shuffled(mockLetters.filter(letter=>letter.id!==target.id&&group.includes(letter.id)));
-    const others=shuffled(mockLetters.filter(letter=>letter.id!==target.id&&!group.includes(letter.id)));
-    return {word,target,options:shuffled([target,...[...confusable,...others].slice(0,2)])};
+    return {word,target,options:shuffled([target,...wrongLetters(currentProfile,target,2,group)])};
   }));
   const [index,setIndex]=useState(0),[answer,setAnswer]=useState<string|null>(null),[heard,setHeard]=useState(false),[help,setHelp]=useState(false),[finished,setFinished]=useState(false);
   const scroll=useGameScroll(index,answer!==null);

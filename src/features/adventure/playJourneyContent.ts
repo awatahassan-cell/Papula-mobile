@@ -3,8 +3,8 @@ import { gardenChallenge } from '../../services/gardenQuest';
 
 const normalize=(word:string)=>word.replace(/ھ/g,'ه');
 /** A whole teaching entry (including وو) is removed once; the rest stays joined. */
-export function playJourneyContent(letterId:string) {
-  const {letter,target,letters,pictures}=gardenChallenge(letterId);
+export function playJourneyContent(letterId:string,known?:string[]) {
+  const {letter,target,letters,pictures}=gardenChallenge(letterId,known);
   const offset=normalize(target.word).indexOf(normalize(letter.glyph));
   if(offset<0)throw new Error(`Missing teaching entry ${letter.id} in ${target.word}`);
   const masked=target.word.slice(0,offset)+'▢'+target.word.slice(offset+letter.glyph.length);
