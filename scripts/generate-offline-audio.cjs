@@ -70,13 +70,22 @@ function locateWords(text, alignment, cursor = 0) {
   for (const match of text.matchAll(/\S+/gu)) {
     const word = cleanWord(match[0]);
     if (!word) continue;
-    const at = spoken.indexOf(word, cursor);
-    if (at < 0) throw Error('Alignment does not contain reading word: ' + match[0]);
+    let at = spoken.indexOf(word, cursor), last = at + word.length - 1;
+    if (at < 0) {
+      // A word recorded with a pronunciation hint (e.g. «وِرچ» for «ورچ») carries vowel marks the plain spelling lacks:
+      // find it again with those marks ignored, mapped back to the original character positions.
+      const kept = [...spoken].map((character, position) => ({ character, position })).filter(item => !/\p{M}/u.test(item.character));
+      const plain = kept.map(item => item.character).join('');
+      const from = plain.indexOf(word.replace(/\p{M}/gu, ''), kept.findIndex(item => item.position >= cursor));
+      if (from < 0) throw Error('Alignment does not contain reading word: ' + match[0]);
+      at = kept[from].position;
+      last = kept[from + word.replace(/\p{M}/gu, '').length - 1].position;
+    }
     const from = alignment.character_start_times_seconds[indices[at]];
-    const to = alignment.character_end_times_seconds[indices[at + word.length - 1]];
+    const to = alignment.character_end_times_seconds[indices[last]];
     if (!Number.isFinite(from) || !Number.isFinite(to) || to < from) throw Error('Invalid alignment');
     timings.push({ start: match.index, end: match.index + match[0].length, from, to });
-    cursor = at + word.length;
+    cursor = last + 1;
   }
   return { timings, cursor };
 }

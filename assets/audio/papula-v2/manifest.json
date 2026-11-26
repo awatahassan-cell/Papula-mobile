@@ -7442,6 +7442,26 @@
       "file": "84f24ddea0c7ce49ef9c3831109cf9ae5a7566eb14c4a7449cebfbd334034639.mp3",
       "bytes": 17597,
       "characters": 6
+    },
+    "a8b31053904e0aff47eb13c616d28198ea94af7402bd29f68e947cad334ea3f7": {
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "bytes": 1402714,
+      "characters": 1064
+    },
+    "75022498ff8a327f468832276c7f22f6a7984f14fad16db81d59dadf7c67ad96": {
+      "file": "eb547f3d09b2148811f91e45c24635f0799247f8edfe7ad4f7bef7a05c6e34f2.mp3",
+      "bytes": 16343,
+      "characters": 4
+    },
+    "ac50aeb1af7abc8b2272b8a5e45c99b7c291ef1c4b507d653428ffca42b248d4": {
+      "file": "0f151bf58388ea8f9ea180a53ead90ced923c8a4c6b1f614696ce301da604998.mp3",
+      "bytes": 20105,
+      "characters": 6
+    },
+    "dcc6570ecf1a77e9eacdc029410bf8e5bed3158e081b9dc85d618413ff6570a4": {
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "bytes": 1425701,
+      "characters": 1004
     }
   },
   "records": {
@@ -29497,213 +29517,213 @@
       "standalone": true
     },
     "[1,\"پیتی ئەمڕۆ\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 62.144999999999996,
-      "end": 62.96,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 0,
+      "end": 0.88,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 62.16,
-          "to": 62.48
+          "from": 0,
+          "to": 0.4
         },
         {
           "start": 5,
           "end": 10,
-          "from": 62.56,
-          "to": 62.96
+          "from": 0.48,
+          "to": 0.88
         }
       ],
       "category": "prompt"
     },
     "[1,\"دەنگەکە ببیستە\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 63.425,
-      "end": 64.48,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 0.905,
+      "end": 2,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 63.44,
-          "to": 63.92
+          "from": 0.92,
+          "to": 1.36
         },
         {
           "start": 8,
           "end": 14,
-          "from": 64,
-          "to": 64.48
+          "from": 1.44,
+          "to": 2
         }
       ],
       "category": "prompt"
     },
     "[1,\"گوێ لە پیتەکە بگرە\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 65.025,
-      "end": 66.24,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 2.465,
+      "end": 3.68,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 65.04,
-          "to": 65.227
+          "from": 2.48,
+          "to": 2.72
         },
         {
           "start": 4,
           "end": 6,
-          "from": 65.253,
-          "to": 65.36
+          "from": 2.76,
+          "to": 2.84
         },
         {
           "start": 7,
           "end": 13,
-          "from": 65.4,
-          "to": 65.84
+          "from": 2.88,
+          "to": 3.28
         },
         {
           "start": 14,
           "end": 18,
-          "from": 65.92,
-          "to": 66.24
+          "from": 3.36,
+          "to": 3.68
         }
       ],
       "category": "prompt"
     },
     "[1,\"ڕێنماییەکە ببیستە\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 66.705,
-      "end": 68,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 4.065,
+      "end": 5.36,
       "timings": [
         {
           "start": 0,
           "end": 10,
-          "from": 66.72,
-          "to": 67.44
+          "from": 4.08,
+          "to": 4.8
         },
         {
           "start": 11,
           "end": 17,
-          "from": 67.52,
-          "to": 68
+          "from": 4.88,
+          "to": 5.36
         }
       ],
       "category": "prompt"
     },
     "[1,\"خەزن کرا ✓\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 68.545,
-      "end": 69.2,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 5.825,
+      "end": 6.56,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 68.56,
-          "to": 68.88
+          "from": 5.84,
+          "to": 6.24
         },
         {
           "start": 5,
           "end": 8,
-          "from": 68.96,
-          "to": 69.2
+          "from": 6.32,
+          "to": 6.56
         }
       ],
       "category": "prompt"
     },
     "[1,\"زیادی بکە بۆ وشەکانم 📒\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 69.745,
-      "end": 71.24,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 7.105,
+      "end": 8.64,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 69.76,
-          "to": 70.12
+          "from": 7.12,
+          "to": 7.52
         },
         {
           "start": 6,
           "end": 9,
-          "from": 70.16,
-          "to": 70.4
+          "from": 7.56,
+          "to": 7.76
         },
         {
           "start": 10,
           "end": 12,
-          "from": 70.48,
-          "to": 70.6
+          "from": 7.84,
+          "to": 8
         },
         {
           "start": 13,
           "end": 20,
-          "from": 70.64,
-          "to": 71.24
+          "from": 8.08,
+          "to": 8.64
         }
       ],
       "category": "prompt"
     },
     "[1,\"کەمتر ⌃\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 71.265,
-      "end": 71.76,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 9.024999999999999,
+      "end": 9.6,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 71.28,
-          "to": 71.76
+          "from": 9.04,
+          "to": 9.6
         }
       ],
       "category": "prompt"
     },
     "[1,\"زیاتر ⌄\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 72.30499999999999,
-      "end": 72.88,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 10.065,
+      "end": 10.72,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 72.32,
-          "to": 72.88
+          "from": 10.08,
+          "to": 10.72
         }
       ],
       "category": "prompt"
     },
     "[1,\"وشەی پێشوو\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 73.345,
-      "end": 74.24,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 11.264999999999999,
+      "end": 12.08,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 73.36,
-          "to": 73.68
+          "from": 11.28,
+          "to": 11.52
         },
         {
           "start": 5,
           "end": 10,
-          "from": 73.76,
-          "to": 74.24
+          "from": 11.6,
+          "to": 12.08
         }
       ],
       "category": "prompt"
     },
     "[1,\"هەنگاوی پێشوو\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 74.625,
-      "end": 75.68,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 12.465,
+      "end": 13.72,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 74.64,
-          "to": 75.12
+          "from": 12.48,
+          "to": 13.04
         },
         {
           "start": 8,
           "end": 13,
-          "from": 75.2,
-          "to": 75.68
+          "from": 13.08,
+          "to": 13.72
         }
       ],
       "category": "prompt"
@@ -30347,75 +30367,75 @@
       "category": "prompt"
     },
     "[1,\"Accurate full tracing on ۆ using DTW & Hausdorff gives 3 stars\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 28.145,
-      "end": 33.04,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 40.785,
+      "end": 45.92,
       "timings": [
         {
           "start": 0,
           "end": 8,
-          "from": 28.16,
-          "to": 28.56
+          "from": 40.8,
+          "to": 41.28
         },
         {
           "start": 9,
           "end": 13,
-          "from": 28.72,
-          "to": 28.88
+          "from": 41.36,
+          "to": 41.52
         },
         {
           "start": 14,
           "end": 21,
-          "from": 28.96,
-          "to": 29.44
+          "from": 41.6,
+          "to": 42.08
         },
         {
           "start": 22,
           "end": 24,
-          "from": 29.52,
-          "to": 29.68
+          "from": 42.16,
+          "to": 42.32
         },
         {
           "start": 25,
           "end": 26,
-          "from": 29.707,
-          "to": 29.733
+          "from": 42.48,
+          "to": 42.587
         },
         {
           "start": 27,
           "end": 32,
-          "from": 29.76,
-          "to": 30
+          "from": 42.693,
+          "to": 42.8
         },
         {
           "start": 33,
           "end": 36,
-          "from": 30.08,
-          "to": 30.96
+          "from": 42.88,
+          "to": 43.76
         },
         {
           "start": 39,
           "end": 48,
-          "from": 31.2,
-          "to": 31.76
+          "from": 43.96,
+          "to": 44.56
         },
         {
           "start": 49,
           "end": 54,
-          "from": 31.92,
-          "to": 32.16
+          "from": 44.8,
+          "to": 45.04
         },
         {
           "start": 55,
           "end": 56,
-          "from": 32.24,
-          "to": 32.48
+          "from": 45.12,
+          "to": 45.36
         },
         {
           "start": 57,
           "end": 62,
-          "from": 32.56,
-          "to": 33.04
+          "from": 45.44,
+          "to": 45.92
         }
       ],
       "category": "prompt"
@@ -30687,61 +30707,61 @@
       "category": "prompt"
     },
     "[1,\"باران دەبارێت.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 33.585,
-      "end": 34.64,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 46.464999999999996,
+      "end": 47.52,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 33.6,
-          "to": 34
+          "from": 46.48,
+          "to": 46.88
         },
         {
           "start": 6,
           "end": 14,
-          "from": 34.04,
-          "to": 34.64
+          "from": 46.92,
+          "to": 47.52
         }
       ],
       "category": "prompt"
     },
     "[1,\"خۆر دەرکەوت.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 35.345,
-      "end": 36.24,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 48.065,
+      "end": 48.96,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 35.36,
-          "to": 35.6
+          "from": 48.08,
+          "to": 48.32
         },
         {
           "start": 4,
           "end": 12,
-          "from": 35.64,
-          "to": 36.24
+          "from": 48.4,
+          "to": 48.96
         }
       ],
       "category": "prompt"
     },
     "[1,\"خۆم دەخوێنمەوە:\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 36.865,
-      "end": 37.76,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 49.425,
+      "end": 50.4,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 36.88,
-          "to": 37.08
+          "from": 49.44,
+          "to": 49.64
         },
         {
           "start": 4,
           "end": 15,
-          "from": 37.12,
-          "to": 37.76
+          "from": 49.68,
+          "to": 50.4
         }
       ],
       "category": "prompt"
@@ -30797,33 +30817,33 @@
       "category": "prompt"
     },
     "[1,\"چیمان لەم ڕستەیەدا خوێندەوە؟\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 41.025,
-      "end": 42.72,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 52.065,
+      "end": 53.84,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 41.04,
-          "to": 41.36
+          "from": 52.08,
+          "to": 52.4
         },
         {
           "start": 6,
           "end": 9,
-          "from": 41.44,
-          "to": 41.6
+          "from": 52.48,
+          "to": 52.6
         },
         {
           "start": 10,
           "end": 18,
-          "from": 41.68,
-          "to": 42.16
+          "from": 52.64,
+          "to": 53.2
         },
         {
           "start": 19,
           "end": 28,
-          "from": 42.2,
-          "to": 42.72
+          "from": 53.24,
+          "to": 53.84
         }
       ],
       "category": "prompt"
@@ -30873,41 +30893,41 @@
       "category": "prompt"
     },
     "[1,\"پیتی پێشوو\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 52.545,
-      "end": 53.76,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 60.945,
+      "end": 61.84,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 52.56,
-          "to": 52.84
+          "from": 60.96,
+          "to": 61.28
         },
         {
           "start": 5,
           "end": 10,
-          "from": 52.88,
-          "to": 53.76
+          "from": 61.36,
+          "to": 61.84
         }
       ],
       "category": "prompt"
     },
     "[1,\"پیتی دواتر\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 54.144999999999996,
-      "end": 55.04,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 62.225,
+      "end": 63.12,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 54.16,
-          "to": 54.48
+          "from": 62.24,
+          "to": 62.56
         },
         {
           "start": 5,
           "end": 10,
-          "from": 54.52,
-          "to": 55.04
+          "from": 62.6,
+          "to": 63.12
         }
       ],
       "category": "prompt"
@@ -31197,201 +31217,201 @@
       "category": "prompt"
     },
     "[1,\"پشکنین دەکەم…\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 49.505,
-      "end": 50.4,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 58.144999999999996,
+      "end": 59.04,
       "timings": [
         {
           "start": 0,
           "end": 6,
-          "from": 49.52,
-          "to": 50
+          "from": 58.16,
+          "to": 58.64
         },
         {
           "start": 7,
           "end": 13,
-          "from": 50.04,
-          "to": 50.4
+          "from": 58.68,
+          "to": 59.04
         }
       ],
       "category": "prompt"
     },
     "[1,\"نووسینەکەم چۆنە؟ ✓\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 50.865,
-      "end": 52,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 59.425,
+      "end": 60.56,
       "timings": [
         {
           "start": 0,
           "end": 10,
-          "from": 50.88,
-          "to": 51.48
+          "from": 59.44,
+          "to": 60.04
         },
         {
           "start": 11,
           "end": 16,
-          "from": 51.52,
-          "to": 52
+          "from": 60.08,
+          "to": 60.56
         }
       ],
       "category": "prompt"
     },
     "[1,\"تەواو فێر بوویت!\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 63.585,
-      "end": 64.72,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 69.185,
+      "end": 70.4,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 63.6,
-          "to": 64
+          "from": 69.2,
+          "to": 69.64
         },
         {
           "start": 6,
           "end": 9,
-          "from": 64.08,
-          "to": 64.32
+          "from": 69.68,
+          "to": 69.92
         },
         {
           "start": 10,
           "end": 16,
-          "from": 64.4,
-          "to": 64.72
+          "from": 70,
+          "to": 70.4
         }
       ],
       "category": "prompt"
     },
     "[1,\"ئافەرم! ئەم مەشقەت تەواو کرد\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 65.105,
-      "end": 67.28,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 70.705,
+      "end": 72.88,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 65.12,
-          "to": 65.76
+          "from": 70.72,
+          "to": 71.36
         },
         {
           "start": 8,
           "end": 11,
-          "from": 66,
-          "to": 66.16
+          "from": 71.6,
+          "to": 71.72
         },
         {
           "start": 12,
           "end": 18,
-          "from": 66.24,
-          "to": 66.667
+          "from": 71.76,
+          "to": 72.2
         },
         {
           "start": 19,
           "end": 24,
-          "from": 66.693,
-          "to": 66.96
+          "from": 72.24,
+          "to": 72.52
         },
         {
           "start": 25,
           "end": 28,
-          "from": 67.04,
-          "to": 67.28
+          "from": 72.56,
+          "to": 72.88
         }
       ],
       "category": "prompt"
     },
     "[1,\"با جارێکی تر ڕاهێنان بکەین\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 67.665,
-      "end": 69.36,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 73.185,
+      "end": 74.88,
       "timings": [
         {
           "start": 0,
           "end": 2,
-          "from": 67.68,
-          "to": 67.84
+          "from": 73.2,
+          "to": 73.36
         },
         {
           "start": 3,
           "end": 9,
-          "from": 67.96,
-          "to": 68.32
+          "from": 73.48,
+          "to": 73.84
         },
         {
           "start": 10,
           "end": 12,
-          "from": 68.4,
-          "to": 68.48
+          "from": 73.92,
+          "to": 74
         },
         {
           "start": 13,
           "end": 20,
-          "from": 68.52,
-          "to": 68.96
+          "from": 74.04,
+          "to": 74.48
         },
         {
           "start": 21,
           "end": 26,
-          "from": 69.04,
-          "to": 69.36
+          "from": 74.52,
+          "to": 74.88
         }
       ],
       "category": "prompt"
     },
     "[1,\"ئێستا بە نموونە بنووسم\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 69.825,
-      "end": 71.36,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 75.185,
+      "end": 76.72,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 69.84,
-          "to": 70.24
+          "from": 75.2,
+          "to": 75.6
         },
         {
           "start": 6,
           "end": 8,
-          "from": 70.32,
-          "to": 70.4
+          "from": 75.68,
+          "to": 75.76
         },
         {
           "start": 9,
           "end": 15,
-          "from": 70.52,
-          "to": 70.8
+          "from": 75.84,
+          "to": 76.16
         },
         {
           "start": 16,
           "end": 22,
-          "from": 70.92,
-          "to": 71.36
+          "from": 76.24,
+          "to": 76.72
         }
       ],
       "category": "prompt"
     },
     "[1,\"ئێستا سەربەخۆ بنووسم\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3f23822fbbc02cccb87291e50132358f9156d5b168a04cd95bf5a98de95eef10.mp3",
-      "start": 71.905,
-      "end": 73.44,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 77.025,
+      "end": 78.64,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 71.92,
-          "to": 72.32
+          "from": 77.04,
+          "to": 77.44
         },
         {
           "start": 6,
           "end": 13,
-          "from": 72.4,
-          "to": 72.88
+          "from": 77.6,
+          "to": 78.08
         },
         {
           "start": 14,
           "end": 20,
-          "from": 72.96,
-          "to": 73.44
+          "from": 78.16,
+          "to": 78.64
         }
       ],
       "category": "prompt"
@@ -62136,197 +62156,197 @@
       "category": "vocabulary"
     },
     "[1,\"پشیلە شیر دەخوات\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 72.385,
-      "end": 74.64,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 0,
+      "end": 1.44,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 72.4,
-          "to": 72.96
+          "from": 0,
+          "to": 0.48
         },
         {
           "start": 6,
           "end": 9,
-          "from": 73.68,
-          "to": 73.92
+          "from": 0.56,
+          "to": 0.8
         },
         {
           "start": 10,
           "end": 16,
-          "from": 73.96,
-          "to": 74.64
+          "from": 0.88,
+          "to": 1.44
         }
       ],
       "category": "vocabulary"
     },
     "[1,\"سەگ نان دەخوات\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 75.265,
-      "end": 77.2,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 1.985,
+      "end": 3.36,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 75.28,
-          "to": 75.68
+          "from": 2,
+          "to": 2.32
         },
         {
           "start": 4,
           "end": 7,
-          "from": 76.32,
-          "to": 76.56
+          "from": 2.56,
+          "to": 2.8
         },
         {
           "start": 8,
           "end": 14,
-          "from": 76.6,
-          "to": 77.2
+          "from": 2.84,
+          "to": 3.36
         }
       ],
       "category": "vocabulary"
     },
     "[1,\"ماسی لە ئاودایە\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 77.745,
-      "end": 79.04,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 3.8249999999999997,
+      "end": 5.04,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 77.76,
-          "to": 78.16
+          "from": 3.84,
+          "to": 4.24
         },
         {
           "start": 5,
           "end": 7,
-          "from": 78.24,
-          "to": 78.36
+          "from": 4.32,
+          "to": 4.4
         },
         {
           "start": 8,
           "end": 15,
-          "from": 78.4,
-          "to": 79.04
+          "from": 4.48,
+          "to": 5.04
         }
       ],
       "category": "vocabulary"
     },
     "[1,\"کۆتر دەفڕێت\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 79.665,
-      "end": 80.72,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 5.505,
+      "end": 6.56,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 79.68,
-          "to": 80.08
+          "from": 5.52,
+          "to": 5.92
         },
         {
           "start": 5,
           "end": 11,
-          "from": 80.12,
-          "to": 80.72
+          "from": 5.96,
+          "to": 6.56
         }
       ],
       "category": "vocabulary"
     },
     "[1,\"منداڵەکە سێو دەخوات\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 81.185,
-      "end": 82.88,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 6.945,
+      "end": 8.56,
       "timings": [
         {
           "start": 0,
           "end": 8,
-          "from": 81.2,
-          "to": 81.84
+          "from": 6.96,
+          "to": 7.6
         },
         {
           "start": 9,
           "end": 12,
-          "from": 82,
-          "to": 82.24
+          "from": 7.68,
+          "to": 7.96
         },
         {
           "start": 13,
           "end": 19,
-          "from": 82.28,
-          "to": 82.88
+          "from": 8,
+          "to": 8.56
         }
       ],
       "category": "vocabulary"
     },
     "[1,\"مەڕ گیا دەخوات\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 83.505,
-      "end": 84.96,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 9.024999999999999,
+      "end": 10.4,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 83.52,
-          "to": 83.84
+          "from": 9.04,
+          "to": 9.36
         },
         {
           "start": 4,
           "end": 7,
-          "from": 84,
-          "to": 84.24
+          "from": 9.52,
+          "to": 9.76
         },
         {
           "start": 8,
           "end": 14,
-          "from": 84.32,
-          "to": 84.96
+          "from": 9.84,
+          "to": 10.4
         }
       ],
       "category": "vocabulary"
     },
     "[1,\"ئەسپ ڕادەکات\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 85.425,
-      "end": 86.64,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 10.865,
+      "end": 12,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 85.44,
-          "to": 85.84
+          "from": 10.88,
+          "to": 11.2
         },
         {
           "start": 5,
           "end": 12,
-          "from": 85.92,
-          "to": 86.64
+          "from": 11.28,
+          "to": 12
         }
       ],
       "category": "vocabulary"
     },
     "[1,\"مریشک هێلکە دەکات\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 87.185,
-      "end": 88.8,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 12.465,
+      "end": 14.08,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 87.2,
-          "to": 87.76
+          "from": 12.48,
+          "to": 13.04
         },
         {
           "start": 6,
           "end": 11,
-          "from": 87.92,
-          "to": 88.24
+          "from": 13.2,
+          "to": 13.52
         },
         {
           "start": 12,
           "end": 17,
-          "from": 88.28,
-          "to": 88.8
+          "from": 13.6,
+          "to": 14.08
         }
       ],
       "category": "vocabulary"
@@ -64340,39 +64360,39 @@
       "category": "adventure"
     },
     "[1,\"وشەکە لەم پیتانە پێک هاتووە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "aa3e6a089f6369200cb6f0ce242371766f146a3cc1fdcf2e8bc0dfd0dcfcae79.mp3",
-      "start": 19.025,
-      "end": 20.96,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 32.065,
+      "end": 34.08,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 19.04,
-          "to": 19.52
+          "from": 32.08,
+          "to": 32.56
         },
         {
           "start": 6,
           "end": 9,
-          "from": 19.56,
-          "to": 19.76
+          "from": 32.64,
+          "to": 32.8
         },
         {
           "start": 10,
           "end": 16,
-          "from": 19.8,
-          "to": 20.24
+          "from": 32.88,
+          "to": 33.28
         },
         {
           "start": 17,
           "end": 20,
-          "from": 20.28,
-          "to": 20.507
+          "from": 33.36,
+          "to": 33.6
         },
         {
           "start": 21,
           "end": 28,
-          "from": 20.533,
-          "to": 20.96
+          "from": 33.64,
+          "to": 34.08
         }
       ],
       "category": "adventure"
@@ -64820,27 +64840,27 @@
       "category": "adventure"
     },
     "[1,\"دەنگەکە دووبارە بکەوە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "aa3e6a089f6369200cb6f0ce242371766f146a3cc1fdcf2e8bc0dfd0dcfcae79.mp3",
-      "start": 17.185,
-      "end": 18.56,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 30.224999999999998,
+      "end": 31.68,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 17.2,
-          "to": 17.68
+          "from": 30.24,
+          "to": 30.72
         },
         {
           "start": 8,
           "end": 15,
-          "from": 17.76,
-          "to": 18.16
+          "from": 30.8,
+          "to": 31.2
         },
         {
           "start": 16,
           "end": 22,
-          "from": 18.2,
-          "to": 18.56
+          "from": 31.28,
+          "to": 31.68
         }
       ],
       "category": "adventure"
@@ -73419,628 +73439,612 @@
       "standalone": true
     },
     "[1,\"بە پەنجەت بینووسە ✍️\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "48e86a457eb19bd9b2106f1c00777528384c96c5204703dca815dd38667b4185.mp3",
-      "start": 0,
-      "end": 1.43,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 13.905,
+      "end": 15.04,
       "timings": [
         {
           "start": 0,
           "end": 2,
-          "from": 0,
-          "to": 0.16
+          "from": 13.92,
+          "to": 14
         },
         {
           "start": 3,
           "end": 9,
-          "from": 0.24,
-          "to": 0.68
+          "from": 14.08,
+          "to": 14.48
         },
         {
           "start": 10,
           "end": 17,
-          "from": 0.72,
-          "to": 1.28
+          "from": 14.52,
+          "to": 15.04
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"هێشتا ماوە! هەموو پیتەکە بنووسە ✍️\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e0052e7f9a19eea740f87c5ed9da96bde922c40dc797e2d1b0984f8df128e05c.mp3",
-      "start": 0,
-      "end": 2.87,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 15.424999999999999,
+      "end": 17.92,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 0,
-          "to": 0.48
+          "from": 15.44,
+          "to": 15.84
         },
         {
           "start": 6,
           "end": 11,
-          "from": 0.56,
-          "to": 0.96
+          "from": 15.92,
+          "to": 16.32
         },
         {
           "start": 12,
           "end": 17,
-          "from": 1.44,
-          "to": 1.72
+          "from": 16.64,
+          "to": 16.96
         },
         {
           "start": 18,
           "end": 24,
-          "from": 1.76,
-          "to": 2.16
+          "from": 17,
+          "to": 17.36
         },
         {
           "start": 25,
           "end": 31,
-          "from": 2.24,
-          "to": 2.72
+          "from": 17.44,
+          "to": 17.92
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"دەستت زێڕینە! زۆر جوان بوو ⭐⭐⭐\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "580d9d60a53a7d3eb09b3c559004c315174611fc32474eca3c8f6b6fa9114b34.mp3",
-      "start": 0,
-      "end": 2.87,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 18.305,
+      "end": 20.64,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 0,
-          "to": 0.52
+          "from": 18.32,
+          "to": 18.76
         },
         {
           "start": 6,
           "end": 13,
-          "from": 0.56,
-          "to": 1.28
+          "from": 18.8,
+          "to": 19.44
         },
         {
           "start": 14,
           "end": 17,
-          "from": 1.76,
-          "to": 2.08
+          "from": 19.76,
+          "to": 20
         },
         {
           "start": 18,
           "end": 22,
-          "from": 2.16,
-          "to": 2.48
+          "from": 20.08,
+          "to": 20.4
         },
         {
           "start": 23,
           "end": 26,
-          "from": 2.56,
-          "to": 2.72
+          "from": 20.48,
+          "to": 20.64
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"نایابە! زۆر جوان نووسیت ⭐⭐⭐\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "44cb2aa95b788ffeb49754673cafeb014994eb5bbe9efdaba56aedd0c0027f2d.mp3",
-      "start": 0,
-      "end": 2.71,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 21.105,
+      "end": 23.28,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 0,
-          "to": 0.88
+          "from": 21.12,
+          "to": 21.84
         },
         {
           "start": 8,
           "end": 11,
-          "from": 1.36,
-          "to": 1.68
+          "from": 22.16,
+          "to": 22.4
         },
         {
           "start": 12,
           "end": 16,
-          "from": 1.76,
-          "to": 2.08
+          "from": 22.48,
+          "to": 22.72
         },
         {
           "start": 17,
           "end": 23,
-          "from": 2.12,
-          "to": 2.56
+          "from": 22.8,
+          "to": 23.28
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"باشە! هەموو پیتەکە بنووسە، پاشان دووبارە تاقی بکەرەوە ✍️\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "0528ce0821f8804b4523db9d7cddef7497e336267456fa042f5d19b04eca38ca.mp3",
-      "start": 0,
-      "end": 4.71,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 23.745,
+      "end": 27.76,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 0,
-          "to": 0.56
+          "from": 23.76,
+          "to": 24.24
         },
         {
           "start": 6,
           "end": 11,
-          "from": 0.96,
-          "to": 1.24
+          "from": 24.56,
+          "to": 24.84
         },
         {
           "start": 12,
           "end": 18,
-          "from": 1.28,
-          "to": 1.68
+          "from": 24.88,
+          "to": 25.28
         },
         {
           "start": 19,
           "end": 26,
-          "from": 1.76,
-          "to": 2.24
+          "from": 25.36,
+          "to": 25.76
         },
         {
           "start": 27,
           "end": 32,
-          "from": 2.64,
-          "to": 3.12
+          "from": 26.04,
+          "to": 26.48
         },
         {
           "start": 33,
           "end": 40,
-          "from": 3.28,
-          "to": 3.68
+          "from": 26.56,
+          "to": 26.96
         },
         {
           "start": 41,
           "end": 45,
-          "from": 3.76,
-          "to": 4.08
+          "from": 27,
+          "to": 27.28
         },
         {
           "start": 46,
           "end": 53,
-          "from": 4.12,
-          "to": 4.56
+          "from": 27.32,
+          "to": 27.76
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"زۆر باشە! پیتەکە تەواو بکە ⭐⭐\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "039243d0da48aa14ef33f3b200c699f25568f8c9d3acc8a2e0541a359912db9e.mp3",
-      "start": 0,
-      "end": 2.55,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 28.224999999999998,
+      "end": 30.24,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 0,
-          "to": 0.4
+          "from": 28.24,
+          "to": 28.48
         },
         {
           "start": 4,
           "end": 9,
-          "from": 0.56,
-          "to": 0.88
+          "from": 28.56,
+          "to": 28.96
         },
         {
           "start": 10,
           "end": 16,
-          "from": 1.28,
-          "to": 1.76
+          "from": 29.2,
+          "to": 29.6
         },
         {
           "start": 17,
           "end": 22,
-          "from": 1.8,
-          "to": 2.08
+          "from": 29.64,
+          "to": 29.96
         },
         {
           "start": 23,
           "end": 26,
-          "from": 2.12,
-          "to": 2.4
+          "from": 30,
+          "to": 30.24
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"دەستت خۆش! کەمێک ڕێکتر بنووسە ⭐⭐\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "193557d541773bae42437aa177e6c3c2a7e277ea5e91c068843d44b01ff52590.mp3",
-      "start": 0,
-      "end": 2.79,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 30.625,
+      "end": 32.96,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 0,
-          "to": 0.44
+          "from": 30.64,
+          "to": 31.08
         },
         {
           "start": 6,
           "end": 10,
-          "from": 0.48,
-          "to": 0.8
+          "from": 31.12,
+          "to": 31.44
         },
         {
           "start": 11,
           "end": 16,
-          "from": 1.28,
-          "to": 1.64
+          "from": 31.68,
+          "to": 32.027
         },
         {
           "start": 17,
           "end": 22,
-          "from": 1.68,
-          "to": 2
+          "from": 32.053,
+          "to": 32.4
         },
         {
           "start": 23,
           "end": 29,
-          "from": 2.08,
-          "to": 2.64
+          "from": 32.48,
+          "to": 32.96
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"هەموو هێڵەکان بنووسە ✍️\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "c1668fcbf5a7bfe39265ef5918b78ea5f8b48fab93ff58e15c024c307e9f727b.mp3",
-      "start": 0,
-      "end": 1.8299999999999998,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 33.345,
+      "end": 34.8,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 0,
-          "to": 0.36
+          "from": 33.36,
+          "to": 33.707
         },
         {
           "start": 6,
           "end": 13,
-          "from": 0.4,
-          "to": 1.04
+          "from": 33.733,
+          "to": 34.24
         },
         {
           "start": 14,
           "end": 20,
-          "from": 1.12,
-          "to": 1.68
+          "from": 34.32,
+          "to": 34.8
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"لەسەر هێڵەکە بڕۆ و دەرمەچۆ ✍️\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "bfd2a713bee137b3e46c233f2b64b285f10cfd2d6e76d7d428ea28ae3b186b72.mp3",
-      "start": 0,
-      "end": 2.31,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 35.105,
+      "end": 36.96,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 0,
-          "to": 0.4
+          "from": 35.12,
+          "to": 35.44
         },
         {
           "start": 6,
           "end": 12,
-          "from": 0.48,
-          "to": 0.88
+          "from": 35.48,
+          "to": 35.92
         },
         {
           "start": 13,
           "end": 16,
-          "from": 0.96,
-          "to": 1.28
+          "from": 35.96,
+          "to": 36.24
         },
         {
           "start": 17,
           "end": 18,
-          "from": 1.44,
-          "to": 1.48
+          "from": 36.32,
+          "to": 36.347
         },
         {
           "start": 19,
           "end": 26,
-          "from": 1.52,
-          "to": 2.16
+          "from": 36.373,
+          "to": 36.96
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"هێواش هێواش فێر دەبیت! دووبارە تاقی بکەرەوە ⭐\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "3b13a9fb8fefc3df94a86dacb3ffc62228752e85d1bcd02d02bc2d86302a45fb.mp3",
-      "start": 0,
-      "end": 3.9099999999999997,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 37.265,
+      "end": 40.4,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 0,
-          "to": 0.52
+          "from": 37.28,
+          "to": 37.72
         },
         {
           "start": 6,
           "end": 11,
-          "from": 0.56,
-          "to": 1.04
+          "from": 37.76,
+          "to": 38.12
         },
         {
           "start": 12,
           "end": 15,
-          "from": 1.28,
-          "to": 1.52
+          "from": 38.16,
+          "to": 38.4
         },
         {
           "start": 16,
           "end": 22,
-          "from": 1.56,
-          "to": 2
+          "from": 38.44,
+          "to": 38.88
         },
         {
           "start": 23,
           "end": 30,
-          "from": 2.4,
-          "to": 2.88
+          "from": 39.12,
+          "to": 39.52
         },
         {
           "start": 31,
           "end": 35,
-          "from": 2.92,
-          "to": 3.2
+          "from": 39.6,
+          "to": 39.92
         },
         {
           "start": 36,
           "end": 43,
-          "from": 3.28,
-          "to": 3.76
+          "from": 39.96,
+          "to": 40.4
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"دەقێکی کورت\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e7a2143ee4dd4ac0f04c383fafd00ca804c5c66703314d405ac3235736c0f478.mp3",
-      "start": 0,
-      "end": 1.5899999999999999,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 50.705,
+      "end": 51.68,
       "timings": [
         {
           "start": 0,
           "end": 6,
-          "from": 0,
-          "to": 0.64
+          "from": 50.72,
+          "to": 51.2
         },
         {
           "start": 7,
           "end": 11,
-          "from": 0.72,
-          "to": 1.44
+          "from": 51.28,
+          "to": 51.68
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"با بگەڕێینەوە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "383bfa6494b0fd1818d3f0c08f9bc04cad51f4fe09ebca63b656a76eb3db035d.mp3",
-      "start": 0,
-      "end": 1.5899999999999999,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 54.225,
+      "end": 55.12,
       "timings": [
         {
           "start": 0,
           "end": 2,
-          "from": 0,
-          "to": 0.32
+          "from": 54.24,
+          "to": 54.32
         },
         {
           "start": 3,
           "end": 14,
-          "from": 0.64,
-          "to": 1.44
+          "from": 54.4,
+          "to": 55.12
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"هەڵنەگیرا. دووبارە تاقی بکەرەوە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "255ac83d2997085b7a35ca20299170add61886c6fd82cfedbde2202162c56171.mp3",
-      "start": 0,
-      "end": 2.87,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 55.505,
+      "end": 57.76,
       "timings": [
         {
           "start": 0,
           "end": 10,
-          "from": 0,
-          "to": 0.88
+          "from": 55.52,
+          "to": 56.24
         },
         {
           "start": 11,
           "end": 18,
-          "from": 1.36,
-          "to": 1.8
+          "from": 56.48,
+          "to": 56.88
         },
         {
           "start": 19,
           "end": 23,
-          "from": 1.84,
-          "to": 2.16
+          "from": 56.96,
+          "to": 57.28
         },
         {
           "start": 24,
           "end": 32,
-          "from": 2.2,
-          "to": 2.72
+          "from": 57.32,
+          "to": 57.76
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"نموونەکە ببینە و بینووسە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "1c2f5c699a9890885cbd857d7b322f025daf1fcc08ee4a90361947651352da45.mp3",
-      "start": 0,
-      "end": 2.4699999999999998,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 63.585,
+      "end": 65.28,
       "timings": [
         {
           "start": 0,
           "end": 8,
-          "from": 0,
-          "to": 0.64
+          "from": 63.6,
+          "to": 64.12
         },
         {
           "start": 9,
           "end": 14,
-          "from": 0.72,
-          "to": 1.28
+          "from": 64.16,
+          "to": 64.56
         },
         {
           "start": 15,
           "end": 16,
-          "from": 1.52,
-          "to": 1.68
+          "from": 64.6,
+          "to": 64.64
         },
         {
           "start": 17,
           "end": 25,
-          "from": 1.72,
-          "to": 2.32
+          "from": 64.72,
+          "to": 65.28
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"بەبێ نموونە بینووسە. هەموو شتەکان بیر بێنەرەوە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "cb87b641e3d29e7248744172ce9dff1e7a2e388c75449e438f6691c7202b4b76.mp3",
-      "start": 0,
-      "end": 3.9099999999999997,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 65.665,
+      "end": 68.88,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 0,
-          "to": 0.32
+          "from": 65.68,
+          "to": 65.92
         },
         {
           "start": 5,
           "end": 11,
-          "from": 0.4,
-          "to": 0.8
+          "from": 66,
+          "to": 66.36
         },
         {
           "start": 12,
           "end": 20,
-          "from": 0.88,
-          "to": 1.44
+          "from": 66.4,
+          "to": 66.96
         },
         {
           "start": 21,
           "end": 26,
-          "from": 1.92,
-          "to": 2.24
+          "from": 67.28,
+          "to": 67.56
         },
         {
           "start": 27,
           "end": 33,
-          "from": 2.32,
-          "to": 2.8
+          "from": 67.6,
+          "to": 68
         },
         {
           "start": 34,
           "end": 37,
-          "from": 2.88,
-          "to": 3.04
+          "from": 68.08,
+          "to": 68.24
         },
         {
           "start": 38,
           "end": 47,
-          "from": 3.12,
-          "to": 3.76
+          "from": 68.32,
+          "to": 68.88
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"سڵاو! دوگمەی بەردەوام بین بدە. یاری و نووسین و چیرۆک لێرەن.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "a7fa943ae3350ef62d003f4dd4df8934ce9b27567d09ba88482b21e7b3e59443.mp3",
-      "start": 0,
-      "end": 5.75,
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 79.025,
+      "end": 83.6,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 0,
-          "to": 0.48
+          "from": 79.04,
+          "to": 79.52
         },
         {
           "start": 6,
           "end": 12,
-          "from": 0.96,
-          "to": 1.36
+          "from": 79.84,
+          "to": 80.24
         },
         {
           "start": 13,
           "end": 21,
-          "from": 1.4,
-          "to": 1.92
+          "from": 80.28,
+          "to": 80.72
         },
         {
           "start": 22,
           "end": 25,
-          "from": 2,
-          "to": 2.16
+          "from": 80.8,
+          "to": 80.96
         },
         {
           "start": 26,
           "end": 30,
-          "from": 2.24,
-          "to": 2.48
+          "from": 81.04,
+          "to": 81.36
         },
         {
           "start": 31,
           "end": 35,
-          "from": 2.96,
-          "to": 3.36
+          "from": 81.68,
+          "to": 82
         },
         {
           "start": 36,
           "end": 37,
-          "from": 3.44,
-          "to": 3.52
+          "from": 82.08,
+          "to": 82.12
         },
         {
           "start": 38,
           "end": 44,
-          "from": 3.64,
-          "to": 4.08
+          "from": 82.16,
+          "to": 82.56
         },
         {
           "start": 45,
           "end": 46,
-          "from": 4.12,
-          "to": 4.16
+          "from": 82.64,
+          "to": 82.72
         },
         {
           "start": 47,
           "end": 52,
-          "from": 4.32,
-          "to": 4.88
+          "from": 82.8,
+          "to": 83.2
         },
         {
           "start": 53,
           "end": 59,
-          "from": 4.96,
-          "to": 5.6
+          "from": 83.24,
+          "to": 83.6
         }
       ],
-      "category": "prompt",
-      "standalone": true
+      "category": "prompt"
     },
     "[1,\"ئەمە باخچەکەتە! هەر گەشتێک تەواو بکەیت، گوڵێک دەڕوێت. هاوڕێکەت لێرەیە، خۆراکی بدەرێ.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "6a5ce9799929595f45e621460769c2df220b5e3cf6fc113b72e44029984eed31.mp3",
@@ -75885,943 +75889,924 @@
       "standalone": true
     },
     "[1,\"سەیری ئەم پیتە بکە. هەمان پیت بدۆزەوە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "67cd137e9b2b83f4c3086a15788097168834c1828945df16096c7e0f912a0bd5.mp3",
-      "start": 0,
-      "end": 3.27,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 16.305,
+      "end": 19.12,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 0,
-          "to": 0.4
+          "from": 16.32,
+          "to": 16.64
         },
         {
           "start": 6,
           "end": 9,
-          "from": 0.48,
-          "to": 0.6
+          "from": 16.68,
+          "to": 16.773
         },
         {
           "start": 10,
           "end": 14,
-          "from": 0.64,
-          "to": 0.96
+          "from": 16.8,
+          "to": 17.12
         },
         {
           "start": 15,
           "end": 19,
-          "from": 1,
-          "to": 1.28
+          "from": 17.2,
+          "to": 17.44
         },
         {
           "start": 20,
           "end": 25,
-          "from": 1.76,
-          "to": 2.08
+          "from": 17.92,
+          "to": 18.24
         },
         {
           "start": 26,
           "end": 29,
-          "from": 2.16,
-          "to": 2.4
+          "from": 18.32,
+          "to": 18.48
         },
         {
           "start": 30,
           "end": 38,
-          "from": 2.48,
-          "to": 3.12
+          "from": 18.56,
+          "to": 19.12
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"ئافەرم! تەواوت کرد. با بگەڕێینەوە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "2592e9bb4ff26dccdb0358e6c24afb9b8452c32d0969f79eb9d8f62e827103db.mp3",
-      "start": 0,
-      "end": 3.35,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 19.665,
+      "end": 22.72,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 0,
-          "to": 0.72
+          "from": 19.68,
+          "to": 20.32
         },
         {
           "start": 8,
           "end": 14,
-          "from": 0.96,
-          "to": 1.52
+          "from": 20.56,
+          "to": 21.04
         },
         {
           "start": 15,
           "end": 19,
-          "from": 1.56,
-          "to": 1.84
+          "from": 21.12,
+          "to": 21.44
         },
         {
           "start": 20,
           "end": 22,
-          "from": 2.32,
-          "to": 2.4
+          "from": 21.76,
+          "to": 21.92
         },
         {
           "start": 23,
           "end": 34,
-          "from": 2.48,
-          "to": 3.2
+          "from": 22,
+          "to": 22.72
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"ئافەرم! دروستە. دوگمە گەورەکە بدە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "a537d6bda09ba374b99f3be69e54d39f277525f42171d5c865424a4a7e8e8d40.mp3",
-      "start": 0,
-      "end": 3.35,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 23.185,
+      "end": 26.24,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 0,
-          "to": 0.72
+          "from": 23.2,
+          "to": 23.84
         },
         {
           "start": 8,
           "end": 15,
-          "from": 0.96,
-          "to": 1.52
+          "from": 24.08,
+          "to": 24.72
         },
         {
           "start": 16,
           "end": 21,
-          "from": 2,
-          "to": 2.32
+          "from": 25.12,
+          "to": 25.36
         },
         {
           "start": 22,
           "end": 29,
-          "from": 2.4,
-          "to": 2.8
+          "from": 25.44,
+          "to": 25.84
         },
         {
           "start": 30,
           "end": 34,
-          "from": 2.88,
-          "to": 3.2
+          "from": 25.92,
+          "to": 26.24
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"سەرەتا گەشتێک تەواو بکە، پاشان یاری دەکەین.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "168590e05c9185e7f18b179cdc1c1556da33e6ef20ca8bba70b245b299462a64.mp3",
-      "start": 0,
-      "end": 3.35,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 26.625,
+      "end": 29.76,
       "timings": [
         {
           "start": 0,
           "end": 6,
-          "from": 0,
-          "to": 0.56
+          "from": 26.64,
+          "to": 27.12
         },
         {
           "start": 7,
           "end": 13,
-          "from": 0.72,
-          "to": 1.12
+          "from": 27.2,
+          "to": 27.64
         },
         {
           "start": 14,
           "end": 19,
-          "from": 1.16,
-          "to": 1.44
+          "from": 27.68,
+          "to": 28
         },
         {
           "start": 20,
           "end": 24,
-          "from": 1.52,
-          "to": 1.76
+          "from": 28.08,
+          "to": 28.32
         },
         {
           "start": 25,
           "end": 30,
-          "from": 2.12,
-          "to": 2.48
+          "from": 28.64,
+          "to": 29.04
         },
         {
           "start": 31,
           "end": 35,
-          "from": 2.56,
-          "to": 2.8
+          "from": 29.08,
+          "to": 29.28
         },
         {
           "start": 36,
           "end": 43,
-          "from": 2.84,
-          "to": 3.2
+          "from": 29.32,
+          "to": 29.76
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"بەخێربێیت بۆ باخچەی پیتەکان! گوێ بگرە، یاری بکە و بنووسە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9e0dbfbbcb9d356999f0af7afcdf986acd4eab750a76b699f1798384e528a86e.mp3",
-      "start": 0,
-      "end": 4.71,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 34.545,
+      "end": 39.04,
       "timings": [
         {
           "start": 0,
           "end": 9,
-          "from": 0,
-          "to": 0.68
+          "from": 34.56,
+          "to": 35.173
         },
         {
           "start": 10,
           "end": 12,
-          "from": 0.72,
-          "to": 0.8
+          "from": 35.2,
+          "to": 35.28
         },
         {
           "start": 13,
           "end": 19,
-          "from": 0.88,
-          "to": 1.2
+          "from": 35.36,
+          "to": 35.72
         },
         {
           "start": 20,
           "end": 28,
-          "from": 1.24,
-          "to": 1.84
+          "from": 35.76,
+          "to": 36.32
         },
         {
           "start": 29,
           "end": 32,
-          "from": 2.32,
-          "to": 2.48
+          "from": 36.72,
+          "to": 36.96
         },
         {
           "start": 33,
           "end": 38,
-          "from": 2.56,
-          "to": 2.88
+          "from": 37.04,
+          "to": 37.36
         },
         {
           "start": 39,
           "end": 43,
-          "from": 3.28,
-          "to": 3.6
+          "from": 37.68,
+          "to": 38
         },
         {
           "start": 44,
           "end": 47,
-          "from": 3.68,
-          "to": 3.84
+          "from": 38.08,
+          "to": 38.24
         },
         {
           "start": 48,
           "end": 49,
-          "from": 3.88,
-          "to": 3.92
+          "from": 38.32,
+          "to": 38.4
         },
         {
           "start": 50,
           "end": 57,
-          "from": 4,
-          "to": 4.56
+          "from": 38.48,
+          "to": 39.04
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"گوێ لەم پیتە بگرە. هەمان پیت بدۆزەوە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "30da813c394ed5efe9f518496ac887295f957c279941a55cf43116c9547aca40.mp3",
-      "start": 0,
-      "end": 3.27,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 39.585,
+      "end": 42.4,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 0,
-          "to": 0.32
+          "from": 39.6,
+          "to": 39.76
         },
         {
           "start": 4,
           "end": 7,
-          "from": 0.36,
-          "to": 0.52
+          "from": 39.8,
+          "to": 39.96
         },
         {
           "start": 8,
           "end": 12,
-          "from": 0.56,
-          "to": 0.88
+          "from": 40,
+          "to": 40.28
         },
         {
           "start": 13,
           "end": 18,
-          "from": 0.96,
-          "to": 1.28
+          "from": 40.32,
+          "to": 40.72
         },
         {
           "start": 19,
           "end": 24,
-          "from": 1.76,
-          "to": 2.08
+          "from": 41.12,
+          "to": 41.44
         },
         {
           "start": 25,
           "end": 28,
-          "from": 2.16,
-          "to": 2.4
+          "from": 41.52,
+          "to": 41.72
         },
         {
           "start": 29,
           "end": 37,
-          "from": 2.48,
-          "to": 3.12
+          "from": 41.76,
+          "to": 42.4
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"گوێ لە وشەکە بگرە. وێنەکەی بدۆزەوە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "26cc9fad4a6c5519778a06e30c2ff07c91a397078bff76ab9b9e9cb25a8da0f6.mp3",
-      "start": 0,
-      "end": 3.11,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 42.865,
+      "end": 45.68,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 0,
-          "to": 0.28
+          "from": 42.88,
+          "to": 43.08
         },
         {
           "start": 4,
           "end": 6,
-          "from": 0.32,
-          "to": 0.44
+          "from": 43.12,
+          "to": 43.24
         },
         {
           "start": 7,
           "end": 12,
-          "from": 0.48,
-          "to": 0.88
+          "from": 43.28,
+          "to": 43.64
         },
         {
           "start": 13,
           "end": 18,
-          "from": 0.96,
-          "to": 1.28
+          "from": 43.68,
+          "to": 44.08
         },
         {
           "start": 19,
           "end": 26,
-          "from": 1.76,
-          "to": 2.24
+          "from": 44.48,
+          "to": 44.96
         },
         {
           "start": 27,
           "end": 35,
-          "from": 2.32,
-          "to": 2.96
+          "from": 45.08,
+          "to": 45.68
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"با وشەکە دروست بکەین! پیتەکان بە ڕیز دابنێ.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "eee2f326c97c6911f51dcf9e537018859b5ee0464b8af39d6e46e2ff6f1e616f.mp3",
-      "start": 0,
-      "end": 3.75,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 46.144999999999996,
+      "end": 49.36,
       "timings": [
         {
           "start": 0,
           "end": 2,
-          "from": 0,
-          "to": 0.24
+          "from": 46.16,
+          "to": 46.32
         },
         {
           "start": 3,
           "end": 8,
-          "from": 0.36,
-          "to": 0.64
+          "from": 46.44,
+          "to": 46.72
         },
         {
           "start": 9,
           "end": 14,
-          "from": 0.72,
-          "to": 0.96
+          "from": 46.8,
+          "to": 47.12
         },
         {
           "start": 15,
           "end": 21,
-          "from": 1.04,
-          "to": 1.36
+          "from": 47.16,
+          "to": 47.44
         },
         {
           "start": 22,
           "end": 29,
-          "from": 1.8,
-          "to": 2.4
+          "from": 47.84,
+          "to": 48.32
         },
         {
           "start": 30,
           "end": 32,
-          "from": 2.48,
-          "to": 2.64
+          "from": 48.4,
+          "to": 48.56
         },
         {
           "start": 33,
           "end": 36,
-          "from": 2.68,
-          "to": 2.92
+          "from": 48.6,
+          "to": 48.8
         },
         {
           "start": 37,
           "end": 43,
-          "from": 2.96,
-          "to": 3.6
+          "from": 48.84,
+          "to": 49.36
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"بە پەنجەت بەسەر پیتەکەدا بڕۆ. لە خاڵە سەوزەکە دەست پێ بکە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "51514c3bfec74208c262e312bcdb1eb2218557c381fa510466ef4df0aab20de6.mp3",
-      "start": 0,
-      "end": 4.550000000000001,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 49.745,
+      "end": 53.84,
       "timings": [
         {
           "start": 0,
           "end": 2,
-          "from": 0,
-          "to": 0.16
+          "from": 49.76,
+          "to": 49.84
         },
         {
           "start": 3,
           "end": 9,
-          "from": 0.2,
-          "to": 0.68
+          "from": 49.92,
+          "to": 50.36
         },
         {
           "start": 10,
           "end": 15,
-          "from": 0.72,
-          "to": 1.04
+          "from": 50.4,
+          "to": 50.68
         },
         {
           "start": 16,
           "end": 24,
-          "from": 1.12,
-          "to": 1.68
+          "from": 50.72,
+          "to": 51.28
         },
         {
           "start": 25,
           "end": 29,
-          "from": 1.72,
-          "to": 2
+          "from": 51.36,
+          "to": 51.68
         },
         {
           "start": 30,
           "end": 32,
-          "from": 2.48,
-          "to": 2.64
+          "from": 52.08,
+          "to": 52.2
         },
         {
           "start": 33,
           "end": 37,
-          "from": 2.68,
-          "to": 2.96
+          "from": 52.24,
+          "to": 52.48
         },
         {
           "start": 38,
           "end": 45,
-          "from": 3,
-          "to": 3.52
+          "from": 52.56,
+          "to": 53.04
         },
         {
           "start": 46,
           "end": 50,
-          "from": 3.6,
-          "to": 3.84
+          "from": 53.12,
+          "to": 53.36
         },
         {
           "start": 51,
           "end": 53,
-          "from": 3.92,
-          "to": 4
+          "from": 53.4,
+          "to": 53.52
         },
         {
           "start": 54,
           "end": 58,
-          "from": 4.08,
-          "to": 4.4
+          "from": 53.56,
+          "to": 53.84
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"ئافەرم! ئێستا چیرۆکێک دەبیستین. کتێبەکە بدە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "db8973d8043dd917f7fb0149b9c238fbe3d59010d19b57b5b0c59729d6e1d124.mp3",
-      "start": 0,
-      "end": 4.07,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 54.305,
+      "end": 58.16,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 0,
-          "to": 0.72
+          "from": 54.32,
+          "to": 54.96
         },
         {
           "start": 8,
           "end": 13,
-          "from": 1.12,
-          "to": 1.52
+          "from": 55.28,
+          "to": 55.68
         },
         {
           "start": 14,
           "end": 21,
-          "from": 1.68,
-          "to": 2.187
+          "from": 55.76,
+          "to": 56.32
         },
         {
           "start": 22,
           "end": 31,
-          "from": 2.213,
-          "to": 2.8
+          "from": 56.36,
+          "to": 56.96
         },
         {
           "start": 32,
           "end": 39,
-          "from": 3.12,
-          "to": 3.6
+          "from": 57.28,
+          "to": 57.76
         },
         {
           "start": 40,
           "end": 44,
-          "from": 3.68,
-          "to": 3.92
+          "from": 57.84,
+          "to": 58.16
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"ئەم گەشتە هێشتا داخراوە. سەرەتا گەشتی ئێستا تەواو بکە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e1f3fa9d3d0ed97db0096aa0c651e17ab4482649658e8da6cbfc2674c13582eb.mp3",
-      "start": 0,
-      "end": 4.550000000000001,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 58.625,
+      "end": 62.8,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 0,
-          "to": 0.24
+          "from": 58.64,
+          "to": 58.76
         },
         {
           "start": 4,
           "end": 9,
-          "from": 0.28,
-          "to": 0.72
+          "from": 58.8,
+          "to": 59.2
         },
         {
           "start": 10,
           "end": 15,
-          "from": 0.8,
-          "to": 1.2
+          "from": 59.28,
+          "to": 59.68
         },
         {
           "start": 16,
           "end": 24,
-          "from": 1.32,
-          "to": 1.84
+          "from": 59.76,
+          "to": 60.4
         },
         {
           "start": 25,
           "end": 31,
-          "from": 2.32,
-          "to": 2.8
+          "from": 60.8,
+          "to": 61.28
         },
         {
           "start": 32,
           "end": 37,
-          "from": 2.96,
-          "to": 3.28
+          "from": 61.36,
+          "to": 61.68
         },
         {
           "start": 38,
           "end": 43,
-          "from": 3.36,
-          "to": 3.68
+          "from": 61.76,
+          "to": 62.08
         },
         {
           "start": 44,
           "end": 49,
-          "from": 3.76,
-          "to": 4.08
+          "from": 62.16,
+          "to": 62.48
         },
         {
           "start": 50,
           "end": 54,
-          "from": 4.12,
-          "to": 4.4
+          "from": 62.52,
+          "to": 62.8
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"ئافەرم! گوڵەکەت ئامادەیە. بیچێنە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "32f85367b37c48fea3bd99e9947380b10d1961c7e147ff150bad3449ddf9078f.mp3",
-      "start": 0,
-      "end": 3.35,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 63.265,
+      "end": 66.4,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 0,
-          "to": 0.72
+          "from": 63.28,
+          "to": 63.92
         },
         {
           "start": 8,
           "end": 15,
-          "from": 1.12,
-          "to": 1.6
+          "from": 64.16,
+          "to": 64.64
         },
         {
           "start": 16,
           "end": 25,
-          "from": 1.64,
-          "to": 2.24
+          "from": 64.72,
+          "to": 65.44
         },
         {
           "start": 26,
           "end": 33,
-          "from": 2.64,
-          "to": 3.2
+          "from": 65.76,
+          "to": 66.4
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"ئەم گوڵە هی تۆیە. ئێستا پشوو بدە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "4b40797a595956fb60f86659ee8fb0dc5e3094933350bb9e54b5b514e95f5052.mp3",
-      "start": 0,
-      "end": 2.9499999999999997,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 66.785,
+      "end": 69.52,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 0,
-          "to": 0.2
+          "from": 66.8,
+          "to": 66.96
         },
         {
           "start": 4,
           "end": 8,
-          "from": 0.24,
-          "to": 0.56
+          "from": 67.04,
+          "to": 67.28
         },
         {
           "start": 9,
           "end": 11,
-          "from": 0.64,
-          "to": 0.8
+          "from": 67.36,
+          "to": 67.52
         },
         {
           "start": 12,
           "end": 17,
-          "from": 0.88,
-          "to": 1.36
+          "from": 67.6,
+          "to": 68
         },
         {
           "start": 18,
           "end": 23,
-          "from": 1.84,
-          "to": 2.16
+          "from": 68.4,
+          "to": 68.8
         },
         {
           "start": 24,
           "end": 28,
-          "from": 2.24,
-          "to": 2.533
+          "from": 68.88,
+          "to": 69.2
         },
         {
           "start": 29,
           "end": 33,
-          "from": 2.587,
-          "to": 2.8
+          "from": 69.28,
+          "to": 69.52
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"نزیک بوویت! دووبارە تاقی بکەرەوە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "d1b0cf8e4ae03f08a6039fce927f6bc6a146512d5d9e62a11910c957c0d63718.mp3",
-      "start": 0,
-      "end": 2.87,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 69.985,
+      "end": 72.48,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 0,
-          "to": 0.48
+          "from": 70,
+          "to": 70.4
         },
         {
           "start": 5,
           "end": 11,
-          "from": 0.6,
-          "to": 0.96
+          "from": 70.48,
+          "to": 70.8
         },
         {
           "start": 12,
           "end": 19,
-          "from": 1.36,
-          "to": 1.76
+          "from": 71.12,
+          "to": 71.52
         },
         {
           "start": 20,
           "end": 24,
-          "from": 1.84,
-          "to": 2.12
+          "from": 71.6,
+          "to": 71.92
         },
         {
           "start": 25,
           "end": 33,
-          "from": 2.16,
-          "to": 2.72
+          "from": 71.96,
+          "to": 72.48
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"ئافەرم! دوگمە گەورەکە بدە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "57599894ca2c79dfd0ff235f84f32a7865fd99a431349a084b17099388fb8c7c.mp3",
-      "start": 0,
-      "end": 2.4699999999999998,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 72.945,
+      "end": 74.96,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 0,
-          "to": 0.72
+          "from": 72.96,
+          "to": 73.6
         },
         {
           "start": 8,
           "end": 13,
-          "from": 1.12,
-          "to": 1.44
+          "from": 73.84,
+          "to": 74.12
         },
         {
           "start": 14,
           "end": 21,
-          "from": 1.52,
-          "to": 1.96
+          "from": 74.16,
+          "to": 74.56
         },
         {
           "start": 22,
           "end": 26,
-          "from": 2,
-          "to": 2.32
+          "from": 74.64,
+          "to": 74.96
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"ئەمە باخچەکەتە. گوڵەکان هی تۆن. پیتە کراوەکە هەڵبژێرە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "10493692b88e3191926fac6c0cedf625c7272315383800c6ab79f2bc03b0fe16.mp3",
-      "start": 0,
-      "end": 5.2700000000000005,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 75.345,
+      "end": 79.76,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 0,
-          "to": 0.24
+          "from": 75.36,
+          "to": 75.6
         },
         {
           "start": 5,
           "end": 15,
-          "from": 0.32,
-          "to": 1.12
+          "from": 75.68,
+          "to": 76.4
         },
         {
           "start": 16,
           "end": 23,
-          "from": 1.6,
-          "to": 2.16
+          "from": 76.72,
+          "to": 77.2
         },
         {
           "start": 24,
           "end": 26,
-          "from": 2.24,
-          "to": 2.4
+          "from": 77.28,
+          "to": 77.44
         },
         {
           "start": 27,
           "end": 31,
-          "from": 2.48,
-          "to": 2.88
+          "from": 77.52,
+          "to": 77.84
         },
         {
           "start": 32,
           "end": 36,
-          "from": 3.36,
-          "to": 3.6
+          "from": 78.16,
+          "to": 78.4
         },
         {
           "start": 37,
           "end": 44,
-          "from": 3.68,
-          "to": 4.24
+          "from": 78.48,
+          "to": 78.96
         },
         {
           "start": 45,
           "end": 54,
-          "from": 4.4,
-          "to": 5.12
+          "from": 79.04,
+          "to": 79.76
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"با دووبارە دەست پێ بکەین. گوێ بگرە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "adaa27a61fe1720dc0a3177d533e3e7e1a3d856a5cb50136e3dbff037644f52a.mp3",
-      "start": 0,
-      "end": 2.79,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 80.30499999999999,
+      "end": 82.72,
       "timings": [
         {
           "start": 0,
           "end": 2,
-          "from": 0,
-          "to": 0.24
+          "from": 80.32,
+          "to": 80.48
         },
         {
           "start": 3,
           "end": 10,
-          "from": 0.32,
-          "to": 0.76
+          "from": 80.56,
+          "to": 80.92
         },
         {
           "start": 11,
           "end": 15,
-          "from": 0.8,
-          "to": 0.96
+          "from": 80.96,
+          "to": 81.2
         },
         {
           "start": 16,
           "end": 18,
-          "from": 1.04,
-          "to": 1.12
+          "from": 81.24,
+          "to": 81.36
         },
         {
           "start": 19,
           "end": 25,
-          "from": 1.2,
-          "to": 1.52
+          "from": 81.4,
+          "to": 81.68
         },
         {
           "start": 26,
           "end": 29,
-          "from": 2.08,
-          "to": 2.24
+          "from": 82.08,
+          "to": 82.32
         },
         {
           "start": 30,
           "end": 35,
-          "from": 2.32,
-          "to": 2.64
+          "from": 82.4,
+          "to": 82.72
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"با گوڵێک بچێنین! بە هەر وەڵامێکی دروست، تۆوەکە گەورەتر دەبێت.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "a14e457ecb5e0c0f47b0f2db066ba125cc5ba776878e1af1edcf08e19913dde5.mp3",
-      "start": 0,
-      "end": 4.87,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 83.265,
+      "end": 87.76,
       "timings": [
         {
           "start": 0,
           "end": 2,
-          "from": 0,
-          "to": 0.24
+          "from": 83.28,
+          "to": 83.44
         },
         {
           "start": 3,
           "end": 8,
-          "from": 0.28,
-          "to": 0.6
+          "from": 83.52,
+          "to": 83.8
         },
         {
           "start": 9,
           "end": 16,
-          "from": 0.64,
-          "to": 1.2
+          "from": 83.84,
+          "to": 84.32
         },
         {
           "start": 17,
           "end": 19,
-          "from": 1.68,
-          "to": 1.76
+          "from": 84.72,
+          "to": 84.84
         },
         {
           "start": 20,
           "end": 23,
-          "from": 1.8,
-          "to": 1.96
+          "from": 84.88,
+          "to": 85.013
         },
         {
           "start": 24,
           "end": 32,
-          "from": 2,
-          "to": 2.56
+          "from": 85.04,
+          "to": 85.64
         },
         {
           "start": 33,
           "end": 39,
-          "from": 2.64,
-          "to": 3.04
+          "from": 85.68,
+          "to": 86.08
         },
         {
           "start": 40,
           "end": 46,
-          "from": 3.32,
-          "to": 3.76
+          "from": 86.32,
+          "to": 86.72
         },
         {
           "start": 47,
           "end": 54,
-          "from": 3.8,
-          "to": 4.24
+          "from": 86.8,
+          "to": 87.28
         },
         {
           "start": 55,
           "end": 61,
-          "from": 4.28,
-          "to": 4.72
+          "from": 87.32,
+          "to": 87.76
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"گوێ بگرە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "c7d2b89dfebf1b37a25052f8ca34c72cbb1640e21269b2c19640582c456d75c2.mp3",
-      "start": 0,
-      "end": 0.9500000000000001,
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 88.225,
+      "end": 88.88,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 0,
-          "to": 0.32
+          "from": 88.24,
+          "to": 88.4
         },
         {
           "start": 4,
           "end": 9,
-          "from": 0.4,
-          "to": 0.8
+          "from": 88.48,
+          "to": 88.88
         }
       ],
-      "category": "adventure",
-      "standalone": true
+      "category": "adventure"
     },
     "[1,\"پیتی\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "d3ca7edd7fa83706bf515d8fa0ba3aabdaf883f0da748406e3264684d7ae5e0c.mp3",
@@ -77475,7 +77460,119 @@
         }
       ],
       "category": "word"
+    },
+    "[1,\"پیتی ئەمڕۆمان ناسی. ئێستا ڕاهێنانی زیاتر بکەین.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
+      "file": "c0be60be19d049afba7fa4876b58138ff1b82f6348da1d799e59dfcec466cb77.mp3",
+      "start": 83.985,
+      "end": 87.44,
+      "timings": [
+        {
+          "start": 0,
+          "end": 4,
+          "from": 84,
+          "to": 84.32
+        },
+        {
+          "start": 5,
+          "end": 13,
+          "from": 84.36,
+          "to": 84.88
+        },
+        {
+          "start": 14,
+          "end": 19,
+          "from": 85.04,
+          "to": 85.36
+        },
+        {
+          "start": 20,
+          "end": 25,
+          "from": 85.6,
+          "to": 86
+        },
+        {
+          "start": 26,
+          "end": 34,
+          "from": 86.08,
+          "to": 86.64
+        },
+        {
+          "start": 35,
+          "end": 40,
+          "from": 86.72,
+          "to": 87.08
+        },
+        {
+          "start": 41,
+          "end": 47,
+          "from": 87.12,
+          "to": 87.44
+        }
+      ],
+      "category": "prompt"
+    },
+    "[1,\"وِرچ\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
+      "file": "eb547f3d09b2148811f91e45c24635f0799247f8edfe7ad4f7bef7a05c6e34f2.mp3",
+      "start": 0,
+      "end": 1.1099999999999999,
+      "timings": [
+        {
+          "start": 0,
+          "end": 3,
+          "from": 0,
+          "to": 0.96
+        }
+      ],
+      "category": "word",
+      "standalone": true
+    },
+    "[1,\"مْریشک\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
+      "file": "0f151bf58388ea8f9ea180a53ead90ced923c8a4c6b1f614696ce301da604998.mp3",
+      "start": 0,
+      "end": 1.19,
+      "timings": [
+        {
+          "start": 0,
+          "end": 5,
+          "from": 0,
+          "to": 1.04
+        }
+      ],
+      "category": "word",
+      "standalone": true
+    },
+    "[1,\"کام پیت وون بووە؟\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
+      "file": "3e447559549638b049fa26e2492f3ed9c5a0f22fa01876671f61fd1a593871de.mp3",
+      "start": 14.625,
+      "end": 15.76,
+      "timings": [
+        {
+          "start": 0,
+          "end": 3,
+          "from": 14.64,
+          "to": 14.88
+        },
+        {
+          "start": 4,
+          "end": 7,
+          "from": 14.92,
+          "to": 15.16
+        },
+        {
+          "start": 8,
+          "end": 11,
+          "from": 15.2,
+          "to": 15.36
+        },
+        {
+          "start": 12,
+          "end": 17,
+          "from": 15.44,
+          "to": 15.76
+        }
+      ],
+      "category": "adventure"
     }
   },
-  "completedAt": "2026-11-26T10:37:48.738Z"
+  "completedAt": "2026-11-26T19:19:56.130Z"
 }

@@ -141,7 +141,7 @@ test('browser offline playback uses the same segment and ignores events after ca
 // Every single word (picture words, prompts, stickers, lesson fragments) must be its own recording, never a slice of a long one.
 // Words in PENDING_STANDALONE are waiting for `node scripts/generate-offline-audio.cjs --standalone-all-words --generate` and then `--finalize`;
 // delete them from the list once they are recorded (the test fails if a listed word is already fine).
-const PENDING_STANDALONE = new Set(["ورچ","مریشک",]);
+const PENDING_STANDALONE = new Set([]);
 test('every single word is a standalone recording', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'assets/audio/papula-v2/manifest.json'), 'utf8'));
   const { catalog } = require('../scripts/offline-audio-catalog.cjs');
