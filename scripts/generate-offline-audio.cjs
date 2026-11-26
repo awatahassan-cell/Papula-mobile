@@ -88,6 +88,15 @@ async function main() {
   const category = process.argv.find(arg => arg.startsWith('--category='))?.slice('--category='.length);
   const entries = catalog().filter(entry => (!process.argv.includes('--required-only') || !entry.optional) && (!category || entry.category === category));
   if (!entries.length) throw Error('No audio entries match the requested category.');
+  // `--only-missing` records just the entries that have no clip yet, each as its own request, so batches that mix
+  // new and already-approved items never re-buy (or change) the approved recordings.
+  if (process.argv.includes('--only-missing')) {
+    const have = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')).records : {};
+    const missing = entries.filter(entry => entry.category !== 'word' && !have[entry.key]).map(entry => ({ ...entry, standalone: true }));
+    const missingWords = entries.filter(entry => entry.category === 'word' && !have[entry.key]).map(entry => ({ ...entry, standalone: true }));
+    entries.splice(0, entries.length, ...missing, ...missingWords);
+    if (!entries.length) { console.log(JSON.stringify({ tracks: 0, requests: 0, characters: 0 })); return; }
+  }
   const all = process.argv.includes('--standalone-all');
   const standalone = process.argv.includes('--standalone-words') ? standaloneTargets() : null;
   const allWords = process.argv.includes('--standalone-all-words');
