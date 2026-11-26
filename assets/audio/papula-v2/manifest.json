@@ -7312,6 +7312,136 @@
       "file": "e21b158b66ed9703ef5436fbc6e0f4f31ce6761237f39749ed747e0d6f4318f0.mp3",
       "bytes": 58557,
       "characters": 45
+    },
+    "f1771f0462f81702e481c5e826f46ddf930dc9dbb733d97e0d7db628dc1eb8e8": {
+      "file": "824e07a78e95fa3c9f35320ff3acf1835a3db845dc5fb64c9716bb39d67181dd.mp3",
+      "bytes": 15089,
+      "characters": 3
+    },
+    "79112b2e629874e50607998c0f2ff09e8d9dd2cbb4143e3a2b674d7b4aba848e": {
+      "file": "745977aa42ee8ad412ccd1886801e3f115dc12d50f112a789cd8b2f911b899f6.mp3",
+      "bytes": 13835,
+      "characters": 4
+    },
+    "4a4494982228b7eaff01c35b5bc4dbaa376d2c7dbbb7da35dc6e043c6aa5572c": {
+      "file": "40219176e461bc509765673d0bf63c7a41fff86f01ddf255f8228b48baf89dcb.mp3",
+      "bytes": 13835,
+      "characters": 4
+    },
+    "57dda1e285f95275bca89740349843b2768859ea3c7eda6250055ff6b7b86991": {
+      "file": "2be65afaff82d8848d47fcd89b9325969e995842f8924ea2a541f068cbcffed0.mp3",
+      "bytes": 20105,
+      "characters": 7
+    },
+    "74b8305b646bc49bf260e2d8038d8acff0058f517f05cff89e47d0f4317321d3": {
+      "file": "4205ed7b43f772a161338f483508bed79b137ebb52de7a40946c60f214c0ec93.mp3",
+      "bytes": 15089,
+      "characters": 5
+    },
+    "d63113a795237b1f164399bd2c9a3cd336b58db10ba6cb78644caf1fd0f8b657": {
+      "file": "468f4d61582fdc63da5cd3dfb8f5f86bc44400a323e94ce9a6bbf7fe54283991.mp3",
+      "bytes": 18851,
+      "characters": 13
+    },
+    "3ccb14a15fdddf863fa965f35530bba9816f314645bc43cc974c52ecf8ce0ef1": {
+      "file": "4ae245c1b866676686e94efb331a0bfd2d52e0f5779b02e2bfc85d668697b4cf.mp3",
+      "bytes": 26792,
+      "characters": 15
+    },
+    "a7b48ed29565fe3bfba76890dc0b345fa4c1af240f9c5e6dd4540a898b0148f5": {
+      "file": "d83efba639015ea97def1cf73c22aacb3263ac2fffae79c04b44f752c2f6a35b.mp3",
+      "bytes": 17597,
+      "characters": 19
+    },
+    "16faea7c78dca47b97e1c83d519d8b9e1b102cb67ab0eef31b57d0735e48d8a1": {
+      "file": "76707abddd0780ff9d86e1cdd8eb18673fa5772017fa51aaf7f1e679897d7928.mp3",
+      "bytes": 131700,
+      "characters": 10
+    },
+    "83228f8c80452e9e99ab11a0c7097d61c44973aa7e4b6c92c34a28f5f6022463": {
+      "file": "45483ff44c478bb64b21617fac91b37adbdf421d3780d263848170d8337a4559.mp3",
+      "bytes": 17597,
+      "characters": 7
+    },
+    "cf80bc9ca2a07c8de9f52ccacc4004f8a4017f1dae0fc1ffe12ac1d8cf2064df": {
+      "file": "a8d3f6f88cd2305061746e406c25ffa3bec43ec4d5d52f7bc235f69a6b8d4fee.mp3",
+      "bytes": 17597,
+      "characters": 7
+    },
+    "735425b84b19e6b0fa8c80e376cd668270213f0c09aaf2bfd5e2fbde1a43bae0": {
+      "file": "b064e3fccfc0b80cedfda8a4766b1eff1bd2dc527e9f96ec3757994bb4526fe2.mp3",
+      "bytes": 17597,
+      "characters": 6
+    },
+    "b6d8a7a64dd4516f6b9ba82e91c93d6a0e150772607735660225307e8edfc932": {
+      "file": "03b275771bdb16abde0c08a1233029c2441c4ebc208c16533ea80cc544c977d5.mp3",
+      "bytes": 16343,
+      "characters": 6
+    },
+    "e1cfab628b3590c1bece597fb69cbd1d7f699bedac4f5e295285f5bffff7b4a7": {
+      "file": "86aa3cd43bb51b85f6a461c269c69a9fe7058e7749fe7efdab93ba09d58a475b.mp3",
+      "bytes": 18851,
+      "characters": 6
+    },
+    "8c1aa12825a61f99fda803ff85b2b2f3f00ab0172096cbe1a40984226644cf5d": {
+      "file": "44b623977fda7b064b7d84f03c53f83012b76049bcbcb973b3398bfcb1ce87c4.mp3",
+      "bytes": 13835,
+      "characters": 4
+    },
+    "9561029592e3455d21394cd98e31915d2887457f5c8c15c0a33be9f54136ef30": {
+      "file": "74ac8397112823eae02dbbec158bbc6a003e6557093255090dcedee506901e07.mp3",
+      "bytes": 16343,
+      "characters": 8
+    },
+    "ff668d24b78ffbfe515301df691b46bba65beb346778e1d6bbdd391deb61965a": {
+      "file": "d7daf70bba71bd9a97f8928e17bf811e930f4606a69b7a2ee30468c682a7bbb9.mp3",
+      "bytes": 13835,
+      "characters": 5
+    },
+    "068b084ca837912c41fa53701509d0d93d31853fb7d47da819e9c5943f99903a": {
+      "file": "b35206c97c4d1631909fed1769a1bcfbd66f37fe3c7158b1cb2826b2cb1574bd.mp3",
+      "bytes": 13835,
+      "characters": 3
+    },
+    "8b173640717cf09aab51eeb5449115c74429be648840cec542d7acd0c4c85498": {
+      "file": "2948668842eea63798f9cd2e733c1abd353a2c29484d94c5d6592499cbf25c92.mp3",
+      "bytes": 16343,
+      "characters": 5
+    },
+    "65300f4484d72f534c4403cb4ac9c4fd1d7f6779f12b7123be0278d827dac4de": {
+      "file": "5fbac721bba864b338f70b4cba9e524d8b4858af8edd696d9961b71fb9e9e866.mp3",
+      "bytes": 15089,
+      "characters": 4
+    },
+    "4f94d6bc7291c54a2fbd69f094ffb0b858d8bed87fa5574addbbe7d186f477d9": {
+      "file": "8c82bbcf8afacee5000e564ded9bf4441962c4f7b081fb65fa24c99fb0f7ac73.mp3",
+      "bytes": 16343,
+      "characters": 3
+    },
+    "655c597099851edbf189114c07e61de4041f9e13ac707467277fe9ccce14e05d": {
+      "file": "f985b93cc4d5adc72aa94324d84fb42051831c59caec402beaaeed7f70398796.mp3",
+      "bytes": 15089,
+      "characters": 4
+    },
+    "b50ccb2dabac5d720928d0988eac2151ce54833fa7cdf58253bdd7bad4c4ae62": {
+      "file": "b4d4a93b8698be7b74e12783d4f9c47ea5ffd4140276166c545c5f34e32125c7.mp3",
+      "bytes": 13835,
+      "characters": 3
+    },
+    "ffaf1428d6343568803a83ba7bae346e7fe8222c4e6ebb34d9b8753ecab8b8ae": {
+      "file": "78aca47504042dd7acaebba6578ac046c4f80f0ac441a9eae9c7335da2e5bb2b.mp3",
+      "bytes": 17597,
+      "characters": 7
+    },
+    "1112dbc7153b359743d9894ac2800865155dca71a90cd6afca1e01bac7c86a9f": {
+      "file": "d11d42e7a5a3ac0e366a0847a1c5eeb0ef5c2ba8c539e5662708721d5f9b973a.mp3",
+      "bytes": 15089,
+      "characters": 5
+    },
+    "e2cd9c4cad10260c93b43da24bdd4779f5af2d42f09f20fc8b052efd97c75451": {
+      "file": "84f24ddea0c7ce49ef9c3831109cf9ae5a7566eb14c4a7449cebfbd334034639.mp3",
+      "bytes": 17597,
+      "characters": 6
     }
   },
   "records": {
@@ -7344,18 +7474,19 @@
       "category": "letter"
     },
     "[1,\"دار\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "67a2bf62cf71d4524901ba26d68c68a7a017ce2acd9e9e3fc2ac586b69b7298c.mp3",
+      "file": "824e07a78e95fa3c9f35320ff3acf1835a3db845dc5fb64c9716bb39d67181dd.mp3",
       "start": 0,
-      "end": 0.32,
+      "end": 1.03,
       "timings": [
         {
           "start": 0,
           "end": 3,
           "from": 0,
-          "to": 0.32
+          "to": 0.88
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"لە خاڵە سەوزەکە دەست پێ بکە و هەموو هێڵ و خاڵەکانی پیتەکە تەواو بکە\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "67a2bf62cf71d4524901ba26d68c68a7a017ce2acd9e9e3fc2ac586b69b7298c.mp3",
@@ -7622,32 +7753,34 @@
       "category": "letter"
     },
     "[1,\"ماسی\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "d1cc73bd84dba78d27a2005eea8be46a1b21af1b86e9452ea6f6246d0734cd96.mp3",
+      "file": "745977aa42ee8ad412ccd1886801e3f115dc12d50f112a789cd8b2f911b899f6.mp3",
       "start": 0,
-      "end": 0.48,
+      "end": 1.03,
       "timings": [
         {
           "start": 0,
           "end": 4,
           "from": 0,
-          "to": 0.48
+          "to": 0.88
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"مانگ\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "d1cc73bd84dba78d27a2005eea8be46a1b21af1b86e9452ea6f6246d0734cd96.mp3",
-      "start": 0.545,
-      "end": 1.28,
+      "file": "40219176e461bc509765673d0bf63c7a41fff86f01ddf255f8228b48baf89dcb.mp3",
+      "start": 0,
+      "end": 1.03,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 0.56,
-          "to": 1.28
+          "from": 0,
+          "to": 0.88
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"ن[literal-letter-v1]\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "f363647e9faa34db4aee968e8aaff5d696f428ed9040c8c15f39ae4e85fe284b.mp3",
@@ -8163,18 +8296,19 @@
       "category": "sticker"
     },
     "[1,\"گوڵەباخ\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "7dbb0d81808c50ec62136307f9f7d8a410cfecb01aef898a5a16292efd4f9134.mp3",
-      "start": 9.264999999999999,
-      "end": 10.08,
+      "file": "2be65afaff82d8848d47fcd89b9325969e995842f8924ea2a541f068cbcffed0.mp3",
+      "start": 0,
+      "end": 1.19,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 9.28,
-          "to": 10.08
+          "from": 0,
+          "to": 1.04
         }
       ],
-      "category": "sticker"
+      "category": "sticker",
+      "standalone": true
     },
     "[1,\"مەشخەڵی نەورۆز\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "7dbb0d81808c50ec62136307f9f7d8a410cfecb01aef898a5a16292efd4f9134.mp3",
@@ -15825,32 +15959,34 @@
       "category": "story"
     },
     "[1,\"کەف..\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "21f8d8215e363c00721cd266b9f053bdf8deb18631130439752f07e024e186f6.mp3",
-      "start": 53.425,
-      "end": 54.08,
+      "file": "4205ed7b43f772a161338f483508bed79b137ebb52de7a40946c60f214c0ec93.mp3",
+      "start": 0,
+      "end": 0.7100000000000001,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 53.44,
-          "to": 54.08
+          "from": 0,
+          "to": 0.56
         }
       ],
-      "category": "story"
+      "category": "story",
+      "standalone": true
     },
     "[1,\"[pause] کەف..\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "21f8d8215e363c00721cd266b9f053bdf8deb18631130439752f07e024e186f6.mp3",
-      "start": 54.689,
-      "end": 55.28,
+      "file": "468f4d61582fdc63da5cd3dfb8f5f86bc44400a323e94ce9a6bbf7fe54283991.mp3",
+      "start": 0.1,
+      "end": 0.87,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 54.704,
-          "to": 55.28
+          "from": 0.16,
+          "to": 0.72
         }
       ],
-      "category": "story"
+      "category": "story",
+      "standalone": true
     },
     "[1,\"[pause] ـ ئای ئازاد، گیانە، ئەوە بەرد دەهاوێژی بۆ ئەو کۆترانە؟\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "21f8d8215e363c00721cd266b9f053bdf8deb18631130439752f07e024e186f6.mp3",
@@ -18511,18 +18647,19 @@
       "category": "story"
     },
     "[1,\"[playful] باع..\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "f3fa1b90bc27b53f0be6605637ed416b3813bcc08dfd4e669efcc643ba5503e8.mp3",
-      "start": 34.625,
-      "end": 35.36,
+      "file": "4ae245c1b866676686e94efb331a0bfd2d52e0f5779b02e2bfc85d668697b4cf.mp3",
+      "start": 0.34,
+      "end": 1.27,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 34.64,
-          "to": 35.36
+          "from": 0.4,
+          "to": 1.12
         }
       ],
-      "category": "story"
+      "category": "story",
+      "standalone": true
     },
     "[1,\"[playful] [pause] ع، با..\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "f3fa1b90bc27b53f0be6605637ed416b3813bcc08dfd4e669efcc643ba5503e8.mp3",
@@ -18545,18 +18682,19 @@
       "category": "story"
     },
     "[1,\"[playful] [pause] ع\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "f3fa1b90bc27b53f0be6605637ed416b3813bcc08dfd4e669efcc643ba5503e8.mp3",
-      "start": 37.928,
-      "end": 37.954,
+      "file": "d83efba639015ea97def1cf73c22aacb3263ac2fffae79c04b44f752c2f6a35b.mp3",
+      "start": 0.18,
+      "end": 1.19,
       "timings": [
         {
           "start": 0,
           "end": 1,
-          "from": 37.943,
-          "to": 37.954
+          "from": 0.24,
+          "to": 1.04
         }
       ],
-      "category": "story"
+      "category": "story",
+      "standalone": true
     },
     "[1,\"[playful] [pause] ـ نەسرین، ئەو بەرخانە چەند جوانن، سەیرکە، وا بۆمان دەڕوانن.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "f3fa1b90bc27b53f0be6605637ed416b3813bcc08dfd4e669efcc643ba5503e8.mp3",
@@ -28899,18 +29037,19 @@
       "category": "prompt"
     },
     "[1,\"٠١٢٣٤٥٦٧٨٩\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 25.505,
-      "end": 32.907,
+      "file": "76707abddd0780ff9d86e1cdd8eb18673fa5772017fa51aaf7f1e679897d7928.mp3",
+      "start": 0,
+      "end": 8.39,
       "timings": [
         {
           "start": 0,
           "end": 10,
-          "from": 25.52,
-          "to": 32.907
+          "from": 0,
+          "to": 8.24
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"دەست لە پیشاندان بدە، پاشان بە پەنجە بنووسە\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
@@ -29293,60 +29432,64 @@
       "category": "prompt"
     },
     "[1,\"گوێگرتن\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 57.745,
-      "end": 58.48,
+      "file": "45483ff44c478bb64b21617fac91b37adbdf421d3780d263848170d8337a4559.mp3",
+      "start": 0,
+      "end": 1.27,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 57.76,
-          "to": 58.48
+          "from": 0,
+          "to": 1.12
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"شێوەکان\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 58.945,
-      "end": 59.6,
+      "file": "a8d3f6f88cd2305061746e406c25ffa3bec43ec4d5d52f7bc235f69a6b8d4fee.mp3",
+      "start": 0,
+      "end": 1.27,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 58.96,
-          "to": 59.6
+          "from": 0,
+          "to": 1.12
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"وشەکان\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 60.065,
-      "end": 60.72,
+      "file": "b064e3fccfc0b80cedfda8a4766b1eff1bd2dc527e9f96ec3757994bb4526fe2.mp3",
+      "start": 0,
+      "end": 1.27,
       "timings": [
         {
           "start": 0,
           "end": 6,
-          "from": 60.08,
-          "to": 60.72
+          "from": 0,
+          "to": 1.12
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"نووسین\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
-      "start": 61.185,
-      "end": 61.76,
+      "file": "03b275771bdb16abde0c08a1233029c2441c4ebc208c16533ea80cc544c977d5.mp3",
+      "start": 0,
+      "end": 1.19,
       "timings": [
         {
           "start": 0,
           "end": 6,
-          "from": 61.2,
-          "to": 61.76
+          "from": 0,
+          "to": 1.04
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"پیتی ئەمڕۆ\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "9f13f550787e6a9ae06b5f922997ca9370d2c98011f536ff649a83a424ab577a.mp3",
@@ -31691,46 +31834,49 @@
       "category": "writing"
     },
     "[1,\"بوویت.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "89ad9fa4113aea6802b426a31a55fb9e6033c3643dec2edb3731bd371a7d2aff.mp3",
-      "start": 48.105,
-      "end": 48.4,
+      "file": "86aa3cd43bb51b85f6a461c269c69a9fe7058e7749fe7efdab93ba09d58a475b.mp3",
+      "start": 0,
+      "end": 0.87,
       "timings": [
         {
           "start": 0,
           "end": 6,
-          "from": 48.12,
-          "to": 48.4
+          "from": 0,
+          "to": 0.72
         }
       ],
-      "category": "writing"
+      "category": "writing",
+      "standalone": true
     },
     "[1,\"وشەی\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "89ad9fa4113aea6802b426a31a55fb9e6033c3643dec2edb3731bd371a7d2aff.mp3",
-      "start": 49.265,
-      "end": 49.68,
+      "file": "44b623977fda7b064b7d84f03c53f83012b76049bcbcb973b3398bfcb1ce87c4.mp3",
+      "start": 0,
+      "end": 1.03,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 49.28,
-          "to": 49.68
+          "from": 0,
+          "to": 0.88
         }
       ],
-      "category": "lesson"
+      "category": "lesson",
+      "standalone": true
     },
     "[1,\"بدۆزەوە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "89ad9fa4113aea6802b426a31a55fb9e6033c3643dec2edb3731bd371a7d2aff.mp3",
-      "start": 49.745,
-      "end": 50.48,
+      "file": "74ac8397112823eae02dbbec158bbc6a003e6557093255090dcedee506901e07.mp3",
+      "start": 0,
+      "end": 0.9500000000000001,
       "timings": [
         {
           "start": 0,
           "end": 8,
-          "from": 49.76,
-          "to": 50.48
+          "from": 0,
+          "to": 0.8
         }
       ],
-      "category": "lesson"
+      "category": "lesson",
+      "standalone": true
     },
     "[1,\"سڵاو هاوڕێی شیرینم، بەخێربێیت بۆ پەپوولە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "89ad9fa4113aea6802b426a31a55fb9e6033c3643dec2edb3731bd371a7d2aff.mp3",
@@ -61067,18 +61213,19 @@
       "category": "tip"
     },
     "[1,\"باشە!\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 5.105,
-      "end": 5.52,
+      "file": "d7daf70bba71bd9a97f8928e17bf811e930f4606a69b7a2ee30468c682a7bbb9.mp3",
+      "start": 0,
+      "end": 0.79,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 5.12,
-          "to": 5.52
+          "from": 0,
+          "to": 0.64
         }
       ],
-      "category": "tip"
+      "category": "tip",
+      "standalone": true
     },
     "[1,\"جارێکی تر هەوڵ بدە.\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
@@ -61821,116 +61968,124 @@
       "category": "tip"
     },
     "[1,\"مەڕ\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 59.505,
-      "end": 59.84,
+      "file": "b35206c97c4d1631909fed1769a1bcfbd66f37fe3c7158b1cb2826b2cb1574bd.mp3",
+      "start": 0,
+      "end": 0.9500000000000001,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 59.52,
-          "to": 59.84
+          "from": 0,
+          "to": 0.8
         }
       ],
-      "category": "vocabulary"
+      "category": "vocabulary",
+      "standalone": true
     },
     "[1,\"مانگا\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 60.545,
-      "end": 61.12,
+      "file": "2948668842eea63798f9cd2e733c1abd353a2c29484d94c5d6592499cbf25c92.mp3",
+      "start": 0,
+      "end": 1.1099999999999999,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 60.56,
-          "to": 61.12
+          "from": 0,
+          "to": 0.96
         }
       ],
-      "category": "vocabulary"
+      "category": "vocabulary",
+      "standalone": true
     },
     "[1,\"ئەسپ\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 61.745,
-      "end": 62.24,
+      "file": "5fbac721bba864b338f70b4cba9e524d8b4858af8edd696d9961b71fb9e9e866.mp3",
+      "start": 0,
+      "end": 1.03,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 61.76,
-          "to": 62.24
+          "from": 0,
+          "to": 0.88
         }
       ],
-      "category": "vocabulary"
+      "category": "vocabulary",
+      "standalone": true
     },
     "[1,\"مشک\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 62.865,
-      "end": 63.44,
+      "file": "8c82bbcf8afacee5000e564ded9bf4441962c4f7b081fb65fa24c99fb0f7ac73.mp3",
+      "start": 0,
+      "end": 1.1099999999999999,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 62.88,
-          "to": 63.44
+          "from": 0,
+          "to": 0.96
         }
       ],
-      "category": "vocabulary"
+      "category": "vocabulary",
+      "standalone": true
     },
     "[1,\"گۆشت\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 64.065,
-      "end": 64.64,
+      "file": "f985b93cc4d5adc72aa94324d84fb42051831c59caec402beaaeed7f70398796.mp3",
+      "start": 0,
+      "end": 1.1099999999999999,
       "timings": [
         {
           "start": 0,
           "end": 4,
-          "from": 64.08,
-          "to": 64.64
+          "from": 0,
+          "to": 0.96
         }
       ],
-      "category": "vocabulary"
+      "category": "vocabulary",
+      "standalone": true
     },
     "[1,\"کێک\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 65.265,
-      "end": 65.76,
+      "file": "b4d4a93b8698be7b74e12783d4f9c47ea5ffd4140276166c545c5f34e32125c7.mp3",
+      "start": 0,
+      "end": 1.03,
       "timings": [
         {
           "start": 0,
           "end": 3,
-          "from": 65.28,
-          "to": 65.76
+          "from": 0,
+          "to": 0.88
         }
       ],
-      "category": "vocabulary"
+      "category": "vocabulary",
+      "standalone": true
     },
     "[1,\"پرتەقاڵ\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 66.30499999999999,
-      "end": 67.04,
+      "file": "78aca47504042dd7acaebba6578ac046c4f80f0ac441a9eae9c7335da2e5bb2b.mp3",
+      "start": 0,
+      "end": 1.27,
       "timings": [
         {
           "start": 0,
           "end": 7,
-          "from": 66.32,
-          "to": 67.04
+          "from": 0,
+          "to": 1.12
         }
       ],
-      "category": "vocabulary"
+      "category": "vocabulary",
+      "standalone": true
     },
     "[1,\"شووتی\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 67.665,
-      "end": 68.24,
+      "file": "d11d42e7a5a3ac0e366a0847a1c5eeb0ef5c2ba8c539e5662708721d5f9b973a.mp3",
+      "start": 0,
+      "end": 1.1099999999999999,
       "timings": [
         {
           "start": 0,
           "end": 5,
-          "from": 67.68,
-          "to": 68.24
+          "from": 0,
+          "to": 0.96
         }
       ],
-      "category": "vocabulary"
+      "category": "vocabulary",
+      "standalone": true
     },
     "[1,\"گەزەر\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
@@ -61947,18 +62102,19 @@
       "category": "vocabulary"
     },
     "[1,\"تەماتە\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
-      "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
-      "start": 69.985,
-      "end": 70.64,
+      "file": "84f24ddea0c7ce49ef9c3831109cf9ae5a7566eb14c4a7449cebfbd334034639.mp3",
+      "start": 0,
+      "end": 1.19,
       "timings": [
         {
           "start": 0,
           "end": 6,
-          "from": 70,
-          "to": 70.64
+          "from": 0,
+          "to": 1.04
         }
       ],
-      "category": "vocabulary"
+      "category": "vocabulary",
+      "standalone": true
     },
     "[1,\"پتاتە\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "e3a297d4b91242264afee1cda277bec7feee8026ff87d5f42da8ce73cae1390e.mp3",
@@ -77316,5 +77472,5 @@
       "category": "word"
     }
   },
-  "completedAt": "2026-11-26T09:11:11.716Z"
+  "completedAt": "2026-11-26T10:26:39.729Z"
 }
