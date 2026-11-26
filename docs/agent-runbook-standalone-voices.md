@@ -103,3 +103,10 @@ then republish `app-voice-review-live.html` to the existing artifact (same `file
 2. standalone count before → after, and tests/tsc/lint result;
 3. what only a person can check (listening, step 5);
 4. the commit hash on both branches.
+
+## Found 2026-11-26: shared words were skipped
+
+A word that is in two lists (e.g. «دار» is a picture word and a lesson prompt) is stored under the *other* category in the catalog, so the first
+`--standalone-all-words` run left it as a slice of a long recording («دار» played 0–0.32 s of a 5-second writing sentence). The generator now also makes
+every single-word entry standalone. `tests/offlineAudio.test.cjs` lists the words still waiting (`PENDING_STANDALONE`, 26 requests / 169 characters):
+run `--standalone-all-words --generate` then `--finalize`, then empty that list.

@@ -24,7 +24,10 @@ function standaloneTargets() {
 }
 
 function plan(entries, standalone = null, all = false, allWords = false) {
-  const primary = entries.filter(item => item.category !== 'word').map(item => all && item.category !== 'letter' && item.category !== 'syllable' ? { ...item, standalone: true } : item);
+  // A single word that another list shares with a sentence list (e.g. «دار» is both a picture word and a lesson prompt) is stored under
+  // that other category, so it must be made standalone here too; otherwise the app keeps playing a slice of a long recording.
+  const isSingleWord = item => !/\s/.test(item.text.trim());
+  const primary = entries.filter(item => item.category !== 'word').map(item => item.category !== 'letter' && item.category !== 'syllable' && (all || (allWords && isSingleWord(item))) ? { ...item, standalone: true } : item);
   const words = new Map();
   // Optional entries never become the parent of a word: that would move an already-bought word into a new batch.
   for (const entry of primary.filter(item => !item.optional)) for (const match of entry.text.matchAll(/\S+/gu)) {
