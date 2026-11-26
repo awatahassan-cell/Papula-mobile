@@ -10,7 +10,7 @@ function loader(){
   file=path.resolve(file);if(cache.has(file))return cache.get(file);
   const mod={exports:{}};cache.set(file,mod.exports);
   const code=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,esModuleInterop:true}}).outputText;
-  new Function('exports','module','require',code)(mod.exports,mod,p=>p.endsWith('.webp')?1:p==='@react-native-async-storage/async-storage'?asyncStorage:p.endsWith('.json')?JSON.parse(fs.readFileSync(path.resolve(path.dirname(file),p),'utf8')):load(path.resolve(path.dirname(file),p+'.ts')));
+  new Function('exports','module','require',code)(mod.exports,mod,p=>(p.endsWith('.webp')||p.endsWith('.jpg')||p.endsWith('.png'))?1:p==='@react-native-async-storage/async-storage'?asyncStorage:p.endsWith('.json')?JSON.parse(fs.readFileSync(path.resolve(path.dirname(file),p),'utf8')):load(path.resolve(path.dirname(file),p+'.ts')));
   cache.set(file,mod.exports);return mod.exports;
  }return load;
 }

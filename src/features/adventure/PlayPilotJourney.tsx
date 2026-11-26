@@ -135,7 +135,9 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
   };
   const advance=()=>{if(phase!=='won'||nextLock.current)return;nextLock.current=true;token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();locked.current=false;setPhase('watch');setMistakes(0);if(index===2&&canCheckLetter(currentProfile,letterId))setCheckRequested(true);setIndex(n=>n+1);};
   // After a right answer the journey moves on by itself once the praise has been heard; the button still works at once.
-  useEffect(()=>{if(phase!=='won')return;const timer2=setTimeout(advance,3200);return()=>clearTimeout(timer2);},[phase]); // eslint-disable-line react-hooks/exhaustive-deps
+  const advanceRef=useRef(advance);
+  useEffect(()=>{advanceRef.current=advance;});   // the timer below always calls the latest version (it needs the profile after the round was saved)
+  useEffect(()=>{if(phase!=='won')return;const timer2=setTimeout(()=>advanceRef.current(),3200);return()=>clearTimeout(timer2);},[phase]);
   const fill=accentFill(c,isNight);
   if(checking)return <LetterListeningCheck letterId={letterId} onExit={()=>setCheckDismissed(true)}/>;
   if(listening)return <LetterIntro letter={letter} onDone={()=>setListening(false)}/>;

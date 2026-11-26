@@ -128,7 +128,10 @@ const ALPHABET_DATA = {
   function update() {
     var past = hero.getBoundingClientRect().bottom < 0;
     var atEnd = end && end.getBoundingClientRect().top < window.innerHeight * 0.7;
-    bar.classList.toggle('on', past && !atEnd);
+    var on = past && !atEnd;
+    bar.classList.toggle('on', on);
+    bar.setAttribute('aria-hidden', on ? 'false' : 'true');            // hidden from screen readers and the keyboard while it is off screen
+    var link = bar.querySelector('a'); if (link) link.tabIndex = on ? 0 : -1;
   }
   window.addEventListener('scroll', update, { passive: true }); window.addEventListener('resize', update); update();
 })();
