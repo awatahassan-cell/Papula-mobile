@@ -7606,7 +7606,8 @@
           "to": 1.04
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"ئا[literal-letter-v1]\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "0586f6679c286d00a87a8481efc92d3c3473e956e3fe5b6f001b7063705c636f.mp3",
@@ -7808,7 +7809,8 @@
           "to": 0.88
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"ێ[literal-letter-v1]\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "ca6ae0716a6d82036a63e215afbc38b6a262f7f74c0604b6ca6299184ccc4997.mp3",
@@ -7864,7 +7866,8 @@
           "to": 0.96
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"س[literal-letter-v1]\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "cfa104777cf9b12a9e3caedfe4fa55746994a4ba59dfacabdf65148921c635e6.mp3",
@@ -7976,7 +7979,8 @@
           "to": 0.8
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"ۆ[literal-letter-v1]\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "db96dceebc3fe363a66aa912acf6a56a8d11888d2131c7d615faeac2f8605cf9.mp3",
@@ -8004,7 +8008,8 @@
           "to": 0.88
         }
       ],
-      "category": "prompt"
+      "category": "prompt",
+      "standalone": true
     },
     "[1,\"ج[literal-letter-v1]\",\"tkI70vi7ETrk5NakcLUP\",\"eleven_v4\"]": {
       "file": "4ec6ac96dab70ade0c7bef94c69f357ef28bd59d9a75519a2372b71b918e1752.mp3",
@@ -77472,5 +77477,5 @@
       "category": "word"
     }
   },
-  "completedAt": "2026-11-26T10:26:39.729Z"
+  "completedAt": "2026-11-26T10:37:48.738Z"
 }
