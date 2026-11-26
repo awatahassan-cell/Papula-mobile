@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import Svg, { Path, Circle } from 'react-native-svg';
-import { ArrowLeft, BookOpen, Flower2, PencilLine, RotateCcw, Volume2 } from 'lucide-react-native';
+import { ArrowLeft, BookOpen, Flower2, PencilLine, Puzzle, RotateCcw, Volume2 } from 'lucide-react-native';
 import { Text } from '../../components/RTLText';
 import { CharacterPicture } from '../../components/CharacterPicture';
 import { TactileButton } from '../../components/TactileButton';
@@ -21,6 +21,7 @@ import { playJourneyContent } from './playJourneyContent';
 import { LetterIntro } from './LetterIntro';
 import { canCheckLetter } from '../../services/letterChecks';
 import { LetterListeningCheck } from '../learning/LetterListeningCheck';
+import { JourneyPractice } from './JourneyPractice';
 
 /** Narration that neither finishes nor fails (a call, a lost audio session) must not leave the child unable to answer. */
 const WATCH_LIMIT_MS=12000;
@@ -103,10 +104,11 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
   const [phase,setPhase]=useState<'watch'|'play'|'won'>('watch');
   const [checkRequested,setCheckRequested]=useState(()=>!startAtBeginning&&isLessonComplete(currentProfile,letterId)&&canCheckLetter(currentProfile,letterId));
   const [checkDismissed,setCheckDismissed]=useState(false);
+  const [practice,setPractice]=useState(false);
   const [mistakes,setMistakes]=useState(0),[demoVersion,setDemoVersion]=useState(0),[error,setError]=useState(false);
   const token=useRef(0),locked=useRef(false),nextLock=useRef(false),timer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined),guard=useRef<ReturnType<typeof setTimeout>|undefined>(undefined);
   const done=index>=rounds.length,round=rounds[Math.min(index,2)];
-  const checking=done&&checkRequested&&!checkDismissed;
+  const checking=done&&checkRequested&&!checkDismissed&&!practice;
   const planted=gardenProgress(currentProfile,letterId).flowerSpot!==undefined;
   const beginner=currentProfile.ageGroup!=='7-8'||currentProfile.placement?.recommendedLevel===1;
   const twoChoices=beginner||mistakes>=2;
@@ -125,7 +127,7 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
       void soundService.speakWord(parts[i],{onEnd:()=>{if(active===token.current)timer.current=setTimeout(()=>run(i+1),i+1<parts.length?450:0);},onError:()=>{if(active!==token.current)return;setError(true);if(!done){locked.current=false;setPhase('play');}}});
     };run(0);
   },[done,instruction,intro,demoVersion,listening]);
-  useFocusEffect(useCallback(()=>{if(checking)return;narrate();return()=>{token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();};},[narrate,checking]));
+  useFocusEffect(useCallback(()=>{if(checking||practice)return;narrate();return()=>{token.current++;clearTimeout(timer.current);clearTimeout(guard.current);void soundService.stopSpeaking();};},[narrate,checking,practice]));
   const pick=(id:string)=>{
     if(phase!=='play'||locked.current)return;
     locked.current=true;
@@ -139,6 +141,7 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
   useEffect(()=>{advanceRef.current=advance;});   // the timer below always calls the latest version (it needs the profile after the round was saved)
   useEffect(()=>{if(phase!=='won')return;const timer2=setTimeout(()=>advanceRef.current(),3200);return()=>clearTimeout(timer2);},[phase]);
   const fill=accentFill(c,isNight);
+  if(practice)return <JourneyPractice letterId={letterId} onExit={()=>setPractice(false)}/>;
   if(checking)return <LetterListeningCheck letterId={letterId} onExit={()=>setCheckDismissed(true)}/>;
   if(listening)return <LetterIntro letter={letter} onDone={()=>setListening(false)}/>;
   return <View testID="play-pilot-journey" style={[s.page,{backgroundColor:c.background},compact&&{padding:8,gap:6}]}>
@@ -149,7 +152,7 @@ export function PlayPilotJourney({startAtBeginning=false,letterId=PLAY_PILOT_LET
       <Finale compact={compact}/>
       <Text style={[s.title,{color:c.ink}]}>{planted?'گوڵەکەت لە باخچەکەتە!':'گوڵەکەت ئامادەیە!'}</Text>
       <TactileButton accessibilityRole="button" accessibilityLabel={planted?'باخچەکەم ببینم':'گوڵەکەم بچێنم'} onPress={()=>{if(planted){setRoute('garden');return;}plantQuestFlower(0,letterId);soundService.playCorrect();}} style={[s.primary,{backgroundColor:fill},compact&&{minHeight:50,padding:6}]}><Flower2 size={28} color="#fff"/><Text style={s.primaryText}>{planted?'باخچەکەم ببینم':'گوڵەکەم بچێنم'}</Text></TactileButton>
-      <View style={s.extras}><TactileButton accessibilityRole="button" accessibilityLabel="چیرۆکی پیتەکە" onPress={()=>{const story=getLetterStory(letterId);if(story){setSelectedStory(story);setRoute('story-reader');}}} style={[s.extra,{backgroundColor:c.sky}]}><BookOpen size={27} color={c.mint}/><Text style={{color:c.ink}}>چیرۆک</Text></TactileButton><TactileButton accessibilityRole="button" accessibilityLabel="مەشقی نووسین" onPress={()=>{setSelectedLetter(letter);setRoute('writing');}} style={[s.extra,{backgroundColor:c.leaf}]}><PencilLine size={27} color={c.mint}/><Text style={{color:c.ink}}>نووسین</Text></TactileButton><TactileButton accessibilityRole="button" accessibilityLabel="دووبارە یاری بکەم" onPress={()=>{locked.current=false;nextLock.current=false;setMistakes(0);setPhase('watch');setIndex(0);}} style={[s.extra,{backgroundColor:c.lavender}]}><RotateCcw size={27} color={c.mint}/><Text style={{color:c.ink}}>یاری</Text></TactileButton></View>
+      <View style={s.extras}><TactileButton accessibilityRole="button" accessibilityLabel="چیرۆکی پیتەکە" onPress={()=>{const story=getLetterStory(letterId);if(story){setSelectedStory(story);setRoute('story-reader');}}} style={[s.extra,{backgroundColor:c.sky}]}><BookOpen size={27} color={c.mint}/><Text style={{color:c.ink}}>چیرۆک</Text></TactileButton><TactileButton accessibilityRole="button" accessibilityLabel="مەشقی نووسین" onPress={()=>{setSelectedLetter(letter);setRoute('writing');}} style={[s.extra,{backgroundColor:c.leaf}]}><PencilLine size={27} color={c.mint}/><Text style={{color:c.ink}}>نووسین</Text></TactileButton><TactileButton accessibilityRole="button" accessibilityLabel="دووبارە یاری بکەم" onPress={()=>{locked.current=false;nextLock.current=false;setMistakes(0);setPhase('watch');setIndex(0);}} style={[s.extra,{backgroundColor:c.lavender}]}><RotateCcw size={27} color={c.mint}/><Text style={{color:c.ink}}>یاری</Text></TactileButton><TactileButton accessibilityRole="button" accessibilityLabel="ڕاهێنانی ئەم پیتە" onPress={()=>setPractice(true)} style={[s.extra,{backgroundColor:c.peach}]}><Puzzle size={27} color={c.mint}/><Text style={{color:c.ink}}>ڕاهێنان</Text></TactileButton></View>
     </View>:<>
       <Text style={[s.title,{color:c.ink}]}>{round.title}</Text>
       <TactileButton accessibilityRole="button" accessibilityLabel={index===0?letter.name:target.word} onPress={()=>{void soundService.stopSpeaking();void soundService.speakWord(index===0?letter.glyph:target.word,index===0?{letterName:letter.name}:{playbackRate:0.78});}} style={[s.task,compact&&{minHeight:64,flexDirection:index===2?'row':'column',gap:8},{backgroundColor:c.paper,borderColor:c.edge}]}>

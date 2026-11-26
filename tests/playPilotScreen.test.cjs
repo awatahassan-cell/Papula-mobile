@@ -27,6 +27,7 @@ for(const [letterIndex,letter] of allLetters.entries())test(`journey ${letter.id
   if(name.endsWith('/letterStories'))return{getLetterStory:()=>({id:'story-dal'})};
   if(name.endsWith('/LetterIntro'))return{LetterIntro:'LetterIntro'};
   if(name.endsWith('/LetterListeningCheck'))return{LetterListeningCheck:'ListeningCheck'};
+  if(name.endsWith('/JourneyPractice'))return{JourneyPractice:'JourneyPractice'};
   return load(path.resolve('src/features/adventure',name+'.ts'));
  },(fn,ms)=>{const id=++timerId;timers.set(id,fn);return id;},id=>timers.delete(id));
  const render=()=>{si=ri=ci=0;return module.exports.PlayPilotJourney({letterId:letter.id});};

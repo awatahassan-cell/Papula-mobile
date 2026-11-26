@@ -11,7 +11,7 @@ import { accentFill } from '../../theme/appearance';
 import { useResponsive } from '../../theme/responsive';
 import { useAppStore } from '../../store/useAppStore';
 import { gardenProgress, gardenChallenge, GARDEN_STEPS } from '../../services/gardenQuest';
-import { isLessonUnlocked, nextLessonLetter, nextLetterWaits } from '../../services/lessonPath';
+import { isLessonComplete, isLessonUnlocked, nextLessonLetter, nextLetterWaits } from '../../services/lessonPath';
 import { DayDone } from '../home/DayDone';
 import { getLetterStory } from '../../data/letterStories';
 import { mockLetters } from '../../data/mockLetters';
@@ -32,7 +32,8 @@ export function GardenQuestScreen() {
   const letterId=selectedLetter?.id || nextLessonLetter(currentProfile)?.id || mockLetters[0].id;
   if(nextLetterWaits(currentProfile)&&letterId===nextLessonLetter(currentProfile)?.id) return <View style={{padding:24,gap:20}}><DayDone/></View>;
   if(!isLessonUnlocked(currentProfile,letterId)) return <View style={{padding:24,gap:20}}><HelpHint text={QUEST_TEXT.locked}/><Text>{QUEST_TEXT.locked}</Text><BackButton onPress={()=>{setSelectedLetter(nextLessonLetter(currentProfile)||mockLetters[0]);setRoute('garden-quest');}}>گەشتی ئێستام بکەمەوە</BackButton></View>;
-  return <PlayPilotJourney key={`${currentProfile.id}:${letterId}`} letterId={letterId}/>;
+  // A finished letter reopens from its start (the letter and its words), so the child can go through it all again.
+  return <PlayPilotJourney key={`${currentProfile.id}:${letterId}`} letterId={letterId} startAtBeginning={isLessonComplete(currentProfile,letterId)}/>;
 }
 export function LegacyGardenQuest({letterId}:{letterId:string}) {
   const {colors:c,isNight}=useAppearance();
