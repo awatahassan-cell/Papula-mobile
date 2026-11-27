@@ -198,6 +198,7 @@ async function main() {
   const visit = async (label, tab, wantText) => {
     current = label;
     try {
+      if (/پەپوولەیەکی نوێ/.test(await text()) && await has(T.cheer)) { await press(T.cheer); await page.waitForTimeout(600); }   // the garden may open a butterfly popup
       if (tab && !(await press(tab))) throw new Error(`no "${tab}" button`);
       await page.waitForTimeout(1500);
       const t = await text();
