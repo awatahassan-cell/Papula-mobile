@@ -76,7 +76,8 @@ function locateWords(text, alignment, cursor = 0) {
       // find it again with those marks ignored, mapped back to the original character positions.
       const kept = [...spoken].map((character, position) => ({ character, position })).filter(item => !/\p{M}/u.test(item.character));
       const plain = kept.map(item => item.character).join('');
-      const from = plain.indexOf(word.replace(/\p{M}/gu, ''), kept.findIndex(item => item.position >= cursor));
+      const startAt = kept.findIndex(item => item.position >= cursor);
+      const from = startAt < 0 ? -1 : plain.indexOf(word.replace(/\p{M}/gu, ''), startAt);   // past the end: never restart from 0 (that would find an earlier copy)
       if (from < 0) throw Error('Alignment does not contain reading word: ' + match[0]);
       at = kept[from].position;
       last = kept[from + word.replace(/\p{M}/gu, '').length - 1].position;

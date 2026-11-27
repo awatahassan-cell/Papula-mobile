@@ -55,7 +55,9 @@ export function gardenChallenge(letterId: string, known?: string[]) {
   const target = letter.exampleWords.find(word => !/\s/u.test(word.word)) || letter.exampleWords[0];
   const others = mockLetters.filter(item => normalized(item.glyph) !== normalized(letter.glyph));
   const rotate = <T,>(items: T[], offset: number) => [...items.slice(offset), ...items.slice(0,offset)];
-  const knownFirst = known ? [...others.filter(item => known.includes(item.id)), ...others.filter(item => !known.includes(item.id))] : null;
+  // Finished letters first; the letters not yet learned fill the rest, turned by the letter's place so a new child does not always see the same two.
+  const unknownOthers = known ? others.filter(item => !known.includes(item.id)) : [];
+  const knownFirst = known ? [...others.filter(item => known.includes(item.id)), ...rotate(unknownOthers, unknownOthers.length ? Math.max(0,index) % unknownOthers.length : 0)] : null;
   const choices = knownFirst ? [knownFirst[0], knownFirst[1]] : [others[(Math.max(0,index)+1)%others.length], others[(Math.max(0,index)+2)%others.length]];
   const letters = rotate([choices[0], letter, choices[1]], Math.max(0,index)%3);
   const wrong = mockLetters.flatMap(item=>item.exampleWords).filter(item=>item.word!==target.word && !normalized(item.word).includes(normalized(letter.glyph)));
