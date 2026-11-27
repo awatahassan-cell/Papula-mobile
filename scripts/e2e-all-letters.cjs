@@ -92,7 +92,7 @@ async function main() {
   const labels = () => page.getByRole('button').evaluateAll(list => list.map(x => (x.getAttribute('aria-label') || x.innerText || '').trim()).filter(Boolean));
   const has = async name => (await page.getByRole('button', { name, exact: true }).count()) + (await page.getByRole('tab', { name, exact: true }).count()) > 0;
   const press = async (name, exact = true) => {
-    for (const role of ['button', 'tab']) {                      // the bottom bar items are tabs, everything else is a button
+    for (const role of (name === T.home ? ['tab', 'button'] : ['button', 'tab'])) {                      // the bottom bar items are tabs, everything else is a button
       try { await page.getByRole(role, { name, exact }).last().click({ force: true, timeout: 1500 }); return true; } catch { /* try the next role */ }
     }
     return false;
@@ -117,10 +117,11 @@ async function main() {
     await page.waitForTimeout(500);
     if (n > 1) {                                                   // a new day: reload so the home screen sees it
       await page.evaluate(() => localStorage.setItem('__e2eDays', String(Number(localStorage.getItem('__e2eDays') || 0) + 1)));
-      await page.reload(); await page.waitForTimeout(5000);
+      await page.goto(base); await page.waitForTimeout(5500);
+      if (process.env.E2E_DEBUG) { await shot('after-reload'); say('  after reload: ' + (await text()).slice(0, 200) + ' | buttons ' + JSON.stringify(await labels())); }
     }
     if (/پەپوولەیەکی نوێ/.test(await text()) && await has(T.cheer)) await press(T.cheer);   // a butterfly popup may still be open
-    if (!(await has(T.cta))) { await press(T.home); await page.waitForTimeout(1200); }
+    if (!(await has(T.cta))) { const okPress = await press(T.home); await page.waitForTimeout(1200); if (process.env.E2E_DEBUG) say('  pressed home: ' + okPress + ' → ' + (await text()).slice(0, 160) + ' | buttons ' + JSON.stringify(await labels())); }
     if (!(await has(T.cta))) {
       await shot('no-continue-button'); if (process.env.E2E_DEBUG) say('  buttons: ' + JSON.stringify(await labels())); say(`  ${dim('page says: ' + (await text()).slice(0, 160))}`);
       say(`  ${yellow('•')} no "${T.cta}" button any more: ${n === 1 ? 'nothing to play' : 'every letter is finished'}.`);
