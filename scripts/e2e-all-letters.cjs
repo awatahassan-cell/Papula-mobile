@@ -49,7 +49,7 @@ function serve(dir) {
 const CHROME = /ڕێنمای|ئەستێرە|ئەلبوومەکەم|وەستاندن|گەڕانەوە|گەشتەکەم|ڕێڕەو|^یاری|^چیرۆک|^باخچەکەم$|پەپوولە، سەرەتا|ڕێکخستن|وشەکانم|دووبارە ببیستە|چیرۆکی پیتەکە|مەشقی نووسین|دووبارە یاری بکەم|نووسین$/;
 const T = {
   cta: /^بەردەوامبوون لە گەشت/, start: 'دەست پێ بکە', next: 'بڕۆین بۆ هەنگاوی دواتر', plant: 'گوڵەکەم بچێنم', seeGarden: 'باخچەکەم ببینم',
-  later: 'دواتر دەیکەم', cheer: 'ئافەرین!', home: 'گەشتەکەم',
+  later: 'دواتر دەیکەم', cheer: /^(ئافەرین!|دواتر)$/,                      // the new-butterfly popup: «ئافەرین!» the first time, «دواتر» after that home: 'گەشتەکەم',
 };
 const KU_DIGITS = '٠١٢٣٤٥٦٧٨٩';
 // The task's heading: the second part of the page text (after the star count). A wrong tap changes other words, not this one.
@@ -150,7 +150,7 @@ async function main() {
       if (buttons.includes(T.plant)) { log.steps.push('finished all rounds'); log.shots.push(await shot(`${n}-${glyph}-flower-ready`)); await press(T.plant); continue; }
       if (buttons.includes(T.next)) { await page.waitForTimeout(300); await press(T.next); log.rounds++; continue; }
       if (buttons.includes(T.start) && !buttons.some(b => /^پیتی /.test(b))) { log.steps.push('letter intro'); await press(T.start); continue; }
-      if (buttons.includes(T.cheer)) { await press(T.cheer); continue; }
+      if (buttons.some(b => T.cheer.test(b))) { await press(T.cheer); continue; }
 
       // An answer screen: try the options one by one until the right one is taken.
       if (now !== lastAnswerScreen) { await page.waitForTimeout(3500); lastAnswerScreen = now; }   // the app first tells the task aloud; answers open after that
@@ -207,7 +207,7 @@ async function main() {
   await visit('path tab', 'ڕێڕەو', null);
   await visit('stories tab', 'چیرۆک', null);
   await visit('garden tab', 'باخچەکەم', /گوڵ/);
-  await visit('album (stickers)', 'ئەلبوومەکەم', /ستیکەر/);
+  await visit('album (stickers)', /^ئەلبوومەکەم/, /ستیکەر/);
   for (const tabName of ['پەپوولە', 'نیشانە']) {
     try { await page.getByRole('tab', { name: tabName }).click({ force: true }); await page.waitForTimeout(1200); extras.push({ label: `album: ${tabName}`, ok: true, shot: await shot(`album-${tabName}`), note: '' }); }
     catch { extras.push({ label: `album: ${tabName}`, ok: false, shot: '', note: 'tab not found' }); }
